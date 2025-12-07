@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Loader2, Search, Info, Lock, Globe, AlertOctagon, Image as ImageIcon, X, Terminal, Shield, Bot, Menu, Coffee, History } from 'lucide-react';
+import { Loader2, Search, Info, Lock, AlertOctagon, Image as ImageIcon, X, Bot, Menu, Coffee, History } from 'lucide-react';
 import { analyzeContent } from './services/geminiService';
 import { AnalysisResult, Verdict } from './types';
 import ResultCard from './components/ResultCard';
 import Dojo from './components/Dojo';
 import AboutModal from './components/AboutModal';
 import PixelLogo from './components/PixelLogo';
-import StatsPanel from './components/StatsPanel'; // Import the new component
+import StatsPanel from './components/StatsPanel';
+import HistoryLog from './components/HistoryLog'; // New Import
 import { playSound } from './utils/sound';
 
 // QUICK TRY EXAMPLES
@@ -46,19 +47,22 @@ const App: React.FC = () => {
   const [imageMimeType, setImageMimeType] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'SCANNER' | 'DOJO'>('SCANNER');
   const [showAbout, setShowAbout] = useState(false);
+  const [showHistory, setShowHistory] = useState(false); // History Modal State
   
-  // State for Stats
+  // State for Stats & History
   const [stats, setStats] = useState<UserStats>({ totalScans: 0, highRiskCount: 0, scamsBlocked: 0 });
+  const [scanHistory, setScanHistory] = useState<AnalysisResult[]>([]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Load Stats on Mount
+  // Load Stats & History on Mount
   useEffect(() => {
     const savedStats = localStorage.getItem('aghoy_stats');
-    if (savedStats) {
-      setStats(JSON.parse(savedStats));
-    }
+    if (savedStats) setStats(JSON.parse(savedStats));
+
+    const savedHistory = localStorage.getItem('aghoy_history');
+    if (savedHistory) setScanHistory(JSON.parse(savedHistory));
   }, []);
 
   // Auto-resize Logic
@@ -87,10 +91,10 @@ const App: React.FC = () => {
               const base64Data = base64String.split(',')[1];
               setSelectedImage(base64Data);
               setImageMimeType(blob.type);
-              setActiveTab('SCANNER'); // Switch to scanner on paste
+              setActiveTab('SCANNER'); 
             };
             reader.readAsDataURL(blob);
-            return; // Stop after first image
+            return; 
           }
         }
       }
@@ -100,19 +104,29 @@ const App: React.FC = () => {
     return () => window.removeEventListener('paste', handleGlobalPaste);
   }, []);
 
-  const updateStats = (analysis: AnalysisResult) => {
+  const updateStatsAndHistory = (analysis: AnalysisResult) => {
+    // 1. Update Stats
     const newStats = { ...stats };
     newStats.totalScans += 1;
-    
     if (analysis.verdict === 'HIGH_RISK') {
       newStats.highRiskCount += 1;
       newStats.scamsBlocked += 1;
     } else if (analysis.verdict === 'SUSPICIOUS') {
       newStats.scamsBlocked += 1;
     }
-
     setStats(newStats);
     localStorage.setItem('aghoy_stats', JSON.stringify(newStats));
+
+    // 2. Update History (Limit to last 20 items to save space)
+    const newHistory = [analysis, ...scanHistory].slice(0, 20);
+    setScanHistory(newHistory);
+    localStorage.setItem('aghoy_history', JSON.stringify(newHistory));
+  };
+
+  const clearHistory = () => {
+    setScanHistory([]);
+    localStorage.removeItem('aghoy_history');
+    setShowHistory(false);
   };
 
   const handleAnalyze = async () => {
@@ -124,11 +138,10 @@ const App: React.FC = () => {
     setResult(null);
 
     try {
-      // Simulate scan sound
       playSound('scan');
       const analysis = await analyzeContent(input, language, selectedImage || undefined, imageMimeType || undefined);
       setResult(analysis);
-      updateStats(analysis); // Update local stats
+      updateStatsAndHistory(analysis); // Save everything
 
       if (analysis.verdict === 'SAFE') {
         playSound('success');
@@ -150,7 +163,6 @@ const App: React.FC = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
-        // Extract raw base64 (remove data:image/xxx;base64, prefix)
         const base64Data = base64String.split(',')[1];
         setSelectedImage(base64Data);
         setImageMimeType(file.type);
@@ -167,6 +179,14 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen pb-20 relative flex flex-col">
        <AboutModal isOpen={showAbout} onClose={() => setShowAbout(false)} />
+       
+       {/* New History Modal */}
+       <HistoryLog 
+          isOpen={showHistory} 
+          onClose={() => setShowHistory(false)} 
+          history={scanHistory} 
+          onClear={clearHistory}
+       />
 
       {/* Top Banner */}
       <div className="bg-slate-900 border-b-4 border-slate-700 p-4 sticky top-0 z-40 shadow-xl">
@@ -184,10 +204,7 @@ const App: React.FC = () => {
            </div>
            
            <button 
-             onClick={() => {
-               playSound('click');
-               setShowAbout(true);
-             }}
+             onClick={() => { playSound('click'); setShowAbout(true); }}
              className="p-2 hover:bg-slate-800 border-2 border-transparent hover:border-slate-500 transition-colors text-slate-300 flex flex-col items-center"
            >
              <Info className="w-6 h-6" />
@@ -228,16 +245,12 @@ const App: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 mb-8 w-full flex-grow">
         <div className="p-4 md:p-6 bg-slate-800 min-h-[60vh] border-x-4 border-b-4 border-slate-700 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
             
-            {/* Language Selector */}
             <div className="mb-6 flex justify-end">
                 <div className="grid grid-cols-4 md:inline-flex bg-black border-2 border-slate-600 p-1 gap-1 md:gap-0 w-full md:w-auto">
                     {['TAGALOG', 'BISAYA', 'ILOCANO', 'ENGLISH'].map((lang) => (
                     <button
                         key={lang}
-                        onClick={() => {
-                            playSound('click');
-                            setLanguage(lang);
-                        }}
+                        onClick={() => { playSound('click'); setLanguage(lang); }}
                         className={`px-3 py-2 md:py-1 text-[10px] md:text-sm font-['Press_Start_2P'] transition-colors w-full text-center ${
                         language === lang ? 'bg-blue-600 text-white' : 'text-slate-500 hover:text-slate-300'
                         }`}
@@ -251,12 +264,23 @@ const App: React.FC = () => {
             {activeTab === 'SCANNER' ? (
             <div className="animate-fade-in">
                 
-                {/* Stats Panel - Only show if user has scanned at least once */}
+                {/* Stats & History Buttons */}
                 {stats.totalScans > 0 && !result && (
-                   <StatsPanel stats={stats} />
+                   <div className="relative">
+                       <StatsPanel stats={stats} />
+                       <div className="flex justify-end mt-2 mb-4">
+                           <button 
+                               onClick={() => { playSound('click'); setShowHistory(true); }}
+                               className="text-cyan-400 hover:text-cyan-300 text-xs font-['Press_Start_2P'] flex items-center gap-2 border-b border-cyan-500/50 pb-1 hover:border-cyan-400 transition-all"
+                           >
+                               <History className="w-4 h-4" />
+                               VIEW_LOGS [{scanHistory.length}]
+                           </button>
+                       </div>
+                   </div>
                 )}
 
-                {/* Aghoy Character (The "Soul") */}
+                {/* Aghoy Character */}
                 <div className="flex flex-col items-center justify-center my-4 md:my-8">
                     <div className={`transition-all duration-500 ${
                         result?.verdict === Verdict.HIGH_RISK ? 'animate-pulse' : 
@@ -294,10 +318,7 @@ const App: React.FC = () => {
                             {SCAM_EXAMPLES.map((ex, idx) => (
                               <button
                                 key={idx}
-                                onClick={() => {
-                                  playSound('click');
-                                  setInput(ex.text);
-                                }}
+                                onClick={() => { playSound('click'); setInput(ex.text); }}
                                 className="px-3 py-2 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 hover:border-cyan-400 text-slate-300 text-xs font-mono text-left transition-all truncate"
                               >
                                 &gt; {ex.label}
@@ -314,7 +335,6 @@ const App: React.FC = () => {
                                 placeholder="Paste text message, email, job offer details, or paste an image (Ctrl+V)..."
                                 className="w-full min-h-[160px] max-h-[60vh] bg-slate-900 text-green-400 p-4 pb-20 font-mono text-lg focus:outline-none placeholder:text-slate-600 resize-none block overflow-y-auto"
                             />
-                            {/* Clear Button */}
                             {input && (
                                 <button 
                                     onClick={() => { setInput(''); playSound('click'); }}
@@ -324,7 +344,6 @@ const App: React.FC = () => {
                                     <X className="w-5 h-5" />
                                 </button>
                             )}
-                            
                             <div className="absolute bottom-2 right-2 flex gap-2">
                                 <input 
                                     type="file" 
@@ -363,7 +382,6 @@ const App: React.FC = () => {
                             )}
                         </button>
 
-                        {/* Privacy Lock Disclaimer */}
                         <div className="mt-4 flex items-center justify-center gap-2 text-slate-500 opacity-60">
                           <Lock className="w-3 h-3" />
                           <p className="text-[10px] font-mono uppercase">
@@ -414,7 +432,6 @@ const App: React.FC = () => {
                 [?] OPERATOR
              </button>
              
-             {/* DONATION BUTTON Placeholder - Replace href later */}
              <a 
                 href="#" 
                 target="_blank"
