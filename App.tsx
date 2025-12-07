@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Loader2, Search, Info, Lock, Globe, AlertOctagon, Image as ImageIcon, X, Terminal, Shield, Bot, Menu } from 'lucide-react';
+import { Loader2, Search, Info, Lock, Globe, AlertOctagon, Image as ImageIcon, X, Terminal, Shield, Bot, Menu, Coffee, History } from 'lucide-react';
 import { analyzeContent } from './services/geminiService';
 import { AnalysisResult, Verdict } from './types';
 import ResultCard from './components/ResultCard';
 import Dojo from './components/Dojo';
 import AboutModal from './components/AboutModal';
 import PixelLogo from './components/PixelLogo';
+import StatsPanel from './components/StatsPanel'; // Import the new component
 import { playSound } from './utils/sound';
 
 // QUICK TRY EXAMPLES
@@ -28,6 +29,13 @@ const SCAM_EXAMPLES = [
   }
 ];
 
+// Stats Interface
+interface UserStats {
+  totalScans: number;
+  highRiskCount: number;
+  scamsBlocked: number;
+}
+
 const App: React.FC = () => {
   const [input, setInput] = useState('');
   const [language, setLanguage] = useState('TAGALOG');
@@ -38,9 +46,20 @@ const App: React.FC = () => {
   const [imageMimeType, setImageMimeType] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'SCANNER' | 'DOJO'>('SCANNER');
   const [showAbout, setShowAbout] = useState(false);
+  
+  // State for Stats
+  const [stats, setStats] = useState<UserStats>({ totalScans: 0, highRiskCount: 0, scamsBlocked: 0 });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Load Stats on Mount
+  useEffect(() => {
+    const savedStats = localStorage.getItem('aghoy_stats');
+    if (savedStats) {
+      setStats(JSON.parse(savedStats));
+    }
+  }, []);
 
   // Auto-resize Logic
   useEffect(() => {
@@ -81,6 +100,21 @@ const App: React.FC = () => {
     return () => window.removeEventListener('paste', handleGlobalPaste);
   }, []);
 
+  const updateStats = (analysis: AnalysisResult) => {
+    const newStats = { ...stats };
+    newStats.totalScans += 1;
+    
+    if (analysis.verdict === 'HIGH_RISK') {
+      newStats.highRiskCount += 1;
+      newStats.scamsBlocked += 1;
+    } else if (analysis.verdict === 'SUSPICIOUS') {
+      newStats.scamsBlocked += 1;
+    }
+
+    setStats(newStats);
+    localStorage.setItem('aghoy_stats', JSON.stringify(newStats));
+  };
+
   const handleAnalyze = async () => {
     if (!input && !selectedImage) return;
     
@@ -94,6 +128,8 @@ const App: React.FC = () => {
       playSound('scan');
       const analysis = await analyzeContent(input, language, selectedImage || undefined, imageMimeType || undefined);
       setResult(analysis);
+      updateStats(analysis); // Update local stats
+
       if (analysis.verdict === 'SAFE') {
         playSound('success');
       } else {
@@ -129,7 +165,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen pb-20 relative">
+    <div className="min-h-screen pb-20 relative flex flex-col">
        <AboutModal isOpen={showAbout} onClose={() => setShowAbout(false)} />
 
       {/* Top Banner */}
@@ -161,7 +197,7 @@ const App: React.FC = () => {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="max-w-7xl mx-auto mt-6 px-4">
+      <div className="max-w-7xl mx-auto mt-6 px-4 w-full">
         <div className="flex border-b-4 border-slate-700">
            <button 
              onClick={() => handleTabChange('SCANNER')}
@@ -188,8 +224,8 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Content Area - Wrapped to prevent edge clipping */}
-      <div className="max-w-7xl mx-auto px-4 mb-8">
+      {/* Main Content Area */}
+      <div className="max-w-7xl mx-auto px-4 mb-8 w-full flex-grow">
         <div className="p-4 md:p-6 bg-slate-800 min-h-[60vh] border-x-4 border-b-4 border-slate-700 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
             
             {/* Language Selector */}
@@ -215,6 +251,11 @@ const App: React.FC = () => {
             {activeTab === 'SCANNER' ? (
             <div className="animate-fade-in">
                 
+                {/* Stats Panel - Only show if user has scanned at least once */}
+                {stats.totalScans > 0 && !result && (
+                   <StatsPanel stats={stats} />
+                )}
+
                 {/* Aghoy Character (The "Soul") */}
                 <div className="flex flex-col items-center justify-center my-4 md:my-8">
                     <div className={`transition-all duration-500 ${
@@ -222,7 +263,6 @@ const App: React.FC = () => {
                         result?.verdict === Verdict.SAFE ? '' : 'animate-float'
                     }`}>
                         <div className="relative">
-                             {/* Use PixelLogo as the Soul/Avatar */}
                              <PixelLogo 
                                 width={96} 
                                 height={96} 
@@ -274,6 +314,17 @@ const App: React.FC = () => {
                                 placeholder="Paste text message, email, job offer details, or paste an image (Ctrl+V)..."
                                 className="w-full min-h-[160px] max-h-[60vh] bg-slate-900 text-green-400 p-4 pb-20 font-mono text-lg focus:outline-none placeholder:text-slate-600 resize-none block overflow-y-auto"
                             />
+                            {/* Clear Button */}
+                            {input && (
+                                <button 
+                                    onClick={() => { setInput(''); playSound('click'); }}
+                                    className="absolute top-2 right-2 text-slate-600 hover:text-red-500 transition-colors z-10"
+                                    title="Clear Text"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+                            )}
+                            
                             <div className="absolute bottom-2 right-2 flex gap-2">
                                 <input 
                                     type="file" 
@@ -351,15 +402,31 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="text-center py-6 text-slate-600 font-['VT323'] text-lg">
+      {/* Footer with Donation & About */}
+      <div className="text-center py-6 text-slate-600 font-['VT323'] text-lg mt-auto">
          <p>SECURE THE PHILIPPINES • ONE SCAN AT A TIME</p>
-         <button 
-            onClick={() => setShowAbout(true)}
-            className="mt-2 text-slate-500 hover:text-cyan-400 text-sm font-['Press_Start_2P'] flex items-center justify-center gap-2 mx-auto"
-         >
-            [?] OPERATOR_PROFILE
-         </button>
+         
+         <div className="flex justify-center gap-4 mt-4">
+             <button 
+                onClick={() => setShowAbout(true)}
+                className="text-slate-500 hover:text-cyan-400 text-sm font-['Press_Start_2P'] flex items-center gap-2"
+             >
+                [?] OPERATOR
+             </button>
+             
+             {/* DONATION BUTTON Placeholder - Replace href later */}
+             <a 
+                href="#" 
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => playSound('click')}
+                className="text-slate-500 hover:text-yellow-400 text-sm font-['Press_Start_2P'] flex items-center gap-2"
+                title="Support Server Costs"
+             >
+                <Coffee className="w-4 h-4" />
+                SUPPORT
+             </a>
+         </div>
       </div>
 
     </div>
