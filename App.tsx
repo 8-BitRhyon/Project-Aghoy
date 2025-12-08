@@ -12,6 +12,32 @@ import PrivacyConsent from './components/PrivacyConsent';
 import { playSound } from './utils/sound';
 import { sanitizeText } from './utils/privacy';
 
+const [hasConsent, setHasConsent] = useState(false);
+
+useEffect(() => {
+  const consent = localStorage.getItem('aghoy_privacy_consent');
+  setHasConsent(consent === 'granted');
+}, []);
+
+useEffect(() => {
+  const checkConsent = () => {
+    const consent = localStorage.getItem('aghoy_privacy_consent');
+    setHasConsent(consent === 'granted');
+  };
+  
+  window.addEventListener('storage', checkConsent);
+
+}, []);
+
+<PrivacyConsent onConsentChange={(val) => setHasConsent(val)} />
+
+const handleAnalyze = async () => {
+  if (!hasConsent) {
+    setError("Please accept the Privacy Protocols to use the AI Scanner.");
+    playSound('alert');
+    return;
+  }
+
 // QUICK TRY EXAMPLES
 const SCAM_EXAMPLES = [
   { 
