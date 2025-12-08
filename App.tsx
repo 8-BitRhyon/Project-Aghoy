@@ -181,7 +181,6 @@ const App: React.FC = () => {
         playSound('alert');
       }
     } catch (err: any) {
-      // Improved Error Handling for Quotas
       const errorMessage = err.message || "";
       
       if (errorMessage.includes('429') || errorMessage.toLowerCase().includes('exhausted') || errorMessage.toLowerCase().includes('quota')) {
@@ -228,12 +227,12 @@ const App: React.FC = () => {
           onClear={clearHistory}
        />
 
-      {/* PRIVACY MODAL - Now synced with state */}
+      {/* PRIVACY MODAL */}
       {!hasConsent && (
-          <PrivacyConsent
-            key={privacyResetKey}
-            onConsentChange={setHasConsent}
-          />
+          <PrivacyConsent 
+            key={privacyResetKey} 
+            onConsentChange={setHasConsent} 
+          /> 
       )}
 
       {/* Top Banner */}
@@ -289,31 +288,6 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* DOJO TAB - UPDATED with specific lock message */}
-            {activeTab === 'DOJO' && (
-              <div className="animate-fade-in">
-                  {hasConsent ? (
-                      <Dojo selectedLanguage={language} />
-                  ) : (
-                      <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-8 border-4 border-slate-700 border-dashed bg-slate-900/50">
-                          <Lock className="w-16 h-16 text-slate-600 mb-6" />
-                          <h3 className="font-['Press_Start_2P'] text-slate-400 text-sm md:text-base mb-4">DOJO_ACCESS_DENIED</h3>
-                          <p className="font-mono text-slate-500 text-sm max-w-md leading-relaxed mb-6">
-                              Security Protocols Active. The Training Dojo requires AI processing.
-                              <br/><br/>
-                              Please accept the Privacy Protocols to proceed.
-                          </p>
-                          <button 
-                              onClick={handlePrivacyReset}
-                              className="px-6 py-3 bg-cyan-900/30 hover:bg-cyan-900/50 border-2 border-cyan-700 text-cyan-400 font-['Press_Start_2P'] text-xs transition-all"
-                          >
-                              REVIEW PROTOCOLS
-                          </button>
-                      </div>
-                  )}
-              </div>
-            )}
-
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 mb-8 w-full flex-grow">
         <div className="p-4 md:p-6 bg-slate-800 min-h-[60vh] border-x-4 border-b-4 border-slate-700 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
@@ -336,6 +310,7 @@ const App: React.FC = () => {
 
             {activeTab === 'SCANNER' ? (
             <div className="animate-fade-in">
+                {/* Stats & History Buttons */}
                 {stats.totalScans > 0 && !result && (
                    <div className="relative">
                        <StatsPanel stats={stats} />
@@ -351,6 +326,7 @@ const App: React.FC = () => {
                    </div>
                 )}
 
+                {/* Aghoy Character */}
                 <div className="flex flex-col items-center justify-center my-4 md:my-8">
                     <div className={`transition-all duration-500 ${
                         result?.verdict === Verdict.HIGH_RISK ? 'animate-pulse' : 
@@ -377,6 +353,7 @@ const App: React.FC = () => {
                     </p>
                 </div>
 
+                {/* Input Section */}
                 {!result && (
                     <div className="space-y-4 max-w-3xl mx-auto">
                         <div className="mb-4">
