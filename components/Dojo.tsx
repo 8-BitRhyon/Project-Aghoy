@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { createDojoChat } from '../services/geminiService';
 import { Chat } from "@google/genai";
-import { Send, RefreshCw, Bot, Trophy, HelpCircle, AlertCircle, Skull, ShieldAlert, Smartphone } from 'lucide-react';
+import { Send, RefreshCw, Trophy, HelpCircle, AlertCircle, Skull, ShieldAlert, Smartphone, WifiOff, Zap } from 'lucide-react';
 import { playSound } from '../utils/sound';
 
 interface DojoProps {
@@ -14,14 +13,50 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
   const [messages, setMessages] = useState<{role: 'user' | 'model', text: string}[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [gameStatus, setGameStatus] = useState<'active' | 'won' | 'lost'>('active');
+  const [gameStatus, setGameStatus] = useState<'active' | 'won' | 'lost' | 'error'>('active');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [errorTitle, setErrorTitle] = useState('CONNECTION LOST');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const handleError = (error: any) => {
+    console.error("Dojo Error Debug:", error);
+    setGameStatus('error');
+    
+    const errString = error?.message || error?.toString() || JSON.stringify(error) || "";
+    
+    // Check for Quota/Rate Limit Errors
+    if (
+        errString.includes("429") || 
+        errString.toLowerCase().includes("quota") || 
+        errString.toLowerCase().includes("exhausted") ||
+        errString.toLowerCase().includes("resource_exhausted")
+    ) {
+       setErrorTitle("SYSTEM OVERLOAD");
+       setErrorMessage("Daily AI Quota Exceeded. The free tier limit has been reached. Please try again tomorrow.");
+    } 
+    // Check for Network Errors
+    else if (
+        errString.toLowerCase().includes("network") || 
+        errString.toLowerCase().includes("fetch") ||
+        errString.toLowerCase().includes("failed to fetch")
+    ) {
+       setErrorTitle("CONNECTION ERROR");
+       setErrorMessage("Unable to reach AI servers. Please check your internet connection.");
+    } 
+    // Generic Errors
+    else {
+       setErrorTitle("SYSTEM FAILURE");
+       setErrorMessage("An unexpected error occurred. The simulation could not continue.");
+    }
+    playSound('alert');
+  };
 
   const startNewGame = async () => {
     playSound('click'); 
     setIsLoading(true);
     setMessages([]);
     setGameStatus('active');
+    setErrorMessage('');
     
     try {
       const chat = createDojoChat(selectedLanguage);
@@ -30,8 +65,8 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
       const result = await chat.sendMessage({ message: "Start simulation." });
       setMessages([{ role: 'model', text: result.text || "Hello!" }]);
       playSound('scan');
-    } catch (error) {
-      console.error("Dojo Error", error);
+    } catch (error: any) {
+      handleError(error);
     } finally {
       setIsLoading(false);
     }
@@ -69,8 +104,8 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
          playSound('hover');
       }
 
-    } catch (error) {
-      console.error("Chat Error", error);
+    } catch (error: any) {
+      handleError(error);
     } finally {
       setIsLoading(false);
     }
@@ -79,6 +114,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
   const getContainerBorder = () => {
     if (gameStatus === 'won') return 'border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.5)]';
     if (gameStatus === 'lost') return 'border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.5)]';
+    if (gameStatus === 'error') return 'border-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.5)]';
     return 'border-slate-600 shadow-[10px_10px_0_0_rgba(0,0,0,0.5)]';
   };
 
@@ -111,6 +147,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
             <div className={`p-4 border-b-4 border-slate-700 flex justify-between items-center transition-colors duration-500 ${
                 gameStatus === 'won' ? 'bg-green-900' : 
                 gameStatus === 'lost' ? 'bg-red-900' : 
+                gameStatus === 'error' ? 'bg-orange-900' :
                 'bg-indigo-900'
             }`}>
                 <div className="flex items-center gap-3">
@@ -119,6 +156,8 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
                             <Trophy className="w-6 h-6 text-yellow-400" />
                         ) : gameStatus === 'lost' ? (
                             <Skull className="w-6 h-6 text-red-500" />
+                        ) : gameStatus === 'error' ? (
+                            <Zap className="w-6 h-6 text-orange-500" />
                         ) : (
                             <Smartphone className="w-6 h-6 text-white" />
                         )}
@@ -130,6 +169,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
                         <h2 className="text-lg md:text-xl font-['Press_Start_2P'] text-white">
                             {gameStatus === 'won' ? 'MISSION SUCCESS' : 
                              gameStatus === 'lost' ? 'SYSTEM BREACHED' : 
+                             gameStatus === 'error' ? 'SYSTEM FAULT' :
                              'AGHOY DOJO'}
                         </h2>
                         <p className="text-slate-200 uppercase text-xs md:text-sm font-['VT323']">
@@ -146,16 +186,13 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
                 </button>
             </div>
 
-            {/* Chat Area Container - Simulating a Phone Screen */}
+            {/* Chat Area Container */}
             <div className="h-[500px] bg-slate-950 relative overflow-hidden flex flex-col">
-                
-                {/* Fixed Scanlines Overlay (Subtle) */}
                 <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%)] z-20 bg-[length:100%_4px] opacity-10"></div>
 
-                {/* Scrollable Content Area */}
                 <div className="flex-1 overflow-y-auto p-4 space-y-4 relative z-10 font-sans custom-scrollbar">
                     
-                    {/* Timestamp / Encryption Notice */}
+                    {/* Timestamp */}
                     <div className="text-center py-2">
                         <span className="bg-slate-800/80 text-slate-400 text-xs px-3 py-1 rounded-full">
                             Encrypted Conversation • {new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
@@ -179,7 +216,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
                         </div>
                     ))}
                     
-                    {/* Typing Indicator */}
+                    {/* Loading States */}
                     {isLoading && (
                         <div className="flex justify-start animate-fade-in">
                             <div className="bg-slate-800 border border-slate-700 text-slate-300 px-4 py-3 rounded-2xl rounded-tl-sm flex gap-1 items-center h-10">
@@ -190,35 +227,43 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
                         </div>
                     )}
 
-                    {/* Win/Loss Messages */}
+                    {/* ERROR SCREEN - DYNAMIC TITLE */}
+                    {gameStatus === 'error' && (
+                        <div className="my-4 mx-auto max-w-[90%] animate-fade-in font-['VT323']">
+                             <div className="bg-orange-950/95 border-4 border-orange-500 p-6 text-center shadow-[0_0_30px_rgba(249,115,22,0.3)] backdrop-blur-sm rounded-lg">
+                                <WifiOff className="w-12 h-12 text-orange-200 mx-auto mb-2 drop-shadow-[0_2px_0_rgba(0,0,0,0.5)]" />
+                                <h3 className="text-xl md:text-2xl font-['Press_Start_2P'] text-white mb-2 text-shadow-retro uppercase">
+                                    {errorTitle}
+                                </h3>
+                                <p className="text-orange-200 text-lg mb-4">{errorMessage}</p>
+                                <button 
+                                    onClick={startNewGame} 
+                                    className="px-4 py-2 bg-white text-orange-900 font-bold text-lg border-b-4 border-orange-700 active:border-b-0 active:translate-y-1 hover:bg-orange-100 transition-all font-['Press_Start_2P']"
+                                >
+                                    RETRY CONNECTION &gt;
+                                </button>
+                             </div>
+                        </div>
+                    )}
+
+                    {/* Win/Loss Screens */}
                     {gameStatus === 'won' && (
                         <div className="my-4 mx-auto max-w-[90%] animate-fade-in font-['VT323']">
                              <div className="bg-green-900/95 border-4 border-green-500 p-6 text-center shadow-[0_0_30px_rgba(34,197,94,0.3)] backdrop-blur-sm rounded-lg">
                                 <Trophy className="w-12 h-12 text-yellow-400 mx-auto mb-2 drop-shadow-[0_2px_0_rgba(0,0,0,0.5)]" />
                                 <h3 className="text-xl md:text-2xl font-['Press_Start_2P'] text-white mb-2 text-shadow-retro">YOU WON!</h3>
                                 <p className="text-green-200 text-lg mb-4">Threat neutralized. You successfully identified the red flags.</p>
-                                <button 
-                                    onClick={startNewGame} 
-                                    className="px-4 py-2 bg-white text-green-900 font-bold text-lg border-b-4 border-green-700 active:border-b-0 active:translate-y-1 hover:bg-green-100 transition-all font-['Press_Start_2P']"
-                                >
-                                    NEXT_LEVEL &gt;
-                                </button>
+                                <button onClick={startNewGame} className="px-4 py-2 bg-white text-green-900 font-bold text-lg border-b-4 border-green-700 active:border-b-0 active:translate-y-1 hover:bg-green-100 transition-all font-['Press_Start_2P']">NEXT_LEVEL &gt;</button>
                              </div>
                         </div>
                     )}
-
                     {gameStatus === 'lost' && (
                         <div className="my-4 mx-auto max-w-[90%] animate-fade-in font-['VT323']">
                              <div className="bg-red-900/95 border-4 border-red-500 p-6 text-center shadow-[0_0_30px_rgba(239,68,68,0.3)] backdrop-blur-sm rounded-lg">
                                 <ShieldAlert className="w-12 h-12 text-red-200 mx-auto mb-2 drop-shadow-[0_2px_0_rgba(0,0,0,0.5)] animate-pulse" />
                                 <h3 className="text-xl md:text-2xl font-['Press_Start_2P'] text-white mb-2 text-shadow-retro">FAILURE</h3>
                                 <p className="text-red-200 text-lg mb-4">You provided sensitive info or agreed to the scam.</p>
-                                <button 
-                                    onClick={startNewGame} 
-                                    className="px-4 py-2 bg-white text-red-900 font-bold text-lg border-b-4 border-red-700 active:border-b-0 active:translate-y-1 hover:bg-red-100 transition-all font-['Press_Start_2P']"
-                                >
-                                    TRY_AGAIN &gt;
-                                </button>
+                                <button onClick={startNewGame} className="px-4 py-2 bg-white text-red-900 font-bold text-lg border-b-4 border-red-700 active:border-b-0 active:translate-y-1 hover:bg-red-100 transition-all font-['Press_Start_2P']">TRY_AGAIN &gt;</button>
                              </div>
                         </div>
                     )}
@@ -246,28 +291,23 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
                             disabled={isLoading}
                             className="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-full shadow-lg active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed group flex items-center justify-center w-12 h-12 shrink-0"
                         >
-                            {isLoading ? (
-                                <RefreshCw className="w-5 h-5 animate-spin" />
-                            ) : (
-                                <Send className="w-5 h-5 ml-0.5" />
-                            )}
+                            {isLoading ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5 ml-0.5" />}
                         </button>
                     </>
                 ) : (
                     <button 
                         onClick={startNewGame}
                         className={`w-full py-3 font-['Press_Start_2P'] text-white border-b-4 active:border-b-0 active:translate-y-1 transition-all text-sm md:text-base ${
-                            gameStatus === 'won' 
-                            ? 'bg-green-600 border-green-800 hover:bg-green-500' 
-                            : 'bg-red-600 border-red-800 hover:bg-red-500'
+                            gameStatus === 'won' ? 'bg-green-600 border-green-800 hover:bg-green-500' : 
+                            gameStatus === 'lost' ? 'bg-red-600 border-red-800 hover:bg-red-500' :
+                            'bg-orange-600 border-orange-800 hover:bg-orange-500' // Error state color
                         }`}
                     >
-                        {gameStatus === 'won' ? 'START NEW SCENARIO' : 'RETRY SIMULATION'}
+                        {gameStatus === 'won' ? 'START NEW SCENARIO' : gameStatus === 'error' ? 'RETRY CONNECTION' : 'RETRY SIMULATION'}
                     </button>
                 )}
             </div>
         </div>
-        
     </div>
   );
 };
