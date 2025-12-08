@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Loader2, Search, Info, Lock, AlertOctagon, Image as ImageIcon, X, Bot, Coffee, History } from 'lucide-react';
+import { Loader2, Search, Info, Lock, AlertOctagon, Image as ImageIcon, X, Bot, Coffee, History, ShieldAlert, Shield } from 'lucide-react';
 import { analyzeContent } from './services/geminiService';
 import { AnalysisResult, Verdict } from './types';
 import ResultCard from './components/ResultCard';
@@ -49,7 +49,7 @@ const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'SCANNER' | 'DOJO'>('SCANNER');
   const [showAbout, setShowAbout] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
-  const [hasConsent, setHasConsent] = useState(false);
+  const [hasConsent, setHasConsent] = useState(false); // Consent State
   
   const [stats, setStats] = useState<UserStats>({ totalScans: 0, highRiskCount: 0, scamsBlocked: 0 });
   const [scanHistory, setScanHistory] = useState<AnalysisResult[]>([]);
@@ -62,7 +62,6 @@ const App: React.FC = () => {
     const consent = localStorage.getItem('aghoy_privacy_consent');
     setHasConsent(consent === 'granted');
 
-    // Listen for storage events to update state across tabs/windows
     const checkConsent = () => {
        const updatedConsent = localStorage.getItem('aghoy_privacy_consent');
        setHasConsent(updatedConsent === 'granted');
@@ -148,12 +147,17 @@ const App: React.FC = () => {
     setShowHistory(false);
   };
 
+  const handlePrivacyReset = () => {
+    playSound('click');
+    localStorage.removeItem('aghoy_privacy_consent');
+    setHasConsent(false);
+  };
+
   const handleAnalyze = async () => {
     if (!input && !selectedImage) return;
 
-    // PRIVACY GATEKEEPER
     if (!hasConsent) {
-        setError("SYSTEM LOCKED: Please accept Privacy Protocols below to activate AI Scanner.");
+        setError("SYSTEM LOCKED: Please accept Privacy Protocols below (or in Footer) to activate AI Scanner.");
         playSound('alert');
         return;
     }
@@ -175,7 +179,12 @@ const App: React.FC = () => {
         playSound('alert');
       }
     } catch (err: any) {
-      setError(err.message);
+      // Smart Error Handling
+      if (err.message.includes('429')) {
+         setError("SYSTEM OVERLOAD: Too many requests. Please wait a moment or check API quota.");
+      } else {
+         setError(err.message || "Analysis Failed. Please try again.");
+      }
       playSound('alert');
     } finally {
       setIsLoading(false);
@@ -213,7 +222,7 @@ const App: React.FC = () => {
           onClear={clearHistory}
        />
 
-      {/* PRIVACY MODAL - Updates state when user clicks accept */}
+      {/* PRIVACY MODAL - Shows if no consent is recorded */}
       {!hasConsent && (
           <PrivacyConsent /> 
       )}
@@ -439,7 +448,25 @@ const App: React.FC = () => {
             </div>
             ) : (
             <div className="animate-fade-in">
-                <Dojo selectedLanguage={language} />
+                {hasConsent ? (
+                    <Dojo selectedLanguage={language} />
+                ) : (
+                    <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-8 border-4 border-slate-700 border-dashed bg-slate-900/50">
+                        <Lock className="w-16 h-16 text-slate-600 mb-6" />
+                        <h3 className="font-['Press_Start_2P'] text-slate-400 text-sm md:text-base mb-4">DOJO_ACCESS_DENIED</h3>
+                        <p className="font-mono text-slate-500 text-sm max-w-md leading-relaxed mb-6">
+                            Security Protocols Active. The Training Dojo requires AI data processing to generate scenarios.
+                            <br/><br/>
+                            Please accept the Privacy Protocols to proceed.
+                        </p>
+                        <button 
+                            onClick={handlePrivacyReset}
+                            className="px-6 py-3 bg-cyan-900/30 hover:bg-cyan-900/50 border-2 border-cyan-700 text-cyan-400 font-['Press_Start_2P'] text-xs transition-all"
+                        >
+                            REVIEW PROTOCOLS
+                        </button>
+                    </div>
+                )}
             </div>
             )}
 
@@ -449,7 +476,7 @@ const App: React.FC = () => {
       <div className="text-center py-6 text-slate-600 font-['VT323'] text-lg mt-auto">
          <p>SECURE THE PHILIPPINES • ONE SCAN AT A TIME</p>
          
-         <div className="flex justify-center gap-4 mt-4">
+         <div className="flex justify-center flex-wrap gap-4 mt-4 px-4">
              <button 
                 onClick={() => setShowAbout(true)}
                 className="text-slate-500 hover:text-cyan-400 text-sm font-['Press_Start_2P'] flex items-center gap-2"
@@ -457,6 +484,14 @@ const App: React.FC = () => {
                 [?] OPERATOR
              </button>
              
+             <button 
+                onClick={handlePrivacyReset}
+                className="text-slate-500 hover:text-green-400 text-sm font-['Press_Start_2P'] flex items-center gap-2"
+             >
+                <Shield className="w-4 h-4" />
+                PRIVACY
+             </button>
+
              <a 
                 href="#" 
                 target="_blank"
