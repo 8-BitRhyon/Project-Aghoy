@@ -1,9 +1,13 @@
-
 import { GoogleGenAI, Type, Schema, Chat } from "@google/genai";
 import { AnalysisResult, Verdict } from "../types";
 
-// Initialize the client with the API key from the environment
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY; 
+
+if (!API_KEY) {
+  console.error("Missing VITE_GEMINI_API_KEY. Check your .env file.");
+}
+
+const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 const responseSchema: Schema = {
   type: Type.OBJECT,
@@ -43,6 +47,33 @@ const responseSchema: Schema = {
 };
 
 export const analyzeContent = async (text: string, language: string, imageBase64?: string, imageMimeType?: string): Promise<AnalysisResult> => {
+  
+  if (text.includes("DEV_SAFE")) {
+    await new Promise(r => setTimeout(r, 1000));
+    return {
+      verdict: Verdict.SAFE,
+      riskScore: 1,
+      scamType: "None",
+      redFlags: [],
+      analysis: "Top of the morning! This looks clean. (Dev Mode)",
+      educationalTip: "Always stay vigilant, even when testing code!",
+      senderEntity: "Safe Sender"
+    };
+  }
+
+  if (text.includes("DEV_SCAM")) {
+    await new Promise(r => setTimeout(r, 1500));
+    return {
+      verdict: Verdict.HIGH_RISK,
+      riskScore: 9,
+      scamType: "Bank Phishing",
+      redFlags: ["Urgency", "Suspicious Link", "Grammar"],
+      analysis: "This is a simulated high-risk threat for UI testing.",
+      educationalTip: "Never click links from unknown numbers! (Dev Mode)",
+      senderEntity: "BDO-Fake"
+    };
+  }
+
   const systemInstruction = `
     You are Project Aghoy, a friendly and helpful Filipino cybersecurity tutor and expert.
 
@@ -61,19 +92,11 @@ export const analyzeContent = async (text: string, language: string, imageBase64
     **ANALYSIS TASKS:**
     1. Identify the scam type (Task Scam, Phishing, Investment, etc.).
     2. **educationalTip**: This is your "Tutor Mode". Explain *specifically* how this scam works and how to catch it next time in the requested language.
-       - *Example (Tagalog):* "Sa Task Scam, bibigyan ka muna ng barya para maniwala ka. Pero hihingan ka ng malaking pera para sa 'upgrade'. Tandaan: Walang legit na trabaho ang hihingi ng pera sa'yo."
-       - *Example (Bisaya):* "Ayaw gyud kumpyansa basta mangayo na gani ug kwarta para sa 'task'. Ang tinuod nga trabaho, ikaw ang bayran, dili ikaw ang mobayad."
-
-    **DETECTION INDICATORS:**
-    - "Task Scams" (pay to work, Lazada/Shopee/TikTok liking tasks).
-    - Urgency (bank account locked, GCash suspended, BDO/BPI alerts).
-    - Too-good-to-be-true investment returns (crypto, "passive income").
-    - **Screenshots:** Look for fake GCash/Maya receipts (wrong fonts, spacing) or edited bank transfer confirmations.
+    3. **Sender Entity**: Extract the name, number, or email. If none, use 'Unknown'.
 
     **OUTPUT RULES:**
     - If "HIGH_RISK", explicitly warn the user.
-    - Extract "senderEntity" if visible.
-    - strictly return JSON.
+    - STRICTLY return JSON fitting the schema.
   `;
 
   try {
@@ -94,7 +117,6 @@ export const analyzeContent = async (text: string, language: string, imageBase64
       });
     }
 
-    // Fallback if empty
     if (parts.length === 0) {
        throw new Error("Please provide text or an image to analyze.");
     }
@@ -121,8 +143,14 @@ export const analyzeContent = async (text: string, language: string, imageBase64
     const result = JSON.parse(jsonText) as AnalysisResult;
     return result;
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Analysis Error:", error);
+
+    const errString = error?.message || error?.toString() || JSON.stringify(error);
+    if (errString.includes("429") || errString.includes("quota") || errString.includes("RESOURCE_EXHAUSTED")) {
+      throw new Error("429: RESOURCE_EXHAUSTED");
+    }
+
     throw new Error("Failed to analyze the content. Please try again or check if your input is valid.");
   }
 };
@@ -133,37 +161,23 @@ export const createDojoChat = (language: string): Chat => {
 
     **USER LANGUAGE SETTING: ${language}**
     **IMPORTANT:** You MUST speak and respond in **${language}**.
-    - If ${language} is 'TAGALOG', use natural Taglish/Tagalog.
-    - If ${language} is 'BISAYA', use Cebuano/Bisaya.
-    - If ${language} is 'ILOCANO', use Ilokano.
-    - If ${language} is 'ENGLISH', use English.
 
     **ROLE:**
     You act as a typical Filipino Scammer. You can be:
     1. A "Bank Representative" asking for OTP.
-    2. A "Job Recruiter" offering easy money for liking posts.
-    3. A "Foreigner" looking for love/money (Love Scam).
-    4. A "Relative" in an emergency (Need load/money).
+    2. A "Job Recruiter" offering easy money.
+    3. A "Relative" in an emergency.
 
-    **GAMEPLAY RULES:**
-    - Start the conversation immediately with a scam attempt message in ${language}. Pick a random scenario.
-    - Keep messages SHORT (SMS/Chat style).
-    - If the user asks identifying questions, dodge them or pressure them ("Madam, kailangan na po ito ngayon", "Maubusan ka ng slot").
-    
     **WIN/LOSS CONDITIONS:**
-    1. **WIN:** If the user explicitly says "Block", "Scam", "Report", "Fake", or effectively calls out the lie/refuses to engage, you MUST break character.
-       - Response format: "GAME OVER! [Explanation in ${language} of why they were right]."
-    
-    2. **LOSS:** If the user AGREES to send money, PROVIDES an OTP/Password, CLICKS (pretends to) a link, or shares sensitive personal details.
-       - Response format: "FAILURE! [Explanation in ${language} of the mistake]."
-
-    3. **CONTINUE:** If the user is just chatting or asking questions, continue the scam persona.
+    1. **WIN:** If user says "Block", "Scam", "Report".
+    2. **LOSS:** If user sends money or OTP.
   `;
 
   return ai.chats.create({
     model: 'gemini-2.5-flash',
     config: {
       systemInstruction: systemInstruction,
+      temperature: 0.7,
     },
   });
 };
