@@ -50,6 +50,7 @@ const App: React.FC = () => {
   const [showAbout, setShowAbout] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [hasConsent, setHasConsent] = useState(false);
+  const [privacyResetKey, setPrivacyResetKey] = useState(0);
   
   const [stats, setStats] = useState<UserStats>({ totalScans: 0, highRiskCount: 0, scamsBlocked: 0 });
   const [scanHistory, setScanHistory] = useState<AnalysisResult[]>([]);
@@ -151,6 +152,7 @@ const App: React.FC = () => {
     playSound('click');
     localStorage.removeItem('aghoy_privacy_consent');
     setHasConsent(false);
+    setPrivacyResetKey(prev => prev + 1);
   };
 
   const handleAnalyze = async () => {
@@ -228,7 +230,10 @@ const App: React.FC = () => {
 
       {/* PRIVACY MODAL - Now synced with state */}
       {!hasConsent && (
-          <PrivacyConsent onConsentChange={setHasConsent} /> 
+          <PrivacyConsent
+            key={privacyResetKey}
+            onConsentChange={setHasConsent}
+          />
       )}
 
       {/* Top Banner */}
@@ -283,6 +288,31 @@ const App: React.FC = () => {
            </button>
         </div>
       </div>
+
+      {/* DOJO TAB - UPDATED with specific lock message */}
+            {activeTab === 'DOJO' && (
+              <div className="animate-fade-in">
+                  {hasConsent ? (
+                      <Dojo selectedLanguage={language} />
+                  ) : (
+                      <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-8 border-4 border-slate-700 border-dashed bg-slate-900/50">
+                          <Lock className="w-16 h-16 text-slate-600 mb-6" />
+                          <h3 className="font-['Press_Start_2P'] text-slate-400 text-sm md:text-base mb-4">DOJO_ACCESS_DENIED</h3>
+                          <p className="font-mono text-slate-500 text-sm max-w-md leading-relaxed mb-6">
+                              Security Protocols Active. The Training Dojo requires AI processing.
+                              <br/><br/>
+                              Please accept the Privacy Protocols to proceed.
+                          </p>
+                          <button 
+                              onClick={handlePrivacyReset}
+                              className="px-6 py-3 bg-cyan-900/30 hover:bg-cyan-900/50 border-2 border-cyan-700 text-cyan-400 font-['Press_Start_2P'] text-xs transition-all"
+                          >
+                              REVIEW PROTOCOLS
+                          </button>
+                      </div>
+                  )}
+              </div>
+            )}
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 mb-8 w-full flex-grow">
