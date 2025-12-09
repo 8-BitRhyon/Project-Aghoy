@@ -12,6 +12,14 @@ dist
 dist-ssr
 *.local
 
+# Environment Variables
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -22,3 +30,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# OS Files
+Thumbs.db
+.DS_Store
+
+# Optional: Build artifacts
+.vercel
+.turbo
