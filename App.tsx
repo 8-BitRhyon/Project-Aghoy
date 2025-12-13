@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Loader2, Search, Info, Lock, AlertOctagon, Image as ImageIcon, X, Bot, Coffee, History, Shield } from 'lucide-react';
+// Consolidated Lucide imports
+import { Loader2, Search, Info, Lock, AlertOctagon, Image as ImageIcon, X, Bot, Coffee, History, Shield, Volume2, VolumeX } from 'lucide-react';
 import { analyzeContent } from './services/geminiService';
 import { AnalysisResult, Verdict } from './types';
 import ResultCard from './components/ResultCard';
@@ -9,7 +10,8 @@ import PixelLogo from './components/PixelLogo';
 import StatsPanel from './components/StatsPanel';
 import HistoryLog from './components/HistoryLog';
 import PrivacyConsent from './components/PrivacyConsent';
-import { playSound } from './utils/sound';
+// Consolidated Sound imports
+import { playSound, toggleMute, getMuteStatus } from './utils/sound';
 import { sanitizeText } from './utils/privacy';
 
 // QUICK TRY EXAMPLES
@@ -51,12 +53,19 @@ const App: React.FC = () => {
   const [showHistory, setShowHistory] = useState(false);
   const [hasConsent, setHasConsent] = useState(false);
   const [privacyResetKey, setPrivacyResetKey] = useState(0);
+  const [isMuted, setIsMuted] = useState(getMuteStatus());
   
   const [stats, setStats] = useState<UserStats>({ totalScans: 0, highRiskCount: 0, scamsBlocked: 0 });
   const [scanHistory, setScanHistory] = useState<AnalysisResult[]>([]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleToggleMute = () => {
+   const newStatus = toggleMute();
+   setIsMuted(newStatus);
+   if (!newStatus) playSound('click'); // Only play sound if turning ON
+  };
 
   // Load Privacy Consent
   useEffect(() => {
@@ -250,13 +259,26 @@ const App: React.FC = () => {
                </div>
            </div>
            
-           <button 
-             onClick={() => { playSound('click'); setShowAbout(true); }}
-             className="p-2 hover:bg-slate-800 border-2 border-transparent hover:border-slate-500 transition-colors text-slate-300 flex flex-col items-center"
-           >
-             <Info className="w-6 h-6" />
-             <span className="text-[8px] font-['Press_Start_2P'] mt-1 hidden md:block">ABOUT</span>
-           </button>
+           <div className="flex gap-2">
+             <button 
+               onClick={handleToggleMute}
+               className="p-2 hover:bg-slate-800 border-2 border-transparent hover:border-slate-500 transition-colors text-slate-300 flex flex-col items-center"
+               title={isMuted ? "Unmute Sound" : "Mute Sound"}
+             >
+               {isMuted ? <VolumeX className="w-6 h-6 text-red-400" /> : <Volume2 className="w-6 h-6" />}
+               <span className="text-[8px] font-['Press_Start_2P'] mt-1 hidden md:block">
+                 {isMuted ? 'OFF' : 'SFX'}
+               </span>
+             </button>
+
+             <button 
+               onClick={() => { playSound('click'); setShowAbout(true); }}
+               className="p-2 hover:bg-slate-800 border-2 border-transparent hover:border-slate-500 transition-colors text-slate-300 flex flex-col items-center"
+             >
+               <Info className="w-6 h-6" />
+               <span className="text-[8px] font-['Press_Start_2P'] mt-1 hidden md:block">ABOUT</span>
+             </button>
+           </div>
         </div>
       </div>
 
