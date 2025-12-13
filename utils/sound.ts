@@ -1,7 +1,19 @@
-
 export type SoundType = 'click' | 'hover' | 'alert' | 'success' | 'scan' | 'typing';
 
+// Initialize from storage (default to false/unmuted if not set)
+let isMuted = localStorage.getItem('aghoy_muted') === 'true';
+
+export const toggleMute = (): boolean => {
+  isMuted = !isMuted;
+  localStorage.setItem('aghoy_muted', isMuted.toString());
+  return isMuted;
+};
+
+export const getMuteStatus = (): boolean => isMuted;
+
 export const playSound = (type: SoundType) => {
+  if (isMuted) return; // Stop here if muted
+
   const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
   if (!AudioContext) return;
   
