@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import { AnalysisResult, Verdict } from '../types';
-import { ShieldAlert, AlertTriangle, Download, Share2 } from 'lucide-react';
+import { Download, Share2 } from 'lucide-react';
 import { playSound } from '../utils/sound';
 import PixelLogo from './PixelLogo';
 
@@ -17,13 +17,13 @@ const FamilyWarningCard: React.FC<FamilyWarningCardProps> = ({ result, isOpen, o
 
   if (!isOpen) return null;
 
-  const handleDownload = async () => {
+  const handleShareOrDownload = async () => {
     if (!cardRef.current) return;
     playSound('click');
     setIsGenerating(true);
     
     try {
-      // Wait a moment for fonts/layout
+      // Wait a moment for fonts/layout to settle
       await new Promise(resolve => setTimeout(resolve, 100));
       
       const canvas = await html2canvas(cardRef.current, {
@@ -31,12 +31,34 @@ const FamilyWarningCard: React.FC<FamilyWarningCardProps> = ({ result, isOpen, o
         scale: 2, // Higher quality
       });
       
-      const image = canvas.toDataURL("image/png");
-      const link = document.createElement("a");
-      link.href = image;
-      link.download = `Aghoy-Warning-${result.scamType}.png`;
-      link.click();
-      playSound('success');
+      // Convert canvas to Blob
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+        const fileName = `Aghoy-Warning-${result.scamType.replace(/\s+/g, '-')}.png`;
+        const file = new File([blob], fileName, { type: 'image/png' });
+
+        // CHECK: Does the device support native sharing of files?
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+                await navigator.share({
+                    title: 'WARNING: SCAM DETECTED',
+                    text: `I used Project Aghoy to scan this. It's a verified ${result.scamType}. Be careful!`,
+                    files: [file]
+                });
+                playSound('success');
+            } catch (shareError) {
+                console.log('Sharing closed or failed', shareError);
+            }
+        } else {
+            // FALLBACK: If sharing isn't supported (e.g., Desktop), just download it
+            const link = document.createElement("a");
+            link.href = canvas.toDataURL("image/png");
+            link.download = fileName;
+            link.click();
+            playSound('success');
+        }
+      }, 'image/png');
+
     } catch (err) {
       console.error("Failed to generate image", err);
     } finally {
@@ -116,11 +138,17 @@ const FamilyWarningCard: React.FC<FamilyWarningCardProps> = ({ result, isOpen, o
                 CLOSE
             </button>
             <button 
-                onClick={handleDownload}
+                onClick={handleShareOrDownload}
                 disabled={isGenerating}
                 className="flex-1 py-3 bg-blue-600 text-white font-['VT323'] text-lg md:text-xl border-b-4 border-blue-900 hover:bg-blue-500 active:border-b-0 active:translate-y-1 flex items-center justify-center gap-2"
             >
-                {isGenerating ? 'SAVING...' : <><Download className="w-5 h-5"/> SAVE CARD</>}
+                {isGenerating ? (
+                    'PROCESSING...' 
+                ) : (
+                    <>
+                        <Share2 className="w-5 h-5"/> SHARE CARD
+                    </>
+                )}
             </button>
         </div>
       </div>
