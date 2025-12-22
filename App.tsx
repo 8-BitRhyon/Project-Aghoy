@@ -10,6 +10,7 @@ import PixelLogo from './components/PixelLogo';
 import StatsPanel from './components/StatsPanel';
 import HistoryLog from './components/HistoryLog';
 import PrivacyConsent from './components/PrivacyConsent';
+import PrivacyPolicyModal from './components/PrivacyPolicyModal';
 // Consolidated Sound imports
 import { playSound, toggleMute, getMuteStatus } from './utils/sound';
 import { sanitizeText } from './utils/privacy';
@@ -40,8 +41,27 @@ interface UserStats {
   scamsBlocked: number;
 }
 
+const ScanningOverlay = () => (
+  <div className="fixed inset-0 bg-black/80 z-50 flex flex-col items-center justify-center font-['Press_Start_2P'] backdrop-blur-sm">
+    <div className="w-64 h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-600 mb-4">
+      <div className="h-full bg-cyan-500 animate-[loading_2s_ease-in-out_infinite]"></div>
+    </div>
+    <div className="text-cyan-400 animate-pulse text-sm">ENCRYPTING UPLINK...</div>
+    <div className="text-slate-500 text-[10px] mt-2 font-mono">ANALYZING THREAT VECTORS</div>
+    <style>{`
+      @keyframes loading {
+        0% { width: 0%; transform: translateX(-100%); }
+        50% { width: 100%; transform: translateX(0%); }
+        100% { width: 100%; transform: translateX(100%); }
+      }
+    `}</style>
+  </div>
+);
+
 const App: React.FC = () => {
   const [input, setInput] = useState('');
+  const [honeypot, setHoneypot] = useState('');
+  
   const [language, setLanguage] = useState('TAGALOG');
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
@@ -49,8 +69,12 @@ const App: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [imageMimeType, setImageMimeType] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'SCANNER' | 'DOJO'>('SCANNER');
+  
+  // Modals
   const [showAbout, setShowAbout] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+
   const [hasConsent, setHasConsent] = useState(false);
   const [privacyResetKey, setPrivacyResetKey] = useState(0);
   const [isMuted, setIsMuted] = useState(getMuteStatus());
@@ -64,10 +88,9 @@ const App: React.FC = () => {
   const handleToggleMute = () => {
    const newStatus = toggleMute();
    setIsMuted(newStatus);
-   if (!newStatus) playSound('click'); // Only play sound if turning ON
+   if (!newStatus) playSound('click'); 
   };
 
-  // Load Privacy Consent
   useEffect(() => {
     const consent = localStorage.getItem('aghoy_privacy_consent');
     setHasConsent(consent === 'granted');
@@ -80,7 +103,6 @@ const App: React.FC = () => {
     return () => window.removeEventListener('storage', checkConsent);
   }, []);
 
-  // Load Stats & History
   useEffect(() => {
     const savedStats = localStorage.getItem('aghoy_stats');
     if (savedStats) setStats(JSON.parse(savedStats));
@@ -89,7 +111,6 @@ const App: React.FC = () => {
     if (savedHistory) setScanHistory(JSON.parse(savedHistory));
   }, []);
 
-  // Auto-resize Logic
   useEffect(() => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -98,7 +119,6 @@ const App: React.FC = () => {
     }
   }, [input]);
 
-  // Global Paste Listener
   useEffect(() => {
     const handleGlobalPaste = (e: ClipboardEvent) => {
       const items = e.clipboardData?.items;
@@ -165,6 +185,24 @@ const App: React.FC = () => {
   };
 
   const handleAnalyze = async () => {
+    if (honeypot) {
+        console.warn("🤖 BOT DETECTED. Honeypot filled.");
+        setIsLoading(true);
+        setTimeout(() => {
+            setIsLoading(false);
+            setResult({
+                verdict: Verdict.SAFE,
+                riskScore: 0,
+                scamType: "None",
+                redFlags: [],
+                analysis: "Analysis complete.",
+                educationalTip: "Have a nice day, robot.",
+                senderEntity: "System"
+            });
+        }, 2000);
+        return;
+    }
+
     if (!input && !selectedImage) return;
 
     if (!hasConsent) {
@@ -227,7 +265,10 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen pb-20 relative flex flex-col">
+       {isLoading && <ScanningOverlay />}
        <AboutModal isOpen={showAbout} onClose={() => setShowAbout(false)} />
+       
+       <PrivacyPolicyModal isOpen={showPrivacyPolicy} onClose={() => setShowPrivacyPolicy(false)} />
        
        <HistoryLog 
           isOpen={showHistory} 
@@ -236,7 +277,6 @@ const App: React.FC = () => {
           onClear={clearHistory}
        />
 
-      {/* PRIVACY MODAL */}
       {!hasConsent && (
           <PrivacyConsent 
             key={privacyResetKey} 
@@ -332,7 +372,6 @@ const App: React.FC = () => {
 
             {activeTab === 'SCANNER' ? (
             <div className="animate-fade-in">
-                {/* Stats & History Buttons */}
                 {stats.totalScans > 0 && !result && (
                    <div className="relative">
                        <StatsPanel stats={stats} />
@@ -348,7 +387,6 @@ const App: React.FC = () => {
                    </div>
                 )}
 
-                {/* Aghoy Character */}
                 <div className="flex flex-col items-center justify-center my-4 md:my-8">
                     <div className={`transition-all duration-500 ${
                         result?.verdict === Verdict.HIGH_RISK ? 'animate-pulse' : 
@@ -375,7 +413,6 @@ const App: React.FC = () => {
                     </p>
                 </div>
 
-                {/* Input Section */}
                 {!result && (
                     <div className="space-y-4 max-w-3xl mx-auto">
                         <div className="mb-4">
@@ -394,6 +431,17 @@ const App: React.FC = () => {
                         </div>
 
                         <div className="bg-black p-1 border-2 border-slate-600 relative group flex flex-col">
+                            {/* HONEYPOT */}
+                            <input 
+                                type="text" 
+                                name="fax_number"
+                                value={honeypot}
+                                onChange={(e) => setHoneypot(e.target.value)}
+                                style={{ opacity: 0, position: 'absolute', top: 0, left: 0, height: 0, width: 0, zIndex: -1 }}
+                                tabIndex={-1}
+                                autoComplete="off"
+                            />
+                            
                             <textarea
                                 ref={textareaRef}
                                 value={input}
@@ -478,7 +526,6 @@ const App: React.FC = () => {
             </div>
             ) : (
             <div className="animate-fade-in">
-                {/* DOJO TAB - Checks privacy consent */}
                 {hasConsent ? (
                     <Dojo selectedLanguage={language} />
                 ) : (
@@ -516,11 +563,19 @@ const App: React.FC = () => {
              </button>
              
              <button 
-                onClick={handlePrivacyReset}
+                onClick={() => { playSound('click'); setShowPrivacyPolicy(true); }}
                 className="text-slate-500 hover:text-green-400 text-sm font-['Press_Start_2P'] flex items-center gap-2"
              >
                 <Shield className="w-4 h-4" />
-                PRIVACY
+                PROTOCOL
+             </button>
+
+             <button 
+                onClick={handlePrivacyReset}
+                className="text-slate-600 hover:text-red-400 text-[10px] font-mono flex items-center gap-1 border border-slate-700 px-2 rounded"
+                title="Reset Consent Decision"
+             >
+                RESET_CONSENT
              </button>
 
              <a 
