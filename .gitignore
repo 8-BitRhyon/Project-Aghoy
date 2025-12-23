@@ -19,6 +19,7 @@ dist-ssr
 .env.development.local
 .env.test.local
 .env.production.local
+.dev.vars
 
 # Editor directories and files
 .vscode/*
@@ -39,3 +40,4 @@ Thumbs.db
 .vercel
 .turbo
 .env*.local
+.dev.vars

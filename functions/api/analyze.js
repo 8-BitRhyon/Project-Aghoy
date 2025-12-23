@@ -18,10 +18,17 @@ const checkRateLimit = (ip) => {
   return clientData.count <= RATE_LIMIT;
 };
 
-// === 2. CLOUDFLARE HANDLER ===
+const cleanKey = (key) => {
+  if (!key) return "";
+  // Removes "Bearer " prefix if accidentally pasted, and strips whitespace/newlines
+  return key.toString().replace(/^(Bearer\s+)/i, "").trim();
+};
+
+// === 3. CLOUDFLARE HANDLER ===
 export const onRequestPost = async (context) => {
   const { request, env } = context;
 
+  // CORS Headers
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
@@ -46,46 +53,66 @@ export const onRequestPost = async (context) => {
     const { messages, jsonMode } = await request.json();
     let resultText = "";
     let usedProvider = "";
+    let errorLog = [];
+
+    // Sanitize Keys
+    const cerebrasKey = cleanKey(env.CEREBRAS_API_KEY);
+    const groqKey = cleanKey(env.GROQ_API_KEY);
+
+    // Fail early if keys are completely missing
+    if (!cerebrasKey && !groqKey) {
+      throw new Error("API Keys are missing in Cloudflare 'Variables & Secrets'.");
+    }
 
     const commonHeaders = {
       "Content-Type": "application/json",
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      "User-Agent": "Mozilla/5.0 (compatible; ProjectAghoy/1.0)"
     };
 
-    // === 3. ATTEMPT 1: CEREBRAS ===
-    try {
-      console.log("🤖 Trying Cerebras...");
-      const response = await fetch("https://api.cerebras.ai/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          ...commonHeaders,
-          "Authorization": `Bearer ${env.CEREBRAS_API_KEY}`
-        },
-        body: JSON.stringify({
-          model: "qwen-3-235b-a22b-instruct-2507",
-          messages: messages,
-          temperature: 0.7,
-          max_tokens: 1024,
-          response_format: jsonMode ? { type: "json_object" } : undefined
-        })
-      });
-
-      if (!response.ok) throw new Error(`Cerebras Status: ${response.status}`);
-      const data = await response.json();
-      resultText = data.choices[0].message.content;
-      usedProvider = "Cerebras Qwen 3";
-
-    } catch (primaryError) {
-      console.warn(`⚠️ Cerebras Failed (${primaryError.message}). Switching to Backup...`);
-
-      // === 4. ATTEMPT 2: GROQ ===
+    // === 4. ATTEMPT 1: CEREBRAS (Qwen 3) ===
+    if (cerebrasKey) {
       try {
-        console.log("🤖 Trying Groq Backup...");
+        console.log("🤖 Trying Cerebras (Qwen 3)...");
+        const response = await fetch("https://api.cerebras.ai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            ...commonHeaders,
+            "Authorization": `Bearer ${cerebrasKey}`
+          },
+          body: JSON.stringify({
+            model: "qwen-3-235b-a22b-instruct-2507",
+            messages: messages,
+            temperature: 0.7,
+            max_tokens: 1024,
+            response_format: jsonMode ? { type: "json_object" } : undefined
+          })
+        });
+
+        if (!response.ok) {
+          const errText = await response.text(); 
+          throw new Error(`Status ${response.status}: ${errText}`);
+        }
+        
+        const data = await response.json();
+        resultText = data.choices[0].message.content;
+        usedProvider = "Cerebras Qwen 3";
+
+      } catch (primaryError) {
+        const errorMsg = `Cerebras Failed: ${primaryError.message}`;
+        console.warn(errorMsg);
+        errorLog.push(errorMsg);
+      }
+    }
+
+    // === 5. ATTEMPT 2: GROQ (Moonshot Kimi) ===
+    if (!resultText && groqKey) {
+      try {
+        console.log("🤖 Trying Groq Backup (Kimi)...");
         const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
           method: "POST",
           headers: {
             ...commonHeaders,
-            "Authorization": `Bearer ${env.GROQ_API_KEY}`
+            "Authorization": `Bearer ${groqKey}`
           },
           body: JSON.stringify({
             model: "moonshotai/kimi-k2-instruct-0905",
@@ -96,14 +123,22 @@ export const onRequestPost = async (context) => {
           })
         });
 
-        if (!response.ok) throw new Error(`Groq Status: ${response.status}`);
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(`Status ${response.status}: ${errText}`);
+        }
+        
         const data = await response.json();
         resultText = data.choices[0].message.content;
         usedProvider = "Groq Kimi";
 
       } catch (backupError) {
-        throw new Error(`All providers failed. Primary: ${primaryError.message} | Backup: ${backupError.message}`);
+        errorLog.push(`Groq Failed: ${backupError.message}`);
       }
+    }
+
+    if (!resultText) {
+      throw new Error(`All providers failed. \n${errorLog.join("\n")}`);
     }
 
     return new Response(JSON.stringify({ text: resultText, provider: usedProvider }), {
