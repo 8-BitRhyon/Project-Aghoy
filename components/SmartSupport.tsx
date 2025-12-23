@@ -1,5 +1,5 @@
 import React from 'react';
-import { Phone, Smartphone, Building2, ChevronDown, Globe, MessageSquare, Shield } from 'lucide-react';
+import { Phone, Smartphone, Building2, ChevronDown, Globe, MessageSquare } from 'lucide-react';
 
 interface SupportData {
   theme: 'green' | 'blue' | 'red' | 'yellow' | 'purple' | 'slate';
@@ -14,9 +14,8 @@ interface SupportData {
 }
 
 // DATABASE OF PH BANKS & WALLETS
-// Sources: User uploaded screenshots for BDO, BPI, GCash
 const SUPPORT_DATABASE: Record<string, SupportData> = {
-  // --- GCASH ---
+  // === WALLETS ===
   'GCASH': {
     theme: 'blue',
     name: 'GCash Help Center',
@@ -30,7 +29,6 @@ const SUPPORT_DATABASE: Record<string, SupportData> = {
       { label: 'Landline', number: '(02) 7213-9999', type: 'landline' }
     ]
   },
-  // --- MAYA ---
   'MAYA': {
     theme: 'green',
     name: 'Maya Hotline',
@@ -44,22 +42,35 @@ const SUPPORT_DATABASE: Record<string, SupportData> = {
       { label: 'PLDT Landline', number: '1-800-1084-57788', type: 'landline' }
     ]
   },
-  // --- BDO ---
+
+  // === MAJOR UNIVERSAL & COMMERCIAL BANKS ===
   'BDO': {
     theme: 'blue',
     name: 'BDO Contact Center',
-    hotlineLabel: '(02) 8631-8000', // Specialized Fraud Line
+    hotlineLabel: '(02) 8631-8000',
     hotlineNumber: '+63286318000',
     description: 'Report compromised cards and unauthorized online banking access.',
     availability: '24/7 Banking Support',
     appGuide: 'Log in > More > Contact Us > Report Phishing',
-    email: 'reportphish@bdo.com.ph',
+    email: 'callcenter@bdo.com.ph',
     tollFree: [
-       { label: 'General Hotline', number: '(02) 8888-0000', type: 'landline' },
-       { label: 'Intl. Toll-Free (IAC)', number: '+800-8-CALLBDO', type: 'landline' }
+       { label: 'Domestic Toll-Free', number: '1-800-10-631-8000', type: 'landline' }, // PLDT
+       { label: 'Intl. (IAC)', number: '+800-8-CALLBDO', type: 'landline' } //
     ]
   },
-  // --- BPI ---
+  'METROBANK': {
+    theme: 'purple',
+    name: 'Metrobank Contact Center',
+    hotlineLabel: '(02) 88-700-700',
+    hotlineNumber: '+63288700700',
+    description: 'Report Metrobank Online fraud or card compromise.',
+    availability: '24/7 Domestic',
+    appGuide: 'Open App > Contact Us',
+    email: 'customercare@metrobank.com.ph', //
+    tollFree: [
+      { label: 'Domestic Toll Free', number: '1-800-1888-5775', type: 'landline' } //
+    ]
+  },
   'BPI': {
     theme: 'red',
     name: 'BPI Contact Center',
@@ -68,25 +79,64 @@ const SUPPORT_DATABASE: Record<string, SupportData> = {
     description: 'Immediately report lost cards or cyber fraud incidents.',
     availability: '24/7 Contact Center',
     appGuide: 'Visit branch or call hotline immediately.',
+    email: 'help@bpi.com.ph', //
     tollFree: [
-      { label: 'Domestic Toll-Free', number: '1-800-188-89-100', type: 'landline' },
-      { label: 'Dedicated Preferred Line', number: '(02) 7791-0077', type: 'landline' }
+      { label: 'Domestic Toll-Free', number: '1-800-188-89-100', type: 'landline' }, // PLDT
+      { label: 'Mobile/Intl', number: '+63-2-889-10000', type: 'mobile' } //
     ]
   },
-  // --- METROBANK ---
-  'METROBANK': {
-    theme: 'purple',
-    name: 'Metrobank Fraud',
-    hotlineLabel: '(02) 88-700-700',
-    hotlineNumber: '+63288700700',
-    description: 'Report Metrobank Online fraud or card compromise.',
-    availability: '24/7 Domestic',
+  'PNB': {
+    theme: 'blue',
+    name: 'PNB Customer Care',
+    hotlineLabel: '(02) 8573-8888', // Updated from doc
+    hotlineNumber: '+63285738888',
+    description: 'For credit card fraud, lost cards, or online banking issues.',
+    availability: '24/7 Hotline',
+    appGuide: 'Call hotline or visit branch.',
+    email: 'customercare@pnb.com.ph', //
+    tollFree: [
+      { label: 'Domestic Toll Free', number: '1-800-10-818-9-818', type: 'landline' } //
+    ]
+  },
+  'SECURITY BANK': {
+    theme: 'blue',
+    name: 'Security Bank Hotline',
+    hotlineLabel: '(02) 8887-9188',
+    hotlineNumber: '+63288879188',
+    description: 'Report fraud, lost cards, or unauthorized SB Online access.',
+    availability: '24/7 Customer Service',
+    appGuide: 'Open App > Help & Support',
+    email: 'customercare@securitybank.com.ph', //
+    tollFree: [
+      { label: 'PLDT Toll Free', number: '1-800-1-888-1250', type: 'landline' } //
+    ]
+  },
+  'RCBC': {
+    theme: 'blue',
+    name: 'RCBC Customer Care',
+    hotlineLabel: '(02) 8877-7222',
+    hotlineNumber: '+63288777222',
+    description: 'Report RCBC Online or Pulz app fraud incidents immediately.',
+    availability: '24/7 Support',
     appGuide: 'Open App > Contact Us',
+    email: 'customercare@rcbc.com', //
     tollFree: [
-      { label: 'Domestic Toll Free', number: '1-800-1888-5775', type: 'landline' }
+      { label: 'Domestic Toll Free', number: '1-800-10000-7222', type: 'landline' } //
     ]
   },
-  // --- UNIONBANK ---
+  'CHINA BANK': {
+    theme: 'red',
+    name: 'China Bank Hotline',
+    hotlineLabel: '(02) 888-55-888',
+    hotlineNumber: '+63288855888',
+    description: 'Concerns regarding ATM, Online Banking, or Mobile Banking fraud.',
+    availability: '24/7 Contact Center',
+    appGuide: 'Call hotline for immediate assistance.',
+    email: 'online@chinabank.ph', //
+    tollFree: [
+      { label: 'PLDT Toll Free', number: '1-800-1888-5888', type: 'landline' } //
+    ]
+  },
   'UNIONBANK': {
     theme: 'yellow',
     name: 'UnionBank Hotline',
@@ -95,10 +145,91 @@ const SUPPORT_DATABASE: Record<string, SupportData> = {
     description: 'Customer service for fraud and account security.',
     availability: '24/7 Support',
     appGuide: 'Open App > Mailbox Icon > Create Ticket',
+    email: 'customer.service@unionbankph.com', //
     tollFree: [
-      { label: 'Domestic Toll Free', number: '1-800-1888-2277', type: 'landline' }
+      { label: 'Domestic Toll Free', number: '1-800-1888-2277', type: 'landline' } //
     ]
   },
+  'EASTWEST': {
+    theme: 'purple',
+    name: 'EastWest Service',
+    hotlineLabel: '(02) 8888-1700',
+    hotlineNumber: '+63288881700',
+    description: 'Report unauthorized transactions or lost EastWest cards.',
+    availability: '24/7 Customer Service',
+    appGuide: 'Call hotline or email service.',
+    email: 'service@eastwestbanker.com', //
+    tollFree: [
+      { label: 'Domestic Toll Free', number: '1-800-1888-8600', type: 'landline' } //
+    ]
+  },
+  'BANK OF COMMERCE': {
+    theme: 'red',
+    name: 'BankCom Hotline',
+    hotlineLabel: '(02) 8632-2265',
+    hotlineNumber: '+63286322265',
+    description: 'Customer care for fraud reporting and account security.',
+    availability: 'Bank Hours & 24/7 ATM Ctr',
+    appGuide: 'Call hotline for assistance.',
+    email: 'customerservice@bankcom.com.ph', //
+    tollFree: [
+      { label: 'PLDT Toll Free', number: '1800-10-982-6000', type: 'landline' }, //
+      { label: 'Globe Toll Free', number: '1800-8-982-6000', type: 'mobile' } //
+    ]
+  },
+  'ROBINSONS BANK': {
+    theme: 'red',
+    name: 'RBank (Merged BPI)',
+    hotlineLabel: '(02) 8637-2273',
+    hotlineNumber: '+63286372273',
+    description: 'Merged with BPI. Legacy support active.',
+    availability: 'Contact Center',
+    appGuide: 'Contact C3 support or visit BPI branch.',
+    email: 'C3@robinsonsbank.com.ph', //
+    tollFree: [
+      { label: 'Domestic Toll Free', number: '1-800-10-637-2273', type: 'landline' } //
+    ]
+  },
+  'PBCOM': {
+    theme: 'red',
+    name: 'PBCOM Customer Care',
+    hotlineLabel: '(02) 8830-7000',
+    hotlineNumber: '+63288307000',
+    description: 'Report lost cards or suspicious banking activities.',
+    availability: 'Business Hours',
+    appGuide: 'Call hotline.',
+    email: 'customercare@pbcom.com.ph', //
+    tollFree: [
+      { label: 'Domestic Toll Free', number: '1-800-10-830-7000', type: 'landline' } //
+    ]
+  },
+  'PVB': {
+    theme: 'green',
+    name: 'Veterans Bank',
+    hotlineLabel: '(02) 7902-1700', // Updated from doc
+    hotlineNumber: '+63279021700',
+    description: 'Customer care for PVB clients and veterans.',
+    availability: 'Mon-Fri 8AM-5PM', //
+    appGuide: 'Call hotline.',
+    email: 'customercare@veteransbank.com.ph', //
+    tollFree: [
+      { label: 'Domestic Toll Free', number: '1-800-10-333-8247', type: 'landline' } //
+    ]
+  },
+  'AUB': {
+    theme: 'yellow',
+    name: 'AUB Customer Care',
+    hotlineLabel: '(02) 8282-8888',
+    hotlineNumber: '+63282828888',
+    description: 'Asia United Bank support for fraud and HelloMoney.',
+    availability: 'Mon-Fri 8:30AM-5:30PM',
+    appGuide: 'Call hotline.',
+    email: 'customercare@aub.com.ph', //
+    tollFree: [
+      { label: 'Domestic Toll Free', number: '1-800-10-282-8888', type: 'landline' } //
+    ]
+  },
+
   // --- DEFAULT (PNP-ACG) ---
   'DEFAULT': {
     theme: 'slate',

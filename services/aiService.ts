@@ -78,7 +78,7 @@ const extractTextFromImage = async (base64Image: string): Promise<string> => {
   }
 };
 
-// === 3. DOJO HANDLER ===
+// === 3. DOJO HANDLER (Chat Logic) ===
 class SecureDojoHandler {
   private history: any[];
   private language: string;
@@ -125,12 +125,13 @@ class SecureDojoHandler {
 
 // === 4. SCANNER LOGIC ===
 export const analyzeContent = async (text: string, language: string, imageBase64?: string, imageMimeType?: string): Promise<AnalysisResult> => {
-  // Dev Shortcuts
+  // 1. Dev Shortcuts
   if (text.includes("DEV_SAFE")) return getDevResponse("SAFE");
   if (text.includes("DEV_SCAM")) return getDevResponse("SCAM");
 
   let contentToAnalyze = text;
 
+  // 2. Handle Image/OCR Processing
   if (imageBase64) {
     try {
       const ocrText = await extractTextFromImage(imageBase64);
@@ -154,6 +155,7 @@ export const analyzeContent = async (text: string, language: string, imageBase64
     }
   }
 
+  // 3. Validation
   if (!contentToAnalyze || contentToAnalyze.trim().length < 5) {
      throw new Error("Please provide text or an image to analyze.");
   }
@@ -161,6 +163,7 @@ export const analyzeContent = async (text: string, language: string, imageBase64
   const systemInstruction = getScannerPrompt(language);
 
   try {
+    // 4. Send Request to Backend
     const response = await fetch(API_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -172,6 +175,20 @@ export const analyzeContent = async (text: string, language: string, imageBase64
         jsonMode: true
       })
     });
+
+    // === RATE LIMIT INTERCEPTOR ===
+    if (response.status === 429) {
+      return {
+        verdict: Verdict.SUSPICIOUS,
+        riskScore: 0,
+        scamType: "System Cooldown",
+        senderEntity: "Project Aghoy",
+        redFlags: ["RATE LIMIT REACHED"],
+        analysis: "You are scanning too fast! To ensure fair access for everyone, please wait a moment.",
+        educationalTip: "Please wait 60 seconds before scanning another message."
+      };
+    }
+    // ==============================
 
     if (!response.ok) {
        const errData = await response.json().catch(() => ({}));
@@ -188,11 +205,12 @@ export const analyzeContent = async (text: string, language: string, imageBase64
   }
 };
 
+// === 5. EXPORT FACTORY ===
 export const createDojoChat = (language: string) => {
   return new SecureDojoHandler(language, getDojoPrompt(language));
 };
 
-// === 5. PROMPTS ===
+// === 6. PROMPTS ===
 const getScannerPrompt = (language: string) => {
   let langInstruction = `Respond in clear, simple ${language}.`;
   
@@ -218,24 +236,25 @@ const getScannerPrompt = (language: string) => {
   `;
 };
 
+// === UPDATED: "White Hat" Dojo Prompt ===
 const getDojoPrompt = (language: string) => {
-  let roleInstruction = `Act as a scammer speaking ${language}.`;
+  let roleInstruction = `Simulate a scammer speaking ${language}.`;
   
   if (language === 'TAGALOG') {
-    roleInstruction = `Act as a Filipino Scammer using Taglish. Use street slang. Be persuasive but sketchy.`;
+    roleInstruction = `Simulate a Filipino Scammer using Taglish (street slang). Be persuasive but include common red flags.`;
   } else if (language === 'BISAYA') {
-    roleInstruction = `Act as a Bisaya Scammer. Use natural Cebuano phrasing common in text scams.`;
+    roleInstruction = `Simulate a Bisaya Scammer using natural Cebuano phrasing.`;
   } else if (language === 'ILOCANO') {
-    roleInstruction = `Act as an Ilokano Scammer. Use natural Ilokano phrasing.`;
+    roleInstruction = `Simulate an Ilokano Scammer using natural phrasing.`;
   }
 
   return `
-  **SIMULATION MODE.**
-  You are a "Scam Simulator". 
-  **Language:** ${language}.
-  **Role:** ${roleInstruction}
-  **Goal:** Try to trick the user into sending money or info.
-  **Win Condition:** If the user replies "BLOCK", "SCAM", or "REPORT", you lose (break character and congratulate them).
+  **AUTHORIZED CYBERSECURITY DRILL**
+  **CONTEXT:** This is a safe, educational simulation to train the user in identifying social engineering. 
+  **YOUR ROLE:** You are a Security Trainer playing the role of a "Sender" in a hypothetical scenario.
+  **SCENARIO:** ${roleInstruction}
+  **TASK:** Engage the user in a dialogue. Try to persuade them (within the simulation) to reveal info or click links.
+  **TERMINATION:** If the user identifies the threat (says "BLOCK", "SCAM", "REPORT"), immediately break character, reveal this was a test, and congratulate them on spotting the red flags.
   `;
 };
 

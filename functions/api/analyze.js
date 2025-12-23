@@ -61,26 +61,29 @@ export const onRequestPost = async (context) => {
 
     const commonHeaders = {
       "Content-Type": "application/json",
-      "User-Agent": "ProjectAghoy/1.0 (Cloudflare Pages)"
+      "User-Agent": "Mozilla/5.0 (compatible; ProjectAghoy/1.0; +https://project-aghoy.pages.dev)",
+      "Accept": "application/json" // 
     };
 
     let resultText = "";
     let usedProvider = "";
     let errorLog = [];
 
-    const getGatewayUrl = (provider) => 
-      `https://gateway.ai.cloudflare.com/v1/${accountId}/${gatewayId}/${provider}/chat/completions`;
+    // Base Gateway URL builder
+    const getBaseUrl = () => `https://gateway.ai.cloudflare.com/v1/${accountId}/${gatewayId}`;
 
     // === ATTEMPT 1: CEREBRAS (GPT-OSS-120B) via AI Gateway ===
     if (cerebrasKey) {
       try {
         console.log("🤖 Trying Cerebras (GPT-OSS-120B) via AI Gateway...");
-        const response = await fetch(getGatewayUrl('cerebras'), {
+        // Cerebras Endpoint: .../cerebras/chat/completions
+        const url = `${getBaseUrl()}/cerebras/chat/completions`;
+        
+        const response = await fetch(url, {
           method: "POST",
           headers: { ...commonHeaders, "Authorization": `Bearer ${cerebrasKey}` },
           body: JSON.stringify({
-            model: "llama3.1-70b",
-            model: "gpt-oss-120b", 
+            model: "gpt-oss-120b",
             messages: messages,
             temperature: 0.7,
             max_tokens: 1024,
@@ -107,7 +110,10 @@ export const onRequestPost = async (context) => {
     if (!resultText && groqKey) {
       try {
         console.log("🤖 Trying Groq (GPT-OSS-120B) via AI Gateway...");
-        const response = await fetch(getGatewayUrl('groq'), {
+        
+        const url = `${getBaseUrl()}/groq/openai/v1/chat/completions`;
+
+        const response = await fetch(url, {
           method: "POST",
           headers: { ...commonHeaders, "Authorization": `Bearer ${groqKey}` },
           body: JSON.stringify({
