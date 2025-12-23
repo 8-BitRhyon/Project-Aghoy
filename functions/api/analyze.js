@@ -7,7 +7,6 @@ const checkRateLimit = (ip) => {
   const now = Date.now();
   const clientData = ipRequestCounts.get(ip) || { count: 0, startTime: now };
 
-  // Reset window if time passed
   if (now - clientData.startTime > WINDOW_MS) {
     clientData.count = 1;
     clientData.startTime = now;
@@ -23,7 +22,6 @@ const checkRateLimit = (ip) => {
 export const onRequestPost = async (context) => {
   const { request, env } = context;
 
-  // CORS Headers (Strictly required for fetch from client)
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
@@ -31,13 +29,10 @@ export const onRequestPost = async (context) => {
     'Access-Control-Allow-Credentials': 'true'
   };
 
-  // Handle pre-flight checks
   if (request.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // IP Check & Rate Limit
-  // Cloudflare provides the real IP in this header automatically
   const clientIp = request.headers.get('CF-Connecting-IP') || 'unknown';
   
   if (!checkRateLimit(clientIp)) {
@@ -52,13 +47,18 @@ export const onRequestPost = async (context) => {
     let resultText = "";
     let usedProvider = "";
 
-    // === 3. ATTEMPT 1: CEREBRAS (Qwen 3) ===
+    const commonHeaders = {
+      "Content-Type": "application/json",
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    };
+
+    // === 3. ATTEMPT 1: CEREBRAS ===
     try {
-      console.log("🤖 Trying Cerebras (Qwen 3)...");
+      console.log("🤖 Trying Cerebras...");
       const response = await fetch("https://api.cerebras.ai/v1/chat/completions", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          ...commonHeaders,
           "Authorization": `Bearer ${env.CEREBRAS_API_KEY}`
         },
         body: JSON.stringify({
@@ -78,13 +78,13 @@ export const onRequestPost = async (context) => {
     } catch (primaryError) {
       console.warn(`⚠️ Cerebras Failed (${primaryError.message}). Switching to Backup...`);
 
-      // === 4. ATTEMPT 2: GROQ (Moonshot Kimi) ===
+      // === 4. ATTEMPT 2: GROQ ===
       try {
-        console.log("🤖 Trying Groq Backup (Kimi)...");
+        console.log("🤖 Trying Groq Backup...");
         const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            ...commonHeaders,
             "Authorization": `Bearer ${env.GROQ_API_KEY}`
           },
           body: JSON.stringify({
