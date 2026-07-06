@@ -43,7 +43,6 @@ Thumbs.db
 .vercel
 .turbo
 .env*.local
-
 # Agent tooling and internal planning docs
 .agents/
 .commandcode/

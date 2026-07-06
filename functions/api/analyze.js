@@ -1,5 +1,5 @@
 // === 1. RATE LIMIT CONFIG ===
-const RATE_LIMIT = 20;
+const RATE_LIMIT = 5;
 const WINDOW_MS = 60 * 1000;
 const ipRequestCounts = new Map();
 
