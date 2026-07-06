@@ -48,3 +48,9 @@ Thumbs.db
 .commandcode/
 **/task.md
 **/walkthrough.md
+
+# Agent tooling and internal planning docs
+.agents/
+.commandcode/
+**/task.md
+**/walkthrough.md
