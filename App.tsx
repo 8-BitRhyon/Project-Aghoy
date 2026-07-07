@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 // Consolidated Lucide imports
 import { Loader2, Search, Info, Lock, AlertOctagon, Image as ImageIcon, X, Bot, Coffee, History, Shield, Volume2, VolumeX } from 'lucide-react';
 import { analyzeContent } from './services/aiService';
-import { AnalysisResult, Verdict } from './types';
+import { AnalysisResult, Verdict, UserStats } from './types';
 import ResultCard from './components/ResultCard';
 import Dojo from './components/Dojo';
 import AboutModal from './components/AboutModal';
@@ -35,12 +35,6 @@ const SCAM_EXAMPLES = [
   }
 ];
 
-interface UserStats {
-  totalScans: number;
-  highRiskCount: number;
-  scamsBlocked: number;
-}
-
 const ScanningOverlay = () => (
   <div className="fixed inset-0 bg-black/80 z-50 flex flex-col items-center justify-center font-['Press_Start_2P'] backdrop-blur-sm">
     <div className="w-64 h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-600 mb-4">
@@ -48,13 +42,6 @@ const ScanningOverlay = () => (
     </div>
     <div className="text-cyan-400 animate-pulse text-sm">ENCRYPTING UPLINK...</div>
     <div className="text-slate-500 text-[10px] mt-2 font-mono">ANALYZING THREAT VECTORS</div>
-    <style>{`
-      @keyframes loading {
-        0% { width: 0%; transform: translateX(-100%); }
-        50% { width: 100%; transform: translateX(0%); }
-        100% { width: 100%; transform: translateX(100%); }
-      }
-    `}</style>
   </div>
 );
 

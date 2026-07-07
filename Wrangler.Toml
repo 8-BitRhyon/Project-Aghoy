@@ -4,7 +4,8 @@ compatibility_date = "2024-09-23"
 
 [durable_objects]
 bindings = [
-  { name = "DOJO_SESSIONS", class_name = "DojoSession" }
+  { name = "DOJO_SESSIONS", class_name = "DojoSession" },
+  { name = "RATE_LIMITER", class_name = "RateLimiter" }
 ]
 
 [ai]
@@ -18,3 +19,7 @@ index_name = "scam-index"
 [[migrations]]
 tag = "v1"
 new_classes = ["DojoSession"]
+
+[[migrations]]
+tag = "v2"
+new_classes = ["RateLimiter"]

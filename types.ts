@@ -19,3 +19,9 @@ export interface ChartData {
   value: number;
   fill: string;
 }
+
+export interface UserStats {
+  totalScans: number;
+  highRiskCount: number;
+  scamsBlocked: number;
+}

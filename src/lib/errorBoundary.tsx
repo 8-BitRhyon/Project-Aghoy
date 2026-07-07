@@ -97,8 +97,8 @@ class ErrorBoundary extends Component<Props, State> {
                 </p>
               </div>
 
-              {/* Details (Collapsed by default) */}
-              {this.state.errorInfo && (
+              {/* Details (Collapsed — component stack hidden in production) */}
+              {this.state.errorInfo && process.env.NODE_ENV !== 'production' && (
                 <details className="mb-6 bg-slate-900 border border-slate-700 p-3">
                   <summary className="cursor-pointer text-slate-400 font-['Press_Start_2P'] text-xs hover:text-slate-300">
                     [+] STACK_TRACE
