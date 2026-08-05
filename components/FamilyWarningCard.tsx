@@ -4,6 +4,7 @@ import { AnalysisResult, Verdict } from '../types';
 import { Download, Share2 } from 'lucide-react';
 import { playSound } from '../utils/sound';
 import PixelLogo from './PixelLogo';
+import { useModal } from '../src/hooks/useModal';
 
 interface FamilyWarningCardProps {
   result: AnalysisResult;
@@ -14,6 +15,7 @@ interface FamilyWarningCardProps {
 const FamilyWarningCard: React.FC<FamilyWarningCardProps> = ({ result, isOpen, onClose }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const dialogRef = useModal(isOpen, onClose, 'family-warning-title');
 
   if (!isOpen) return null;
 
@@ -73,7 +75,7 @@ const FamilyWarningCard: React.FC<FamilyWarningCardProps> = ({ result, isOpen, o
   const borderColor = isHighRisk ? 'border-red-500' : 'border-yellow-500';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
+    <div ref={dialogRef} tabIndex={-1} className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
       <div className="flex flex-col items-center gap-3 max-w-md w-full animate-in fade-in zoom-in duration-300 my-auto">
         
         {/* The Card to be Captured */}
@@ -90,8 +92,8 @@ const FamilyWarningCard: React.FC<FamilyWarningCardProps> = ({ result, isOpen, o
                     <PixelLogo width={48} height={48} />
                 </div>
                 <div>
-                    <h1 className="text-white text-xs md:text-lg leading-tight">PROJECT AGHOY</h1>
-                    <p className="text-[8px] md:text-[10px] text-slate-400 mt-1">AI SCAM DETECTOR</p>
+                    <h1 id="family-warning-title" className="text-white text-xs md:text-lg leading-tight">PROJECT AGHOY</h1>
+                    <p className="text-[10px] md:text-xs text-slate-400 mt-1">AI SCAM DETECTOR</p>
                 </div>
             </div>
 
@@ -120,10 +122,10 @@ const FamilyWarningCard: React.FC<FamilyWarningCardProps> = ({ result, isOpen, o
             </div>
 
             <div className="mt-6 md:mt-8 pt-3 md:pt-4 border-t-4 border-slate-700 flex justify-between items-end">
-                 <div className="text-[8px] md:text-[10px] text-slate-500 max-w-[60%]">
+                 <div className="text-[10px] md:text-xs text-slate-400 max-w-[60%]">
                     VERIFIED BY PROJECT AGHOY AI
                  </div>
-                 <div className="text-[8px] md:text-[10px] text-white bg-slate-800 px-2 py-1">
+                 <div className="text-[10px] md:text-xs text-white bg-slate-800 px-2 py-1">
                     #ProjectAghoy
                  </div>
             </div>

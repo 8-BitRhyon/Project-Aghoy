@@ -18,7 +18,7 @@ const StatsPanel: React.FC<StatsPanelProps> = ({ stats }) => {
         <div className="absolute inset-0 bg-blue-900/10 group-hover:bg-blue-900/20 transition-colors"></div>
         <Search className="w-5 h-5 text-blue-400 mb-1" />
         <span className="text-2xl md:text-3xl font-['Press_Start_2P'] text-white">{stats.totalScans}</span>
-        <span className="text-[10px] text-slate-400 font-mono uppercase mt-1">Total Scans</span>
+        <span className="text-xs text-slate-400 font-mono uppercase mt-1">Total Scans</span>
       </div>
 
       {/* Threats Found */}
@@ -26,7 +26,7 @@ const StatsPanel: React.FC<StatsPanelProps> = ({ stats }) => {
         <div className="absolute inset-0 bg-red-900/10 group-hover:bg-red-900/20 transition-colors"></div>
         <AlertTriangle className="w-5 h-5 text-red-500 mb-1" />
         <span className="text-2xl md:text-3xl font-['Press_Start_2P'] text-red-500">{stats.highRiskCount}</span>
-        <span className="text-[10px] text-slate-400 font-mono uppercase mt-1">Threats Detected</span>
+        <span className="text-xs text-slate-400 font-mono uppercase mt-1">Threats Detected</span>
       </div>
 
       {/* Money Saved (Estimated) */}
@@ -34,7 +34,7 @@ const StatsPanel: React.FC<StatsPanelProps> = ({ stats }) => {
         <div className="absolute inset-0 bg-green-900/10 group-hover:bg-green-900/20 transition-colors"></div>
         <Shield className="w-5 h-5 text-green-400 mb-1" />
         <span className="text-2xl md:text-3xl font-['Press_Start_2P'] text-green-400">{stats.scamsBlocked}</span>
-        <span className="text-[10px] text-slate-400 font-mono uppercase mt-1">Scams Blocked</span>
+        <span className="text-xs text-slate-400 font-mono uppercase mt-1">Scams Blocked</span>
       </div>
     </div>
   );

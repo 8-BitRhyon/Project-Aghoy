@@ -1,19 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, lazy, Suspense } from 'react';
 // Consolidated Lucide imports
 import { Loader2, Search, Info, Lock, AlertOctagon, Image as ImageIcon, X, Bot, Coffee, History, Shield, Volume2, VolumeX } from 'lucide-react';
 import { analyzeContent } from './services/aiService';
 import { AnalysisResult, Verdict, UserStats } from './types';
 import ResultCard from './components/ResultCard';
-import Dojo from './components/Dojo';
-import AboutModal from './components/AboutModal';
 import PixelLogo from './components/PixelLogo';
 import StatsPanel from './components/StatsPanel';
-import HistoryLog from './components/HistoryLog';
 import PrivacyConsent from './components/PrivacyConsent';
-import PrivacyPolicyModal from './components/PrivacyPolicyModal';
 // Consolidated Sound imports
 import { playSound, toggleMute, getMuteStatus } from './utils/sound';
 import { sanitizeText } from './utils/privacy';
+
+const Dojo = lazy(() => import('./components/Dojo'));
+const AboutModal = lazy(() => import('./components/AboutModal'));
+const HistoryLog = lazy(() => import('./components/HistoryLog'));
+const PrivacyPolicyModal = lazy(() => import('./components/PrivacyPolicyModal'));
 
 // QUICK TRY EXAMPLES
 const SCAM_EXAMPLES = [
@@ -35,6 +36,36 @@ const SCAM_EXAMPLES = [
   }
 ];
 
+const MAX_IMAGE_SIZE_BYTES = 8 * 1024 * 1024;
+
+const DEFAULT_STATS: UserStats = { totalScans: 0, highRiskCount: 0, scamsBlocked: 0 };
+
+const isAllowedRasterImage = (type: string): boolean =>
+  type.startsWith('image/') && type !== 'image/svg+xml';
+
+const isValidStats = (value: unknown): value is UserStats => {
+  if (!value || typeof value !== 'object') return false;
+  const s = value as Record<string, unknown>;
+  return (
+    typeof s.totalScans === 'number' &&
+    typeof s.highRiskCount === 'number' &&
+    typeof s.scamsBlocked === 'number'
+  );
+};
+
+const isValidHistoryEntry = (value: unknown): value is AnalysisResult => {
+  if (!value || typeof value !== 'object') return false;
+  const entry = value as Record<string, unknown>;
+  return (
+    (entry.verdict === 'SAFE' || entry.verdict === 'SUSPICIOUS' || entry.verdict === 'HIGH_RISK') &&
+    typeof entry.riskScore === 'number' &&
+    Array.isArray(entry.redFlags) &&
+    typeof entry.analysis === 'string' &&
+    typeof entry.scamType === 'string' &&
+    typeof entry.educationalTip === 'string'
+  );
+};
+
 const ScanningOverlay = () => (
   <div className="fixed inset-0 bg-black/80 z-50 flex flex-col items-center justify-center font-['Press_Start_2P'] backdrop-blur-sm">
     <div className="w-64 h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-600 mb-4">
@@ -52,6 +83,7 @@ const App: React.FC = () => {
   const [language, setLanguage] = useState('TAGALOG');
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [analysisId, setAnalysisId] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [imageMimeType, setImageMimeType] = useState<string | null>(null);
@@ -71,6 +103,7 @@ const App: React.FC = () => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const isAnalyzingRef = useRef(false);
 
   const handleToggleMute = () => {
    const newStatus = toggleMute();
@@ -91,11 +124,67 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const savedStats = localStorage.getItem('aghoy_stats');
-    if (savedStats) setStats(JSON.parse(savedStats));
+    try {
+      const savedStats = localStorage.getItem('aghoy_stats');
+      if (savedStats) {
+        const parsed = JSON.parse(savedStats);
+        if (isValidStats(parsed)) {
+          setStats(parsed);
+        } else {
+          setStats(DEFAULT_STATS);
+          localStorage.removeItem('aghoy_stats');
+        }
+      }
+    } catch {
+      setStats(DEFAULT_STATS);
+      localStorage.removeItem('aghoy_stats');
+    }
 
-    const savedHistory = localStorage.getItem('aghoy_history');
-    if (savedHistory) setScanHistory(JSON.parse(savedHistory));
+    try {
+      const savedHistory = localStorage.getItem('aghoy_history');
+      if (savedHistory) {
+        const parsed = JSON.parse(savedHistory);
+        if (Array.isArray(parsed)) {
+          const valid = parsed.filter(isValidHistoryEntry);
+          setScanHistory(valid);
+          if (valid.length !== parsed.length) {
+            localStorage.setItem('aghoy_history', JSON.stringify(valid));
+          }
+        } else {
+          setScanHistory([]);
+        }
+      }
+    } catch {
+      setScanHistory([]);
+      localStorage.removeItem('aghoy_history');
+    }
+  }, []);
+
+  useEffect(() => {
+    const syncFromStorage = (e: StorageEvent) => {
+      if (e.key === 'aghoy_stats') {
+        if (e.newValue) {
+          try {
+            const parsed = JSON.parse(e.newValue);
+            if (isValidStats(parsed)) setStats(parsed);
+          } catch {}
+        } else {
+          setStats(DEFAULT_STATS);
+        }
+      }
+      if (e.key === 'aghoy_history') {
+        if (e.newValue) {
+          try {
+            const parsed = JSON.parse(e.newValue);
+            if (Array.isArray(parsed)) setScanHistory(parsed.filter(isValidHistoryEntry));
+          } catch {}
+        } else {
+          setScanHistory([]);
+        }
+      }
+    };
+    window.addEventListener('storage', syncFromStorage);
+    return () => window.removeEventListener('storage', syncFromStorage);
   }, []);
 
   useEffect(() => {
@@ -115,17 +204,40 @@ const App: React.FC = () => {
         if (items[i].type.indexOf('image') !== -1) {
           const blob = items[i].getAsFile();
           if (blob) {
+            if (!isAllowedRasterImage(blob.type)) {
+              setError("IMAGE REJECTED: Only raster image files (PNG/JPG) are supported.");
+              playSound('alert');
+              return;
+            }
+            if (blob.size > MAX_IMAGE_SIZE_BYTES) {
+              setError("IMAGE REJECTED: File exceeds 8MB limit.");
+              playSound('alert');
+              return;
+            }
             playSound('click');
             const reader = new FileReader();
             reader.onloadend = () => {
-              const base64String = reader.result as string;
-              const base64Data = base64String.split(',')[1];
-              setSelectedImage(base64Data);
+              const result = typeof reader.result === 'string' ? reader.result : '';
+              const commaIndex = result.indexOf(',');
+              if (!result || commaIndex === -1) {
+                setError("IMAGE READ FAILED: The pasted image could not be decoded. Try uploading the file instead.");
+                playSound('alert');
+                return;
+              }
+              setError(null);
+              setSelectedImage(result.slice(commaIndex + 1));
               setImageMimeType(blob.type);
-              setActiveTab('SCANNER'); 
+              setActiveTab('SCANNER');
+            };
+            reader.onerror = () => {
+              setError("IMAGE READ FAILED: The browser could not read the pasted image. Try uploading the file.");
+              playSound('alert');
+            };
+            reader.onabort = () => {
+              setError("IMAGE READ CANCELLED: The image read was interrupted. Try again.");
             };
             reader.readAsDataURL(blob);
-            return; 
+            return;
           }
         }
       }
@@ -136,16 +248,20 @@ const App: React.FC = () => {
   }, []);
 
   const updateStatsAndHistory = (analysis: AnalysisResult) => {
-    const newStats = { ...stats };
-    newStats.totalScans += 1;
-    if (analysis.verdict === 'HIGH_RISK') {
-      newStats.highRiskCount += 1;
-      newStats.scamsBlocked += 1;
-    } else if (analysis.verdict === 'SUSPICIOUS') {
-      newStats.scamsBlocked += 1;
-    }
-    setStats(newStats);
-    localStorage.setItem('aghoy_stats', JSON.stringify(newStats));
+    // Compute the next values from the committed state, then set state AND
+    // persist together. Side effects are kept out of updater callbacks because
+    // React may replay them (Strict Mode), which would double-write storage.
+    setStats(prev => {
+      const nextStats = { ...prev };
+      nextStats.totalScans += 1;
+      if (analysis.verdict === 'HIGH_RISK') {
+        nextStats.highRiskCount += 1;
+        nextStats.scamsBlocked += 1;
+      } else if (analysis.verdict === 'SUSPICIOUS') {
+        nextStats.scamsBlocked += 1;
+      }
+      return nextStats;
+    });
 
     const safeAnalysis = {
       ...analysis,
@@ -153,10 +269,25 @@ const App: React.FC = () => {
       senderEntity: analysis.senderEntity ? sanitizeText(analysis.senderEntity) : undefined
     };
 
-    const newHistory = [safeAnalysis, ...scanHistory].slice(0, 20);
-    setScanHistory(newHistory);
-    localStorage.setItem('aghoy_history', JSON.stringify(newHistory));
+    setScanHistory(prev => {
+      const nextHistory = [safeAnalysis, ...prev].slice(0, 20);
+      return nextHistory;
+    });
   };
+
+  // Persist committed state to localStorage from effects so writes happen once
+  // per committed render, not inside updaters.
+  useEffect(() => {
+    if (stats.totalScans > 0 || stats.highRiskCount > 0 || stats.scamsBlocked > 0) {
+      localStorage.setItem('aghoy_stats', JSON.stringify(stats));
+    }
+  }, [stats]);
+
+  useEffect(() => {
+    if (scanHistory.length > 0) {
+      localStorage.setItem('aghoy_history', JSON.stringify(scanHistory));
+    }
+  }, [scanHistory]);
 
   const clearHistory = () => {
     setScanHistory([]);
@@ -172,77 +303,110 @@ const App: React.FC = () => {
   };
 
   const handleAnalyze = async () => {
-    if (honeypot) {
-        console.warn("🤖 BOT DETECTED. Honeypot filled.");
-        setIsLoading(true);
-        setTimeout(() => {
-            setIsLoading(false);
-            setResult({
-                verdict: Verdict.SAFE,
-                riskScore: 0,
-                scamType: "None",
-                redFlags: [],
-                analysis: "Analysis complete.",
-                educationalTip: "Have a nice day, robot.",
-                senderEntity: "System"
-            });
-        }, 2000);
-        return;
-    }
-
-    if (!input && !selectedImage) return;
-
-    if (!hasConsent) {
-        setError("SYSTEM LOCKED: Please accept Privacy Protocols below (or in Footer) to activate AI Scanner.");
-        playSound('alert');
-        return;
-    }
-    
-    playSound('click');
-    setIsLoading(true);
-    setError(null);
-    setResult(null);
+    if (isAnalyzingRef.current) return;
+    isAnalyzingRef.current = true;
 
     try {
-      playSound('scan');
-      const analysis = await analyzeContent(input, language, selectedImage || undefined, imageMimeType || undefined);
-      setResult(analysis);
-      updateStatsAndHistory(analysis);
+      if (!hasConsent) {
+          setError("SYSTEM LOCKED: Please accept Privacy Protocols below (or in Footer) to activate AI Scanner.");
+          playSound('alert');
+          return;
+      }
 
-      if (analysis.verdict === 'SAFE') {
-        playSound('success');
-      } else {
+      if (honeypot) {
+          console.warn("🤖 BOT DETECTED. Honeypot filled.");
+          setIsLoading(true);
+          setTimeout(() => {
+              setIsLoading(false);
+              setAnalysisId(prev => prev + 1);
+              setResult({
+                  verdict: Verdict.SAFE,
+                  riskScore: 0,
+                  scamType: "None",
+                  redFlags: [],
+                  analysis: "Analysis complete.",
+                  educationalTip: "Have a nice day, robot.",
+                  senderEntity: "System"
+              });
+          }, 2000);
+          return;
+      }
+
+      if (!input && !selectedImage) return;
+
+      playSound('click');
+      setIsLoading(true);
+      setError(null);
+      setResult(null);
+
+      try {
+        playSound('scan');
+        const analysis = await analyzeContent(input, language, selectedImage || undefined, imageMimeType || undefined);
+        setAnalysisId(prev => prev + 1);
+        setResult(analysis);
+        updateStatsAndHistory(analysis);
+
+        if (analysis.verdict === 'SAFE') {
+          playSound('success');
+        } else {
+          playSound('alert');
+        }
+      } catch (err: any) {
+        const errorMessage = err.message || "";
+        
+        if (errorMessage.includes('429') || errorMessage.toLowerCase().includes('exhausted') || errorMessage.toLowerCase().includes('quota')) {
+           setError("⚠️ SYSTEM OVERLOAD: Daily AI Quota Exceeded. Please try again tomorrow.");
+        } else if (errorMessage.toLowerCase().includes('network') || errorMessage.toLowerCase().includes('fetch')) {
+           setError("📶 CONNECTION ERROR: Please check your internet connection.");
+        } else {
+           setError(`❌ ANALYSIS FAILED: ${errorMessage}`);
+        }
         playSound('alert');
+      } finally {
+        setIsLoading(false);
       }
-    } catch (err: any) {
-      const errorMessage = err.message || "";
-      
-      if (errorMessage.includes('429') || errorMessage.toLowerCase().includes('exhausted') || errorMessage.toLowerCase().includes('quota')) {
-         setError("⚠️ SYSTEM OVERLOAD: Daily AI Quota Exceeded. Please try again tomorrow.");
-      } else if (errorMessage.toLowerCase().includes('network') || errorMessage.toLowerCase().includes('fetch')) {
-         setError("📶 CONNECTION ERROR: Please check your internet connection.");
-      } else {
-         setError(`❌ ANALYSIS FAILED: ${errorMessage}`);
-      }
-      playSound('alert');
     } finally {
-      setIsLoading(false);
+      isAnalyzingRef.current = false;
     }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      playSound('click');
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        const base64Data = base64String.split(',')[1];
-        setSelectedImage(base64Data);
-        setImageMimeType(file.type);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    if (!isAllowedRasterImage(file.type)) {
+      setError("IMAGE REJECTED: Only raster image files (PNG/JPG) are supported.");
+      playSound('alert');
+      return;
     }
+    if (file.size > MAX_IMAGE_SIZE_BYTES) {
+      setError("IMAGE REJECTED: File exceeds 8MB limit.");
+      playSound('alert');
+      return;
+    }
+
+    playSound('click');
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = typeof reader.result === 'string' ? reader.result : '';
+      const commaIndex = result.indexOf(',');
+      if (!result || commaIndex === -1) {
+        setError("IMAGE READ FAILED: The image could not be decoded. Try another screenshot.");
+        playSound('alert');
+        return;
+      }
+      setError(null);
+      setSelectedImage(result.slice(commaIndex + 1));
+      setImageMimeType(file.type);
+    };
+    reader.onerror = () => {
+      setError("IMAGE READ FAILED: The browser could not read this file. Try another screenshot.");
+      playSound('alert');
+    };
+    reader.onabort = () => {
+      setError("IMAGE READ CANCELLED: The image read was interrupted. Try again.");
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleTabChange = (tab: 'SCANNER' | 'DOJO') => {
@@ -253,16 +417,22 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen pb-20 relative flex flex-col">
        {isLoading && <ScanningOverlay />}
-       <AboutModal isOpen={showAbout} onClose={() => setShowAbout(false)} />
+       <Suspense fallback={null}>
+          <AboutModal isOpen={showAbout} onClose={() => setShowAbout(false)} />
+       </Suspense>
        
-       <PrivacyPolicyModal isOpen={showPrivacyPolicy} onClose={() => setShowPrivacyPolicy(false)} />
+       <Suspense fallback={null}>
+          <PrivacyPolicyModal isOpen={showPrivacyPolicy} onClose={() => setShowPrivacyPolicy(false)} />
+       </Suspense>
        
-       <HistoryLog 
-          isOpen={showHistory} 
-          onClose={() => setShowHistory(false)} 
-          history={scanHistory} 
-          onClear={clearHistory}
-       />
+       <Suspense fallback={null}>
+          <HistoryLog 
+             isOpen={showHistory} 
+             onClose={() => setShowHistory(false)} 
+             history={scanHistory} 
+             onClear={clearHistory}
+          />
+       </Suspense>
 
       {!hasConsent && (
           <PrivacyConsent 
@@ -501,6 +671,8 @@ const App: React.FC = () => {
 
                 {result && (
                     <ResultCard 
+                        key={analysisId}
+                        analysisId={analysisId}
                         result={result} 
                         onReset={() => {
                             playSound('click');
@@ -514,7 +686,16 @@ const App: React.FC = () => {
             ) : (
             <div className="animate-fade-in">
                 {hasConsent ? (
-                    <Dojo selectedLanguage={language} />
+                    <Suspense fallback={
+                      <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-8 border-4 border-slate-700 border-dashed bg-slate-900/50">
+                        <div className="w-64 h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-600 mb-4">
+                          <div className="h-full bg-yellow-500 animate-[loading_2s_ease-in-out_infinite]"></div>
+                        </div>
+                        <p className="font-['Press_Start_2P'] text-yellow-400 text-xs animate-pulse">LOADING_DOJO...</p>
+                      </div>
+                    }>
+                      <Dojo selectedLanguage={language} />
+                    </Suspense>
                 ) : (
                     <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-8 border-4 border-slate-700 border-dashed bg-slate-900/50">
                         <Lock className="w-16 h-16 text-slate-600 mb-6" />

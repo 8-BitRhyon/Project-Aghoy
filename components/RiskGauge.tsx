@@ -21,7 +21,7 @@ const RiskGauge: React.FC<RiskGaugeProps> = ({ score }) => {
   } else if (score > 7) {
     barColor = 'bg-red-600 animate-pulse'; // Pulse when danger
     label = 'CRITICAL';
-    labelColor = 'text-red-500 blink';
+    labelColor = 'text-red-500 animate-pulse'; // Slow pulse, not a blink (WCAG 2.2.2)
   }
 
   return (
@@ -52,7 +52,7 @@ const RiskGauge: React.FC<RiskGaugeProps> = ({ score }) => {
       
       {/* Score Display */}
       <div className="flex justify-end mt-1">
-         <span className="text-[10px] text-slate-500">RISK_SCORE: {score}/10</span>
+         <span className="text-[10px] text-slate-300">RISK_SCORE: {score}/10</span>
       </div>
     </div>
   );

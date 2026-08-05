@@ -1,6 +1,7 @@
 import React from 'react';
 import { playSound } from '../utils/sound';
 import { Github, Linkedin, Briefcase, Terminal, Shield, Cpu, Box, Code } from 'lucide-react';
+import { useModal } from '../src/hooks/useModal';
 
 interface AboutModalProps {
   isOpen: boolean;
@@ -8,10 +9,12 @@ interface AboutModalProps {
 }
 
 const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
+  const dialogRef = useModal(isOpen, onClose, 'about-modal-title');
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm animate-fade-in">
+    <div ref={dialogRef} tabIndex={-1} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm animate-fade-in">
       <div className="relative w-full max-w-3xl border-4 border-white bg-slate-900 shadow-[8px_8px_0px_0px_rgba(59,130,246,0.5)] flex flex-col max-h-[90vh]">
         
         {/* Close Button */}
@@ -20,7 +23,8 @@ const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
               playSound('click');
               onClose();
           }}
-          className="absolute top-4 right-4 z-10 text-red-500 hover:text-red-400 font-['Press_Start_2P'] text-xl transition-transform hover:scale-110 bg-slate-900"
+          aria-label="Close"
+          className="absolute top-4 right-4 z-10 w-11 h-11 flex items-center justify-center text-red-500 hover:text-red-400 font-['Press_Start_2P'] text-xl transition-transform hover:scale-110 bg-slate-900"
         >
           [X]
         </button>
@@ -32,7 +36,7 @@ const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
             <div className="w-24 h-24 mb-4 bg-slate-800 border-2 border-blue-400 flex items-center justify-center shadow-[4px_4px_0px_0px_#3b82f6]">
                 <span className="text-4xl filter drop-shadow-[0_0_5px_rgba(59,130,246,0.8)]">👨‍💻</span>
             </div>
-            <h2 className="font-['Press_Start_2P'] text-xl md:text-2xl text-yellow-400 mb-2 text-center leading-relaxed">
+            <h2 id="about-modal-title" className="font-['Press_Start_2P'] text-xl md:text-2xl text-yellow-400 mb-2 text-center leading-relaxed">
                 OPERATOR PROFILE
             </h2>
             <p className="font-['VT323'] text-3xl text-cyan-400 uppercase tracking-widest font-bold text-center">

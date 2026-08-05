@@ -1,26 +1,55 @@
 // utils/privacy.ts
 
+import { redactPII, REJECT_PLACEHOLDERS } from '../src/rejects/rejects';
+
+// The Rejects layer (src/rejects/rejects.ts) is the authoritative PII boundary
+// and already covers cards (Luhn-validated), anchored PH mobiles, emails,
+// API keys, PH IDs, OTPs, and 10-12 digit account runs. This module reuses
+// those rules for defense-in-depth (localStorage history and displayed text)
+// and maps the [REDACTED:*] markers to the user-facing tokens rendered in app.
+const REJECT_TO_CLIENT_TOKEN: Record<string, string> = {
+  [REJECT_PLACEHOLDERS.CARD]: '[CARD_NUMBER]',
+  [REJECT_PLACEHOLDERS.MOBILE]: '[MOBILE_NUMBER]',
+  [REJECT_PLACEHOLDERS.EMAIL]: '[EMAIL_REDACTED]',
+  [REJECT_PLACEHOLDERS.ACCOUNT]: '[ACCOUNT_NUMBER]',
+  [REJECT_PLACEHOLDERS.API_KEY]: '[API_KEY_REDACTED]',
+  [REJECT_PLACEHOLDERS.PH_ID]: '[PH_ID_REDACTED]',
+  [REJECT_PLACEHOLDERS.OTP]: '[OTP_REDACTED]',
+  [REJECT_PLACEHOLDERS.CVV]: '[CVV_REDACTED]',
+  [REJECT_PLACEHOLDERS.NAME]: '[NAME_REDACTED]',
+  [REJECT_PLACEHOLDERS.DOB]: '[DOB_REDACTED]',
+};
+
+const mapRejectTokens = (text: string): string => {
+  let out = text;
+  for (const [rejectToken, clientToken] of Object.entries(REJECT_TO_CLIENT_TOKEN)) {
+    out = out.split(rejectToken).join(clientToken);
+  }
+  return out;
+};
+
+// Standalone 10-16 digit runs. The Rejects layer covers 10-12 digit accounts;
+// this extends the range so 13-16 digit GCash reference numbers are redacted
+// too. Anchored so a longer digit run never partially leaks.
+const EXTENDED_ACCOUNT_RE = /(?<!\d)\d{10,16}(?!\d)/g;
+
+// Greeting-name patterns common in PH SMS. Consumes the full name (1-3
+// capitalized words) so no surname fragment leaks after the token.
+const greetingRegex = /\b(Hi|Hello|Dear|Good day|Mr\.|Ms\.|Mrs\.)\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+){0,2})/g;
+
 export const sanitizeText = (text: string): string => {
   if (!text) return "";
 
   let cleanText = text;
 
-  // 1. Redact Philippine Mobile Numbers (09xx-xxx-xxxx or +639...)
-  const mobileRegex = /(\+63|0)9\d{9}/g;
-  cleanText = cleanText.replace(mobileRegex, '[MOBILE_NUMBER]');
+  // 1. Rejects-layer redaction (cards, PH mobiles, emails, API keys, PH IDs,
+  //    accounts, OTPs). redactPII is synchronous.
+  cleanText = mapRejectTokens(redactPII(cleanText).text);
 
-  // 2. Redact Email Addresses
-  const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
-  cleanText = cleanText.replace(emailRegex, '[EMAIL_REDACTED]');
+  // 2. Extended 10-16 digit standalone runs (GCash refs beyond 10-12).
+  cleanText = cleanText.replace(EXTENDED_ACCOUNT_RE, '[ACCOUNT_NUMBER]');
 
-  // 3. Redact Potential Bank Account Numbers (10-12 digits)
-  // We use a stricter lookahead to avoid replacing timestamps or simple amounts
-  const accountRegex = /\b\d{10,12}\b/g;
-  cleanText = cleanText.replace(accountRegex, '[ACCOUNT_NUMBER]');
-
-  // 4. Redact Names (Greeting patterns common in PH SMS)
-  // Matches: "Hi [Name],", "Hello [Name]!", "Dear [Name]"
-  const greetingRegex = /\b(Hi|Hello|Dear|Good day|Mr\.|Ms\.|Mrs\.)\s+([A-Z][a-z]+(\s[A-Z][a-z]+)?)/g;
+  // 3. Redact names in greeting patterns (not handled by the Rejects layer).
   cleanText = cleanText.replace(greetingRegex, '$1 [NAME_REDACTED]');
 
   return cleanText;

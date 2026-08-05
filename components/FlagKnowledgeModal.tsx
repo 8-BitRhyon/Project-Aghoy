@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { FLAG_DEFINITIONS } from '../utils/flagDefinitions';
 import { AlertTriangle, BookOpen, X } from 'lucide-react';
 import { playSound } from '../utils/sound';
+import { useModal } from '../src/hooks/useModal';
 
 interface FlagKnowledgeModalProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ interface FlagKnowledgeModalProps {
 
 const FlagKnowledgeModal: React.FC<FlagKnowledgeModalProps> = ({ isOpen, onClose, highlightedFlag }) => {
   const scrollRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const dialogRef = useModal(isOpen, onClose, 'flag-knowledge-title');
 
   useEffect(() => {
     if (isOpen && highlightedFlag) {
@@ -34,7 +36,7 @@ const FlagKnowledgeModal: React.FC<FlagKnowledgeModalProps> = ({ isOpen, onClose
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm animate-fade-in">
+    <div ref={dialogRef} tabIndex={-1} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm animate-fade-in">
       <div className="relative w-full max-w-4xl border-4 border-white bg-slate-900 shadow-[8px_8px_0px_0px_rgba(234,88,12,0.5)] flex flex-col max-h-[85vh]">
         
         {/* Header */}
@@ -44,7 +46,7 @@ const FlagKnowledgeModal: React.FC<FlagKnowledgeModalProps> = ({ isOpen, onClose
                     <BookOpen className="w-6 h-6" />
                 </div>
                 <div>
-                    <h2 className="font-['Press_Start_2P'] text-lg md:text-xl text-white">THREAT_DATABASE</h2>
+                    <h2 id="flag-knowledge-title" className="font-['Press_Start_2P'] text-lg md:text-xl text-white">THREAT_DATABASE</h2>
                     <p className="font-['VT323'] text-orange-400 text-lg">Definitions & Indicators</p>
                 </div>
             </div>
@@ -53,7 +55,8 @@ const FlagKnowledgeModal: React.FC<FlagKnowledgeModalProps> = ({ isOpen, onClose
                     playSound('click');
                     onClose();
                 }}
-                className="text-white hover:text-red-400 transition-transform hover:scale-110"
+                aria-label="Close"
+                className="w-12 h-12 flex items-center justify-center text-white hover:text-red-400 transition-transform hover:scale-110"
             >
                 <X className="w-8 h-8" />
             </button>
@@ -89,7 +92,7 @@ const FlagKnowledgeModal: React.FC<FlagKnowledgeModalProps> = ({ isOpen, onClose
         </div>
 
         {/* Footer */}
-        <div className="p-3 bg-black border-t-4 border-slate-700 text-center font-['VT323'] text-slate-500 text-sm">
+        <div className="p-3 bg-black border-t-4 border-slate-700 text-center font-['VT323'] text-slate-400 text-sm">
             KNOWLEDGE IS YOUR BEST DEFENSE
         </div>
       </div>

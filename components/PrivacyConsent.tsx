@@ -46,10 +46,12 @@ const PrivacyConsent: React.FC<PrivacyConsentProps> = ({ onConsentChange }) => {
               INITIALIZE PRIVACY PROTOCOLS?
             </h3>
             <p className="font-['VT323'] text-slate-300 text-lg leading-tight text-justify">
-              Project Aghoy uses <span className="text-white font-bold">Advanced AI</span> to analyze messages. 
-              To help protect others, we collect <span className="text-cyan-400 font-bold">anonymized scam patterns</span>.
+              Project Aghoy uses <span className="text-white font-bold">Advanced AI</span> to analyze messages.
+              Message text is processed by <span className="text-cyan-400 font-bold">third-party AI providers</span> to detect scams.
               <br/>
-              <span className="text-red-400">WE NEVER STORE:</span> Your personal messages, names, phone numbers, or passwords.
+              <span className="text-green-400">MASKED:</span> Card numbers, PH mobile numbers, emails, IDs, and OTPs are redacted before sending.
+              <br/>
+              <span className="text-green-400">ON-DEVICE:</span> Images never leave your device. Results are saved only on your device.
             </p>
           </div>
 
