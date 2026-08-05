@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createDojoChat } from '../services/aiService';
 import { Send, RefreshCw, Trophy, HelpCircle, AlertCircle, Skull, ShieldAlert, Smartphone, WifiOff, Zap } from 'lucide-react';
 import { playSound } from '../utils/sound';
+import { setDocumentLang } from '../src/utils/lang';
 
 interface DojoProps {
   selectedLanguage: string;
@@ -15,6 +16,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
   const [gameStatus, setGameStatus] = useState<'active' | 'won' | 'lost' | 'error'>('active');
   const [errorMessage, setErrorMessage] = useState('');
   const [errorTitle, setErrorTitle] = useState('CONNECTION LOST');
+  const [health, setHealth] = useState(100);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const handleError = (error: any) => {
@@ -22,7 +24,10 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
     setGameStatus('error');
     const errString = error?.message || error?.toString() || JSON.stringify(error) || "";
     
-    if (errString.includes("429") || errString.toLowerCase().includes("quota")) {
+    if (errString.includes("429") && errString.toLowerCase().includes("too many requests")) {
+       setErrorTitle("RATE LIMIT");
+       setErrorMessage("Too many requests. Please wait a few seconds before continuing.");
+    } else if (errString.includes("429") || errString.toLowerCase().includes("quota")) {
        setErrorTitle("SYSTEM OVERLOAD");
        setErrorMessage("Daily AI Quota Exceeded. Please try again tomorrow.");
     } else if (errString.toLowerCase().includes("network") || errString.toLowerCase().includes("fetch")) {
@@ -41,9 +46,11 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
     setMessages([]);
     setGameStatus('active');
     setErrorMessage('');
+    setHealth(100);
     
     try {
-      // 1. Initialize the new Secure Chat
+      // 1. Initialize the new Secure Chat (Worker DojoSession engine when
+      // reachable, /api/analyze fallback otherwise)
       const chat = createDojoChat(selectedLanguage);
       setChatSession(chat);
       
@@ -52,6 +59,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
       
       // 3. Read text from the new response format
       const text = result.response.text();
+      if (typeof result.health === "number") setHealth(result.health);
       setMessages([{ role: 'model', text: text || "Hello!" }]);
       playSound('scan');
     } catch (error: any) {
@@ -62,6 +70,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
   };
 
   useEffect(() => {
+    setDocumentLang(selectedLanguage);
     startNewGame();
   }, [selectedLanguage]);
 
@@ -83,9 +92,12 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
       const result = await chatSession.sendMessage(userMsg);
       const responseText = result.response.text() || "...";
       
+      if (typeof result.health === "number") setHealth(result.health);
       setMessages(prev => [...prev, { role: 'model', text: responseText }]);
       
-      if (responseText.includes("GAME OVER") || responseText.includes("Nahuli mo")) {
+      // Server-driven game over (Worker DojoSession engine) or the client-side
+      // detection kept for the /api/analyze fallback engine.
+      if (result.gameOver || responseText.includes("GAME OVER") || responseText.includes("Nahuli mo")) {
         playSound('success');
         setGameStatus('won');
       } else if (responseText.includes("FAILURE") || responseText.includes("Huli ka") || responseText.includes("Naloko")) {
@@ -162,12 +174,22 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
                         <p className="text-slate-200 uppercase text-xs md:text-sm font-['VT323']">
                             Status: {gameStatus === 'active' ? 'LIVE CONNECTION...' : gameStatus.toUpperCase()}
                         </p>
+                        <div className="flex items-center gap-2 mt-1">
+                            <span className="text-[10px] text-slate-400 font-['Press_Start_2P']">HP</span>
+                            <div className="w-24 md:w-36 h-3 bg-slate-950 border border-slate-600">
+                                <div className={`h-full transition-all duration-500 ${
+                                    health > 60 ? 'bg-green-500' : health > 30 ? 'bg-yellow-500' : 'bg-red-500'
+                                }`} style={{ width: `${Math.max(0, Math.min(100, health))}%` }}></div>
+                            </div>
+                            <span className="text-slate-300 text-xs md:text-sm font-['VT323']">{Math.max(0, Math.min(100, health))}/100</span>
+                        </div>
                     </div>
                 </div>
                 <button 
                     onClick={startNewGame}
-                    className="p-2 bg-slate-800 hover:bg-slate-700 text-white border-2 border-slate-500 transition-colors"
+                    className="w-11 h-11 flex items-center justify-center bg-slate-800 hover:bg-slate-700 text-white border-2 border-slate-500 transition-colors"
                     title="Reset Simulation"
+                    aria-label="Reset Simulation"
                 >
                     <RefreshCw className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} />
                 </button>
@@ -260,13 +282,14 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                             placeholder="Message..."
-                            className="flex-1 bg-slate-800 text-white border border-slate-600 rounded-full px-4 py-3 font-sans text-base focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-slate-500"
+                            className="flex-1 bg-slate-800 text-white border border-slate-600 rounded-full px-4 py-3 font-sans text-base focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-slate-400"
                             disabled={isLoading}
                             autoFocus
                         />
                         <button 
                             onClick={handleSend}
                             disabled={isLoading}
+                            aria-label={isLoading ? 'Sending message' : 'Send message'}
                             className="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-full shadow-lg active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed group flex items-center justify-center w-12 h-12 shrink-0"
                         >
                             {isLoading ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5 ml-0.5" />}

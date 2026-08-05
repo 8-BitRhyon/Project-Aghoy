@@ -3,6 +3,23 @@ export type SoundType = 'click' | 'hover' | 'alert' | 'success' | 'scan' | 'typi
 // Initialize from storage (default to false/unmuted if not set)
 let isMuted = localStorage.getItem('aghoy_muted') === 'true';
 
+// Singleton AudioContext, lazily created on first use (browsers cap live
+// contexts, so a single reused context prevents SFX from silently dying)
+let audioContext: AudioContext | null = null;
+
+const getAudioContext = (): AudioContext | null => {
+  const AudioContextCtor = window.AudioContext || (window as any).webkitAudioContext;
+  if (!AudioContextCtor) return null;
+
+  if (!audioContext) {
+    audioContext = new AudioContextCtor();
+  }
+  if (audioContext.state === 'suspended') {
+    audioContext.resume().catch(() => {});
+  }
+  return audioContext;
+};
+
 export const toggleMute = (): boolean => {
   isMuted = !isMuted;
   localStorage.setItem('aghoy_muted', isMuted.toString());
@@ -14,10 +31,9 @@ export const getMuteStatus = (): boolean => isMuted;
 export const playSound = (type: SoundType) => {
   if (isMuted) return; // Stop here if muted
 
-  const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioContext) return;
-  
-  const ctx = new AudioContext();
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   

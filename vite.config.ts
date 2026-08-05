@@ -20,6 +20,22 @@ export default defineConfig(({ mode }) => {
         VitePWA({
           registerType: 'autoUpdate',
           includeAssets: ['ProjectAghoyLogo.png'],
+          workbox: {
+            // OCR assets (worker, wasm cores, ~15MB traineddata) are only needed
+            // when a screenshot is scanned. Exclude from precache and serve via
+            // runtime caching instead so the service worker stays lean.
+            globIgnores: ['ocr/**', '**/ocr/*.wasm*'],
+            runtimeCaching: [
+              {
+                urlPattern: ({ url }) => url.pathname.startsWith('/ocr/'),
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'aghoy-ocr',
+                  expiration: { maxEntries: 12, maxAgeSeconds: 60 * 60 * 24 * 30 },
+                },
+              },
+            ],
+          },
           manifest: {
             name: 'Project Aghoy',
             short_name: 'Aghoy',
@@ -52,6 +68,20 @@ export default defineConfig(({ mode }) => {
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),
+        }
+      },
+      build: {
+        rollupOptions: {
+          output: {
+            manualChunks: {
+              react: ['react', 'react-dom'],
+              // tesseract.js-core is loaded at runtime from CDN by the worker;
+              // chunking it forces a dead require('./tesseract-core.asm') that
+              // breaks the rollup build.
+              ocr: ['tesseract.js'],
+              canvas: ['html2canvas']
+            }
+          }
         }
       },
       css: {

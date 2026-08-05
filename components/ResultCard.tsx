@@ -1,7 +1,9 @@
 import { ShieldCheck, ShieldAlert, AlertTriangle, ChevronRight, BookOpen, Copy, Check, Phone, Globe, Share2, Building2, Mail, Lock, FileText, Smartphone, Info, Landmark, Scale } from 'lucide-react';
 import SmartSupport from './SmartSupport';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AnalysisResult, Verdict } from '../types';
+import { SUPPORT_DATABASE } from '../src/support/supportDatabase';
+import { lookupIndicator } from '../src/api/storageClient';
 import RiskGauge from './RiskGauge';
 import FamilyWarningCard from './FamilyWarningCard';
 import FlagKnowledgeModal from './FlagKnowledgeModal';
@@ -100,7 +102,7 @@ const getVerdictStyle = (verdict: Verdict) => {
 // --- 2. SUB-COMPONENTS ---
 
 // IMPORTANT: We now accept detectedEntity to pass it down
-const VictimAssistanceGuide: React.FC<{ detectedEntity?: string }> = ({ detectedEntity }) => (
+const VictimAssistanceGuide: React.FC<{ detectedEntity?: string; entities?: string[] }> = ({ detectedEntity, entities }) => (
   <div className="border-[4px] border-red-900 bg-red-950/30 p-3 md:p-6 relative overflow-hidden">
     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 via-orange-500 to-red-600 animate-pulse"></div>
     <h4 className="text-red-400 text-[10px] md:text-sm font-['Press_Start_2P'] mb-4 flex items-center gap-2 uppercase tracking-wide">
@@ -114,18 +116,17 @@ const VictimAssistanceGuide: React.FC<{ detectedEntity?: string }> = ({ detected
           <h5 className="text-red-300 font-bold text-base md:text-2xl mb-1 flex items-center gap-2"><Lock className="w-4 h-4 md:w-6 md:h-6" /> FREEZE FUNDS</h5>
           <p className="leading-tight mb-2 text-sm md:text-lg">Contact support immediately to <strong>LOCK</strong> accounts.</p>
           <ul className="text-sm md:text-lg text-slate-400 list-none space-y-1 border-l-2 border-red-900/50 pl-2">
-            <li>
-              <span className="text-blue-400 font-bold">[GCash]</span> <a href="tel:2882" className="hover:text-white underline decoration-dotted transition-colors">Dial 2882</a>
-            </li>
-            <li>
-              <span className="text-green-400 font-bold">[Maya]</span> <a href="tel:*788" className="hover:text-white underline decoration-dotted transition-colors">Dial *788</a>
-            </li>
-            <li>
-              <span className="text-blue-300 font-bold">[BDO]</span> <a href="tel:0286318000" className="hover:text-white underline decoration-dotted transition-colors">(02) 8631-8000</a>
-            </li>
-            <li>
-              <span className="text-red-400 font-bold">[BPI]</span> <a href="tel:0288910000" className="hover:text-white underline decoration-dotted transition-colors">(02) 889-10000</a>
-            </li>
+            {(entities && entities.length > 0 ? entities : ['GCASH', 'MAYA', 'BDO', 'BPI']).slice(0, 4).map((key) => {
+              const entry = SUPPORT_DATABASE[key];
+              if (!entry) return null;
+              const voice = entry.channels.find(c => c.type === 'voice');
+              return (
+                <li key={key}>
+                  <span className={entry.theme === 'green' ? 'text-green-400 font-bold' : 'text-blue-400 font-bold'}>[{entry.name.split(' ')[0].toUpperCase()}]</span>{' '}
+                  {voice ? <a href={`tel:${voice.value}`} className="hover:text-white underline decoration-dotted transition-colors">{voice.label}</a> : entry.name}
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>
@@ -156,8 +157,8 @@ const VictimAssistanceGuide: React.FC<{ detectedEntity?: string }> = ({ detected
     
     <div className="mt-4">
       <h5 className="text-slate-500 text-xs font-['Press_Start_2P'] mb-2 uppercase">Direct Support Line:</h5>
-      {/* Pass the detected entity to SmartSupport */}
-      <SmartSupport detectedEntity={detectedEntity} />
+      {/* Pass the matched brands to SmartSupport */}
+      <SmartSupport detectedEntity={detectedEntity} entities={entities} />
     </div>
   </div>
 );
@@ -196,17 +197,40 @@ const OfficialChannelsList: React.FC = () => (
 interface ResultCardProps {
   result: AnalysisResult;
   onReset: () => void;
+  analysisId?: string | number;
 }
 
-const ResultCard: React.FC<ResultCardProps> = ({ result, onReset }) => {
+const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) => {
   const [expandedEducation, setExpandedEducation] = useState(true);
   const [copied, setCopied] = useState(false);
   const [showWarningCard, setShowWarningCard] = useState(false);
   const [showKnowledgeModal, setShowKnowledgeModal] = useState(false);
   const [highlightedFlag, setHighlightedFlag] = useState<string | null>(null);
   const [hoveredFlag, setHoveredFlag] = useState<string | null>(null);
+  const [reportedDomain, setReportedDomain] = useState<{ value: string; times: number } | null>(null);
+  const fallbackIdRef = useRef<number>(Math.floor(Math.random() * 100000));
+  const scanId = analysisId ?? fallbackIdRef.current;
 
   useEffect(() => { setExpandedEducation(true); }, [result]);
+
+  // STORAGE LOOP: surface "this domain was reported N times" when a match exists.
+  useEffect(() => {
+    let cancelled = false;
+    // Reset on every new result so a stale alert from the previous scan can
+    // never classify an unrelated domain as high risk.
+    setReportedDomain(null);
+    const analysisText = result?.analysis || "";
+    const domainMatch = analysisText.match(/https?:\/\/([a-z0-9.-]+\.[a-z]{2,})/i) || analysisText.match(/\b([a-z0-9-]+\.(?:com|ph|net|org|top|xyz|site|click))\b/i);
+    const value = domainMatch ? domainMatch[1].replace(/^www\./, "").toLowerCase() : null;
+    if (!value) return;
+    lookupIndicator("domain", value).then((status) => {
+      if (cancelled) return;
+      if (status && status.found && status.times_reported && status.times_reported >= 2) {
+        setReportedDomain({ value, times: status.times_reported });
+      }
+    });
+    return () => { cancelled = true; };
+  }, [result]);
 
   const style = getVerdictStyle(result.verdict);
   const isHighRisk = result.verdict === Verdict.HIGH_RISK;
@@ -214,14 +238,15 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset }) => {
 
   const handleCopyReport = () => {
     playSound('click');
-    const reportText = `REPORT TO PNP-ACG\n\nType: ${result.scamType}\nSender: ${result.senderEntity || 'Unknown'}\n\nDetails:\nI received a suspicious message identified as a potential ${result.scamType}. \n\nRed Flags Detected: ${result.redFlags.join(', ')}.`;
+    const brands = (result.matchedBrands || []).map((b) => b.key).join(', ');
+    const reportText = `REPORT TO PNP-ACG\n\nType: ${result.scamType}\nSender: ${result.senderEntity || 'Unknown'}${brands ? `\nImpersonated brand(s): ${brands}` : ''}\n\nDetails:\nI received a suspicious message identified as a potential ${result.scamType}. \n\nRed Flags Detected: ${result.redFlags.join(', ')}.`;
     navigator.clipboard.writeText(reportText);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div key={result.riskScore + result.verdict} className="w-full mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 font-['VT323'] px-0 md:px-0 pb-10">
+    <div key={scanId} className="w-full mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 font-['VT323'] px-0 md:px-0 pb-10">
       
       {/* Modals */}
       <FamilyWarningCard result={result} isOpen={showWarningCard} onClose={() => setShowWarningCard(false)} />
@@ -247,7 +272,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset }) => {
                 {style.icon}
               </div>
               <div className="flex-1 min-w-0">
-                <h2 className="text-xs md:text-lg text-slate-500 font-bold mb-1 truncate font-mono">ID: #AGHOY-{Math.floor(Math.random() * 9999)}</h2>
+                <h2 className="text-xs md:text-lg text-slate-500 font-bold mb-1 truncate font-mono">ID: #AGHOY-{String(scanId).padStart(4, '0').slice(-4)}</h2>
                 <h3 className={`text-xl md:text-4xl font-bold font-['Press_Start_2P'] ${style.textColor} leading-tight mt-1 break-words text-shadow-retro`}>{style.label}</h3>
                 <div className="flex flex-wrap gap-2 mt-2 md:mt-4">
                   {result.scamType && result.scamType !== 'None' && (
@@ -267,6 +292,37 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset }) => {
                <RiskGauge score={result.riskScore} />
             </div>
           </div>
+
+          {reportedDomain && (
+            <div className="relative z-10 mb-4 border-2 border-red-800 bg-red-950/40 px-3 py-2 flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+              <span className="text-sm md:text-lg text-red-200 font-['VT323']">
+                ALERT: <span className="text-white select-all">{reportedDomain.value}</span> has been reported <span className="text-white font-bold">{reportedDomain.times}x</span> by Aghoy users. Treat links from this domain as high risk.
+              </span>
+            </div>
+          )}
+
+          {result.reportedPhone && (
+            <div className="relative z-10 mb-4 border-2 border-red-800 bg-red-950/40 px-3 py-2 flex items-center gap-2">
+              <Phone className="w-4 h-4 text-red-400 shrink-0" />
+              <span className="text-sm md:text-lg text-red-200 font-['VT323']">
+                This number has been reported <span className="text-white font-bold">{result.reportedPhone.count}x</span> by other users.
+              </span>
+            </div>
+          )}
+
+          {result.similarScams && result.similarScams.length > 0 && (
+            <div
+              className="relative z-10 mb-4 border-2 border-amber-700 bg-amber-950/40 px-3 py-2 flex items-center gap-2"
+              title={result.similarScams.map((s) => s.id).join(", ")}
+            >
+              <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+              <span className="text-sm md:text-lg text-amber-200 font-['VT323']">
+                MATCHES <span className="text-white font-bold">{result.similarScams.length}</span> KNOWN SCAM PATTERN{result.similarScams.length > 1 ? 'S' : ''} - similar to previously reported campaigns
+                <span className="ml-2 text-amber-500/80 text-xs font-mono select-all hidden sm:inline">({result.similarScams.map((s) => s.id).join(", ")})</span>
+              </span>
+            </div>
+          )}
 
           {/* --- GRID CONTENT --- */}
           <div className="flex flex-col lg:grid lg:grid-cols-12 gap-6 relative z-10">
@@ -364,7 +420,12 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset }) => {
               )}
 
               {/* Victim Assistance (includes SmartSupport) */}
-              {isSuspiciousOrHigh && <VictimAssistanceGuide detectedEntity={result.senderEntity || result.scamType} />}
+              {isSuspiciousOrHigh && (
+                <VictimAssistanceGuide
+                  detectedEntity={result.senderEntity || result.scamType}
+                  entities={(result.matchedBrands || []).map((b) => b.key)}
+                />
+              )}
             </div>
           </div>
 

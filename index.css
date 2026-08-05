@@ -61,20 +61,23 @@ body {
   text-shadow: 2px 2px 0px #000000;
 }
 
-/* Retro CRT Scanline - MOVED FROM index.html <style> */
-.scanlines {
-  background: linear-gradient(
-    to bottom,
-    rgba(255,255,255,0),
-    rgba(255,255,255,0) 50%,
-    rgba(0,0,0,0.2) 50%,
-    rgba(0,0,0,0.2)
-  );
-  background-size: 100% 4px;
-  position: fixed;
-  top: 0; right: 0; bottom: 0; left: 0;
-  pointer-events: none;
-  z-index: 50;
+/* Terminal-themed scrollbars for custom-scrollbar containers */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #475569 #0f172a;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #475569;
+  border: 2px solid #0f172a;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
 }
 
 /* 8-bit Progress Bar Animation - MOVED FROM index.html <style> */
@@ -96,10 +99,18 @@ body {
   animation: pixel-load 1.5s steps(10, end) infinite;
 }
 
-.blink {
-  animation: blink 1s step-end infinite;
+/* Global focus indicator for keyboard users */
+:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 2px;
 }
 
-@keyframes blink {
-  50% { opacity: 0; }
+/* Respect users who prefer reduced motion: collapse all animations/transitions */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

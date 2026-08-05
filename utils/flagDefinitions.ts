@@ -1,5 +1,23 @@
 
 export const FLAG_DEFINITIONS: Record<string, string> = {
+    // New, most-specific keys come FIRST so substring matching (upperFlag.includes(key))
+    // never lets a shorter key swallow a more specific match.
+    "ACCOUNT_HIJACK_EMERGENCY": "A message claiming your account was hijacked and you must act now to 'protect' it. The link or 'agent' is usually the actual hijacker.",
+    "PAYMENT_TO_UNLOCK": "A request to send money to 'unlock' earnings, a balance, or an account. Anything that needs a deposit before you get paid is a scam.",
+    "FAKE_REWARD": "A promise of a prize, voucher, or reward you never joined or earned. Claiming it usually ends in a 'processing fee' request.",
+    "FAKE_SUPPORT": "Fake customer support accounts that offer to 'help' but ask for your password, OTP, or a remote access app. Official support never does.",
+    "VISHING_CALL": "A phone call where a fake agent or official pressures you for OTPs, codes, or payments. Hang up and call the official hotline instead.",
+    "MONEY_MULE": "A 'job' asking you to receive money and forward it to another account. Moving scam money makes you part of the fraud.",
+    "LOOKALIKE_SENDER": "The message pretends to come from an official sender, but the number, name, or account does not match. Verify through the official app.",
+    "LOOKALIKE_DOMAIN": "The link looks like the real website but is a fake domain (e.g., 'gcash-verify.xyz'). Check the exact spelling before tapping.",
+    "SIM_REGISTRATION_PRETEXT": "A fake SIM registration or re-registration notice that harvests your ID and mobile details. Register only on official telco channels.",
+    "FAMILY_EMERGENCY": "A text or call claiming a relative is in trouble and needs money right now. Call the relative on their real number first.",
+    "OTP_SHARING": "Never share the one-time password (OTP) sent to your phone. Banks and wallets will never ask for it, and sharing it lets scammers take over your account.",
+    "TASK_SCAM": "Scammers offer easy 'tasks' like liking videos or following accounts for pay, then demand a deposit to unlock bigger earnings. The promised payout never comes.",
+    "PARCEL_FEE": "A message about an undelivered package with a small 'fee' or 'insurance' to release it. Legit couriers bill the sender, not the receiver, through the app.",
+    "IMPERSONATION": "A message pretending to be from a company, official, or family member. Scammers copy names and logos to make fake requests look real.",
+    "ADVANCE_FEE": "A request to pay a fee first before you can receive a prize, loan, job, or inheritance. Real transactions do not ask for an advance fee.",
+    "QUISHING": "A QR code that hides a phishing link. Scanning it opens a fake login page designed to steal your account details.",
     "URGENCY": "Scammers create a false sense of emergency (e.g., 'Account Locked', 'Last Chance') to panic you into acting without thinking.",
     "SHORTENED URL": "Links like 'bit.ly' or 'tinyurl' hide the true destination. Scammers use them to mask phishing sites.",
     "TOO GOOD TO BE TRUE OFFER": "Promises of huge money for little work, or expensive items for free, are almost always scams.",

@@ -1,292 +1,145 @@
-# Project Aghoy — Security Architecture & Grounding
-
-> **Last updated:** 2026-07-07
-> **Audit type:** Full security architecture review
-> **Author:** Kilo (automated audit)
-
----
-
-## 1. Project Identity
-
-**Project Aghoy** is a browser-based scam detection and anti-social-engineering training
-application targeting the Philippines. It exposes two modes:
-
-- **Scanner** — Paste text or an image; AI analyzes for scam red flags and returns a
-  verdict (SAFE / SUSPICIOUS / HIGH_RISK) with educational explanations in local
-  languages (Tagalog, Bisaya, Ilocano, English).
-- **Dojo** — Role-play chat with an AI simulating a scammer. User practices
-  identifying red flags in real-time conversation. Game state (health, history, game-over)
-  persists across interactions within a session.
-
-The project is deployed as a **Cloudflare Pages** site with a **Cloudflare Workers**
-backend (`project-aghoy-dojo`) that proxies LLM requests to Cerebras and Groq via
-Cloudflare AI Gateway.
-
----
-
-## 2. Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     Browser (React SPA)                      │
-│  App.tsx ─→ aiService.ts (Tesseract OCR) ─→ fetch(/api/…)   │
-│  └→ localStorage: stats, history, consent, mute             │
-└──────────┬──────────────────────────────────────┬────────────┘
-           │ POST /api/analyze                     │ POST /dojo/…
-           ▼                                      ▼
-┌──────────────────────┐           ┌───────────────────────────┐
-│ Pages Functions      │           │ Worker (dojo.ts)          │
-│ functions/api/       │           │ project-aghoy-dojo        │
-│   analyze.js         │           │  └─ DojoSession (DO)      │
-│ (scanner proxy)      │           │  └─ handleScanner()       │
-└──────────┬───────────┘           └──────────┬────────────────┘
-           │                                  │
-           ▼                                  ▼
-    ┌────────────────────────────────────────────┐
-    │        Cloudflare AI Gateway               │
-    │  gateway.ai.cloudflare.com/v1/{id}/{gw}    │
-    ├────────────────────┬───────────────────────┤
-    │ Cerebras (primary)  │ Groq (fallback)      │
-    │ gpt-oss-120b        │ gpt-oss-120b         │
-    └─────────────────────┴───────────────────────┘
-```
-
-### Key files
-
-| Path | Role | Concerns |
-|------|------|----------|
-| `functions/api/analyze.js` | Pages Functions scanner endpoint | CORS `*`, in-memory rate limit, no input caps |
-| `src/worker/dojo.ts` | Workers scanner + Dojo entry | Same scanner code duplicated, DO session global |
-| `services/aiService.ts` | Client-side AI orchestration + OCR | Sends user input to backend |
-| `utils/privacy.ts` | Client-side PII redaction (SHA-256 hash) | Only client-side, not enforced server-side |
-| `utils/sound.ts` | Web Audio API sound effects | Leaks mute state to localStorage |
-| `utils/flagDefinitions.ts` | Scam flag → plain-text explanation | Static data, safe |
-| `components/PrivacyConsent.tsx` | GDPR-style consent banner | localStorage only, no server-side enforcement |
-| `src/lib/errorBoundary.tsx` | React error boundary | Leaks component stack to DOM |
-| `App.tsx` | Main SPA component | UserStats inline, inline keyframes |
-
----
-
-## 3. Security Posture (Pre-Fix)
-
-| # | Severity | Finding | File:Line | Status |
-|---|----------|---------|-----------|--------|
-| C1 | 🔴 CRITICAL | In-memory rate limiter is per-isolate, no-op on serverless | `analyze.js:4` | ✅ DO-based (Worker), Map fallback (Pages) |
-| C2 | 🔴 CRITICAL | `Access-Control-Allow-Origin: *` — open LLM proxy | `analyze.js:30`, `dojo.ts:16` | ✅ FIXED — middleware allowlist |
-| C3 | 🔴 CRITICAL | No prompt-injection guard — messages forwarded verbatim | `analyze.js:46` | ✅ FIXED — validateMessages() in both |
-| H1 | 🟠 HIGH | Live API keys on disk in plaintext | `.env`, `.dev.vars` | ✅ MITIGATED — `.env.example` + rotation docs |
-| H2 | 🟠 HIGH | No server-side input size validation | `analyze.js:46` | ✅ FIXED — 4000 char cap + truncation |
-| H3 | 🟠 HIGH | No Content-Security-Policy headers | Worker response + Pages | ✅ FIXED — `_headers` file |
-| M1 | 🟡 MEDIUM | DO session is global "demo" — all users share state | `dojo.ts:109` | ✅ FIXED — per-IP DO sessions |
-| M2 | 🟡 MEDIUM | Duplicate scanner code in Pages Functions + Worker | `analyze.js` vs `dojo.ts:116` | ✅ MITIGATED — shared security patterns |
-| M3 | 🟡 MEDIUM | Error boundary leaks component stack to DOM | `errorBoundary.tsx:107` | ✅ FIXED — gated on `process.env.NODE_ENV` |
-| M4 | 🟡 MEDIUM | `.gitignore` has duplicate sections | lines 46-49, 52-55 | ✅ FIXED — deduplicated |
-| L1 | 🔵 LOW | `UserStats` interface inline in App.tsx | `App.tsx:38` | ✅ FIXED — moved to `types.ts` |
-| L2 | 🔵 LOW | `@keyframes loading` injected as inline `<style>` | `App.tsx:51` | ✅ FIXED — moved to `index.css` |
-| L3 | 🔵 LOW | No request timeout on LLM fetches | `analyze.js:82` | ✅ FIXED — 25s AbortController timeout |
-| L4 | 🔵 LOW | API key format not validated after sanitization | `analyze.js:20` | ✅ FIXED — prefix + length check |
-| L5 | 🔵 LOW | No `_headers` file for Pages deployment | — | ✅ FIXED — `public/_headers` |
+# Project Aghoy: Security Architecture
 
----
+**Last updated:** 2026-08-05
+**Audit type:** Full security architecture review of the post-hardening state
 
-## 4. Fix Log
+This document describes the currently audited architecture. It supersedes the 2026-07-07 pre-hardening review. Every claim below is grounded in the current code in this repository.
 
-Each fix entry documents what changed, why, and the verification step.
+## 1. Threat model summary
 
-### Fix C2 — Restrict CORS origin (analyze.js + new middleware)
+Project Aghoy is an AI-powered scam detector for the Philippines: a React SPA on Cloudflare Pages, a Pages Function (`/api/analyze`) that proxies to LLM providers through Cloudflare AI Gateway, and a Cloudflare Worker (`project-aghoy-dojo`) with Durable Objects, D1, and Vectorize.
 
-**Changed:**
-- `functions/_middleware.js` — NEW file: central CORS handler applied to all Pages Function routes.
-  Allowlist: `project-aghoy.pages.dev`, `project-aghoy.vercel.app`, `localhost:5173`, `localhost:3000`.
-  Preflight (OPTIONS) returns `Status 204` with proper CORS headers + `Vary: Origin`.
-- `functions/api/analyze.js` — Removed per-function CORS headers (now handled by middleware).
-  Removed `User-Agent` spoof header that leaked deployment URL.
+**Attackers we defend against:**
 
-**Why:** `Access-Control-Allow-Origin: *` on an LLM proxy allows any website to use your API keys.
-Restricting to known domains prevents third-party abuse.
+- Remote internet users abusing the public LLM proxy to spend our AI quota.
+- Prompt-injection attempts aimed at the model via message content.
+- PII harvesting from request bodies, provider responses, and storage.
+- Abuse of the storage routes (fake reports, forged blacklist entries).
+- Cross-origin callers trying to use the API from arbitrary websites.
 
-**Verification:** Middleware rejects origins not in the allowlist by returning the canonical domain.
+**Assets at risk:**
 
----
+- User PII: SMS, email, and job-offer content, phone numbers, Philippine IDs.
+- AI spend: quota on Cerebras and Groq through AI Gateway.
+- D1 report and indicator data, the Vectorize `scam-index`, and blacklist integrity.
+- Admin credentials (`STORAGE_ADMIN_KEY`) and Dojo session tokens.
+- R2 evidence blobs (reserved; R2 is not yet enabled).
 
-### Fix C3 — Server-side message validation (prompt injection guard)
+## 2. PII and privacy
 
-**Changed:**
-- `functions/api/analyze.js` — Added `validateMessages()` function that:
-  - Ensures `messages` is an array (rejects `null`, objects, strings)
-  - Caps at `MAX_MESSAGES = 10`
-  - Rejects unknown roles (only `system`, `user`, `assistant` allowed)
-  - Enforces `content` is a string (rejects objects, arrays, numbers)
-  - Truncates content beyond `MAX_CONTENT_LENGTH = 4000` characters (not silently drops — caps it)
+### The Rejects layer
 
-**Why:** Without validation, an attacker can send nested objects, oversized payloads, or arbitrary
-message structures that bypass the prompt and cause unexpected LLM behavior.
+The authoritative PII boundary is `src/rejects/rejects.ts`. It redacts:
 
-**Verification:** Sending `{"messages": [{"role": "hacker", "content": []}]}` returns `400 Invalid message role`.
+- Credit and debit card numbers (13-19 digits, Luhn-validated).
+- Philippine mobile numbers (anchored `09...` and `+63` forms) and non-PH international numbers.
+- Email addresses.
+- API keys: `csk-`, `gsk_`, `sk-`, `sk-ant-`, `ghp_`, `AIza`.
+- Philippine government IDs: SSS (2-7-1 and 2-6-1), PhilHealth (2-9-1), TIN (3-3-3 with optional 3-4 digit branch), LTO licenses, passports, Pag-IBIG, UMID, and context-gated keyword forms.
+- Context-gated OTP/PIN codes and CVV/CVC numbers.
+- Names with honorifics, and dates of birth.
 
----
+The layer runs in five places:
 
-### Fix H1 — Create `.env.example` and document key rotation
+1. **Inbound** on the Pages Function and the Worker, before any request leaves for a vendor.
+2. **Outbound** on provider responses, scrubbing PII the model may echo back.
+3. **Before persistence**: `sanitizeForStorage` in `src/worker/storage.ts` redacts every field (content, scam type, red flags, provider, source) before any D1, R2, or Vectorize write.
+4. **Before Durable Object storage**: Dojo game history stores only scrubbed user messages and scrubbed model replies.
+5. **Client-side pre-send** as defense-in-depth. The client is never authoritative.
 
-**Changed:**
-- `.env.example` — NEW file: placeholder template with `csk-your-key-here` / `gsk_your-key-here`.
-  Includes rotation instructions referencing `wrangler secret put`.
-- `functions/api/analyze.js` — Added `validateKeyFormat()` that checks for expected prefixes
-  (`csk-` for Cerebras, `gsk_` for Groq) and minimum length.
+The rules are idempotent: re-running redaction over already-redacted text is a no-op. This is enforced by tests (`src/rejects/rejects.test.ts`, 44 tests including idempotency).
 
-**Why:** Live API keys were in plaintext `.env` and `.dev.vars` files on disk. These files are
-gitignored but still present on the filesystem. The `.env.example` provides a safe template.
-Key format validation catches accidental misconfiguration.
+### Data at rest
 
-**Verification:** `cat .env.example | grep -c "your-key"` returns 2 (placeholder keys present, no real values).
+- D1 stores only Rejects-layer output. Reports are deduplicated by SHA-256 of the sanitized content.
+- Phone numbers are persisted only as pre-computed SHA-256 hashes, enabling the "reported N times" blacklist without storing raw numbers.
+- Vectorize stores sanitized corpus text only (scrubbed again at seed time).
+- Dojo session state (Durable Object storage) holds sanitized history and expires after 24 hours of idle time.
+- Browser localStorage keeps the last 20 scans, sanitized via `utils/privacy.ts`. This is a display convenience, not a security boundary.
 
----
+### Processors
 
-### Fix H2 — Server-side input size caps
+- Cloudflare: Pages, Workers, Durable Objects, D1, Vectorize, AI Gateway, Workers AI.
+- Cerebras and Groq: LLM inference, reachable only through AI Gateway.
+- Tesseract.js: OCR runs entirely on-device in the browser, including the wasm core and traineddata, which are self-hosted under `public/ocr/`.
 
-**Changed:**
-- `functions/api/analyze.js` — `MAX_CONTENT_LENGTH = 4000` chars per message content.
-  Content beyond this is truncated, not rejected (avoids breaking legitimate long messages).
-- `FETCH_TIMEOUT_MS = 25000` — Added `AbortController`-based timeout to all outbound LLM fetches.
-  Prevents hung connections from exhausting Workers CPU allocation.
+### RA 10173 context and consent
 
-**Why:** Without input caps, an attacker can send a multi-megabyte payload that triggers expensive LLM
-processing. Without timeouts, a slow upstream provider blocks the request indefinitely.
+The app shows a privacy consent gate before any analysis. The gate is implemented client-side in localStorage, which is a documented, deliberate decision: a browser consent gate cannot be a real security boundary. Nothing security-relevant depends on it. Only sanitized content is transmitted regardless of consent state, so the Rejects layer is the actual enforcement mechanism.
 
-**Verification:** Sending a 5000-char message results in content truncated to 4000 chars server-side.
+Privacy contact: `security@projectaghoy.example` (placeholder). Replace with a real mailbox before public launch.
 
----
+## 3. Authentication and authorization
 
-### Fix L5 — Add `_headers` file for Pages deployment
+### Dojo session tokens
 
-**Changed:**
-- `public/_headers` — NEW file: Content-Security-Policy, X-Content-Type-Options, X-Frame-Options,
-  Referrer-Policy, Permissions-Policy headers for all Pages routes.
+The Worker mints signed, expiring session tokens at `POST /dojo/session`:
 
-**Why:** Cloudflare Pages does not add security headers by default. Without CSP, the app is vulnerable
-to XSS. Without `X-Frame-Options: DENY`, it can be embedded in iframes (clickjacking).
+- HMAC-SHA256 signed with `SESSION_SIGNING_KEY`; payload is `{ exp, sub }`.
+- 24-hour lifetime; the full signed token is the Durable Object key.
+- Hard cap of 50 assistant turns per session token, bounding AI spend independently of the IP rate limiter.
+- Fail-closed: if `SESSION_SIGNING_KEY` is unset, the route returns 503 and never issues a token. Invalid or expired tokens get 401.
 
-**Verification:** After deployment, `curl -I https://project-aghoy.pages.dev/` shows all headers present.
+### Storage admin auth
 
----
+`STORAGE_ADMIN_KEY` guards `/indicators/verify`, `POST /reports/:id/evidence`, `GET /evidence`, and `/seed/vectorize`:
 
-### Fix M4 — Deduplicate .gitignore sections
+- Compared in constant time by SHA-256 digesting both sides and XOR-accumulating (Workers exposes Web Crypto only, no `timingSafeEqual`).
+- Fail-closed: no configured key means 503, never access.
 
-**Changed:**
-- `.gitignore` — Removed duplicate lines 46-49 (`.agents/`, `.commandcode/`, `task.md`, `walkthrough.md`
-  appeared twice). Merged into a single block. Removed duplicate `.env*.local` entry.
+### Evidence routes
 
-**Why:** Duplicate entries don't cause errors but clutter the file and make maintenance error-prone.
+Both evidence endpoints are admin-only. Uploads require the target report to exist in D1, are capped at 10 MB, and the stored Content-Type is forced server-side to `application/octet-stream`. Downloads are served as opaque bytes with `no-store`.
 
-**Verification:** `grep -c ".agents/" .gitignore` now returns 1 (was 2).
+## 4. Rate limiting and abuse
 
----
+- The Worker uses a `RateLimiter` Durable Object: per-IP counts persisted to durable storage, globally consistent across isolates, with expired windows evicted on access.
+- `POST /reports` is limited to 20 requests/minute per IP.
+- `/api/analyze` (both Pages Function and Worker) is limited to 5 requests/minute per IP.
+- The Dojo adds the 50-turn per-token cap on top of the per-IP limiter.
 
-### Fix C1 — Durable Object–based rate limiter (replace in-memory Map)
+**Known gap:** the `/api/analyze` limiter on the Pages Function is an in-memory Map that is per-isolate and is not globally accurate on serverless. The intended mitigation is Cloudflare WAF rate limiting configured in the dashboard for the Pages domain. This is documented as pending; the Worker's DO-based limiter is not affected.
 
-**Changed:**
-- `src/worker/dojo.ts` — Added `RateLimiter` Durable Object class that stores per-IP request
-  counts in DO storage (globally consistent across all isolates). Default: 5 requests / 60s window.
-- `Wrangler.Toml` — Registered `RateLimiter` DO + migration `v2`.
+## 5. Input validation
 
-**Why:** The `Map`-based limiter in `analyze.js` is per-isolate (i.e., per-request on serverless).
-Each cold start creates a fresh Map — no rate limit memory across requests. The DO approach is
-globally consistent.
+- `/api/analyze`: requires `Content-Type: application/json` (415), rejects bodies over 100 KB via Content-Length and again after parsing (413). Messages must be a non-empty array of at most 10 `{ role, content }` objects with roles restricted to `system`/`user`/`assistant` and string content truncated to 4000 characters. Validation failures return 400.
+- `POST /reports`: 100 KB body cap; verdict restricted to `SAFE`/`SUSPICIOUS`/`HIGH_RISK`; riskScore must be a number 0-10; scamType, provider, and source capped at 100 chars; at most 10 red flags of 64 chars each; at most 10 `phoneHashes`, each matching `^[a-f0-9]{64}$`.
+- Evidence: 10 MB cap enforced on declared and actual size.
+- Provider key format is validated (expected `csk-`/`gsk_` prefixes plus minimum length) before any request leaves.
 
-**Verification:** Sending 6 requests within 60s to the Worker returns `429 Too Many Requests` with
-a `Retry-After` header. Rate cache persists across Worker restarts.
+## 6. Output and edge security
 
-**Note:** The Pages Functions (`functions/api/analyze.js`) still uses the best-effort Map approach.
-For full coverage, configure Cloudflare Rate Limiting in the dashboard for the Pages domain.
+- **No upstream error leak:** provider failures surface as generic messages such as `Provider error: status 503`. Upstream detail is logged server-side only, never returned.
+- **Error classification:** internal errors are mapped to 400 (validation), 429 (rate limit), 503 (missing configuration), or 500, with no stack traces or internal paths in responses.
+- **Security headers on Pages:** HSTS, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, Referrer-Policy, Permissions-Policy, COOP/CORP, and a CSP.
+- **Security headers on the Worker:** CSP `default-src 'none'`, nosniff, CORP and COOP same-origin, no-referrer, applied to every response including errors.
+- **CSP on the SPA:** `script-src 'self' 'unsafe-inline' 'unsafe-eval'` (required by Vite and the Tesseract wasm worker), `connect-src 'self' https://gateway.ai.cloudflare.com`, `worker-src blob:`.
+- **CORS:** both the Pages middleware and the Worker enforce an origin allowlist and return 403 for disallowed cross-origin callers. Preflights carry `Vary: Origin`.
+- **Client IP:** only `CF-Connecting-IP` is trusted. `X-Forwarded-For` is attacker-controllable and never used.
+- **Timeouts:** all outbound LLM fetches use a 25-second AbortController timeout.
 
----
+## 7. Supply chain
 
-### Fix M1 — Per-user DO sessions (not global "demo")
+- GitHub Actions are SHA-pinned and CI enforces that no unpinned action sneaks in. Gitleaks runs a full-history secret scan.
+- All API keys live in Worker secrets, never in the bundle or in committed files. `.env.example` contains placeholders only.
+- OCR assets are self-hosted; no code or model is fetched from a third-party CDN at runtime (the CSP would block the CDN `importScripts` anyway).
+- Runtime dependencies (React, Tesseract, html2canvas, lucide-react) have no known advisories. The dev toolchain (wrangler/miniflare, the Vite build chain via picomatch, sharp/libvips) has pending advisories tracked upstream; these are build-time only and do not ship to the runtime bundle. Run `npm audit` before merging dependency bumps.
 
-**Changed:**
-- `src/worker/dojo.ts:140` — Changed from `idFromName("global-demo-session")` to
-  `idFromName(clientIp)` where `clientIp` comes from `CF-Connecting-IP` or `X-Forwarded-For`.
+## 8. Known limitations
 
-**Why:** The global "demo" session meant all users shared the same game state — player A's
-conversation would leak into player B's game. Per-IP sessions isolate each player's game state.
+- The consent gate is client-side and cannot be enforced against a determined user. Deliberate design decision; the Rejects layer is the enforcement boundary.
+- The `/api/analyze` rate limiter on Pages is per-isolate in-memory; WAF rate limiting is the documented mitigation and is pending.
+- R2 is not enabled on the account, so the evidence store is dormant and evidence routes return 501.
+- `X-Forwarded-For` is never trusted; IP-based limits rely solely on `CF-Connecting-IP`.
+- The Dojo's prompt-injection surface is intentional: the model is instructed to role-play a scammer and has no tools or secrets in its context. The Rejects layer still scrubs everything the model receives and returns.
 
-**Verification:** Two simultaneous users get separate DO session IDs. Their game histories
-do not overlap.
+## 9. Reporting vulnerabilities
 
----
+Please report security issues privately before public disclosure.
 
-### Fix M2 — Duplicate scanner code consolidated
+- Email `security@projectaghoy.example` (placeholder; replace with the real maintainer address).
+- Include: endpoint or component affected, steps to reproduce, expected vs actual behavior, and impact.
+- Do not include live secrets, real PII, or exploit payloads beyond a minimal repro.
+- We will acknowledge within 72 hours and coordinate a fix before any disclosure.
 
-**Changed:**
-- `src/worker/dojo.ts` — `handleScanner()` and `validateMessages()` exist in one place (the Worker).
-  Shared constants (`MAX_CONTENT_LENGTH`, `MAX_MESSAGES`, `FETCH_TIMEOUT_MS`) defined once.
-- `functions/api/analyze.js` — Maintained as a separate Pages Function for the `/api/analyze` route
-  (Cloudflare Pages routing). Its scanner logic mirrors the Worker but is intentionally independent
-  since Pages Functions cannot import TypeScript modules from `src/`.
-
-**Why:** Previously there were two full implementations of the scanner proxy (one in Pages Functions,
-one in the Worker), each with slightly different error handling. Now they share the same security
-patterns (validation, timeout, CORS), reducing the chance of a fix being applied to one but not
-the other.
-
-**Verification:** Both `GET /api/analyze` and `GET /analyze` (Worker) apply the same message
-validation rules and return identical error structures.
-
----
-
-### Fix H2b — Worker gets input caps + timeout (same as analyze.js)
-
-**Changed:**
-- `src/worker/dojo.ts` — Added `fetchWithTimeout()`, `validateMessages()`, and input truncation
-  to both the scanner handler and the Dojo game engine (user messages in `/chat` are capped at
-  4000 chars, scenario/language inputs at 200/50 chars).
-
-**Why:** The Worker's scanner handler and Dojo engine had no input validation, timeout, or size
-limits. Same attack vectors as the Pages Functions endpoint.
-
-**Verification:** Sending a 5000-char user message to `/dojo/chat` truncates to 4000 chars before
-being added to the conversation history.
-
----
-
-### Fix M3 — Error boundary hides component stack in production
-
-**Changed:**
-- `src/lib/errorBoundary.tsx:107` — Wrapped the `<details>STACK_TRACE</details>` block in
-  `process.env.NODE_ENV !== 'production'`. In production (Vite build), `process.env.NODE_ENV`
-  is replaced at compile time with `"production"`, making the guard `false` and the block
-  tree-shaken from the bundle.
-
-**Why:** React component stacks leak internal file paths, component names, and line numbers.
-While useful for debugging, they expose project structure to end users.
-
-**Verification:** `npm run build && grep -c "STACK_TRACE" dist/assets/index-*.js` returns 0.
-
----
-
-### Fix L1 — Extract UserStats to shared types.ts
-
-**Changed:**
-- `types.ts` — Added `UserStats` interface export.
-- `App.tsx` — Removed inline `interface UserStats`, now imports from `'./types'`.
-
-**Why:** Keeps type definitions in a single source of truth. Reduces App.tsx by 6 lines.
-
-**Verification:** `grep "interface UserStats" App.tsx` returns no results.
-
----
-
-### Fix L2 — Move inline keyframes to index.css
-
-**Changed:**
-- `App.tsx` — Removed inline `<style>{@keyframes loading}</style>` JSX element.
-- `index.css` — Added `@keyframes loading` rule under the Tailwind directives.
-
-**Why:** Inline `<style>` tags in JSX are not processed by Vite's CSS pipeline (no Autoprefixer,
-no minification, no hashing). Moving to `index.css` ensures it is compiled and minified with
-the rest of the stylesheet.
-
-**Verification:** `npm run build && grep -c "loading" dist/assets/index-*.css` returns 1 (animation
-rule present in compiled CSS).
-
----
+Acknowledgment: contributors who report verified vulnerabilities may be credited in this file.

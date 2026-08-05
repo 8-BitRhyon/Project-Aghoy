@@ -1,0 +1,76 @@
+# Deployment pipeline for Project Aghoy.
+#
+# Runs on every push to main (and manually via workflow_dispatch). CI
+# (ci.yml) covers pull requests; this workflow deploys only code that has
+# already reached main. Two Cloudflare surfaces are deployed:
+#
+#   1. The Pages site (project-aghoy.pages.dev): static dist/ plus the
+#      Pages Functions in functions/. `wrangler pages deploy` picks up the
+#      functions/ directory automatically when it sits at the repo root.
+#   2. The Dojo Worker (project-aghoy-dojo): `wrangler deploy` reads
+#      Wrangler.Toml (Durable Objects, D1, Vectorize, AI bindings).
+#
+# Secrets are supplied as GitHub Actions secrets; this workflow only ever
+# references them by name, never with values.
+#
+# PREREQUISITES (one-time, manual):
+#   - wrangler login once locally so the Cloudflare account is trusted.
+#   - Worker secrets must be pre-provisioned on the Dojo Worker before
+#     this workflow can succeed (the Worker fails at runtime without them):
+#       npx wrangler secret put STORAGE_ADMIN_KEY
+#       npx wrangler secret put SESSION_SIGNING_KEY
+#     Do NOT put those values in this file or in Actions secrets here.
+#   - The Pages project `project-aghoy` must already exist
+#     (wrangler pages project create, or via the Cloudflare dashboard).
+#   - If evidence storage is ever enabled: uncomment the EVIDENCE binding
+#     in Wrangler.Toml and create the bucket once:
+#       npx wrangler r2 bucket create project-aghoy-evidence
+#
+# All actions are SHA-pinned (supply-chain policy; CI enforces this).
+
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-main
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Sync self-hosted OCR assets
+        run: bash scripts/sync-ocr.sh
+      - name: Build
+        run: npm run build
+      - name: Test
+        run: npm test
+      - name: Deploy Pages site
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: 'pages deploy dist --project-name=project-aghoy --branch=main'
+      - name: Deploy Dojo Worker
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: 'deploy'

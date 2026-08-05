@@ -1,16 +1,24 @@
-// === PROJECT AGHOY — SCANNER ENDPOINT ===
-// POST /api/analyze — validates messages, proxies to AI Gateway (Cerebras → Groq)
+// === PROJECT AGHOY: SCANNER ENDPOINT ===
+// POST /api/analyze: validates messages, applies the Rejects layer (PII
+// redaction), then proxies to AI Gateway (Cerebras → Groq).
+
+import { redactMessages, redactPII } from "../../src/rejects/rejects";
 
 const MAX_CONTENT_LENGTH = 4000;
 const MAX_MESSAGES = 10;
 const FETCH_TIMEOUT_MS = 25000;
 const RATE_LIMIT = 5;
 const RATE_WINDOW_MS = 60 * 1000;
+const MAX_BODY_SIZE = 100000;
+
+const JSON_HEADERS = { "Content-Type": "application/json", "Cache-Control": "no-store" };
+
+class ValidationError extends Error {}
 
 // Best-effort per-isolate rate limiter.
-// This is NOT globally accurate on serverless — requests hitting different
+// This is NOT globally accurate on serverless: requests hitting different
 // isolates won't share state. For production, use Cloudflare Rate Limiting
-// (dashboard: Security → WAF → Rate Limiting) or a Durable Object.
+// (dashboard: Security -> WAF -> Rate Limiting) or a Durable Object.
 const ipRequestCounts = new Map();
 const checkRateLimit = (ip) => {
   const now = Date.now();
@@ -39,24 +47,24 @@ const validateKeyFormat = (key) => {
 
 const validateMessages = (messages) => {
   if (!Array.isArray(messages)) {
-    throw new Error("Invalid request: messages must be an array");
+    throw new ValidationError("Invalid request: messages must be an array");
   }
   if (messages.length > MAX_MESSAGES) {
-    throw new Error(`Too many messages (max ${MAX_MESSAGES})`);
+    throw new ValidationError(`Too many messages (max ${MAX_MESSAGES})`);
   }
   if (messages.length < 1) {
-    throw new Error("At least one message required");
+    throw new ValidationError("At least one message required");
   }
 
   for (const msg of messages) {
     if (!msg || typeof msg !== "object") {
-      throw new Error("Each message must be an object with role and content");
+      throw new ValidationError("Each message must be an object with role and content");
     }
     if (!msg.role || !["system", "user", "assistant"].includes(msg.role)) {
-      throw new Error(`Invalid message role: "${msg.role}". Must be system, user, or assistant.`);
+      throw new ValidationError(`Invalid message role: "${msg.role}". Must be system, user, or assistant.`);
     }
     if (typeof msg.content !== "string") {
-      throw new Error("Message content must be a string");
+      throw new ValidationError("Message content must be a string");
     }
     if (msg.content.length > MAX_CONTENT_LENGTH) {
       msg.content = msg.content.substring(0, MAX_CONTENT_LENGTH);
@@ -76,6 +84,20 @@ const fetchWithTimeout = async (url, options, timeoutMs) => {
   }
 };
 
+const readProviderContent = async (response, providerName) => {
+  if (!response.ok) {
+    const upstreamDetail = (await response.text()).substring(0, 200);
+    console.error(`${providerName} upstream error status ${response.status}: ${upstreamDetail}`);
+    throw new Error(`Provider error: status ${response.status}`);
+  }
+  const data = await response.json();
+  const content = data?.choices?.[0]?.message?.content;
+  if (typeof content !== "string") {
+    throw new Error("Provider error: empty response");
+  }
+  return content;
+};
+
 export const onRequestPost = async (context) => {
   const { request, env } = context;
 
@@ -83,12 +105,30 @@ export const onRequestPost = async (context) => {
     return new Response(null, { status: 204 });
   }
 
+  // Enforce JSON content type on POST.
+  const contentType = (request.headers.get("Content-Type") || "").toLowerCase();
+  if (!contentType.startsWith("application/json")) {
+    return new Response(JSON.stringify({ error: "Content-Type must be application/json" }), {
+      status: 415,
+      headers: JSON_HEADERS,
+    });
+  }
+
+  // Reject oversized bodies before parsing (Content-Length, when present).
+  const contentLength = Number(request.headers.get("Content-Length") || 0);
+  if (contentLength > MAX_BODY_SIZE) {
+    return new Response(JSON.stringify({ error: "Request body too large" }), {
+      status: 413,
+      headers: JSON_HEADERS,
+    });
+  }
+
   // Rate limit
   const clientIp = request.headers.get("CF-Connecting-IP") || "unknown";
   if (!checkRateLimit(clientIp)) {
     return new Response(JSON.stringify({ error: "Too many requests. Please wait." }), {
       status: 429,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...JSON_HEADERS, "Retry-After": "60" },
     });
   }
 
@@ -100,14 +140,33 @@ export const onRequestPost = async (context) => {
     } catch {
       return new Response(JSON.stringify({ error: "Invalid JSON body" }), {
         status: 400,
-        headers: { "Content-Type": "application/json" },
+        headers: JSON_HEADERS,
       });
     }
 
-    const { messages, jsonMode } = body;
+    // Guard the parsed body size too, covering chunked/encoded requests.
+    if (JSON.stringify(body).length > MAX_BODY_SIZE) {
+      return new Response(JSON.stringify({ error: "Request body too large" }), {
+        status: 413,
+        headers: JSON_HEADERS,
+      });
+    }
+
+    let { messages, jsonMode } = body;
+    jsonMode = jsonMode === true;
 
     // Validate and sanitize messages
     const validatedMessages = validateMessages(messages);
+
+    // REJECTS LAYER (inbound): redact PII before any content reaches a vendor.
+    // Server-side is the source of truth; the client pre-send redaction is
+    // defense-in-depth only.
+    const rejected = redactMessages(validatedMessages);
+    const rejects = {
+      redacted: rejected.count > 0,
+      count: rejected.count,
+      categories: rejected.categories,
+    };
 
     // Sanitize and validate API keys
     const cerebrasKey = cleanKey(env.CEREBRAS_API_KEY);
@@ -149,7 +208,7 @@ export const onRequestPost = async (context) => {
             headers: { ...commonHeaders, Authorization: `Bearer ${cerebrasKey}` },
             body: JSON.stringify({
               model: "gpt-oss-120b",
-              messages: validatedMessages,
+              messages: rejected.messages,
               temperature: 0.7,
               max_tokens: 1024,
               response_format: jsonMode ? { type: "json_object" } : undefined,
@@ -158,13 +217,7 @@ export const onRequestPost = async (context) => {
           FETCH_TIMEOUT_MS
         );
 
-        if (!response.ok) {
-          const errSnippet = (await response.text()).substring(0, 200);
-          throw new Error(`Status ${response.status}: ${errSnippet}`);
-        }
-
-        const data = await response.json();
-        resultText = data.choices[0].message.content;
+        resultText = await readProviderContent(response, "Cerebras");
         usedProvider = "Cerebras GPT-OSS-120B";
       } catch (err) {
         errorLog.push(`Cerebras: ${err.message}`);
@@ -181,7 +234,7 @@ export const onRequestPost = async (context) => {
             headers: { ...commonHeaders, Authorization: `Bearer ${groqKey}` },
             body: JSON.stringify({
               model: "openai/gpt-oss-120b",
-              messages: validatedMessages,
+              messages: rejected.messages,
               temperature: 0.7,
               max_tokens: 1024,
               response_format: jsonMode ? { type: "json_object" } : undefined,
@@ -190,13 +243,7 @@ export const onRequestPost = async (context) => {
           FETCH_TIMEOUT_MS
         );
 
-        if (!response.ok) {
-          const errSnippet = (await response.text()).substring(0, 200);
-          throw new Error(`Status ${response.status}: ${errSnippet}`);
-        }
-
-        const data = await response.json();
-        resultText = data.choices[0].message.content;
+        resultText = await readProviderContent(response, "Groq");
         usedProvider = "Groq GPT-OSS-120B";
       } catch (err) {
         errorLog.push(`Groq: ${err.message}`);
@@ -207,15 +254,30 @@ export const onRequestPost = async (context) => {
       throw new Error(`All providers failed: ${errorLog.join(" | ")}`);
     }
 
-    return new Response(JSON.stringify({ text: resultText, provider: usedProvider }), {
-      headers: { "Content-Type": "application/json" },
+    // REJECTS LAYER (outbound): scrub PII the model may have echoed back.
+    const outbound = redactPII(resultText);
+
+    return new Response(JSON.stringify({ text: outbound.text, provider: usedProvider, rejects: outbound.redacted ? {
+      redacted: true,
+      count: outbound.count,
+      categories: outbound.categories,
+    } : rejects }), {
+      headers: JSON_HEADERS,
     });
   } catch (error) {
     const message = error.message || "Internal error";
-    const status = message.includes("configured") || message.includes("missing") ? 503 : 500;
+    const isValidationError = error instanceof ValidationError || [
+      "Invalid request",
+      "Too many messages",
+      "At least one message",
+      "Invalid message role",
+      "Message content must be a string",
+      "Each message must be an object",
+    ].some((m) => message.includes(m));
+    const status = isValidationError ? 400 : message.includes("configured") || message.includes("missing") ? 503 : 500;
     return new Response(JSON.stringify({ error: message }), {
       status,
-      headers: { "Content-Type": "application/json" },
+      headers: JSON_HEADERS,
     });
   }
 };
