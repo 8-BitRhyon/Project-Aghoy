@@ -120,7 +120,7 @@ const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({ isOpen, onClose
                 <div className="space-y-2">
                     <h4 className="text-white font-bold flex items-center gap-2 text-xs uppercase"><UserCheck className="w-3 h-3 text-cyan-500"/> 5. YOUR RIGHTS (PH DATA PRIVACY ACT)</h4>
                     <p className="text-xs text-slate-400 pl-5">
-                       Under RA 10173 you have the right to know, object, access, rectify, and erase or block your personal data, and to file a complaint with the National Privacy Commission (NPC) at privacy.gov.ph. For privacy requests, contact <strong>[privacy contact - add before launch]</strong>.
+                       Under RA 10173 you have the right to know, object, access, rectify, and erase or block your personal data, and to file a complaint with the National Privacy Commission (NPC) at privacy.gov.ph. For privacy requests, contact <strong>projectaghoy@gmail.com</strong>.
                     </p>
                 </div>
 

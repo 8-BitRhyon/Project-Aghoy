@@ -67,7 +67,7 @@ The rules are idempotent: re-running redaction over already-redacted text is a n
 
 The app shows a privacy consent gate before any analysis. The gate is implemented client-side in localStorage, which is a documented, deliberate decision: a browser consent gate cannot be a real security boundary. Nothing security-relevant depends on it. Only sanitized content is transmitted regardless of consent state, so the Rejects layer is the actual enforcement mechanism.
 
-Privacy contact: `security@projectaghoy.example` (placeholder). Replace with a real mailbox before public launch.
+Privacy contact: `projectaghoy@gmail.com`
 
 ## 3. Authentication and authorization
 
@@ -137,7 +137,7 @@ Both evidence endpoints are admin-only. Uploads require the target report to exi
 
 Please report security issues privately before public disclosure.
 
-- Email `security@projectaghoy.example` (placeholder; replace with the real maintainer address).
+- Email `projectaghoy@gmail.com`.
 - Include: endpoint or component affected, steps to reproduce, expected vs actual behavior, and impact.
 - Do not include live secrets, real PII, or exploit payloads beyond a minimal repro.
 - We will acknowledge within 72 hours and coordinate a fix before any disclosure.
