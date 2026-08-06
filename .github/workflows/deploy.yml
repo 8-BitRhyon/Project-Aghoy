@@ -67,7 +67,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: 'pages deploy dist --project-name=project-aghoy --branch=main'
+          command: 'pages deploy dist --project-name=projectaghoy --branch=main'
       - name: Deploy Dojo Worker
         uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
         with:
