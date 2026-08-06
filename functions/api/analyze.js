@@ -10,10 +10,41 @@ const FETCH_TIMEOUT_MS = 25000;
 const RATE_LIMIT = 5;
 const RATE_WINDOW_MS = 60 * 1000;
 const MAX_BODY_SIZE = 100000;
+// Cross-isolate rate limiting: the Worker's RateLimiter DO is authoritative.
+// RATE_CHECK_KEY (worker secret) must match WORKER_RATE_CHECK_KEY (Pages env).
+const WORKER_ORIGIN = "https://project-aghoy-dojo.rhyonfs.workers.dev";
+const RATE_CHECK_URL = `${WORKER_ORIGIN}/ratelimit/check`;
 
 const JSON_HEADERS = { "Content-Type": "application/json", "Cache-Control": "no-store" };
 
 class ValidationError extends Error {}
+
+// Consult the Worker's shared RateLimiter DO for a globally-accurate decision.
+// Falls back to the local per-isolate limiter only if the Worker is
+// unreachable/misconfigured, so rate limiting never silently disappears.
+const checkGlobalRateLimit = async (ip) => {
+  const key = process.env.WORKER_RATE_CHECK_KEY;
+  if (!key) return null;
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 4000);
+    try {
+      const res = await fetch(RATE_CHECK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+        body: JSON.stringify({ ip, limit: RATE_LIMIT, windowMs: RATE_WINDOW_MS }),
+        signal: controller.signal,
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return { allowed: !!data.allowed, retryAfter: data.retryAfter || 60 };
+    } finally {
+      clearTimeout(timer);
+    }
+  } catch {
+    return null;
+  }
+};
 
 // Best-effort per-isolate rate limiter.
 // This is NOT globally accurate on serverless: requests hitting different
@@ -129,12 +160,15 @@ export const onRequestPost = async (context) => {
     });
   }
 
-  // Rate limit
+  // Rate limit: prefer the Worker's shared DO (globally accurate); fall back
+  // to the local per-isolate limiter when the Worker is unavailable.
   const clientIp = request.headers.get("CF-Connecting-IP") || "unknown";
-  if (!checkRateLimit(clientIp)) {
+  const globalRate = await checkGlobalRateLimit(clientIp);
+  const allowed = globalRate ? globalRate.allowed : checkRateLimit(clientIp);
+  if (!allowed) {
     return new Response(JSON.stringify({ error: "Too many requests. Please wait." }), {
       status: 429,
-      headers: { ...JSON_HEADERS, "Retry-After": "60" },
+      headers: { ...JSON_HEADERS, "Retry-After": String(globalRate?.retryAfter || 60) },
     });
   }
 

@@ -27,6 +27,7 @@ interface Env {
   CF_GATEWAY_ID?: string;
   STORAGE_ADMIN_KEY?: string;
   SESSION_SIGNING_KEY?: string;
+  RATE_CHECK_KEY?: string;
 }
 
 const ALLOWED_ORIGINS = [
@@ -489,7 +490,8 @@ export default {
     const isStorageRead = request.method === "GET" && (url.pathname === "/indicators" || url.pathname === "/evidence");
     const isReportIngest = request.method === "POST" && url.pathname === "/reports";
     const isInspect = request.method === "POST" && url.pathname === "/inspect";
-    if (!isStorageRead && !isReportIngest && !isInspect) {
+    const isRateCheck = request.method === "POST" && url.pathname === "/ratelimit/check";
+    if (!isStorageRead && !isReportIngest && !isInspect && !isRateCheck) {
       const rate = await rateCheck(env, clientIp, 5, 60000);
       if (!rate.allowed) {
         return new Response(
@@ -698,6 +700,36 @@ export default {
       } catch (error: any) {
         const message = error?.message || "Inspection failed";
         return jsonResponse({ ok: false, error: message }, 400, origin);
+      }
+    }
+
+    // POST /ratelimit/check - authoritative cross-isolate rate check for the
+    // Pages Function (whose per-isolate limiter is not globally accurate).
+    // Requires a shared secret so it cannot be used as an open rate oracle.
+    if (url.pathname === "/ratelimit/check") {
+      if (request.method !== "POST") {
+        return jsonResponse({ error: "Method Not Allowed" }, 405, origin);
+      }
+      if (!env.RATE_CHECK_KEY) return authResponse(503, origin);
+      const given = request.headers.get("Authorization") || "";
+      const expected = `Bearer ${env.RATE_CHECK_KEY}`;
+      const [givenDigest, expectedDigest] = await Promise.all([
+        crypto.subtle.digest("SHA-256", new TextEncoder().encode(given)),
+        crypto.subtle.digest("SHA-256", new TextEncoder().encode(expected)),
+      ]);
+      if (!constantTimeEqual(new Uint8Array(givenDigest), new Uint8Array(expectedDigest))) {
+        return authResponse(401, origin);
+      }
+      try {
+        const body: any = await parseJsonBody(request, MAX_REPORT_BODY_BYTES);
+        const ip = String(body.ip || "").trim();
+        if (!ip) return jsonResponse({ error: "Missing ip" }, 400, origin);
+        const limit = Math.min(Math.max(Number(body.limit) || 5, 1), 100);
+        const windowMs = Math.min(Math.max(Number(body.windowMs) || 60000, 1000), 3600000);
+        const rate = await rateCheck(env, `check:${ip}`, limit, windowMs);
+        return jsonResponse({ allowed: rate.allowed, retryAfter: rate.retryAfter }, 200, origin);
+      } catch (error: any) {
+        return jsonResponse({ error: error?.message || "Rate check failed" }, 400, origin);
       }
     }
 
