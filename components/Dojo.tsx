@@ -11,6 +11,7 @@ import { setDocumentLang } from '../src/utils/lang';
 import { type Scenario, type ScenarioStep, type ScenarioDifficulty, type ScenarioFamily } from '../src/dojo/scenarios';
 import { ALL_SCENARIOS } from '../src/dojo/scenarios.generated';
 import { type LearnerProgress, emptyProgress, applyAnswer, sessionPlan, recordDailyGoal, streakStatus, familyMasteryState, isFamilyUnlocked, isTierUnlocked } from '../src/dojo/progress';
+import { saveTrainingProgress, loadTrainingProgress } from '../src/api/storageClient';
 import { type GameState, startScenario, answerStep, advanceFromFeedback, rankFor } from '../src/dojo/engine';
 import { createDojoChat } from '../services/aiService';
 
@@ -102,8 +103,9 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
   const [step, setStep] = useState<ScenarioStep | null>(null);
   const [feedbackTip, setFeedbackTip] = useState<string | null>(null);
 
-  // Progression engine state (in-memory only; a future D1 layer persists it).
+  // Progression engine state, persisted server-side (pseudonymous learner_key).
   const [progress, setProgress] = useState<LearnerProgress>(emptyProgress);
+  const [progressLoaded, setProgressLoaded] = useState(false);
   const [sessionIds, setSessionIds] = useState<string[]>([]);
   const [today, setToday] = useState<string>(dayKey);
   const [todayCorrect, setTodayCorrect] = useState(0);
@@ -134,6 +136,17 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
       setTodayCorrect(0);
     }
   }, [today]);
+
+  // Load persisted progress once on mount (best-effort; offline stays local).
+  useEffect(() => {
+    let cancelled = false;
+    loadTrainingProgress<LearnerProgress>().then((loaded) => {
+      if (cancelled || !loaded) return;
+      setProgress(loaded);
+      setTodayCorrect(0);
+    }).finally(() => { if (!cancelled) setProgressLoaded(true); });
+    return () => { cancelled = true; };
+  }, []);
 
   // ---- Scenario mode ----
   const openScenario = (id: string) => {
@@ -205,12 +218,15 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
     const result = answerStep(scenario, game, choiceId);
     setGame(result.state);
     setStep(result.step);
-    // Functional update for the daily counter (avoids stale closure).
+    // Functional updates avoid stale closures; persist the updated progress so
+    // mastery/streaks survive reloads and devices.
     setTodayCorrect((prev) => {
       const next = prev + (result.correct ? 1 : 0);
       setProgress((p) => {
         const withAnswer = applyAnswer(p, { scenario, correct: result.correct, atDay: today });
-        return recordDailyGoal(withAnswer, next, DAILY_GOAL, today);
+        const saved = recordDailyGoal(withAnswer, next, DAILY_GOAL, today);
+        saveTrainingProgress(saved);
+        return saved;
       });
       return next;
     });

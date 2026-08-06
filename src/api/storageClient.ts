@@ -3,6 +3,18 @@ import { WORKER_ORIGIN } from "../config";
 const FETCH_TIMEOUT_MS = 5000;
 const CONSENT_STORAGE_KEY = "aghoy_consent_token";
 const CONSENT_VERSION_KEY = "aghoy_consent_version";
+const LEARNER_ID_KEY = "aghoy_learner_id";
+
+// Stable pseudonymous learner id for Dojo progress (server derives the HMAC
+// key; the raw id is never stored server-side).
+export const getLearnerId = (): string => {
+  let id = localStorage.getItem(LEARNER_ID_KEY);
+  if (!id) {
+    id = `l_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+    localStorage.setItem(LEARNER_ID_KEY, id);
+  }
+  return id;
+};
 
 export interface ReportPayload {
   verdict: string;
@@ -162,4 +174,76 @@ export const getConsentToken = (): string | null => {
 export const clearConsentToken = (): void => {
   localStorage.removeItem(CONSENT_STORAGE_KEY);
   localStorage.removeItem(CONSENT_VERSION_KEY);
+};
+
+// ============================================================
+// Dojo progress persistence (consent-gated, pseudonymous)
+// ============================================================
+
+const learnerHeaders = async (): Promise<Record<string, string>> => ({
+  "Content-Type": "application/json",
+  "X-Consent-Token": getConsentToken() || "",
+  "X-Learner-Id": getLearnerId(),
+});
+
+// Save progress + optional batch answers. Best-effort; never blocks training.
+export const saveTrainingProgress = async (
+  progress: unknown,
+  answers?: Array<{ scenarioId: string; stepIndex: number; optionId: string; correct: boolean; responseMs: number }>
+): Promise<void> => {
+  try {
+    const res = await fetchWithTimeout(`${WORKER_ORIGIN}/training/progress`, {
+      method: "POST",
+      headers: await learnerHeaders(),
+      body: JSON.stringify({ progress, answers: answers ?? [] }),
+    });
+    void res;
+  } catch {
+    // offline / transient: progress stays in component state until next save
+  }
+};
+
+// Load resume state. Returns null if never saved or unreachable.
+export const loadTrainingProgress = async <T,>(): Promise<T | null> => {
+  try {
+    const res = await fetchWithTimeout(`${WORKER_ORIGIN}/training/progress`, {
+      method: "GET",
+      headers: await learnerHeaders(),
+    });
+    if (!res.ok) return null;
+    const data = (await res.json()) as { progress?: T };
+    return data.progress ?? null;
+  } catch {
+    return null;
+  }
+};
+
+// Record a placement result (sets starting Shield level server-side).
+export const savePlacement = async (score: number, max: number): Promise<number | null> => {
+  try {
+    const res = await fetchWithTimeout(`${WORKER_ORIGIN}/training/placement`, {
+      method: "POST",
+      headers: await learnerHeaders(),
+      body: JSON.stringify({ score, max }),
+    });
+    if (!res.ok) return null;
+    const data = (await res.json()) as { shieldLevel?: number };
+    return data.shieldLevel ?? null;
+  } catch {
+    return null;
+  }
+};
+
+// Record a "I caught a real scam" self-report (narrative Rejects-sanitized).
+export const saveSelfReport = async (report: { vector: string; amountPesos?: number; narrative: string }): Promise<void> => {
+  try {
+    const res = await fetchWithTimeout(`${WORKER_ORIGIN}/training/self-report`, {
+      method: "POST",
+      headers: await learnerHeaders(),
+      body: JSON.stringify(report),
+    });
+    void res;
+  } catch {
+    // best-effort
+  }
 };

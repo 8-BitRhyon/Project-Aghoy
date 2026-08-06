@@ -19,6 +19,15 @@ import {
 } from "./storage";
 import { inspectUrl } from "./urlInspect";
 import { mintConsentToken, verifyConsentToken, extractConsentToken, CONSENT_VERSION } from "../consent";
+import {
+  learnerKey,
+  loadProgress,
+  saveProgress,
+  recordAnswer,
+  recordPlacement,
+  recordSelfReport,
+} from "./training";
+import { applyPlacementResult } from "../dojo/progress";
 
 interface Env {
   AI: any;
@@ -67,7 +76,7 @@ const corsHeaders = (origin: string) => {
   return {
     "Access-Control-Allow-Origin": allowed,
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Session-Token, X-Consent-Token",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Session-Token, X-Consent-Token, X-Learner-Id",
     "Vary": "Origin",
     "X-Content-Type-Options": "nosniff",
     "Content-Security-Policy": "default-src 'none'",
@@ -822,6 +831,87 @@ export default {
     if (url.pathname === "/metrics") {
       const metrics = await getMetrics(env);
       return jsonResponse(metrics, 200, origin);
+    }
+
+    // ==== TRAINING / PROGRESS (consent-gated, pseudonymous learner_key) ====
+    // The client sends a stable learner_id (localStorage UUID); the server
+    // derives learner_key = HMAC(id, consentKey) so no raw identifier is
+    // stored. Progress persists across devices/browser clears.
+    if (url.pathname.startsWith("/training/")) {
+      const consentGate = await requireConsent(request, env, origin);
+      if (consentGate) return consentGate;
+      if (!env.CONSENT_SIGNING_KEY) return consentResponse("Server misconfigured", origin, 503);
+
+      const learnerId = (request.headers.get("X-Learner-Id") || "").trim();
+      if (!learnerId || learnerId.length > 64) {
+        return jsonResponse({ error: "Missing or invalid learner id" }, 400, origin);
+      }
+      const key = await learnerKey(learnerId, env.CONSENT_SIGNING_KEY);
+
+      // GET /training/progress - resume state.
+      if (url.pathname === "/training/progress" && request.method === "GET") {
+        const progress = await loadProgress(env, key);
+        return jsonResponse({ ok: true, progress }, 200, origin);
+      }
+
+      // POST /training/progress - full save (batch answers + progress).
+      if (url.pathname === "/training/progress" && request.method === "POST") {
+        try {
+          const body: any = await parseJsonBody(request, MAX_REPORT_BODY_BYTES);
+          if (body.answers && Array.isArray(body.answers)) {
+            for (const a of body.answers.slice(0, 100)) {
+              if (a.scenarioId && typeof a.correct === "boolean") {
+                await recordAnswer(env, key, {
+                  scenarioId: String(a.scenarioId).slice(0, 64),
+                  stepIndex: Number(a.stepIndex) || 0,
+                  optionId: String(a.optionId || "").slice(0, 8),
+                  correct: a.correct,
+                  responseMs: Number(a.responseMs) || 0,
+                });
+              }
+            }
+          }
+          if (body.progress && typeof body.progress === "object") {
+            await saveProgress(env, key, body.progress);
+          }
+          return jsonResponse({ ok: true }, 200, origin);
+        } catch (error: any) {
+          return jsonResponse({ error: "Internal error saving progress" }, 500, origin);
+        }
+      }
+
+      // POST /training/placement - record placement result + set starting level.
+      if (url.pathname === "/training/placement" && request.method === "POST") {
+        try {
+          const body: any = await parseJsonBody(request, MAX_REPORT_BODY_BYTES);
+          const score = Number(body.score) || 0;
+          const max = Number(body.max) || 12;
+          await recordPlacement(env, key, Math.min(Math.max(score, 0), max), body.kind || "onboard");
+          const progress = await loadProgress(env, key);
+          const applied = applyPlacementResult(progress, score, max);
+          await saveProgress(env, key, applied);
+          return jsonResponse({ ok: true, shieldLevel: applied.shieldLevel }, 200, origin);
+        } catch (error: any) {
+          return jsonResponse({ error: "Internal error recording placement" }, 500, origin);
+        }
+      }
+
+      // POST /training/self-report - "I caught a real scam" (Rejects-sanitized).
+      if (url.pathname === "/training/self-report" && request.method === "POST") {
+        try {
+          const body: any = await parseJsonBody(request, MAX_REPORT_BODY_BYTES);
+          await recordSelfReport(env, key, {
+            vector: String(body.vector || "").slice(0, 40),
+            amountPesos: body.amountPesos ? Number(body.amountPesos) : undefined,
+            narrative: String(body.narrative || ""),
+          });
+          return jsonResponse({ ok: true }, 200, origin);
+        } catch (error: any) {
+          return jsonResponse({ error: "Internal error recording report" }, 500, origin);
+        }
+      }
+
+      return jsonResponse({ error: "Not Found" }, 404, origin);
     }
 
     // GET /feed/reputation?domain=x - domain reputation (public, read-only).
