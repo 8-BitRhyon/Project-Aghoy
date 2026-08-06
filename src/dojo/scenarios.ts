@@ -8,7 +8,17 @@
 // explaining it to a family member. No jargon. Feedback explains WHY.
 
 export type ScenarioChannel = "sms" | "email" | "chat" | "linkedin" | "vishing" | "qr";
-export type ScenarioDifficulty = "beginner" | "intermediate" | "advanced";
+export type ScenarioDifficulty = "easy" | "medium" | "hard";
+export type ScenarioFamily =
+  | "ewallet" | "bank" | "telco" | "delivery" | "customs" | "job" | "romance"
+  | "investment" | "government" | "quishing" | "vishing" | "sim-pretext"
+  | "family-emergency" | "remittance" | "loan-app" | "charity" | "fake-reward"
+  | "good-message";
+export type ScenarioArchetype = "trap" | "redirect" | "good-message" | "hybrid";
+// Interaction formats: multiple-choice (default), spot-the-red-flag,
+// what-happens-next (predict the script), good-message-or-scam (discriminate),
+// which-rule-applies (match rule to message), reply-builder (chip compose).
+export type ScenarioFormat = "mc" | "spotflag" | "whatnext" | "goodscam" | "rulematch" | "reply";
 
 export interface ScenarioOption {
   id: string;
@@ -17,14 +27,30 @@ export interface ScenarioOption {
   feedback: string; // why this choice is right or wrong
 }
 
+// A tappable segment of a message for spot-the-red-flag format.
+export interface MessageSegment {
+  text: string;
+  flag?: string; // present = this segment contains the red flag (spotflag)
+  official?: boolean; // present = this segment is the legit tell (goodscam)
+}
+
+// Generic step fields across all interaction formats.
 export interface ScenarioStep {
   id: string;
   channel: ScenarioChannel;
   senderLabel: string; // e.g. "GCash", "J&T Express", "LinkedIn InMail"
+  format?: ScenarioFormat; // defaults to "mc"
   message: string; // the message the user receives
-  question: string; // "What do you do?"
+  // mc + whatnext + reply: the question and the options to pick from
+  question: string;
   options: ScenarioOption[];
-  tip: string; // the lesson, shown after any answer
+  // spotflag: the message rendered as tappable segments
+  segments?: MessageSegment[];
+  // whatnext: the full scam script revealed after an answer (the lesson pattern)
+  script?: string[];
+  // rulematch: the rule label this scenario trains (maps to a named mnemonic)
+  rule?: string;
+  tip: string; // the one memorable rule, shown after any answer
 }
 
 export interface Scenario {
@@ -32,10 +58,13 @@ export interface Scenario {
   title: string;
   icon: string; // lucide icon name used by the UI
   difficulty: ScenarioDifficulty;
+  family: ScenarioFamily;
+  archetype: ScenarioArchetype;
   category: string;
   setup: string; // context before the first message
   steps: ScenarioStep[];
   debrief: string; // closing summary
+  source: "curated" | "generated"; // provenance for review + attribution
 }
 
 export const SCENARIOS: Scenario[] = [
@@ -43,7 +72,13 @@ export const SCENARIOS: Scenario[] = [
     id: "gcash-otp",
     title: "The GCash OTP Trap",
     icon: "Smartphone",
-    difficulty: "beginner",
+    difficulty: "easy",
+
+    family: "ewallet",
+
+    archetype: "redirect",
+
+    source: "curated",
     category: "E-wallet / SMS",
     setup:
       "You get a text message that looks like it is from GCash. You do have a GCash account. What do you do?",
@@ -152,7 +187,13 @@ export const SCENARIOS: Scenario[] = [
     id: "parcel-fee",
     title: "The Parcel Fee",
     icon: "Package",
-    difficulty: "beginner",
+    difficulty: "easy",
+
+    family: "delivery",
+
+    archetype: "redirect",
+
+    source: "curated",
     category: "Delivery / SMS",
     setup:
       "You are waiting for a package you really did order. Then this text arrives. It sounds believable because you ARE expecting a delivery.",
@@ -229,7 +270,13 @@ export const SCENARIOS: Scenario[] = [
     id: "linkedin-job",
     title: "The LinkedIn Job Offer",
     icon: "Briefcase",
-    difficulty: "intermediate",
+    difficulty: "medium",
+
+    family: "job",
+
+    archetype: "redirect",
+
+    source: "curated",
     category: "Job Scam",
     setup:
       "A recruiter messages you on LinkedIn. The job looks perfect: work from home, good pay, and they found you first. You are excited.",
@@ -306,7 +353,13 @@ export const SCENARIOS: Scenario[] = [
     id: "vishing-bank",
     title: "The Bank Call",
     icon: "Phone",
-    difficulty: "intermediate",
+    difficulty: "medium",
+
+    family: "vishing",
+
+    archetype: "redirect",
+
+    source: "curated",
     category: "Vishing / Call",
     setup:
       "Your phone rings. The caller ID shows your bank's name. A professional-sounding voice says your card was used for fraud.",
@@ -376,7 +429,13 @@ export const SCENARIOS: Scenario[] = [
     id: "email-phishing",
     title: "The Fake Bank Email",
     icon: "Mail",
-    difficulty: "intermediate",
+    difficulty: "medium",
+
+    family: "bank",
+
+    archetype: "redirect",
+
+    source: "curated",
     category: "Email Phishing",
     setup:
       "You check your email and see a message from 'BDO Online Banking' saying your account will be closed unless you update it today.",
@@ -446,7 +505,13 @@ export const SCENARIOS: Scenario[] = [
     id: "quishing-qr",
     title: "The Parking QR",
     icon: "QrCode",
-    difficulty: "beginner",
+    difficulty: "easy",
+
+    family: "quishing",
+
+    archetype: "trap",
+
+    source: "curated",
     category: "QR Phishing",
     setup:
       "You park your car and see a notice: 'Scan this QR code to pay for parking.' You have paid parking this way before. It looks official.",
@@ -491,7 +556,13 @@ export const SCENARIOS: Scenario[] = [
     id: "task-scam",
     title: "The Easy Money Task",
     icon: "Zap",
-    difficulty: "intermediate",
+    difficulty: "medium",
+
+    family: "investment",
+
+    archetype: "trap",
+
+    source: "curated",
     category: "Task / Telegram",
     setup:
       "A friend forwards you a message about earning easy money by doing simple tasks on your phone. You could use the extra income.",
@@ -561,7 +632,13 @@ export const SCENARIOS: Scenario[] = [
     id: "family-emergency",
     title: "The Family Emergency",
     icon: "Users",
-    difficulty: "beginner",
+    difficulty: "easy",
+
+    family: "family-emergency",
+
+    archetype: "trap",
+
+    source: "curated",
     category: "Emotional",
     setup:
       "You get a message from an unknown number claiming to be your daughter. Her 'phone was broken' so she is using a new number, and she needs money right now.",
