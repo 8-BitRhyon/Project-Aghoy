@@ -153,19 +153,54 @@ export const lookupIndicator = async (
 // keyspace offline. Phone entries stay private and are only reachable via
 // exact-match lookupIndicator("phone", hash).
 export const listIndicators = async (
-  env: StorageEnv,
-  limit = 100
-): Promise<Array<{ type: string; value: string; status: string; times_reported: number; last_seen: string }>> => {
-  const { results } = await env.DB.prepare(
-    `SELECT type, value, status, times_reported, last_seen
-     FROM indicators
-     WHERE type != 'phone'
-     ORDER BY last_seen DESC
-     LIMIT ?1`
+   env: StorageEnv,
+   limit = 100
+ ): Promise<Array<{ type: string; value: string; status: string; times_reported: number; last_seen: string }>> => {
+   const { results } = await env.DB.prepare(
+     `SELECT type, value, status, times_reported, last_seen
+      FROM indicators
+      WHERE type != 'phone'
+      ORDER BY last_seen DESC
+      LIMIT ?1`
   )
     .bind(limit)
     .all();
   return results as Array<{ type: string; value: string; status: string; times_reported: number; last_seen: string }>;
+};
+
+// Aggregate observability over the reports table: verdict distribution,
+// provider usage (including the deterministic "brandIntel" fallback rate), and
+// scan volume. Feeds the ISO 42001 monitoring / model-drift narrative.
+export const getMetrics = async (
+  env: StorageEnv
+): Promise<{
+  totalReports: number;
+  verdicts: Record<string, number>;
+  providers: Record<string, number>;
+  fallbackRate: number;
+  highRiskRate: number;
+}> => {
+  const verdicts: Record<string, number> = { SAFE: 0, SUSPICIOUS: 0, HIGH_RISK: 0 };
+  const providers: Record<string, number> = {};
+  const { results } = await env.DB.prepare(
+    `SELECT verdict, provider FROM reports`
+  ).all<{ verdict: string; provider: string }>();
+
+  for (const row of results || []) {
+    verdicts[row.verdict] = (verdicts[row.verdict] || 0) + 1;
+    const provider = row.provider || "unknown";
+    providers[provider] = (providers[provider] || 0) + 1;
+  }
+  const total = results?.length || 0;
+  const fallback = providers["brandIntel"] || 0;
+  const highRisk = verdicts["HIGH_RISK"] || 0;
+  return {
+    totalReports: total,
+    verdicts,
+    providers,
+    fallbackRate: total ? Number((fallback / total).toFixed(3)) : 0,
+    highRiskRate: total ? Number((highRisk / total).toFixed(3)) : 0,
+  };
 };
 
 export const verifyIndicator = async (

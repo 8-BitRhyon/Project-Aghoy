@@ -29,6 +29,10 @@ jobs:
           cache: npm
       - name: Install
         run: npm ci
+      - name: Supply-chain audit (SCA)
+        # Fails on high/critical npm advisories. A non-zero audit exit blocks the
+        # PR, so a known advisory cannot silently reach production.
+        run: npm audit --audit-level=high
       - name: Typecheck
         run: npm run typecheck
       - name: Test

@@ -1,6 +1,6 @@
 # Project Aghoy: ISO 27001:2022 Compliance Program
 
-**Status:** Phase 1 (gap analysis, policy set, and Statement of Applicability in progress)
+**Status:** Phase 1 (gap analysis, policy set, SoA, asset inventory, risk register, and operational evidence in place)
 **Owner:** Single operator (InfoSec owner, AI governance owner, internal auditor)
 **Target:** ISO/IEC 27001:2022 certification
 **Last updated:** 2026-08-06
@@ -67,8 +67,9 @@ The work is split into three phases. Phase 1 is happening now.
 - Run the full Annex A gap analysis (`iso-27001-gap-analysis.md`).
 - Draft the SoA for all 93 controls (`statement-of-applicability.md`).
 - Produce the policy set under `docs/compliance/policies/` (separate workstream, parallel agent).
+- Stand up the asset inventory (`asset-inventory.md`, A.5.9) and risk register (`risk-register.md`, Clause 6.1).
+- Maintain the AI governance analysis (`iso-42001-gap-analysis.md`) and operational evidence: `scripts/backup-db.sh` (A.8.13), `/metrics` observability (verdict/provider/fallback rates), and the adversarial prompt-injection corpus test (`src/brands/adversarial-corpus.test.ts`).
 - Agree the ISMS scope and write the top-level information security policy.
-- Stand up the first risk register and risk treatment plan.
 
 Exit criteria: a defensible SoA, a policy set, and a risk register with a treatment plan. Estimated effort: 1-3 weeks of part-time operator work.
 
