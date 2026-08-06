@@ -1,8 +1,6 @@
-// === BRAND DETECTION LAYER ===
-// Deterministic, zero-dependency brand and intent detection for Project Aghoy.
-// Runs on Rejects-layer output only (see fallbackVerdict). Powers victim-support
-// routing (SmartSupport) and the no-LLM fallback verdict when providers are
-// unavailable. Pure logic; tests in src/brands/brands.test.ts.
+// Deterministic, zero-dependency brand and intent detection. Runs on
+// Rejects-layer output only; powers victim-support routing (SmartSupport) and
+// the no-LLM fallback verdict.
 
 import { redactPII } from "../rejects/rejects";
 
@@ -31,7 +29,6 @@ export type Intent =
   | "SIM_PRETEXT"
   | "BRAND_IMPERSONATION";
 
-// normalize: lowercase -> strip diacritics -> leet map -> collapse non-alnum.
 const LEET_MAP: Record<string, string> = {
   "0": "o", "3": "e", "4": "a", "1": "i", "5": "s", "7": "t", "@": "a", "$": "s",
 };
@@ -50,7 +47,6 @@ export const normalizeBrandText = (input: string): string => {
 
 const escapeRegExp = (s: string): string => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-// Canonical key -> normalized alias list (research-derived; PH scam landscape).
 export const BRAND_ALIASES: Record<string, string[]> = {
   GCASH: ["gcash", "g-cash", "g cash", "gcsh", "gcashe", "gcashonline", "gcashph", "gcashapp", "g cash app"],
   MAYA: ["maya", "paymaya", "pay maya", "mayabank", "mayawallet", "maya wallet", "maya bank"],
@@ -159,7 +155,6 @@ export const detectBrands = (input: {
 
   const lowerCandidate = candidate.toLowerCase();
 
-  // Pass 1: boundary-aware on the lowercased original text.
   for (const [key, aliases] of Object.entries(BRAND_ALIASES)) {
     for (const alias of aliases) {
       if (!/\s/.test(alias) && !/[&@$-]/.test(alias)) {
@@ -223,10 +218,6 @@ export const detectBrands = (input: {
   return ranked.slice(0, limit);
 };
 
-// ============================================================
-//  Intent detection
-// ============================================================
-
 const INTENT_PATTERNS: Array<[Intent, RegExp]> = [
   ["TASK_PAY_TO_WORK", /\b(like|likes|liking|subscribe|subscription|follow|following|rating|review|recharge|top[\s-]?up)\b.*\b(unlock|withdraw|deposit|fee|task|earn|commission)\b|\b(processing|training|refundable)\s*fee\b/],
   ["ACCOUNT_LOCK_URGENCY", /(account|card|wallet|sim).*(lock|restrict|suspend|block|deactivat|expir)\w*|within\s*(24\s*hours|24hrs|today)|(avoid|prevent)\s+(suspension|block|deactivation)/],
@@ -251,10 +242,6 @@ export const detectIntents = (text: string): Intent[] => {
   if (brands.length > 0 && !found.includes("BRAND_IMPERSONATION")) found.push("BRAND_IMPERSONATION");
   return found.slice(0, 3);
 };
-
-// ============================================================
-//  Deterministic fallback verdict (no LLM)
-// ============================================================
 
 const INTENT_TO_FLAGS: Record<Intent, string[]> = {
   TASK_PAY_TO_WORK: ["TASK_SCAM", "ADVANCE_FEE", "ASKING FOR PAYMENT TO WORK"],

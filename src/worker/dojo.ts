@@ -12,13 +12,7 @@ import {
   findSimilarScams,
   seedVectorize,
 } from "./storage";
-
-// ============================================================
-//  Project Aghoy - Cloudflare Worker
-//  Routes: /analyze (scanner) | /dojo/* (training game)
-//          /reports, /indicators, /evidence (storage layer)
-//  DOs: DojoSession (per-session game state), RateLimiter (per-IP)
-// ============================================================
+import { inspectUrl } from "./urlInspect";
 
 interface Env {
   AI: any;
@@ -35,7 +29,6 @@ interface Env {
   SESSION_SIGNING_KEY?: string;
 }
 
-// --- Constants ---
 const ALLOWED_ORIGINS = [
   "https://project-aghoy.pages.dev",
   "https://project-aghoy.vercel.app",
@@ -56,6 +49,9 @@ const MAX_ASSISTANT_TURNS = 50;
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 const REPORTS_RATE_LIMIT = 20;
 const REPORTS_RATE_WINDOW_MS = 60 * 1000;
+// /inspect does outbound fetches, so it gets a dedicated per-IP budget rather than being fully exempt (open proxy surface).
+const INSPECT_RATE_LIMIT = 10;
+const INSPECT_RATE_WINDOW_MS = 60 * 1000;
 const MAX_EVIDENCE_BYTES = 10 * 1024 * 1024;
 
 const corsHeaders = (origin: string) => {
@@ -80,7 +76,6 @@ const jsonResponse = (body: unknown, status: number, origin: string): Response =
   });
 };
 
-// --- Helpers ---
 const validateMessages = (messages: unknown): Array<{ role: string; content: string }> => {
   if (!Array.isArray(messages)) throw new Error("messages must be an array");
   if (messages.length > MAX_MESSAGES) throw new Error(`Too many messages (max ${MAX_MESSAGES})`);
@@ -108,15 +103,14 @@ const fetchWithTimeout = async (url: string, options: RequestInit, timeoutMs: nu
   }
 };
 
-// CF-Connecting-IP is set by Cloudflare and is the only trustworthy client
-// address. X-Forwarded-For is attacker-controllable and is never trusted.
+// X-Forwarded-For is attacker-controllable and never trusted; only
+// CF-Connecting-IP is used.
 const getClientIp = (request: Request): string => {
   return request.headers.get("CF-Connecting-IP")?.trim() || "unknown";
 };
 
-// --- Constant-time authorization helpers ---
-// Workers exposes Web Crypto only (no timingSafeEqual), so a manual
-// XOR-accumulate comparison over fixed-length SHA-256 digests substitutes.
+// Workers has no timingSafeEqual; a manual XOR-accumulate comparison over
+// fixed-length SHA-256 digests substitutes.
 const constantTimeEqual = (a: Uint8Array, b: Uint8Array): boolean => {
   if (a.length !== b.length) return false;
   let diff = 0;
@@ -124,8 +118,8 @@ const constantTimeEqual = (a: Uint8Array, b: Uint8Array): boolean => {
   return diff === 0;
 };
 
-// Bearer-token check for the storage admin key. Fail-closed: when no key is
-// configured the request is rejected with 503 rather than silently allowed.
+// Bearer-token check for the storage admin key. Fail-closed: no key
+// configured means 503, never a silent allow.
 const authorized = async (request: Request, env: Env): Promise<200 | 401 | 503> => {
   if (!env.STORAGE_ADMIN_KEY) return 503;
   const given = request.headers.get("Authorization") || "";
@@ -140,8 +134,6 @@ const authorized = async (request: Request, env: Env): Promise<200 | 401 | 503> 
 const authResponse = (status: 401 | 503, origin: string): Response =>
   jsonResponse({ error: status === 401 ? "Unauthorized" : "Server misconfigured" }, status, origin);
 
-// Rate-limit check against the per-key RateLimiter DO. Returns allowed plus
-// seconds until the window resets.
 const rateCheck = async (
   env: Env,
   key: string,
@@ -161,11 +153,10 @@ const rateCheck = async (
   };
 };
 
-// --- Session token helpers ---
-// Dojo tokens are HMAC-SHA256 signed and expiring. Format:
-// base64url(payload).base64url(sig), payload JSON = { exp, sub }. The full
-// signed token is the Durable Object key. NOTE: the SPA does not call this
-// worker for the Dojo; this signing is defense-in-depth for direct API users.
+// Dojo tokens are HMAC-SHA256 signed and expiring, keyed by the Durable
+// Object id: base64url(payload).base64url(sig), payload = { exp, sub }. NOTE:
+// the SPA does not call this worker; signing is defense-in-depth for direct
+// API users.
 const base64urlEncode = (data: Uint8Array): string => {
   let binary = "";
   for (let i = 0; i < data.length; i++) binary += String.fromCharCode(data[i]);
@@ -226,10 +217,7 @@ const verifySessionToken = async (
   return { exp: payload.exp, sub: payload.sub };
 };
 
-// Reads the per-session token from the X-Session-Token header or the
-// sessionToken body field. Returns null when absent or the JSON body is
-// malformed. A clone is parsed so the original request body stays intact
-// for the downstream Durable Object.
+// A clone is parsed so the original body stays intact for the downstream DO.
 const extractSessionToken = async (request: Request): Promise<string | null> => {
   const headerToken = request.headers.get("X-Session-Token");
   if (headerToken && headerToken.trim()) return headerToken.trim();
@@ -246,12 +234,7 @@ const extractSessionToken = async (request: Request): Promise<string | null> => 
   return null;
 };
 
-// ============================================================
-//  RATE LIMITER (Durable Object)
-//  Tracks request counts per IP across all isolates. Counts are
-//  persisted to durable storage and stale windows are evicted on
-//  every access so limits survive isolate eviction.
-// ============================================================
+// Counts are persisted to durable storage so limits survive isolate eviction.
 export class RateLimiter implements DurableObject {
   private storage: DurableObjectStorage;
   private counts: Map<string, { count: number; resetAt: number }>;
@@ -274,7 +257,6 @@ export class RateLimiter implements DurableObject {
     };
     const now = Date.now();
 
-    // Evict expired windows so the map never grows without bound.
     for (const [key, entry] of this.counts) {
       if (entry.resetAt < now) this.counts.delete(key);
     }
@@ -298,9 +280,6 @@ export class RateLimiter implements DurableObject {
   }
 }
 
-// ============================================================
-//  DOJO GAME ENGINE (Durable Object, per-session token)
-// ============================================================
 interface GameState {
   health: number;
   history: Array<{ role: string; content: string }>;
@@ -337,13 +316,11 @@ export class DojoSession implements DurableObject {
     const origin = request.headers.get("Origin") || "";
     const headers = { ...corsHeaders(origin), "Content-Type": "application/json" };
 
-    // Idle TTL: drop the session state once it has sat idle past 24h.
     if (this.isExpired()) {
       await this.storage.delete("gameState");
       this.gameState = emptyGameState();
     }
 
-    // START GAME
     if (url.pathname === "/dojo/start") {
       if (request.method !== "POST") {
         return new Response(JSON.stringify({ error: "Method Not Allowed" }), { status: 405, headers });
@@ -354,8 +331,7 @@ export class DojoSession implements DurableObject {
       } catch {
         return new Response(JSON.stringify({ error: "Invalid JSON body" }), { status: 400, headers });
       }
-      // REJECTS LAYER: redact PII from the scenario before it reaches the model
-      // or durable storage.
+      // Redact PII from the scenario before it reaches the model or storage.
       const rawScenario = (body.scenario || "").substring(0, 200);
       const rawLanguage = (body.language || "Taglish").substring(0, 50);
       const scenario = redactPII(rawScenario).text;
@@ -385,13 +361,11 @@ export class DojoSession implements DurableObject {
       }
     }
 
-    // CHAT
     if (url.pathname === "/dojo/chat") {
       if (request.method !== "POST") {
         return new Response(JSON.stringify({ error: "Method Not Allowed" }), { status: 405, headers });
       }
-      // Per-session AI budget: hard cap on assistant turns bounds token cost
-      // per signed token, independent of the per-IP rate limiter.
+      // Hard cap on assistant turns bounds token cost per signed token.
       if ((this.gameState.assistantTurns || 0) >= MAX_ASSISTANT_TURNS) {
         return new Response(
           JSON.stringify({
@@ -419,13 +393,12 @@ export class DojoSession implements DurableObject {
       const wasGameOver = this.gameState.isGameOver;
       this.gameState.history.push({ role: "user", content: userMessage });
 
-      // GAME OVER: the player ends the game by reporting the scam. Word
-      // boundaries prevent "unblock", "reported", or "blockchain" from winning.
+      // GAME OVER when the player reports the scam; word boundaries prevent
+      // "unblock", "reported", or "blockchain" from winning.
       if (/\b(BLOCK|SCAM|REPORT)\b/i.test(userMessage)) {
         this.gameState.isGameOver = true;
       }
 
-      // RAG context enrichment (best-effort)
       let context = "";
       try {
         const embeddings = await this.env.AI.run("@cf/baai/bge-base-en-v1.5", { text: userMessage });
@@ -446,8 +419,8 @@ export class DojoSession implements DurableObject {
           { headers }
         );
       } catch (err) {
-        // AI failure: roll back in-memory history (user + any assistant
-        // message) so memory matches durable storage, then rethrow.
+        // AI failure: roll back in-memory history so memory matches durable
+        // storage, then rethrow.
         this.gameState.history.length = historyLen;
         this.gameState.isGameOver = wasGameOver;
         throw err;
@@ -466,8 +439,8 @@ export class DojoSession implements DurableObject {
     };
     const res = await this.env.AI.run("@cf/meta/llama-3-8b-instruct", input);
     const raw = (res.response || "").substring(0, MAX_CONTENT_LENGTH);
-    // REJECTS LAYER: store only the scrubbed reply so durable storage never
-    // holds PII the model echoed back.
+    // Store only the scrubbed reply so durable storage never holds PII the
+    // model echoed back.
     const response = redactPII(raw).text;
     this.gameState.history.push({ role: "assistant", content: response });
     this.gameState.assistantTurns = (this.gameState.assistantTurns || 0) + 1;
@@ -494,9 +467,6 @@ export class DojoSession implements DurableObject {
   }
 }
 
-// ============================================================
-//  MAIN ROUTER
-// ============================================================
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const origin = request.headers.get("Origin") || "";
@@ -506,15 +476,13 @@ export default {
       return new Response(null, { status: 204, headers: corsHeaders(origin) });
     }
 
-    // Rate limiting check (per-IP, never per-session). The strict 5/min budget
-    // applies only to AI-cost routes (/analyze, /dojo/*). Storage routes carry
-    // their own dedicated budgets (/reports has REPORTS_RATE_LIMIT) or are
-    // read-only (/indicators, /evidence GET), so they are exempt here - the
-    // global check would otherwise starve the storage loop and Dojo play.
+    // Rate limiting is per-IP, never per-session. Storage routes carry their
+    // own dedicated budgets or are read-only, so they are exempt here.
     const clientIp = getClientIp(request);
     const isStorageRead = request.method === "GET" && (url.pathname === "/indicators" || url.pathname === "/evidence");
     const isReportIngest = request.method === "POST" && url.pathname === "/reports";
-    if (!isStorageRead && !isReportIngest) {
+    const isInspect = request.method === "POST" && url.pathname === "/inspect";
+    if (!isStorageRead && !isReportIngest && !isInspect) {
       const rate = await rateCheck(env, clientIp, 5, 60000);
       if (!rate.allowed) {
         return new Response(
@@ -527,19 +495,16 @@ export default {
       }
     }
 
-    // Route: /seed
     if (url.pathname === "/seed") {
       return new Response("Seeding Active", { status: 200, headers: corsHeaders(origin) });
     }
 
-    // Route: /analyze (scanner)
     if (url.pathname === "/analyze") {
       return handleScanner(request, env, origin);
     }
 
-    // Route: /dojo/session - mint a signed, expiring per-session token (keyed
-    // by the signed token, not IP). Fail-closed: no SESSION_SIGNING_KEY means
-    // 503, never a usable token.
+    // Mints a signed, expiring per-session token keyed by the signed token,
+    // not IP. Fail-closed: no SESSION_SIGNING_KEY means 503.
     if (url.pathname === "/dojo/session") {
       if (request.method !== "POST") {
         return new Response(JSON.stringify({ error: "Method Not Allowed" }), {
@@ -564,7 +529,6 @@ export default {
       });
     }
 
-    // Route: /dojo/* (game) - exact paths only, keyed by session token
     if (url.pathname.startsWith("/dojo/")) {
       if (url.pathname !== "/dojo/start" && url.pathname !== "/dojo/chat") {
         return new Response(JSON.stringify({ error: "Not Found" }), {
@@ -588,9 +552,8 @@ export default {
           { status: 400, headers: { ...corsHeaders(origin), "Content-Type": "application/json" } }
         );
       }
-      // The session token is the authentication credential: it must carry a
-      // valid HMAC signature and an unexpired exp claim, or the request is
-      // rejected with 401.
+      // The session token is the auth credential: a valid HMAC signature and
+      // an unexpired exp claim are required, or the request gets a 401.
       if (!env.SESSION_SIGNING_KEY) {
         return new Response(JSON.stringify({ error: "Server misconfigured" }), {
           status: 503,
@@ -610,14 +573,8 @@ export default {
       return stub.fetch(request);
     }
 
-    // ============================================================
-    //  STORAGE LAYER ROUTES (D1 + R2 + Vectorize)
-    // ============================================================
-
-    // POST /reports - ingest an analyzed finding (sanitized) into D1, upsert
-    // indicators, and run a Vectorize similarity check. Unauthenticated but
-    // tightly bounded: body size caps, per-field validation, a dedicated rate
-    // budget, and Rejects-layer sanitization before any persistence.
+    // Unauthenticated but tightly bounded: body size caps, per-field validation,
+    // a dedicated rate budget, and Rejects-layer sanitization before persistence.
     if (url.pathname === "/reports") {
       if (request.method !== "POST") {
         return jsonResponse({ error: "Method Not Allowed" }, 405, origin);
@@ -678,8 +635,7 @@ export default {
       if (source.length > MAX_META_LENGTH) {
         return jsonResponse({ error: `source too long (max ${MAX_META_LENGTH} chars)` }, 400, origin);
       }
-      // "This number was reported N times" without ever persisting raw numbers:
-      // clients may submit only pre-computed SHA-256 hashes of phone numbers.
+      // Only pre-computed SHA-256 hashes of phone numbers are ever persisted.
       const phoneHashes = Array.isArray(body.phoneHashes)
         ? body.phoneHashes.filter((hash: unknown): hash is string => typeof hash === "string")
         : [];
@@ -709,8 +665,35 @@ export default {
       }
     }
 
-    // GET /indicators?type=domain&value=evil.example - lookup status
-    // GET /indicators?limit=100 - list recent indicators (feed)
+    // SSRF-guarded: protocol allowlist, host blocklist, DNS private-IP
+    // rejection, per-hop redirect validation, size + time caps. Fetched
+    // content is never persisted or forwarded to any vendor.
+    if (url.pathname === "/inspect") {
+      if (request.method !== "POST") {
+        return jsonResponse({ error: "Method Not Allowed" }, 405, origin);
+      }
+      const inspectRate = await rateCheck(env, `inspect:${clientIp}`, INSPECT_RATE_LIMIT, INSPECT_RATE_WINDOW_MS);
+      if (!inspectRate.allowed) {
+        return new Response(
+          JSON.stringify({ error: "Too many URL inspections. Please wait.", retryAfter: inspectRate.retryAfter }),
+          {
+            status: 429,
+            headers: { ...corsHeaders(origin), "Content-Type": "application/json", "Retry-After": String(inspectRate.retryAfter) },
+          }
+        );
+      }
+      try {
+        const body: any = await request.json();
+        const target = String(body.url || "").trim();
+        if (!target) return jsonResponse({ error: "Missing url" }, 400, origin);
+        const result = await inspectUrl(target);
+        return jsonResponse({ ok: true, ...result }, 200, origin);
+      } catch (error: any) {
+        const message = error?.message || "Inspection failed";
+        return jsonResponse({ ok: false, error: message }, 400, origin);
+      }
+    }
+
     if (url.pathname === "/indicators") {
       const type = url.searchParams.get("type");
       const value = url.searchParams.get("value");
@@ -724,7 +707,6 @@ export default {
       return jsonResponse({ indicators: rows }, 200, origin);
     }
 
-    // POST /indicators/verify - move an indicator to the verified blacklist.
     // Requires STORAGE_ADMIN_KEY (bearer token) for write access.
     if (url.pathname === "/indicators/verify") {
       if (request.method !== "POST") {
@@ -744,10 +726,8 @@ export default {
       }
     }
 
-    // POST /reports/:id/evidence - store an evidence blob in R2.
-    // Admin-only (STORAGE_ADMIN_KEY) and hard-bounded: the report must exist
-    // in D1, uploads are capped at 10MB, and the stored Content-Type is forced
-    // server-side to application/octet-stream.
+    // Admin-only (STORAGE_ADMIN_KEY) and hard-bounded: 10MB upload cap and
+    // Content-Type forced server-side to application/octet-stream.
     if (url.pathname.startsWith("/reports/") && url.pathname.endsWith("/evidence")) {
       if (request.method !== "POST") {
         return jsonResponse({ error: "Method Not Allowed" }, 405, origin);
@@ -777,7 +757,6 @@ export default {
       return jsonResponse({ key }, 200, origin);
     }
 
-    // GET /evidence?key=evidence/1-123 - fetch an evidence blob from R2.
     // Admin-only; served as opaque bytes with no-store caching.
     if (url.pathname === "/evidence") {
       if (request.method !== "GET") {
@@ -800,7 +779,7 @@ export default {
       });
     }
 
-    // POST /seed/vectorize - seed the scam-index. Requires STORAGE_ADMIN_KEY.
+    // Requires STORAGE_ADMIN_KEY.
     if (url.pathname === "/seed/vectorize") {
       if (request.method !== "POST") {
         return jsonResponse({ error: "Method Not Allowed" }, 405, origin);
@@ -821,9 +800,6 @@ export default {
   },
 };
 
-// ============================================================
-//  SCANNER HANDLER (shared logic with analyze.js)
-// ============================================================
 async function handleScanner(request: Request, env: Env, origin: string): Promise<Response> {
   const headers = { ...corsHeaders(origin), "Content-Type": "application/json" };
 
@@ -838,8 +814,7 @@ async function handleScanner(request: Request, env: Env, origin: string): Promis
     const { messages, jsonMode } = body;
     const validatedMessages = validateMessages(messages);
 
-    // REJECTS LAYER (inbound): redact PII before any content reaches a vendor
-    // or is written to Durable Object storage.
+    // Redact PII before any content reaches a vendor or durable storage.
     const rejected = redactMessages(validatedMessages);
 
     const accountId = env.CF_ACCOUNT_ID;
@@ -854,7 +829,6 @@ async function handleScanner(request: Request, env: Env, origin: string): Promis
     let resultText = "";
     let usedProvider = "";
 
-    // Attempt 1: Cerebras
     if (cerebrasKey) {
       try {
         const resp = await fetchWithTimeout(
@@ -878,11 +852,9 @@ async function handleScanner(request: Request, env: Env, origin: string): Promis
           usedProvider = "Cerebras";
         }
       } catch {
-        // fall through
       }
     }
 
-    // Attempt 2: Groq (fallback)
     if (!resultText && groqKey) {
       try {
         const resp = await fetchWithTimeout(
@@ -906,7 +878,6 @@ async function handleScanner(request: Request, env: Env, origin: string): Promis
           usedProvider = "Groq";
         }
       } catch {
-        // fall through
       }
     }
 

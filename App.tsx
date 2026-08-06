@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect, lazy, Suspense } from 'react';
-// Consolidated Lucide imports
 import { Loader2, Search, Info, Lock, AlertOctagon, Image as ImageIcon, X, Bot, Coffee, History, Shield, Volume2, VolumeX } from 'lucide-react';
 import { analyzeContent } from './services/aiService';
 import { AnalysisResult, Verdict, UserStats } from './types';
@@ -7,7 +6,6 @@ import ResultCard from './components/ResultCard';
 import PixelLogo from './components/PixelLogo';
 import StatsPanel from './components/StatsPanel';
 import PrivacyConsent from './components/PrivacyConsent';
-// Consolidated Sound imports
 import { playSound, toggleMute, getMuteStatus } from './utils/sound';
 import { sanitizeText } from './utils/privacy';
 
@@ -16,7 +14,6 @@ const AboutModal = lazy(() => import('./components/AboutModal'));
 const HistoryLog = lazy(() => import('./components/HistoryLog'));
 const PrivacyPolicyModal = lazy(() => import('./components/PrivacyPolicyModal'));
 
-// QUICK TRY EXAMPLES
 const SCAM_EXAMPLES = [
   { 
     label: 'Task Scam', 
@@ -89,7 +86,6 @@ const App: React.FC = () => {
   const [imageMimeType, setImageMimeType] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'SCANNER' | 'DOJO'>('SCANNER');
   
-  // Modals
   const [showAbout, setShowAbout] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
@@ -441,7 +437,6 @@ const App: React.FC = () => {
           /> 
       )}
 
-      {/* Top Banner */}
       <div className="bg-slate-900 border-b-4 border-slate-700 p-4 sticky top-0 z-40 shadow-xl">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
            <div className="flex items-center gap-3 md:gap-4">
@@ -479,7 +474,6 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Navigation Tabs */}
       <div className="max-w-7xl mx-auto mt-6 px-4 w-full">
         <div className="flex border-b-4 border-slate-700">
            <button 
@@ -507,7 +501,6 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 mb-8 w-full flex-grow">
         <div className="p-4 md:p-6 bg-slate-800 min-h-[60vh] border-x-4 border-b-4 border-slate-700 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
             

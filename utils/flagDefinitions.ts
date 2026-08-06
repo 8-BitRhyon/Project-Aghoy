@@ -35,12 +35,9 @@ export const FLAG_DEFINITIONS: Record<string, string> = {
 };
 
 export const getFlagDefinition = (flag: string): string => {
-    // Normalize string to match keys
     const upperFlag = flag.toUpperCase();
-    // Try to find exact match
     if (FLAG_DEFINITIONS[upperFlag]) return FLAG_DEFINITIONS[upperFlag];
     
-    // Try to find partial match
     const foundKey = Object.keys(FLAG_DEFINITIONS).find(key => upperFlag.includes(key));
     return foundKey ? FLAG_DEFINITIONS[foundKey] : "This indicator suggests a pattern commonly associated with fraudulent activity.";
 };

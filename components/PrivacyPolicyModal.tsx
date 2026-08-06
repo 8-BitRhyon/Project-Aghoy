@@ -43,7 +43,6 @@ const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({ isOpen, onClose
     <div ref={dialogRef} tabIndex={-1} className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
       <div className="bg-slate-900 border-4 border-slate-600 w-full max-w-2xl max-h-[85vh] flex flex-col shadow-[0_0_50px_rgba(0,0,0,0.5)] relative">
         
-        {/* Header */}
         <div className="bg-slate-800 p-4 border-b-4 border-slate-700 flex justify-between items-center shrink-0">
           <div className="flex items-center gap-3">
              <div className="bg-slate-700 p-2 border-2 border-slate-500 rounded-sm">
@@ -63,7 +62,6 @@ const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({ isOpen, onClose
           </button>
         </div>
 
-        {/* Scrollable Content */}
         <div 
             ref={contentRef}
             onScroll={handleScroll}
@@ -72,7 +70,6 @@ const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({ isOpen, onClose
             className="p-6 overflow-y-auto custom-scrollbar font-mono text-slate-300 space-y-8 text-sm md:text-base leading-relaxed relative"
         >
           
-          {/* === PART 1: PRIVACY === */}
           <div className="border-b-2 border-slate-700 pb-4 mb-4">
             <h3 className="text-cyan-400 font-bold mb-4 font-['Press_Start_2P'] text-xs uppercase flex items-center gap-2">
               <Shield className="w-4 h-4" /> PART I: DATA PRIVACY (RA 10173)
@@ -136,7 +133,6 @@ const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({ isOpen, onClose
             </div>
           </div>
 
-          {/* === PART 2: LIABILITY (THE LEGAL SHIELD) === */}
           <div>
             <h3 className="text-yellow-400 font-bold mb-4 font-['Press_Start_2P'] text-xs uppercase flex items-center gap-2">
               <FileWarning className="w-4 h-4" /> PART II: TERMS OF SERVICE
@@ -144,7 +140,6 @@ const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({ isOpen, onClose
 
             <div className="space-y-6 text-xs text-slate-300">
                 
-                {/* DISCLAIMER OF WARRANTY */}
                 <div className="bg-red-900/10 border border-red-900/50 p-4 rounded">
                     <h4 className="text-red-400 font-bold mb-2 flex items-center gap-2">
                         <AlertTriangle className="w-4 h-4" /> CRITICAL DISCLAIMER
@@ -156,7 +151,6 @@ const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({ isOpen, onClose
                     </p>
                 </div>
 
-                {/* NO FINANCIAL ADVICE */}
                 <div className="pl-2 border-l-2 border-slate-700">
                     <strong className="text-white block mb-1">2. NOT FINANCIAL OR LEGAL ADVICE</strong>
                     <p className="text-slate-400">
@@ -166,7 +160,6 @@ const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({ isOpen, onClose
                     </p>
                 </div>
 
-                {/* INDEMNIFICATION */}
                 <div className="pl-2 border-l-2 border-slate-700">
                     <strong className="text-white block mb-1">3. LIMITATION OF LIABILITY</strong>
                     <p className="text-slate-400">
@@ -176,7 +169,6 @@ const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({ isOpen, onClose
                     </p>
                 </div>
 
-                 {/* OPEN SOURCE LICENSE */}
                  <div className="pl-2 border-l-2 border-slate-700">
                     <strong className="text-white block mb-1">4. OPEN SOURCE LICENSE (MIT)</strong>
                     <p className="text-slate-400 mb-2">
@@ -187,7 +179,6 @@ const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({ isOpen, onClose
                     </div>
                 </div>
 
-                {/* ACCEPTANCE */}
                 <div className="pl-2 border-l-2 border-slate-700">
                     <strong className="text-white block mb-1">5. ACCEPTANCE OF TERMS</strong>
                     <p className="text-slate-400">
@@ -204,10 +195,8 @@ const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({ isOpen, onClose
 
         </div>
 
-        {/* Footer with Conditional Button */}
         <div className="bg-slate-900 p-4 border-t-4 border-slate-700 text-center shrink-0 relative">
           
-          {/* Scroll Hint (Only shows if not yet agreed) */}
           {!canAgree && (
               <div className="absolute -top-8 left-0 right-0 flex justify-center pointer-events-none animate-bounce">
                   <div className="bg-cyan-900 text-cyan-400 text-[10px] px-3 py-1 rounded-full border border-cyan-500 font-mono flex items-center gap-1 shadow-lg">

@@ -1,4 +1,3 @@
-// === STORAGE CLIENT (browser) ===
 // Fire-and-forget reporting to the Worker storage layer + indicator lookups.
 // Only Rejects-layer output is ever sent. The Worker is CORS-allowlisted for
 // the Pages origin (see ALLOWED_ORIGINS in src/worker/dojo.ts).

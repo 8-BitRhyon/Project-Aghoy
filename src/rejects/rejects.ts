@@ -1,4 +1,3 @@
-// === REJECTS LAYER ===
 // Server-authoritative PII filter. Runs in Cloudflare Pages Functions
 // (functions/api/analyze.js) and the Worker (src/worker/dojo.ts) between
 // structural validation and any request leaving for a third-party vendor,
@@ -76,7 +75,6 @@ const NAME_RE = /\b(?:(?:Hi|Hello|Dear)\s+)?(?:Mr\.|Ms\.|Mrs\.|Dr\.)\s+[A-Z][a-z
 // Birth-date patterns (day/month[/year]), the classic DOB-phishing payload.
 const DOB_RE = /\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b/g;
 
-// Emails.
 const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
 
 // Standalone 10-12 digit account/number runs (GCash refs, bank accounts).
@@ -85,7 +83,6 @@ const ACCOUNT_RE = /(?<!\d)\d{10,12}(?!\d)/g;
 // PH government-issued identifiers (SSS, TIN, Pag-IBIG/UMID-style groups).
 const PH_ID_RE = /\b(?:\d{2}-\d{4}-\d{4}|\d{3}-\d{3}-\d{4}|\d{3}-\d{3}-\d{3}(?:-\d{4})?|\d{4}-\d{4}-\d{4})\b/g;
 
-// === PH-specific ID formats (2025-2026) ===
 // SSS: ##-#######-# (2-7-1) or ##-######-# (2-6-1). The two most common
 // printed/pasted SSS formats; the generic PH_ID_RE above does NOT catch them.
 const SSS_RE = /\b\d{2}-\d{6,7}-\d\b/g;

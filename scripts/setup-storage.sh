@@ -24,12 +24,10 @@ DB_NAME="project-aghoy-db"
 BUCKET_NAME="project-aghoy-evidence"
 TOML="${REPO_DIR}/wrangler.toml"
 
-# === enable-r2 subcommand ===
 # Uncomments the commented-out [[r2_buckets]] block, creates the bucket, and
 # redeploys. Safe to re-run (idempotent).
 if [ "${1:-}" = "enable-r2" ]; then
   echo "=== [storage] Enabling R2 evidence storage ==="
-  # Uncomment the binding block if still commented.
   if grep -q "^# \[\[r2_buckets\]\]" "${TOML}"; then
     if [ "$(uname)" = "Darwin" ]; then
       sed -i '' 's|^# \[\[r2_buckets\]\]|[[r2_buckets]]|; s|^# binding = "EVIDENCE"|binding = "EVIDENCE"|; s|^# bucket_name = "project-aghoy-evidence"|bucket_name = "project-aghoy-evidence"|' "${TOML}"
