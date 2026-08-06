@@ -30,9 +30,9 @@ migrations_dir = "migrations"
 # out to allow deployment. Enable R2 in the Cloudflare dashboard, then uncomment
 # (or run scripts/setup-storage.sh) and redeploy.
 # Create: `npx wrangler r2 bucket create project-aghoy-evidence`
-# [[r2_buckets]]
-# binding = "EVIDENCE"
-# bucket_name = "project-aghoy-evidence"
+[[r2_buckets]]
+binding = "EVIDENCE"
+bucket_name = "project-aghoy-evidence"
 
 # These tags were first applied to the deployed worker as new_sqlite_classes;
 # the earlier new_classes declaration never deployed (free-plan validation
