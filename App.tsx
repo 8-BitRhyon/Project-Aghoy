@@ -8,6 +8,7 @@ import StatsPanel from './components/StatsPanel';
 import PrivacyConsent from './components/PrivacyConsent';
 import { playSound, toggleMute, getMuteStatus } from './utils/sound';
 import { sanitizeText } from './utils/privacy';
+import { clearConsentToken } from './src/api/storageClient';
 
 const Dojo = lazy(() => import('./components/Dojo'));
 const AboutModal = lazy(() => import('./components/AboutModal'));
@@ -297,6 +298,7 @@ const App: React.FC = () => {
   const handlePrivacyReset = () => {
     playSound('click');
     localStorage.removeItem('aghoy_privacy_consent');
+    clearConsentToken();
     setHasConsent(false);
     setPrivacyResetKey(prev => prev + 1);
   };
@@ -353,7 +355,15 @@ const App: React.FC = () => {
       } catch (err: any) {
         const errorMessage = err.message || "";
         
-        if (errorMessage.includes('429') || errorMessage.toLowerCase().includes('exhausted') || errorMessage.toLowerCase().includes('quota')) {
+        if (errorMessage.includes('403') || errorMessage.toLowerCase().includes('consent required')) {
+           // Server rejected the consent attestation (expired, wrong version, or
+           // forged). Reset consent and re-prompt the gate; nothing was processed.
+           localStorage.removeItem('aghoy_privacy_consent');
+           clearConsentToken();
+           setHasConsent(false);
+           setPrivacyResetKey(prev => prev + 1);
+           setError("🔒 CONSENT EXPIRED: Please re-accept the privacy protocols.");
+        } else if (errorMessage.includes('429') || errorMessage.toLowerCase().includes('exhausted') || errorMessage.toLowerCase().includes('quota')) {
            setError("⚠️ SYSTEM OVERLOAD: Daily AI Quota Exceeded. Please try again tomorrow.");
         } else if (errorMessage.toLowerCase().includes('network') || errorMessage.toLowerCase().includes('fetch')) {
            setError("📶 CONNECTION ERROR: Please check your internet connection.");

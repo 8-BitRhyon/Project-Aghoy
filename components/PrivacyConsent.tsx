@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Check, X } from 'lucide-react';
+import { Shield, Check, X, AlertTriangle } from 'lucide-react';
 import { playSound } from '../utils/sound';
+import { mintConsentToken, clearConsentToken } from '../src/api/storageClient';
 
 interface PrivacyConsentProps {
   onConsentChange?: (granted: boolean) => void;
@@ -8,6 +9,8 @@ interface PrivacyConsentProps {
 
 const PrivacyConsent: React.FC<PrivacyConsentProps> = ({ onConsentChange }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [mintError, setMintError] = useState(false);
+  const [minting, setMinting] = useState(false);
 
   useEffect(() => {
     const consent = localStorage.getItem('aghoy_privacy_consent');
@@ -17,14 +20,29 @@ const PrivacyConsent: React.FC<PrivacyConsentProps> = ({ onConsentChange }) => {
     }
   }, []);
 
-  const handleConsent = (accepted: boolean) => {
+  const handleConsent = async (accepted: boolean) => {
     playSound(accepted ? 'success' : 'click');
-    localStorage.setItem('aghoy_privacy_consent', accepted ? 'granted' : 'denied');
-    
-    if (onConsentChange) {
-      onConsentChange(accepted);
+    if (!accepted) {
+      localStorage.setItem('aghoy_privacy_consent', 'denied');
+      clearConsentToken();
+      if (onConsentChange) onConsentChange(false);
+      setIsVisible(false);
+      return;
     }
 
+    // Server-enforced consent: mint the attestation BEFORE granting. Without a
+    // valid token the server rejects every data request (403), so if minting
+    // fails we cannot honestly mark consent as granted.
+    setMinting(true);
+    setMintError(false);
+    const minted = await mintConsentToken();
+    setMinting(false);
+    if (!minted) {
+      setMintError(true);
+      return;
+    }
+    localStorage.setItem('aghoy_privacy_consent', 'granted');
+    if (onConsentChange) onConsentChange(true);
     setIsVisible(false);
   };
 
@@ -53,18 +71,25 @@ const PrivacyConsent: React.FC<PrivacyConsentProps> = ({ onConsentChange }) => {
               <br/>
               <span className="text-green-400">ON-DEVICE:</span> Images never leave your device. Results are saved only on your device.
             </p>
+            {mintError && (
+              <p className="mt-2 flex items-center gap-2 text-red-400 font-['VT323'] text-lg">
+                <AlertTriangle className="w-4 h-4" /> Could not record consent. Please check your connection and try again.
+              </p>
+            )}
           </div>
 
           <div className="flex gap-2 shrink-0">
             <button 
               onClick={() => handleConsent(true)}
-              className="px-4 py-2 bg-cyan-700 hover:bg-cyan-600 text-white font-['Press_Start_2P'] text-[10px] border-b-4 border-cyan-900 active:border-b-0 active:translate-y-1 transition-all flex items-center gap-2"
+              disabled={minting}
+              className="px-4 py-2 bg-cyan-700 hover:bg-cyan-600 text-white font-['Press_Start_2P'] text-[10px] border-b-4 border-cyan-900 active:border-b-0 active:translate-y-1 transition-all flex items-center gap-2 disabled:opacity-50"
             >
-              <Check className="w-4 h-4" /> ACCEPT
+              <Check className="w-4 h-4" /> {minting ? 'RECORDING...' : 'ACCEPT'}
             </button>
             <button 
               onClick={() => handleConsent(false)}
-              className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 font-['Press_Start_2P'] text-[10px] border-b-4 border-slate-900 active:border-b-0 active:translate-y-1 transition-all flex items-center gap-2"
+              disabled={minting}
+              className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 font-['Press_Start_2P'] text-[10px] border-b-4 border-slate-900 active:border-b-0 active:translate-y-1 transition-all flex items-center gap-2 disabled:opacity-50"
             >
               <X className="w-4 h-4" /> DECLINE
             </button>

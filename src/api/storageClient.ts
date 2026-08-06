@@ -1,6 +1,8 @@
 import { WORKER_ORIGIN } from "../config";
 
 const FETCH_TIMEOUT_MS = 5000;
+const CONSENT_STORAGE_KEY = "aghoy_consent_token";
+const CONSENT_VERSION_KEY = "aghoy_consent_version";
 
 export interface ReportPayload {
   verdict: string;
@@ -36,7 +38,7 @@ export const postReport = async (payload: ReportPayload): Promise<void> => {
   try {
     await fetchWithTimeout(`${WORKER_ORIGIN}/reports`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "X-Consent-Token": getConsentToken() || "" },
       body: JSON.stringify({ ...payload, source: payload.source || "web" }),
     });
   } catch {
@@ -87,7 +89,7 @@ export const inspectUrl = async (target: string, signal?: AbortSignal): Promise<
       `${WORKER_ORIGIN}/inspect`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Consent-Token": getConsentToken() || "" },
         body: JSON.stringify({ url: target }),
       },
       signal
@@ -100,4 +102,39 @@ export const inspectUrl = async (target: string, signal?: AbortSignal): Promise<
   } catch {
     return null;
   }
+};
+
+// ============================================================
+// Consent attestation (server-enforced)
+// ============================================================
+
+// Mint a consent token by calling the Worker. This is the only way to obtain a
+// valid attestation; the server signs it, so a client cannot forge one.
+export const mintConsentToken = async (): Promise<{ token: string; version: string } | null> => {
+  try {
+    const res = await fetchWithTimeout(`${WORKER_ORIGIN}/consent/token`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!res.ok) return null;
+    const data = (await res.json()) as { token?: string; version?: string };
+    if (!data.token) return null;
+    localStorage.setItem(CONSENT_STORAGE_KEY, data.token);
+    localStorage.setItem(CONSENT_VERSION_KEY, data.version || "");
+    return { token: data.token, version: data.version || "" };
+  } catch {
+    return null;
+  }
+};
+
+// Return the stored consent token, or null if consent is not current.
+export const getConsentToken = (): string | null => {
+  const token = localStorage.getItem(CONSENT_STORAGE_KEY);
+  return token || null;
+};
+
+// Clear stored consent (used on reset and on consent-version mismatch).
+export const clearConsentToken = (): void => {
+  localStorage.removeItem(CONSENT_STORAGE_KEY);
+  localStorage.removeItem(CONSENT_VERSION_KEY);
 };

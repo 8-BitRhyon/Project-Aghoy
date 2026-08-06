@@ -14,6 +14,7 @@ import {
   getMetrics,
 } from "./storage";
 import { inspectUrl } from "./urlInspect";
+import { mintConsentToken, verifyConsentToken, extractConsentToken, CONSENT_VERSION } from "../consent";
 
 interface Env {
   AI: any;
@@ -29,6 +30,7 @@ interface Env {
   STORAGE_ADMIN_KEY?: string;
   SESSION_SIGNING_KEY?: string;
   RATE_CHECK_KEY?: string;
+  CONSENT_SIGNING_KEY?: string;
 }
 
 const ALLOWED_ORIGINS = [
@@ -61,7 +63,7 @@ const corsHeaders = (origin: string) => {
   return {
     "Access-Control-Allow-Origin": allowed,
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Session-Token",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Session-Token, X-Consent-Token",
     "Vary": "Origin",
     "X-Content-Type-Options": "nosniff",
     "Content-Security-Policy": "default-src 'none'",
@@ -145,6 +147,22 @@ const authorized = async (request: Request, env: Env): Promise<200 | 401 | 503> 
 
 const authResponse = (status: 401 | 503, origin: string): Response =>
   jsonResponse({ error: status === 401 ? "Unauthorized" : "Server misconfigured" }, status, origin);
+
+// Server-enforced consent gate. Every data-touching route requires a valid,
+// current consent attestation. Fail-closed: missing config means 503, any bad
+// token means 403 with a machine-readable reason so the client can re-prompt.
+const consentResponse = (reason: string, origin: string, status: 200 | 403 | 503 = 403): Response =>
+  jsonResponse({ error: reason }, status, origin);
+
+const requireConsent = async (request: Request, env: Env, origin: string): Promise<Response | null> => {
+  if (!env.CONSENT_SIGNING_KEY) return consentResponse("Server misconfigured", origin, 503);
+  const token = extractConsentToken(request);
+  const result = await verifyConsentToken(env.CONSENT_SIGNING_KEY, token);
+  if (result.ok === false) {
+    return consentResponse(`Consent required: ${result.reason}`, origin, 403);
+  }
+  return null;
+};
 
 const rateCheck = async (
   env: Env,
@@ -509,13 +527,31 @@ export default {
       return new Response("Seeding Active", { status: 200, headers: corsHeaders(origin) });
     }
 
+    // POST /consent/token - mints a signed, expiring consent attestation. This
+    // is the ONLY way to obtain a token; it is called by the client right after
+    // the user accepts the privacy gate. Every data route requires it.
+    if (url.pathname === "/consent/token") {
+      if (request.method !== "POST") {
+        return jsonResponse({ error: "Method Not Allowed" }, 405, origin);
+      }
+      if (!env.CONSENT_SIGNING_KEY) {
+        return jsonResponse({ error: "Server misconfigured" }, 503, origin);
+      }
+      const token = await mintConsentToken(env.CONSENT_SIGNING_KEY);
+      return jsonResponse({ token, version: CONSENT_VERSION }, 200, origin);
+    }
+
     if (url.pathname === "/analyze") {
+      const consentGate = await requireConsent(request, env, origin);
+      if (consentGate) return consentGate;
       return handleScanner(request, env, origin);
     }
 
     // Mints a signed, expiring per-session token keyed by the signed token,
     // not IP. Fail-closed: no SESSION_SIGNING_KEY means 503.
     if (url.pathname === "/dojo/session") {
+      const consentGate = await requireConsent(request, env, origin);
+      if (consentGate) return consentGate;
       if (request.method !== "POST") {
         return new Response(JSON.stringify({ error: "Method Not Allowed" }), {
           status: 405,
@@ -546,6 +582,10 @@ export default {
           headers: { ...corsHeaders(origin), "Content-Type": "application/json" },
         });
       }
+      // Consent is required on every Dojo turn (defense-in-depth; /dojo/session
+      // already enforces it when minting the session token).
+      const consentGate = await requireConsent(request, env, origin);
+      if (consentGate) return consentGate;
       if (request.method !== "POST") {
         return new Response(JSON.stringify({ error: "Method Not Allowed" }), {
           status: 405,
@@ -589,6 +629,8 @@ export default {
       if (request.method !== "POST") {
         return jsonResponse({ error: "Method Not Allowed" }, 405, origin);
       }
+      const consentGate = await requireConsent(request, env, origin);
+      if (consentGate) return consentGate;
       const reportRate = await rateCheck(env, `reports:${clientIp}`, REPORTS_RATE_LIMIT, REPORTS_RATE_WINDOW_MS);
       if (!reportRate.allowed) {
         return new Response(
@@ -682,6 +724,8 @@ export default {
       if (request.method !== "POST") {
         return jsonResponse({ error: "Method Not Allowed" }, 405, origin);
       }
+      const consentGate = await requireConsent(request, env, origin);
+      if (consentGate) return consentGate;
       const inspectRate = await rateCheck(env, `inspect:${clientIp}`, INSPECT_RATE_LIMIT, INSPECT_RATE_WINDOW_MS);
       if (!inspectRate.allowed) {
         return new Response(
