@@ -3,7 +3,7 @@ import SmartSupport from './SmartSupport';
 import React, { useState, useEffect, useRef } from 'react';
 import { AnalysisResult, Verdict } from '../types';
 import { SUPPORT_DATABASE } from '../src/support/supportDatabase';
-import { lookupIndicator } from '../src/api/storageClient';
+import { lookupIndicator, inspectUrl, InspectResult } from '../src/api/storageClient';
 import RiskGauge from './RiskGauge';
 import FamilyWarningCard from './FamilyWarningCard';
 import FlagKnowledgeModal from './FlagKnowledgeModal';
@@ -195,10 +195,22 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
   const [highlightedFlag, setHighlightedFlag] = useState<string | null>(null);
   const [hoveredFlag, setHoveredFlag] = useState<string | null>(null);
   const [reportedDomain, setReportedDomain] = useState<{ value: string; times: number } | null>(null);
+  const [inspectState, setInspectState] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
+  const [inspectData, setInspectData] = useState<InspectResult | null>(null);
+  const inspectAbortRef = useRef<AbortController | null>(null);
   const fallbackIdRef = useRef<number>(Math.floor(Math.random() * 100000));
   const scanId = analysisId ?? fallbackIdRef.current;
 
   useEffect(() => { setExpandedEducation(true); }, [result]);
+
+  // Reset stale inspect state when the result changes, and abort any in-flight
+  // inspection so an unmounted component never updates state.
+  useEffect(() => {
+    setInspectState('idle');
+    setInspectData(null);
+    inspectAbortRef.current?.abort();
+    return () => inspectAbortRef.current?.abort();
+  }, [result]);
 
   useEffect(() => {
     let cancelled = false;
@@ -225,6 +237,25 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
   const style = getVerdictStyle(result.verdict);
   const isHighRisk = result.verdict === Verdict.HIGH_RISK;
   const isSuspiciousOrHigh = result.verdict === Verdict.SUSPICIOUS || result.verdict === Verdict.HIGH_RISK;
+
+  const handleInspect = async () => {
+    playSound('click');
+    const match = (result.analysis || "").match(/https?:\/\/[^\s<>"']+/i);
+    const target = match ? match[0] : null;
+    if (!target) return;
+    const controller = new AbortController();
+    inspectAbortRef.current = controller;
+    setInspectState('loading');
+    setInspectData(null);
+    const data = await inspectUrl(target, controller.signal);
+    if (controller.signal.aborted) return;
+    if (data) {
+      setInspectData(data);
+      setInspectState(data.ok ? 'done' : 'error');
+    } else {
+      setInspectState('error');
+    }
+  };
 
   const handleCopyReport = () => {
     playSound('click');
@@ -308,6 +339,29 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
               </span>
             </div>
           )}
+
+          <div className="relative z-10 mb-4 flex flex-wrap items-center gap-3">
+            <button
+              onClick={handleInspect}
+              disabled={inspectState === 'loading' || !/https?:\/\//i.test(result.analysis || "")}
+              className="font-['Press_Start_2P'] text-[9px] md:text-xs px-3 py-2 bg-cyan-900/50 border-2 border-cyan-600 text-cyan-300 hover:bg-cyan-800/50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              {inspectState === 'loading' ? 'SCANNING...' : 'INSPECT LINK'}
+            </button>
+            {inspectState === 'done' && inspectData && (
+              <div className="flex items-center gap-2 text-sm md:text-lg font-['VT323'] text-slate-300">
+                <Globe className="w-4 h-4 text-cyan-400 shrink-0" />
+                <span>
+                  <span className="text-white select-all">{inspectData.finalDomain || inspectData.url}</span> - HTTP {inspectData.httpStatus}
+                  {inspectData.title ? <span className="text-slate-400"> "{inspectData.title.slice(0, 60)}"</span> : null}
+                  {inspectData.redirects && inspectData.redirects.length > 0 ? <span className="text-amber-400"> ({inspectData.redirects.length} redirects)</span> : null}
+                </span>
+              </div>
+            )}
+            {inspectState === 'error' && (
+              <span className="text-sm md:text-lg font-['VT323'] text-red-400">Could not inspect this link (blocked or unreachable).</span>
+            )}
+          </div>
 
           <div className="flex flex-col lg:grid lg:grid-cols-12 gap-6 relative z-10">
             

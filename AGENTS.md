@@ -67,6 +67,13 @@ Project Aghoy is an AI-powered scam detector for the Philippine context. It anal
 - `vite.config.ts` PWA workbox excludes `ocr/**` from precache and runtime-caches it (`CacheFirst`, 30-day expiry) so the service worker stays lean.
 - To upgrade Tesseract: bump the package, then re-copy `node_modules/tesseract.js/dist/worker.min.js` and the needed `node_modules/tesseract.js-core/*` files into `public/ocr/`, and re-pin the traineddata (current: `@tesseract.js-data/eng@1.0.0/4.0.0_best_int`). Restart the dev server after copying public assets (Vite indexes `public/` at startup).
 
+## Operational cadence (operator)
+
+- **Monthly:** run `bash scripts/backup-db.sh` and keep at least one verified-restore backup (A.8.13). Optionally automate via a cron or a scheduled GitHub Action.
+- **Quarterly:** review `docs/compliance/risk-register.md` and `docs/compliance/asset-inventory.md`; update on any infrastructure change.
+- **Annually:** review the compliance policy set, the SoA (`docs/compliance/statement-of-applicability.md`), and the ISO 42001 gap analysis; refresh the Cloudflare SOC 2 / ISO 27001 delegated-evidence references.
+- **On any secret rotation:** follow the KEY ROTATION section of `.env.example` and re-verify cross-isolate rate limiting still works.
+
 ## Deliberate Decisions (do NOT silently revert)
 
 - The privacy consent gate blocks analysis until the user accepts the privacy protocols. Preserve it.

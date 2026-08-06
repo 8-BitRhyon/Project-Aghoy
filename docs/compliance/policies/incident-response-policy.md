@@ -66,4 +66,4 @@ Within 30 days of a P1 or P2 incident, the operator performs a review covering r
 
 ## 10. Contact
 
-The security contact is `security@projectaghoy.example`. THIS IS A PLACEHOLDER. The operator must replace it with a real, monitored mailbox before public launch, in `SECURITY.md`, in `components/PrivacyPolicyModal.tsx`, and in any public notice, and must update this policy's notification flow accordingly.
+The security contact is `projectaghoy@gmail.com` (also the privacy contact). This mailbox must be monitored; incident and breach notifications are directed here, and RA 10173 / NPC 16-03 breach notifications to affected parties and the NPC are coordinated from it.

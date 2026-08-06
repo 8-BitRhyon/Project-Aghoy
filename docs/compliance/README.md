@@ -77,7 +77,7 @@ Exit criteria: a defensible SoA, a policy set, and a risk register with a treatm
 - **Internal audit program (Clause 9.2):** audit plan, checklist, audit report with findings and corrective actions. First audit should cover clauses 4-10 plus the applicable Annex A controls.
 - **Management review (Clause 9.3):** documented review of audit results, risk treatment status, incidents, and improvement actions, with minutes.
 - **Risk treatment execution:** implement the agreed treatments from Phase 1 (including the top-10 gaps list in the gap analysis).
-- **Operational evidence baseline:** logging/monitoring configuration, backup/restore test records, asset register updates, vulnerability management SLA, incident response runbook, supplier review (Cloudflare/Cerebras/Groq), training records, and a privacy contact + data-processing register.
+- **Operational evidence baseline:** logging/monitoring configuration, backup/restore test records (monthly via `scripts/backup-db.sh`), asset register updates, vulnerability management SLA, incident response runbook, supplier review (Cloudflare/Cerebras/Groq), training records, and a data-processing register. The privacy/security contact (`projectaghoy@gmail.com`) is live in the UI and SECURITY.md.
 - **Continual improvement loop (Clause 10):** nonconformity log and corrective action tracking.
 
 Exit criteria: one full internal audit cycle with management review completed, evidence gathered for every "in scope" control, and the SoA updated to reflect reality. Estimated effort: 2-4 months part-time.
