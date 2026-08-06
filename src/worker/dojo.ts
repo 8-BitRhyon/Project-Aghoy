@@ -12,6 +12,10 @@ import {
   findSimilarScams,
   seedVectorize,
   getMetrics,
+  reporterFingerprint,
+  getDomainReputation,
+  listFeedDomains,
+  recomputeDomainReputation,
 } from "./storage";
 import { inspectUrl } from "./urlInspect";
 import { mintConsentToken, verifyConsentToken, extractConsentToken, CONSENT_VERSION } from "../consent";
@@ -506,7 +510,12 @@ export default {
     // Rate limiting is per-IP, never per-session. Storage routes carry their
     // own dedicated budgets or are read-only, so they are exempt here.
     const clientIp = getClientIp(request);
-    const isStorageRead = request.method === "GET" && (url.pathname === "/indicators" || url.pathname === "/evidence" || url.pathname === "/metrics");
+    const isStorageRead =
+      request.method === "GET" &&
+      (url.pathname === "/indicators" ||
+        url.pathname === "/evidence" ||
+        url.pathname === "/metrics" ||
+        url.pathname.startsWith("/feed/"));
     const isReportIngest = request.method === "POST" && url.pathname === "/reports";
     const isInspect = request.method === "POST" && url.pathname === "/inspect";
     const isRateCheck = request.method === "POST" && url.pathname === "/ratelimit/check";
@@ -700,20 +709,37 @@ export default {
         }
       }
       try {
-        const result = await storeReport(env, {
-          verdict,
-          riskScore,
-          scamType,
-          redFlags,
-          content,
-          provider,
-          source,
-          phoneHashes,
-        });
+        // Pseudonymous reporter fingerprint (HMAC of client IP). Never the raw
+        // IP. When the consent key is unset, fail closed: a report from an
+        // unknown fingerprint is treated as low-trust rather than merged into
+        // one shared bucket.
+        if (!env.CONSENT_SIGNING_KEY) {
+          return jsonResponse({ ok: true }, 200, origin);
+        }
+        const fingerprint = await reporterFingerprint(clientIp, env.CONSENT_SIGNING_KEY);
+        const result = await storeReport(
+          env,
+          {
+            verdict,
+            riskScore,
+            scamType,
+            redFlags,
+            content,
+            provider,
+            source,
+            phoneHashes,
+          },
+          { fingerprint, consentKey: env.CONSENT_SIGNING_KEY }
+        );
+        // Quality gate: rejected reports return a neutral 200 so attackers
+        // cannot probe the gate, and the similar-scam compute is skipped.
+        if (result.gate?.action === "reject") {
+          return jsonResponse({ ok: true }, 200, origin);
+        }
         const similar = content ? await findSimilarScams(env, content, 3) : [];
         return jsonResponse({ ...result, similar }, 200, origin);
       } catch (error: any) {
-        return jsonResponse({ error: "Internal error processing report" }, 400, origin);
+        return jsonResponse({ error: "Internal error processing report" }, 500, origin);
       }
     }
 
@@ -796,6 +822,106 @@ export default {
     if (url.pathname === "/metrics") {
       const metrics = await getMetrics(env);
       return jsonResponse(metrics, 200, origin);
+    }
+
+    // GET /feed/reputation?domain=x - domain reputation (public, read-only).
+    if (url.pathname === "/feed/reputation") {
+      const domain = (url.searchParams.get("domain") || "").trim().toLowerCase();
+      if (!domain) return jsonResponse({ error: "Missing domain" }, 400, origin);
+      const rep = await getDomainReputation(env, domain);
+      if (!rep) {
+        // Complete contract: same shape as getDomainReputation, neutral values.
+        return jsonResponse(
+          {
+            domain,
+            score: 0,
+            label: "NONE",
+            status: "reported",
+            reason: "reported",
+            nEff: 0,
+            distinctReporters: 0,
+            highRiskShare: 0,
+            suspiciousShare: 0,
+            simPrior: 0,
+            confidence: 0,
+            feedVisible: false,
+            first_seen: null,
+            last_seen: null,
+          },
+          200,
+          origin
+        );
+      }
+      return jsonResponse(rep, 200, origin);
+    }
+
+    // GET /feed/blocklist/hosts.txt - Pi-hole/AdGuard-compatible host blocklist.
+    // Only score >= 7 OR verified, with >= 2 distinct reporters (or verified).
+    // No phones, no honeypots, no cleared domains. CDN-cacheable.
+    if (url.pathname === "/feed/blocklist/hosts.txt") {
+      const feed = await listFeedDomains(env, 500);
+      const body =
+        `# Project Aghoy scam-domain blocklist\n` +
+        `# generated: ${new Date().toISOString()}\n` +
+        `# advisory: community-reported + operator-verified. Never phones, never personal data.\n` +
+        feed.map((d) => `0.0.0.0 ${d.domain}`).join("\n") +
+        "\n";
+      return new Response(body, {
+        headers: {
+          ...corsHeaders(origin),
+          "Content-Type": "text/plain; charset=utf-8",
+          "Cache-Control": "public, max-age=300",
+        },
+      });
+    }
+
+    // GET /feed/blocklist/domains.csv - CSV feed for telcos/universities.
+    if (url.pathname === "/feed/blocklist/domains.csv") {
+      const feed = await listFeedDomains(env, 500);
+      const header = "domain,score,label,status,reason\n";
+      const body =
+        header +
+        feed
+          .map((d) => `${d.domain},${d.score},${d.label},${d.status},${d.reason}`)
+          .join("\n") +
+        "\n";
+      return new Response(body, {
+        headers: {
+          ...corsHeaders(origin),
+          "Content-Type": "text/csv; charset=utf-8",
+          "Cache-Control": "public, max-age=300",
+        },
+      });
+    }
+
+    // POST /indicators/clear - operator false-positive retraction (admin).
+    // Sets status=cleared, removes from blacklist, suppresses future listing.
+    if (url.pathname === "/indicators/clear") {
+      if (request.method !== "POST") {
+        return jsonResponse({ error: "Method Not Allowed" }, 405, origin);
+      }
+      const clearAuth = await authorized(request, env);
+      if (clearAuth === 503) return authResponse(503, origin);
+      if (clearAuth === 401) return authResponse(401, origin);
+      try {
+        const body: any = await parseJsonBody(request, MAX_REPORT_BODY_BYTES);
+        const type = String(body.type || "");
+        const value = String(body.value || "");
+        const row = await env.DB.prepare("SELECT id FROM indicators WHERE type = ?1 AND value = ?2")
+          .bind(type, value)
+          .first();
+        if (!row) return jsonResponse({ error: "Indicator not found" }, 404, origin);
+        const indicatorId = (row as { id: number }).id;
+        await env.DB.prepare("UPDATE indicators SET status = 'cleared' WHERE id = ?1").bind(indicatorId).run();
+        await env.DB.prepare("DELETE FROM blacklist WHERE indicator_id = ?1").bind(indicatorId).run();
+        await env.DB.prepare("INSERT OR IGNORE INTO allowlist (value) VALUES (?1)").bind(value).run();
+        if (type === "domain") {
+          await recomputeDomainReputation(env, value);
+        }
+        return jsonResponse({ ok: true }, 200, origin);
+      } catch (error: any) {
+        return jsonResponse({ error: error?.message || "Internal error" }, 400, origin);
+      }
     }
 
     // Requires STORAGE_ADMIN_KEY (bearer token) for write access.
