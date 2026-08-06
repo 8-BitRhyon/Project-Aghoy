@@ -1,0 +1,20 @@
+# Project Aghoy reputation seed list.
+# format: value,type,notes
+# type in: domain|url|keyword
+# IMPORTANT: this is the OPERATOR-VERIFIED list. Replace these illustrative
+# entries with domains you confirmed live via CICC/BSP/GCash advisories and
+# lookalike detection (dnstwist/phishing_catcher/urlscan) BEFORE enabling the
+# open feed. Seeds never count as crowd reports (times_reported stays 0).
+#
+# These entries are PATTERNS from the PH scam landscape research, NOT live
+# domains - they are placeholders to be verified and replaced by the operator.
+gcash-verify-ph.example,domain,GCash OTP phishing lookalike - VERIFY
+maya-security-alert.example,domain,Maya account-lock phishing - VERIFY
+bdo-online-update.example,domain,BDO card-expiry phishing - VERIFY
+bpi-online-verify.example,domain,BPI credential harvester - VERIFY
+landbank-payout.example,domain,LandBank fake payout - VERIFY
+lb-customs-fee.example,domain,LBC parcel fee scam - VERIFY
+jt-parcel-hold.example,domain,J&T fake delivery hold - VERIFY
+pagibig-loan-release.example,domain,Pag-IBIG loan release fee - VERIFY
+egovph-id-suspend.example,domain,eGovPH ID suspension phishing - VERIFY
+sim-reg-verify.example,domain,SIM registration pretext - VERIFY

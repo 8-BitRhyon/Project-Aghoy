@@ -3,7 +3,7 @@ import SmartSupport from './SmartSupport';
 import React, { useState, useEffect, useRef } from 'react';
 import { AnalysisResult, Verdict } from '../types';
 import { SUPPORT_DATABASE } from '../src/support/supportDatabase';
-import { lookupIndicator, inspectUrl, InspectResult } from '../src/api/storageClient';
+import { lookupIndicator, inspectUrl, InspectResult, domainReputation, DomainReputation } from '../src/api/storageClient';
 import RiskGauge from './RiskGauge';
 import FamilyWarningCard from './FamilyWarningCard';
 import FlagKnowledgeModal from './FlagKnowledgeModal';
@@ -195,6 +195,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
   const [highlightedFlag, setHighlightedFlag] = useState<string | null>(null);
   const [hoveredFlag, setHoveredFlag] = useState<string | null>(null);
   const [reportedDomain, setReportedDomain] = useState<{ value: string; times: number } | null>(null);
+  const [reputation, setReputation] = useState<DomainReputation | null>(null);
   const [inspectState, setInspectState] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
   const [inspectData, setInspectData] = useState<InspectResult | null>(null);
   const inspectAbortRef = useRef<AbortController | null>(null);
@@ -217,6 +218,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
     // Reset on every new result so a stale alert from the previous scan can
     // never classify an unrelated domain as high risk.
     setReportedDomain(null);
+    setReputation(null);
     const analysisText = result?.analysis || "";
     const domainMatch = analysisText.match(/https?:\/\/([a-z0-9.-]+\.[a-z]{2,})/i) || analysisText.match(/\b([a-z0-9-]+\.(?:com|ph|net|org|top|xyz|site|click))\b/i);
     const value = domainMatch ? domainMatch[1].replace(/^www\./, "").toLowerCase() : null;
@@ -230,6 +232,11 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
       if (status && status.found && status.times_reported && status.times_reported >= 5) {
         setReportedDomain({ value, times: status.times_reported });
       }
+    });
+    // Community reputation label (score/label from the feed).
+    domainReputation(value).then((rep) => {
+      if (cancelled) return;
+      if (rep && rep.score >= 4) setReputation(rep);
     });
     return () => { cancelled = true; };
   }, [result]);
@@ -314,6 +321,15 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
               <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
               <span className="text-sm md:text-lg text-red-200 font-['VT323']">
                 ALERT: <span className="text-white select-all">{reportedDomain.value}</span> has been reported <span className="text-white font-bold">{reportedDomain.times}x</span> by Aghoy users. Treat links from this domain as high risk.
+              </span>
+            </div>
+          )}
+
+          {reputation && !reportedDomain && (
+            <div className="relative z-10 mb-4 border-2 border-amber-700 bg-amber-950/40 px-3 py-2 flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+              <span className="text-sm md:text-lg text-amber-200 font-['VT323']">
+                <span className="text-white select-all">{reputation.domain}</span>: {reputation.reason === 'verified' ? 'Verified by the Aghoy team' : reputation.label === 'HIGH_RISK' || reputation.label === 'CRITICAL' ? 'Community-reported as high risk' : 'Community-reported as suspicious'} ({reputation.label.toLowerCase() === 'none' ? 0 : reputation.score.toFixed(1)}/10)
               </span>
             </div>
           )}

@@ -58,6 +58,31 @@ export const lookupIndicator = async (type: string, value: string): Promise<Indi
   }
 };
 
+export interface DomainReputation {
+  domain: string;
+  score: number;
+  label: string;
+  status: string;
+  reason: string;
+  nEff?: number;
+  distinctReporters?: number;
+  confidence?: number;
+  feedVisible?: boolean;
+  first_seen?: string;
+  last_seen?: string;
+}
+
+// Community reputation for a domain (public read, no consent token needed).
+export const domainReputation = async (domain: string): Promise<DomainReputation | null> => {
+  try {
+    const res = await fetchWithTimeout(`${WORKER_ORIGIN}/feed/reputation?domain=${encodeURIComponent(domain)}`);
+    if (!res.ok) return null;
+    return (await res.json()) as DomainReputation;
+  } catch {
+    return null;
+  }
+};
+
 export interface InspectResult {
   ok: boolean;
   error?: string;

@@ -3,6 +3,8 @@
 
 import { extractIndicators, Indicator } from "./indicators";
 import { redactPII } from "../rejects/rejects";
+import { gateReport, GateResult } from "./qualityGate";
+import { reputationScore, ReputationInputs, ReputationResult, reporterTrust } from "./reputation";
 
 export interface StorageEnv {
   DB: D1Database;
@@ -10,6 +12,20 @@ export interface StorageEnv {
   VECTORIZE: VectorizeIndex;
   AI: any;
 }
+
+// Pseudonymous reporter fingerprint: HMAC of CF-Connecting-IP under the
+// consent signing key. Never store the raw IP.
+export const reporterFingerprint = async (ip: string, consentKey: string): Promise<string> => {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(`aghoy-reporter:${consentKey}`),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(ip));
+  return Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, "0")).join("").slice(0, 32);
+};
 
 export interface ReportRecord {
   contentHash: string;
@@ -47,30 +63,61 @@ export const storeReport = async (
     provider: string;
     source?: string;
     phoneHashes?: string[];
-  }
-): Promise<{ id: number | null; duplicate: boolean; indicators: Indicator[] }> => {
+  },
+  opts?: { fingerprint?: string; consentKey?: string }
+): Promise<{ id: number | null; duplicate: boolean; indicators: Indicator[]; gate?: GateResult }> => {
   const sanitizedContent = sanitizeForStorage(input.content);
   const contentHash = await sha256Hex(sanitizedContent);
   const indicators = extractIndicators(sanitizedContent);
-  // Sanitize every persisted field, not just content: structured metadata
-  // (scamType, red flags, provider, source) may carry names, dates, phones,
-  // or other PII and must go through the Rejects layer before storage.
   const scamType = sanitizeForStorage(input.scamType).substring(0, 100);
   const redFlags = (input.redFlags || []).map((flag) => sanitizeForStorage(flag).substring(0, 64));
   const provider = sanitizeForStorage(input.provider).substring(0, 100);
   const source = sanitizeForStorage(input.source || "web").substring(0, 100);
-  // Phone numbers are only ever persisted as pre-computed SHA-256 hashes, so
-  // the "this number was reported N times" signal works without storing PII.
   const phoneHashes = Array.from(
     new Set(Array.isArray(input.phoneHashes) ? input.phoneHashes.slice(0, 10) : [])
   );
 
-  // Dedup is race-safe: INSERT ... ON CONFLICT DO NOTHING + follow-up SELECT so
-  // two parallel posts of the same content (postReport + fetchSimilarScams)
-  // cannot trip the UNIQUE(content_hash) constraint.
+  // ===== QUALITY GATE (Tier 1): is this a real report or garbage? =====
+  // Pure checks + reporter trust. Rejected reports are quarantined and the
+  // caller returns a neutral 200 so attackers cannot probe the gate.
+  const fingerprint = opts?.fingerprint || "legacy";
+  let reporter = await getReporter(env, fingerprint);
+  let gate: GateResult = {
+    action: "accept",
+    weight: 1,
+    reasons: ["accepted"],
+  };
+
+  if (fingerprint !== "legacy") {
+    gate = gateReport({
+      content: sanitizedContent,
+      indicators: indicators.map((i) => i.type),
+      phoneHashes,
+      submitterVerdict: input.verdict,
+      reporterTrust: reporter ? reporter.trust_score : 0.4,
+      isFirstForIndicator: true,
+      honeypotHit: await hasHoneypot(env, indicators, phoneHashes),
+      allowlistedOnly: false,
+      flagMatch: false,
+      source,
+      maxContentLength: 4000,
+    });
+  }
+
+  if (gate.action === "reject") {
+    await env.DB.prepare(
+      `INSERT INTO rejected_reports (fingerprint, reason, verdict, content) VALUES (?1, ?2, ?3, ?4)`
+    )
+      .bind(fingerprint, gate.reasons.join(","), input.verdict, sanitizedContent.substring(0, 1000))
+      .run();
+    await touchReporter(env, fingerprint, { hardReject: true });
+    return { id: null, duplicate: false, indicators, gate };
+  }
+
+  // ===== PERSIST REPORT (dedup race-safe) =====
   const insertResult = await env.DB.prepare(
-    `INSERT INTO reports (content_hash, verdict, risk_score, scam_type, red_flags, sanitized_content, provider, source)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
+    `INSERT INTO reports (content_hash, verdict, risk_score, scam_type, red_flags, sanitized_content, provider, source, reporter_fp)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)
      ON CONFLICT(content_hash) DO NOTHING`
   )
     .bind(
@@ -81,7 +128,8 @@ export const storeReport = async (
       JSON.stringify(redFlags),
       sanitizedContent,
       provider,
-      source
+      source,
+      fingerprint
     )
     .run();
 
@@ -89,49 +137,295 @@ export const storeReport = async (
     .bind(contentHash)
     .first();
   if (!row) {
-    return { id: null, duplicate: false, indicators };
+    return { id: null, duplicate: false, indicators, gate };
   }
   const id = (row as { id: number }).id;
   const duplicate = insertResult.meta?.changes === 0;
-
-  // Indicators and phone-hash counts only increment on the first insert of a
-  // given content hash. Duplicates (including parallel double-posts from the
-  // client's postReport + fetchSimilarScams) return early so retries do not
-  // inflate "reported N times" counters.
   if (duplicate) {
-    return { id, duplicate: true, indicators };
+    return { id, duplicate: true, indicators, gate };
   }
 
+  // ===== VOTES + INDICATOR UPDATES =====
+  // Weighted contributions feed the reputation score; weight is reporter-trust
+  // scaled and capped for repeats (poisoning resistance).
+  await touchReporter(env, fingerprint, {});
+
   for (const ind of indicators) {
-    await env.DB.prepare(
-      `INSERT INTO indicators (type, value, status, times_reported)
-       VALUES (?1, ?2, 'reported', 1)
-       ON CONFLICT(type, value) DO UPDATE SET
-         times_reported = times_reported + 1,
-         last_seen = datetime('now')`
-    )
-      .bind(ind.type, ind.value)
-      .run();
+    const indicatorId = await upsertIndicator(env, ind.type, ind.value, source);
+    const weight = gate.action === "suspect" ? gate.weight : Math.min(1, reporter?.trust_score ?? 0.4);
+    if (weight > 0 && indicatorId) {
+      await env.DB.prepare(
+        `INSERT INTO report_votes (report_id, indicator_id, fingerprint, weight) VALUES (?1, ?2, ?3, ?4)`
+      )
+        .bind(id, indicatorId, fingerprint, weight)
+        .run();
+    }
   }
 
   for (const hash of phoneHashes) {
-    await env.DB.prepare(
-      `INSERT INTO indicators (type, value, status, times_reported)
-       VALUES ('phone', ?1, 'reported', 1)
-       ON CONFLICT(type, value) DO UPDATE SET
-         times_reported = times_reported + 1,
-         last_seen = datetime('now')`
-    )
-      .bind(hash)
-      .run();
+    const indicatorId = await upsertIndicator(env, "phone", hash, source);
+    if (indicatorId) {
+      await env.DB.prepare(
+        `INSERT INTO report_votes (report_id, indicator_id, fingerprint, weight) VALUES (?1, ?2, ?3, ?4)`
+      )
+        .bind(id, indicatorId, fingerprint, 0.4)
+        .run();
+    }
   }
 
-  return { id, duplicate, indicators };
+  // Recompute reputation for the touched domains (cheap at this scale).
+  for (const ind of indicators) {
+    if (ind.type === "domain") {
+      await recomputeDomainReputation(env, ind.value);
+    }
+  }
+
+  return { id, duplicate: false, indicators, gate };
 };
 
 export const reportExists = async (env: StorageEnv, reportId: number): Promise<boolean> => {
   const row = await env.DB.prepare("SELECT id FROM reports WHERE id = ?1").bind(reportId).first();
   return !!row;
+};
+
+const getReporter = async (
+  env: StorageEnv,
+  fingerprint: string
+): Promise<{ trust_score: number; status: string; reports_total: number; reports_24h: number } | null> => {
+  const row = await env.DB.prepare(
+    `SELECT trust_score, status, reports_total, reports_24h FROM reporters WHERE fingerprint = ?1`
+  )
+    .bind(fingerprint)
+    .first();
+  return row ? (row as { trust_score: number; status: string; reports_total: number; reports_24h: number }) : null;
+};
+
+const touchReporter = async (
+  env: StorageEnv,
+  fingerprint: string,
+  flags: { hardReject?: boolean }
+): Promise<void> => {
+  if (fingerprint === "legacy") return;
+  await env.DB.prepare(
+    `INSERT INTO reporters (fingerprint, reports_total, reports_24h, hard_rejects, last_seen)
+     VALUES (?1, 1, 1, ?2, datetime('now'))
+     ON CONFLICT(fingerprint) DO UPDATE SET
+       reports_total = reports_total + 1,
+       reports_24h = CASE WHEN julianday('now') - julianday(last_seen) < 1 THEN reports_24h + 1 ELSE 1 END,
+       hard_rejects = reporters.hard_rejects + ?2,
+       last_seen = datetime('now')`
+  )
+    .bind(fingerprint, flags.hardReject ? 1 : 0)
+    .run();
+};
+
+const hasHoneypot = async (
+  env: StorageEnv,
+  indicators: Indicator[],
+  phoneHashes: string[]
+): Promise<boolean> => {
+  if (phoneHashes.length > 0) {
+    const placeholders = phoneHashes.map(() => "?").join(",");
+    const row = await env.DB.prepare(
+      `SELECT value FROM honeypots WHERE value IN (${placeholders})`
+    )
+      .bind(...phoneHashes)
+      .first();
+    if (row) return true;
+  }
+  for (const ind of indicators) {
+    if (ind.type !== "phone") {
+      const row = await env.DB.prepare(`SELECT value FROM honeypots WHERE value = ?1`).bind(ind.value).first();
+      if (row) return true;
+    }
+  }
+  return false;
+};
+
+const upsertIndicator = async (
+  env: StorageEnv,
+  type: string,
+  value: string,
+  source: string
+): Promise<number | null> => {
+  // The indicators.source column is a lane, not the report origin: user reports
+  // always land in the crowd lane ('user'); only the seed script writes 'seed'.
+  const lane = source === "seed" ? "seed" : "user";
+  const result = await env.DB.prepare(
+    `INSERT INTO indicators (type, value, status, times_reported, source)
+     VALUES (?1, ?2, 'reported', 1, ?3)
+     ON CONFLICT(type, value) DO UPDATE SET
+       times_reported = times_reported + 1,
+       last_seen = datetime('now'),
+       source = CASE WHEN indicators.source = 'seed' THEN 'user' ELSE indicators.source END`
+  )
+    .bind(type, value, lane)
+    .run();
+  const row = await env.DB.prepare("SELECT id FROM indicators WHERE type = ?1 AND value = ?2")
+    .bind(type, value)
+    .first();
+  return row ? (row as { id: number }).id : null;
+};
+
+// Recompute the reputation cache row for one domain from the vote ledger.
+export const recomputeDomainReputation = async (env: StorageEnv, domain: string): Promise<void> => {
+  const { results } = await env.DB.prepare(
+    `SELECT r.verdict, r.created_at, r.reporter_fp, v.weight
+     FROM report_votes v
+     JOIN reports r ON r.id = v.report_id
+     JOIN indicators i ON i.id = v.indicator_id
+     WHERE i.type = 'domain' AND i.value = ?1
+       AND r.created_at >= datetime('now', '-90 days')`
+  )
+    .bind(domain)
+    .all<{ verdict: string; created_at: string; reporter_fp: string | null; weight: number }>();
+  const rows = results || [];
+
+  const indicator = await env.DB.prepare(
+    `SELECT status, times_reported, source, seed_weight FROM indicators WHERE type = 'domain' AND value = ?1`
+  )
+    .bind(domain)
+    .first();
+  const indicatorRow = indicator as { status: string; times_reported: number; source: string; seed_weight: number } | null;
+
+  let nEff = 0;
+  let nHigh = 0;
+  let nSusp = 0;
+  let nSafe = 0;
+  const distinct = new Set<string>();
+  let lastSeen = 0;
+  for (const r of rows || []) {
+    const ageDays = (Date.now() - new Date(r.created_at + "Z").getTime()) / 86400000;
+    nEff += r.weight * Math.pow(2, -ageDays / 30);
+    if (r.verdict === "HIGH_RISK") nHigh++;
+    else if (r.verdict === "SUSPICIOUS") nSusp++;
+    else if (r.verdict === "SAFE") nSafe++;
+    if (r.reporter_fp) distinct.add(r.reporter_fp);
+    const ts = new Date(r.created_at + "Z").getTime();
+    if (ts > lastSeen) lastSeen = ts;
+  }
+  const total = rows?.length || 0;
+  const simPrior = 0; // filled by the caller when Vectorize is available
+  const daysSince = total ? (Date.now() - lastSeen) / 86400000 : 90;
+  const seedWeight = indicatorRow?.source === "seed" ? indicatorRow.seed_weight : 0;
+
+  const input: ReputationInputs = {
+    nEff,
+    distinctReporters: distinct.size,
+    highRiskShare: total ? nHigh / total : 0,
+    suspiciousShare: total ? nSusp / total : 0,
+    safeShare: total ? nSafe / total : 0,
+    daysSinceLastSeen: daysSince,
+    simPrior,
+    seedWeight,
+    status: indicatorRow?.status || "reported",
+  };
+  const result: ReputationResult = reputationScore(input);
+
+  await env.DB.prepare(
+    `INSERT INTO domain_reputation (domain, score, label, status, reason, n_reports, n_eff, distinct_reporters, n_high_risk, n_suspicious, n_safe, high_risk_share, suspicious_share, sim_prior, seed_weight, first_seen, last_seen, updated_at)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, datetime('now'), datetime('now'), datetime('now'))
+     ON CONFLICT(domain) DO UPDATE SET
+       score = excluded.score, label = excluded.label, status = excluded.status,
+       reason = excluded.reason, n_reports = excluded.n_reports, n_eff = excluded.n_eff,
+       distinct_reporters = excluded.distinct_reporters, n_high_risk = excluded.n_high_risk,
+       n_suspicious = excluded.n_suspicious, n_safe = excluded.n_safe,
+       high_risk_share = excluded.high_risk_share, suspicious_share = excluded.suspicious_share,
+       sim_prior = excluded.sim_prior, seed_weight = excluded.seed_weight,
+       last_seen = excluded.last_seen, updated_at = datetime('now')`
+  )
+    .bind(
+      domain,
+      result.score,
+      result.label,
+      input.status,
+      result.reason,
+      total,
+      result.nEff,
+      result.distinctReporters,
+      nHigh,
+      nSusp,
+      nSafe,
+      result.highRiskShare,
+      result.suspiciousShare,
+      result.simPrior,
+      seedWeight
+    )
+    .run();
+
+  // Bump feed version for CDN cache invalidation.
+  await env.DB.prepare(
+    `INSERT INTO feed_meta (key, value) VALUES ('version', ?1)
+     ON CONFLICT(key) DO UPDATE SET value = excluded.value`
+  )
+    .bind(String(Date.now()))
+    .run();
+};
+
+export const getDomainReputation = async (
+  env: StorageEnv,
+  domain: string
+): Promise<{
+  domain: string;
+  score: number;
+  label: string;
+  status: string;
+  reason: string;
+  nEff: number;
+  distinctReporters: number;
+  highRiskShare: number;
+  suspiciousShare: number;
+  simPrior: number;
+  confidence: number;
+  feedVisible: boolean;
+  first_seen: string;
+  last_seen: string;
+} | null> => {
+  const row = await env.DB.prepare(
+    `SELECT score, label, status, reason, n_reports, n_eff, distinct_reporters,
+            n_high_risk, n_suspicious, n_safe, high_risk_share, suspicious_share, sim_prior,
+            first_seen, last_seen
+     FROM domain_reputation WHERE domain = ?1`
+  )
+    .bind(domain)
+    .first();
+  if (!row) return null;
+  const r = row as any;
+  return {
+    domain,
+    score: r.score,
+    label: r.label,
+    status: r.status,
+    reason: r.reason,
+    nEff: r.n_eff,
+    distinctReporters: r.distinct_reporters,
+    highRiskShare: r.high_risk_share,
+    suspiciousShare: r.suspicious_share,
+    simPrior: r.sim_prior,
+    confidence: (r.n_eff / (r.n_eff + 5)) * (0.4 + 0.6 * (r.distinct_reporters / Math.max(1, r.n_reports))),
+    feedVisible: (r.score >= 7 || r.status === "verified") && (r.distinct_reporters >= 2 || r.status === "verified"),
+    first_seen: r.first_seen,
+    last_seen: r.last_seen,
+  };
+};
+
+// Feed-listed domains: score >= 7 OR verified, with at least 2 distinct
+// reporters (or verified). Never phones, never honeypots, never cleared.
+export const listFeedDomains = async (
+  env: StorageEnv,
+  limit = 500
+): Promise<Array<{ domain: string; score: number; label: string; status: string; reason: string }>> => {
+  const { results } = await env.DB.prepare(
+    `SELECT domain, score, label, status, reason
+     FROM domain_reputation
+     WHERE status != 'cleared'
+       AND ((score >= 7 AND distinct_reporters >= 2) OR status = 'verified')
+     ORDER BY score DESC
+     LIMIT ?1`
+  )
+    .bind(limit)
+    .all();
+  return (results || []) as Array<{ domain: string; score: number; label: string; status: string; reason: string }>;
 };
 
 export const lookupIndicator = async (
