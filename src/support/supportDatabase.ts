@@ -22,7 +22,6 @@ export interface SupportEntry {
 }
 
 export const SUPPORT_DATABASE: Record<string, SupportEntry> = {
-  // === WALLETS ===
   GCASH: {
     key: 'GCASH',
     name: 'GCash Help Center',
@@ -58,7 +57,6 @@ export const SUPPORT_DATABASE: Record<string, SupportEntry> = {
     imposterPriority: 9
   },
 
-  // === MAJOR UNIVERSAL & COMMERCIAL BANKS ===
   BDO: {
     key: 'BDO',
     name: 'BDO Contact Center',
@@ -301,7 +299,6 @@ export const SUPPORT_DATABASE: Record<string, SupportEntry> = {
     imposterPriority: 7
   },
 
-  // === NEW: DIGITAL BANKS & E-WALLETS ===
   GOTYME: {
     key: 'GOTYME',
     name: 'GoTyme Help Center',
@@ -383,7 +380,6 @@ export const SUPPORT_DATABASE: Record<string, SupportEntry> = {
     imposterPriority: 8
   },
 
-  // === NEW: GOVERNMENT BANKS ===
   LANDBANK: {
     key: 'LANDBANK',
     name: 'LandBank Contact Center',
@@ -401,7 +397,6 @@ export const SUPPORT_DATABASE: Record<string, SupportEntry> = {
     imposterPriority: 7
   },
 
-  // === NEW: TELECOS ===
   GLOBE: {
     key: 'GLOBE',
     name: 'Globe Telecom Hotline',
@@ -452,7 +447,6 @@ export const SUPPORT_DATABASE: Record<string, SupportEntry> = {
     imposterPriority: 8
   },
 
-  // === NEW: DELIVERY / POSTAL ===
   'J&T': {
     key: 'J&T',
     name: 'J&T Express Customer Service',
@@ -503,7 +497,6 @@ export const SUPPORT_DATABASE: Record<string, SupportEntry> = {
     imposterPriority: 5
   },
 
-  // === NEW: GOVERNMENT AGENCIES ===
   NBI: {
     key: 'NBI',
     name: 'NBI Hotline',

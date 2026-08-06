@@ -49,15 +49,12 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
     setHealth(100);
     
     try {
-      // 1. Initialize the new Secure Chat (Worker DojoSession engine when
-      // reachable, /api/analyze fallback otherwise)
+      // Worker DojoSession engine when reachable, /api/analyze fallback otherwise
       const chat = createDojoChat(selectedLanguage);
       setChatSession(chat);
       
-      // 2. Send plain text string
       const result = await chat.sendMessage("Start simulation.");
       
-      // 3. Read text from the new response format
       const text = result.response.text();
       if (typeof result.health === "number") setHealth(result.health);
       setMessages([{ role: 'model', text: text || "Hello!" }]);
@@ -88,7 +85,6 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
     setIsLoading(true);
 
     try {
-      // 4. Send plain text string
       const result = await chatSession.sendMessage(userMsg);
       const responseText = result.response.text() || "...";
       

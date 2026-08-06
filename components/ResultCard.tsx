@@ -10,10 +10,7 @@ import FlagKnowledgeModal from './FlagKnowledgeModal';
 import { playSound } from '../utils/sound';
 import { getFlagDefinition } from '../utils/flagDefinitions';
 
-// --- 1. CONFIGURATION & HELPERS ---
-
 const OFFICIAL_CHANNELS = [
-  // 1. POLICE (Immediate Action)
   { 
     href: "https://acg.pnp.gov.ph/contact-us/", 
     label: "PNP-ACG", 
@@ -37,9 +34,8 @@ const OFFICIAL_CHANNELS = [
     groupHoverText: "group-hover:text-green-400" 
   },
   
-  // 2. FINANCIAL REGULATORS (For Money Recovery/Reports)
   { 
-    href: "mailto:epd@sec.gov.ph", // Direct email per screenshot
+    href: "mailto:epd@sec.gov.ph",
     label: "SEC-EIPD", 
     desc: "Investments & Lending", 
     action: "EMAIL COMPLAINT", 
@@ -61,7 +57,6 @@ const OFFICIAL_CHANNELS = [
     groupHoverText: "group-hover:text-indigo-400" 
   },
 
-  // 3. TELECOM & INVESTIGATION (Spam Prevention)
   { 
     href: "https://www.globe.com.ph/stop-spam", 
     label: "GLOBE", 
@@ -99,8 +94,6 @@ const getVerdictStyle = (verdict: Verdict) => {
   }
 };
 
-// --- 2. SUB-COMPONENTS ---
-
 // IMPORTANT: We now accept detectedEntity to pass it down
 const VictimAssistanceGuide: React.FC<{ detectedEntity?: string; entities?: string[] }> = ({ detectedEntity, entities }) => (
   <div className="border-[4px] border-red-900 bg-red-950/30 p-3 md:p-6 relative overflow-hidden">
@@ -109,7 +102,6 @@ const VictimAssistanceGuide: React.FC<{ detectedEntity?: string; entities?: stri
       <AlertTriangle className="w-3 h-3 md:w-4 md:h-4 animate-bounce" /> VICTIM_ASSISTANCE PROTOCOL
     </h4>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-['VT323'] text-sm md:text-xl text-slate-300">
-      {/* Step 1 */}
       <div className="flex md:flex-col gap-3 md:gap-2">
         <div className="flex-shrink-0 w-8 h-8 md:w-12 md:h-12 bg-red-900/50 border-2 border-red-500 flex items-center justify-center text-red-400 font-bold text-base md:text-2xl font-['Press_Start_2P'] shadow-[2px_2px_0_0_rgba(220,38,38,0.5)]">1</div>
         <div>
@@ -131,7 +123,6 @@ const VictimAssistanceGuide: React.FC<{ detectedEntity?: string; entities?: stri
         </div>
       </div>
 
-      {/* Step 2 */}
       <div className="flex md:flex-col gap-3 md:gap-2">
         <div className="flex-shrink-0 w-8 h-8 md:w-12 md:h-12 bg-orange-900/50 border-2 border-orange-500 flex items-center justify-center text-orange-400 font-bold text-base md:text-2xl font-['Press_Start_2P'] shadow-[2px_2px_0_0_rgba(234,88,12,0.5)]">2</div>
         <div>
@@ -145,7 +136,6 @@ const VictimAssistanceGuide: React.FC<{ detectedEntity?: string; entities?: stri
         </div>
       </div>
 
-      {/* Step 3 */}
       <div className="flex md:flex-col gap-3 md:gap-2">
         <div className="flex-shrink-0 w-8 h-8 md:w-12 md:h-12 bg-slate-800 border-2 border-slate-500 flex items-center justify-center text-slate-400 font-bold text-base md:text-2xl font-['Press_Start_2P'] shadow-[2px_2px_0_0_rgba(100,116,139,0.5)]">3</div>
         <div>
@@ -157,7 +147,6 @@ const VictimAssistanceGuide: React.FC<{ detectedEntity?: string; entities?: stri
     
     <div className="mt-4">
       <h5 className="text-slate-500 text-xs font-['Press_Start_2P'] mb-2 uppercase">Direct Support Line:</h5>
-      {/* Pass the matched brands to SmartSupport */}
       <SmartSupport detectedEntity={detectedEntity} entities={entities} />
     </div>
   </div>
@@ -192,8 +181,6 @@ const OfficialChannelsList: React.FC = () => (
   </div>
 );
 
-// --- 3. MAIN COMPONENT ---
-
 interface ResultCardProps {
   result: AnalysisResult;
   onReset: () => void;
@@ -213,7 +200,6 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
 
   useEffect(() => { setExpandedEducation(true); }, [result]);
 
-  // STORAGE LOOP: surface "this domain was reported N times" when a match exists.
   useEffect(() => {
     let cancelled = false;
     // Reset on every new result so a stale alert from the previous scan can
@@ -248,24 +234,19 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
   return (
     <div key={scanId} className="w-full mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 font-['VT323'] px-0 md:px-0 pb-10">
       
-      {/* Modals */}
       <FamilyWarningCard result={result} isOpen={showWarningCard} onClose={() => setShowWarningCard(false)} />
       <FlagKnowledgeModal isOpen={showKnowledgeModal} onClose={() => setShowKnowledgeModal(false)} highlightedFlag={highlightedFlag} />
 
-      {/* Main Container */}
       <div className={`border-[4px] md:border-[6px] ${style.borderColor} bg-slate-900 p-1 shadow-[6px_6px_0_0_rgba(0,0,0,0.8)] md:shadow-[14px_14px_0_0_rgba(0,0,0,0.8)] relative m-1 md:m-2 transition-colors duration-500`}>
         
-        {/* Decorative Screws */}
         <div className={`absolute -top-2 -left-2 w-4 h-4 ${style.bgColor} border-2 border-slate-900`}></div>
         <div className={`absolute -top-2 -right-2 w-4 h-4 ${style.bgColor} border-2 border-slate-900`}></div>
         <div className={`absolute -bottom-2 -left-2 w-4 h-4 ${style.bgColor} border-2 border-slate-900`}></div>
         <div className={`absolute -bottom-2 -right-2 w-4 h-4 ${style.bgColor} border-2 border-slate-900`}></div>
 
         <div className="border-2 border-slate-700 p-3 md:p-6 bg-[#0f172a] relative overflow-hidden">
-          {/* CRT Overlay */}
           <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,6px_100%] opacity-20 z-0"></div>
 
-          {/* --- HEADER --- */}
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 border-b-4 border-slate-800 pb-4 gap-4 relative z-10">
             <div className="flex items-center gap-4 flex-1 w-full">
               <div className={`p-2 md:p-4 border-[3px] border-slate-800 ${style.bgColor} shadow-[2px_2px_0_0_#000]`}>
@@ -324,17 +305,14 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
             </div>
           )}
 
-          {/* --- GRID CONTENT --- */}
           <div className="flex flex-col lg:grid lg:grid-cols-12 gap-6 relative z-10">
             
-            {/* LEFT COLUMN: Flags & Actions */}
             <div className="lg:col-span-4 flex flex-col gap-4">
               {result.redFlags.length > 0 && (
                 <div className="relative">
                   <h4 className="text-sm md:text-xl font-bold text-white mb-2 flex items-center gap-2 font-['Press_Start_2P'] uppercase">
                     <AlertTriangle className="w-4 h-4 md:w-5 md:h-5 text-orange-500" /> DETECTED_FLAGS:
                   </h4>
-                  {/* Tooltip Area */}
                   <div className="h-32 mb-2 border border-slate-700 bg-slate-900/50 p-2 overflow-y-auto custom-scrollbar">
                      {hoveredFlag ? (
                         <div className="text-xs md:text-sm text-cyan-300 font-mono animate-fade-in">
@@ -345,7 +323,6 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
                         <div className="h-full flex items-center justify-center text-xs text-slate-600 font-mono italic text-center">[ HOVER FLAGS FOR INTEL ]</div>
                      )}
                   </div>
-                  {/* Flag Buttons */}
                   <div className="flex flex-wrap gap-2">
                     {result.redFlags.map((flag, index) => (
                       <button key={index} onMouseEnter={() => setHoveredFlag(flag)} onMouseLeave={() => setHoveredFlag(null)} 
@@ -359,7 +336,6 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
                 </div>
               )}
 
-              {/* PNP Report Button (High Risk Only) */}
               {isHighRisk && (
                 <div className="w-full bg-red-700 text-white border-b-4 md:border-b-8 border-r-4 md:border-r-8 border-red-900 flex flex-col p-3 md:p-4 gap-3 relative overflow-hidden group">
                    <div className="absolute inset-0 opacity-10 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,#000_10px,#000_20px)]"></div>
@@ -376,13 +352,10 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
                 </div>
               )}
 
-              {/* Official Channels List */}
               {isSuspiciousOrHigh && <OfficialChannelsList />}
             </div>
 
-            {/* RIGHT COLUMN: Analysis & Education */}
             <div className="lg:col-span-8 flex flex-col gap-6">
-              {/* Terminal Box */}
               <div className="bg-black p-3 md:p-6 border-[3px] border-green-900/50 shadow-inner h-fit">
                 <div className="flex items-center justify-between border-b border-green-900/50 pb-2 mb-4">
                   <div className="bg-green-900 text-green-100 px-2 py-0.5 text-[10px] md:text-xs font-bold font-['Press_Start_2P']">SYS_LOG</div>
@@ -393,7 +366,6 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
                 </p>
               </div>
 
-              {/* Education Mode */}
               {result.verdict !== Verdict.SAFE && (
                 <div className="border-t-4 border-slate-800 pt-4">
                   <button onClick={() => { playSound('click'); setExpandedEducation(!expandedEducation); }} className="flex items-center justify-between w-full text-left text-cyan-400 hover:text-cyan-300 transition-colors group mb-4">
@@ -419,7 +391,6 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
                 </div>
               )}
 
-              {/* Victim Assistance (includes SmartSupport) */}
               {isSuspiciousOrHigh && (
                 <VictimAssistanceGuide
                   detectedEntity={result.senderEntity || result.scamType}
@@ -429,7 +400,6 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
             </div>
           </div>
 
-          {/* Reset Button */}
           <button onClick={onReset} className="mt-6 w-full py-3 md:py-4 px-4 md:px-6 bg-slate-700 hover:bg-slate-600 text-white font-bold text-sm md:text-xl rounded-none border-b-4 md:border-b-8 border-r-4 md:border-r-8 border-slate-900 active:border-0 active:translate-y-2 active:translate-x-2 transition-all flex items-center justify-center gap-2 uppercase font-['Press_Start_2P'] relative z-10">
             New_Scan <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
           </button>

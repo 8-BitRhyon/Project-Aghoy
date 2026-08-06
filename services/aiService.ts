@@ -3,9 +3,8 @@ import { redactPII } from "../src/rejects/rejects";
 import { detectBrands, detectIntents, fallbackVerdict, BrandMatch } from "../src/brands/brands";
 import { postReport, lookupIndicator, ReportPayload } from "../src/api/storageClient";
 
-// vite/client types are not in tsconfig.json's "types", so declare import.meta.env
-// locally. Vite still statically replaces it in builds, letting dead DEV branches
-// be eliminated by the bundler.
+// vite/client types are not in tsconfig.json, so import.meta.env is declared
+// locally.
 declare global {
   interface ImportMeta {
     readonly env: { readonly DEV: boolean; readonly BASE_URL: string };
@@ -17,14 +16,9 @@ const FETCH_TIMEOUT_MS = 30000;
 const MAX_DOJO_HISTORY = 6;
 const MAX_ASSISTANT_TEXT = 2000;
 
-// Worker that hosts the DojoSession Durable Object engine and the storage layer
-// (see src/worker/dojo.ts). Same origin as the storage client's WORKER_ORIGIN.
 const WORKER_ORIGIN = "https://project-aghoy-dojo.rhyonfs.workers.dev";
-// Scenario string POSTed to /dojo/start; the Worker redacts it and folds it
-// into the session system prompt with the chosen language.
 const DOJO_SCENARIO = "A GCash OTP scammer trying to get you to share a verification code";
 
-// === 1. CONFIGURATION ===
 const VALID_FLAGS = [
   "TASK_SCAM",
   "OTP_SHARING",
@@ -81,16 +75,11 @@ const cleanJson = (text: string): string => {
   return clean;
 };
 
-// === 2. CLIENT-SIDE OCR (Vision Gate) ===
-
 type TesseractModule = typeof import("tesseract.js");
 type OcrWorker = Awaited<ReturnType<TesseractModule["createWorker"]>>;
 
-// Lazily created, pooled Tesseract worker singleton. tesseract.js is only pulled
-// into the bundle when the first image is scanned. All OCR assets (worker script,
-// wasm core, eng traineddata) are SELF-HOSTED under /ocr/ so no code or model is
-// fetched from a third-party CDN at runtime (CSP blocks the CDN importScripts
-// anyway). A shared promise guards concurrent first-use.
+// All OCR assets are SELF-HOSTED under /ocr/ so nothing is fetched from a
+// third-party CDN at runtime (CSP blocks the CDN importScripts anyway).
 let ocrWorkerPromise: Promise<OcrWorker> | null = null;
 
 const OCR_WORKER_PATH = `${import.meta.env.BASE_URL}ocr/worker.min.js`;
@@ -163,13 +152,8 @@ const extractTextFromImage = async (base64Image: string, mime?: string): Promise
   }
 };
 
-// === STORAGE LOOP (similar-scam + phone-blacklist signals) ===
-
-// The storage client's postReport is fire-and-forget (returns void), so the
-// Vectorize similarity hits the Worker attaches to the /reports response are
-// captured here with a second, dedupe-safe POST: the Worker skips re-insertion
-// when the content hash already exists and returns the same `similar` array
-// either way (see src/worker/dojo.ts -> POST /reports).
+// postReport is fire-and-forget; this second, dedupe-safe POST captures the
+// Vectorize similarity hits from the /reports response.
 const fetchSimilarScams = async (payload: ReportPayload): Promise<Array<{ id: string; score: number }>> => {
   try {
     const controller = new AbortController();
@@ -183,8 +167,7 @@ const fetchSimilarScams = async (payload: ReportPayload): Promise<Array<{ id: st
       });
       if (!res.ok) return [];
       const data = (await res.json()) as { similar?: Array<{ id: string; score: number }> };
-      // Cosine-similarity threshold: only surface genuinely close hits so an
-      // unrelated SAFE scan does not read as a "known scam pattern".
+      // Only surface genuinely close hits so an unrelated SAFE scan does not read as a "known scam pattern".
       return Array.isArray(data.similar) ? data.similar.filter((m) => m.score >= 0.5) : [];
     } finally {
       clearTimeout(timeoutId);
@@ -194,9 +177,7 @@ const fetchSimilarScams = async (payload: ReportPayload): Promise<Array<{ id: st
   }
 };
 
-// "This number was reported N times": look up the blacklist count for the first
-// phone hash found in the raw text. Only pre-computed SHA-256 hashes are ever
-// sent to the Worker (never the raw number).
+// Only pre-computed SHA-256 hashes are ever sent to the Worker, never raw numbers.
 const reportedPhoneCount = async (phoneHashes: string[]): Promise<number> => {
   if (!phoneHashes.length) return 0;
   const status = await withTimeout(lookupIndicator("phone", phoneHashes[0]), 5000);
@@ -204,8 +185,7 @@ const reportedPhoneCount = async (phoneHashes: string[]): Promise<number> => {
   return status.times_reported || 0;
 };
 
-// Resolve a promise or give up after a deadline so a hung storage lookup can
-// never block the scan result indefinitely.
+// A hung storage lookup must never block the scan result indefinitely.
 const withTimeout = async <T>(promise: Promise<T>, ms: number): Promise<T | null> => {
   let timer: ReturnType<typeof setTimeout> | undefined;
   try {
@@ -218,8 +198,7 @@ const withTimeout = async <T>(promise: Promise<T>, ms: number): Promise<T | null
   }
 };
 
-// Merge the storage-loop signals into an AnalysisResult. Best-effort: any
-// storage failure degrades to the plain result, never to an error.
+// Best-effort: any storage failure degrades to the plain result, never to an error.
 const withStorageSignals = async (
   base: AnalysisResult,
   payload: ReportPayload,
@@ -236,16 +215,13 @@ const withStorageSignals = async (
   };
 };
 
-// === DOJO HANDLER (Chat Logic) ===
 export interface DojoSendResult {
   response: { text: () => string };
   health?: number;
   gameOver?: boolean;
 }
 
-// Fallback engine: POSTs to the Pages Function /api/analyze with a simulated
-// scammer system prompt. Used when the Worker DojoSession engine is unreachable
-// or misconfigured so the training game never fully breaks.
+// Fallback engine POSTs to /api/analyze with a simulated scammer prompt when the Worker engine is unreachable.
 class SecureDojoHandler {
   private history: any[];
   private language: string;
@@ -258,8 +234,7 @@ class SecureDojoHandler {
   }
 
   async sendMessage(text: string): Promise<DojoSendResult> {
-    // REJECTS LAYER (client pre-send): redact PII before it leaves the browser.
-    // Server-side redaction is authoritative; this is defense-in-depth.
+    // Redact PII before it leaves the browser; server-side is authoritative.
     const userMessage = { role: "user", content: redactPII(text).text };
     this.history.push(userMessage);
 
@@ -267,9 +242,7 @@ class SecureDojoHandler {
     const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
 
     try {
-      // Rolling window: keep only the 6 most recent conversation messages so the
-      // request stays under the server's message cap. The system instruction is
-      // sent separately and does not count against the window.
+      // Keep only the 6 most recent messages so the request stays under the server's message cap.
       this.history = this.history.slice(-MAX_DOJO_HISTORY);
 
       const messages = [
@@ -306,15 +279,12 @@ class SecureDojoHandler {
   }
 }
 
-// Thrown when the Worker DojoSession engine is unreachable or misconfigured
-// (503, network, CORS). The DojoChat wrapper catches it and degrades to the
-// /api/analyze SecureDojoHandler.
+// Thrown when the Worker engine is unreachable or misconfigured (503, network,
+// CORS); DojoChat catches it and degrades to /api/analyze.
 class DojoUnavailableError extends Error {}
 
-// Worker DojoSession engine. Talks to the Worker's Durable Object game engine
-// (see src/worker/dojo.ts): /dojo/session mints a signed token, /dojo/start
-// boots the scenario, /dojo/chat advances the conversation. The Worker drives
-// health and game-over state.
+// Worker DojoSession engine: /dojo/session mints a signed token, /dojo/start
+// boots the scenario, /dojo/chat advances it (see src/worker/dojo.ts).
 class WorkerDojoHandler {
   private language: string;
   private sessionToken: string | null = null;
@@ -324,9 +294,7 @@ class WorkerDojoHandler {
     this.language = language;
   }
 
-  // Mint a signed, expiring session token via POST /dojo/session. Returns false
-  // when the Worker is unreachable or returns 503 (SESSION_SIGNING_KEY unset),
-  // so the caller can pick the fallback engine.
+  // Returns false when the Worker is unreachable or returns 503 (SESSION_SIGNING_KEY unset), so the caller picks the fallback.
   async init(): Promise<boolean> {
     try {
       const res = await fetch(`${WORKER_ORIGIN}/dojo/session`, {
@@ -347,7 +315,6 @@ class WorkerDojoHandler {
     let token = this.sessionToken;
     if (!token) throw new DojoUnavailableError("Dojo session unavailable");
 
-    // First message boots the scenario; every later message advances it.
     const path = this.started ? "/dojo/chat" : "/dojo/start";
     const body: Record<string, string> = this.started
       ? { message: text, sessionToken: token }
@@ -355,10 +322,9 @@ class WorkerDojoHandler {
 
     let res = await this.post(path, body, token);
 
-    // 401: token expired or signing key rotated. Re-mint and retry once. The
-    // fresh token owns a fresh Durable Object, so re-run /dojo/start to give
-    // the new session a scenario, then replay the user's message so it is not
-    // silently dropped mid-conversation.
+    // 401: token expired or signing key rotated. Re-mint and retry once; the
+    // fresh token owns a fresh Durable Object, so re-run /dojo/start then
+    // replay the user's message.
     if (res.status === 401) {
       const reMinted = await this.init();
       token = this.sessionToken;
@@ -380,8 +346,7 @@ class WorkerDojoHandler {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
     try {
-      // The Worker reads the token from the X-Session-Token header or the
-      // sessionToken body field (extractSessionToken in src/worker/dojo.ts).
+      // The Worker reads the token from the X-Session-Token header or the sessionToken body field.
       return await fetch(`${WORKER_ORIGIN}${path}`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-Session-Token": token },
@@ -389,8 +354,7 @@ class WorkerDojoHandler {
         signal: controller.signal,
       });
     } catch (error) {
-      // Network death / abort = the Worker engine is unreachable; classify as
-      // DojoUnavailableError so the caller degrades to the /api/analyze engine.
+      // Network death/abort = engine unreachable; classify as DojoUnavailableError so the caller degrades to /api/analyze.
       throw new DojoUnavailableError("Dojo worker unreachable");
     } finally {
       clearTimeout(timeoutId);
@@ -416,9 +380,8 @@ class WorkerDojoHandler {
   }
 }
 
-// Chooses the Worker DojoSession engine when reachable; otherwise degrades to
-// the /api/analyze SecureDojoHandler. A fresh instance is created per game so
-// the reset button implicitly rotates the session token.
+// Uses the Worker engine when reachable, else /api/analyze; a fresh instance
+// per game rotates the session token on reset.
 class DojoChat {
   private language: string;
   private worker: WorkerDojoHandler | null = null;
@@ -444,8 +407,7 @@ class DojoChat {
       return await this.worker.sendMessage(text);
     } catch (error) {
       if (error instanceof DojoUnavailableError) {
-        // Worker died mid-game: hand the rest of the conversation to the
-        // /api/analyze engine and replay this message through it.
+        // Worker died mid-game: hand the conversation to /api/analyze and replay this message.
         this.worker = null;
         this.fallback = new SecureDojoHandler(this.language, getDojoPrompt(this.language));
         return this.fallback.sendMessage(text);
@@ -455,17 +417,13 @@ class DojoChat {
   }
 }
 
-// === 4. SCANNER LOGIC ===
-
-// SHA-256 hex of arbitrary text (Web Crypto).
 const sha256Hex = async (text: string): Promise<string> => {
   const data = new TextEncoder().encode(text);
   const digest = await crypto.subtle.digest("SHA-256", data);
   return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, "0")).join("");
 };
 
-// Hash PH mobile numbers found in the RAW text (before Rejects redaction) so
-// the "reported N times" blacklist works without ever storing the number.
+// Hash PH mobiles in RAW text (before Rejects redaction) so the "reported N times" blacklist works without storing the number.
 const PH_MOBILE_RE = /(?<!\d)(?:\+63|0)9\d{9}(?!\d)/g;
 const phoneHashesFromText = async (text: string): Promise<string[]> => {
   const matches = (text || "").match(PH_MOBILE_RE) || [];
@@ -477,9 +435,8 @@ const phoneHashesFromText = async (text: string): Promise<string[]> => {
   return Array.from(hashes);
 };
 
-// Attach deterministic brand/intent signals to an LLM result. The brand layer
-// is authoritative for victim-support routing: it can never fall through to the
-// default PNP-ACG card when a real brand is mentioned.
+// The brand layer is authoritative for victim-support routing: it can never
+// fall through to the default PNP-ACG card when a real brand is mentioned.
 const enrichResult = (result: AnalysisResult, contentToAnalyze: string): AnalysisResult => {
   const matchedBrands = detectBrands({
     text: contentToAnalyze,
@@ -493,7 +450,6 @@ const enrichResult = (result: AnalysisResult, contentToAnalyze: string): Analysi
 };
 
 export const analyzeContent = async (text: string, language: string, imageBase64?: string, imageMimeType?: string): Promise<AnalysisResult> => {
-  // 1. Dev Shortcuts (dev builds only; statically eliminated in production)
   if (import.meta.env.DEV) {
     if (text.includes("DEV_SAFE")) return getDevResponse("SAFE");
     if (text.includes("DEV_SCAM")) return getDevResponse("SCAM");
@@ -501,7 +457,6 @@ export const analyzeContent = async (text: string, language: string, imageBase64
 
   let contentToAnalyze = text;
 
-  // 2. Handle Image/OCR Processing
   if (imageBase64) {
     try {
       const ocrText = await extractTextFromImage(imageBase64, imageMimeType);
@@ -533,17 +488,15 @@ export const analyzeContent = async (text: string, language: string, imageBase64
     }
   }
 
-  // 3. Validation
   if (!contentToAnalyze || contentToAnalyze.trim().length < 5) {
      throw new Error("Please provide text or an image to analyze.");
   }
 
-  // REJECTS LAYER (client pre-send): redact PII before it leaves the browser.
-  // Server-side redaction is authoritative; this is defense-in-depth.
+  // Redact PII before it leaves the browser; server-side is authoritative.
   const rejectedContent = redactPII(contentToAnalyze);
   contentToAnalyze = rejectedContent.text;
 
-  // Re-validate after redaction: if every token got replaced, nothing analyzable remains.
+  // Re-validate after redaction: if every token got replaced, nothing remains.
   if (contentToAnalyze.trim().length < 5) {
     throw new Error("Please provide text or an image to analyze.");
   }
@@ -554,7 +507,6 @@ export const analyzeContent = async (text: string, language: string, imageBase64
   const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
 
   try {
-    // 4. Send Request to Backend
     const response = await fetch(API_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -568,13 +520,10 @@ export const analyzeContent = async (text: string, language: string, imageBase64
       signal: controller.signal
     });
 
-    // === RATE LIMIT INTERCEPTOR ===
-    // Throw instead of fabricating a verdict so App.tsx surfaces the cooldown
-    // message and never counts it in stats or history.
+    // Throw instead of fabricating a verdict so App.tsx surfaces the cooldown and never counts it in stats/history.
     if (response.status === 429) {
       throw new Error("429: daily quota reached. Please wait 60 seconds before scanning another message.");
     }
-    // ==============================
 
     if (!response.ok) {
        const errData = await response.json().catch(() => ({})) as { error?: string };
@@ -601,10 +550,8 @@ export const analyzeContent = async (text: string, language: string, imageBase64
       }
     }
 
-    // Deterministic brand/intent enrichment + storage loop (best-effort).
     const enriched = enrichResult(result, contentToAnalyze);
-    // Hash phones from BOTH the user note and any OCR text, so the phone
-    // blacklist works for screenshot scans, not just pasted text.
+    // Hash phones from both the user note and OCR text so the blacklist works for screenshot scans.
     const ocrText = imageBase64 ? contentToAnalyze.match(/\[IMAGE CONTENT \(OCR\)\]:\s*([\s\S]*?)\s*$/) : null;
     const phoneHashes = await phoneHashesFromText(`${text} ${ocrText ? ocrText[1] : ""}`);
     const reportPayload: ReportPayload = {
@@ -618,15 +565,11 @@ export const analyzeContent = async (text: string, language: string, imageBase64
       phoneHashes,
     };
     postReport(reportPayload);
-    // Surface Vectorize similar-scam hits and phone-blacklist counts. Best-effort:
-    // storage failures degrade to the plain result, never to an error.
+    // Best-effort: storage failures degrade to the plain result, never to an error.
     return withStorageSignals(enriched, reportPayload, phoneHashes);
 
   } catch (error: any) {
-    // Deterministic fallback when the AI provider is unavailable: never leave
-    // the user without a verdict for an obviously suspicious message. Uses
-    // contentToAnalyze (which includes OCR text for image scans), not the raw
-    // text param (empty when an image was attached).
+    // Deterministic fallback when the AI provider is unavailable: never leave the user without a verdict.
     if (!error?.message || !/429|quota|exhausted/i.test(String(error.message))) {
       const fallback = fallbackVerdict(contentToAnalyze || text);
       if (fallback) {
@@ -653,12 +596,10 @@ export const analyzeContent = async (text: string, language: string, imageBase64
   }
 };
 
-// === 5. EXPORT FACTORY ===
 export const createDojoChat = (language: string) => {
   return new DojoChat(language);
 };
 
-// === 6. PROMPTS ===
 const getScannerPrompt = (language: string) => {
   let langInstruction = `Respond in clear, simple ${language}.`;
   
@@ -684,7 +625,6 @@ const getScannerPrompt = (language: string) => {
   `;
 };
 
-// === UPDATED: "White Hat" Dojo Prompt ===
 const getDojoPrompt = (language: string) => {
   let roleInstruction = `Simulate a scammer speaking ${language}.`;
   

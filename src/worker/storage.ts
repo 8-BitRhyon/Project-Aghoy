@@ -1,7 +1,5 @@
-// === STORAGE LAYER ===
 // D1 + R2 + Vectorize access for Project Aghoy. Only sanitized content (the
-// Rejects layer output) is ever written anywhere. This module runs in the
-// Worker (bindings: DB, EVIDENCE, VECTORIZE, AI).
+// Rejects layer output) is ever written anywhere.
 
 import { extractIndicators, Indicator } from "./indicators";
 import { redactPII } from "../rejects/rejects";
@@ -25,7 +23,6 @@ export interface ReportRecord {
   indicators: Indicator[];
 }
 
-// sha256 of arbitrary text via Web Crypto (available in Workers).
 const sha256Hex = async (text: string): Promise<string> => {
   const data = new TextEncoder().encode(text);
   const digest = await crypto.subtle.digest("SHA-256", data);
@@ -39,12 +36,6 @@ const sanitizeForStorage = (text: string): string => {
   return redactPII(typeof text === "string" ? text : "").text;
 };
 
-// ============================================================
-// D1
-// ============================================================
-
-// Insert a report (deduped by content hash) and upsert its indicators.
-// Returns the report id and whether it was new (vs a duplicate).
 export const storeReport = async (
   env: StorageEnv,
   input: {
@@ -138,13 +129,11 @@ export const storeReport = async (
   return { id, duplicate, indicators };
 };
 
-// Confirm a report row exists before an evidence blob is written against it.
 export const reportExists = async (env: StorageEnv, reportId: number): Promise<boolean> => {
   const row = await env.DB.prepare("SELECT id FROM reports WHERE id = ?1").bind(reportId).first();
   return !!row;
 };
 
-// Look up an indicator's status (reported/verified/cleared) for the feed.
 export const lookupIndicator = async (
   env: StorageEnv,
   type: string,
@@ -179,7 +168,6 @@ export const listIndicators = async (
   return results as Array<{ type: string; value: string; status: string; times_reported: number; last_seen: string }>;
 };
 
-// Mark an indicator as verified (moves it toward the STIX/TAXII export).
 export const verifyIndicator = async (
   env: StorageEnv,
   type: string,
@@ -209,13 +197,8 @@ export const verifyIndicator = async (
   return true;
 };
 
-// ============================================================
-// R2
-// ============================================================
-
-// Persist an evidence blob (screenshot, evidence brief, STIX export) keyed by
-// report id. Only store sanitized artifacts. Returns null if R2 is not bound
-// (R2 must be enabled on the account; see scripts/setup-storage.sh).
+// Only store sanitized artifacts. Returns null if R2 is not bound (R2 must be
+// enabled on the account; see scripts/setup-storage.sh).
 export const storeEvidence = async (
   env: StorageEnv,
   reportId: number,
@@ -232,7 +215,6 @@ export const storeEvidence = async (
   return key;
 };
 
-// Fetch an evidence object from R2 (returns null if absent or R2 not bound).
 export const getEvidence = async (
   env: StorageEnv,
   key: string
@@ -243,12 +225,6 @@ export const getEvidence = async (
   return { data: await obj.arrayBuffer(), contentType: obj.httpMetadata?.contentType || "application/octet-stream" };
 };
 
-// ============================================================
-// Vectorize
-// ============================================================
-
-// Embed a piece of sanitized text and query the scam-index for the top-K most
-// similar known scams. Used for dedup and cluster detection.
 export const findSimilarScams = async (
   env: StorageEnv,
   text: string,
@@ -264,8 +240,6 @@ export const findSimilarScams = async (
   }));
 };
 
-// Seed the scam-index with a known scam corpus. Each entry stores its own
-// sanitized text as metadata for human-readable reporting.
 export const seedVectorize = async (
   env: StorageEnv,
   entries: Array<{ id: string; text: string; metadata?: Record<string, unknown> }>

@@ -7,7 +7,6 @@ interface SmartSupportProps {
   entities?: string[];
 }
 
-// A single victim-assistance card for one matched brand.
 const SupportCard: React.FC<{ entry: SupportEntry }> = ({ entry }) => {
   const colors = getThemeClasses(entry.theme);
   // Only channels that are actually reachable by phone get a tel: button.

@@ -1,12 +1,8 @@
-// utils/privacy.ts
-
 import { redactPII, REJECT_PLACEHOLDERS } from '../src/rejects/rejects';
 
-// The Rejects layer (src/rejects/rejects.ts) is the authoritative PII boundary
-// and already covers cards (Luhn-validated), anchored PH mobiles, emails,
-// API keys, PH IDs, OTPs, and 10-12 digit account runs. This module reuses
-// those rules for defense-in-depth (localStorage history and displayed text)
-// and maps the [REDACTED:*] markers to the user-facing tokens rendered in app.
+// The Rejects layer is the authoritative PII boundary; this module reuses its
+// rules for defense-in-depth (localStorage history and displayed text) and maps
+// the [REDACTED:*] markers to the user-facing tokens rendered in app.
 const REJECT_TO_CLIENT_TOKEN: Record<string, string> = {
   [REJECT_PLACEHOLDERS.CARD]: '[CARD_NUMBER]',
   [REJECT_PLACEHOLDERS.MOBILE]: '[MOBILE_NUMBER]',
@@ -42,23 +38,19 @@ export const sanitizeText = (text: string): string => {
 
   let cleanText = text;
 
-  // 1. Rejects-layer redaction (cards, PH mobiles, emails, API keys, PH IDs,
-  //    accounts, OTPs). redactPII is synchronous.
+  // Rejects-layer redaction (cards, PH mobiles, emails, API keys, PH IDs,
+  // accounts, OTPs). redactPII is synchronous.
   cleanText = mapRejectTokens(redactPII(cleanText).text);
 
-  // 2. Extended 10-16 digit standalone runs (GCash refs beyond 10-12).
   cleanText = cleanText.replace(EXTENDED_ACCOUNT_RE, '[ACCOUNT_NUMBER]');
 
-  // 3. Redact names in greeting patterns (not handled by the Rejects layer).
   cleanText = cleanText.replace(greetingRegex, '$1 [NAME_REDACTED]');
 
   return cleanText;
 };
 
-// Generate a safe, anonymous hash for tracking duplicates
-// Uses the Web Crypto API available in all modern browsers
 export const generateContentHash = async (text: string): Promise<string> => {
-  const safeText = sanitizeText(text).toLowerCase().trim(); // Hash the CLEAN version only
+  const safeText = sanitizeText(text).toLowerCase().trim();
   const encoder = new TextEncoder();
   const data = encoder.encode(safeText);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
