@@ -22,8 +22,8 @@ class ValidationError extends Error {}
 // Consult the Worker's shared RateLimiter DO for a globally-accurate decision.
 // Falls back to the local per-isolate limiter only if the Worker is
 // unreachable/misconfigured, so rate limiting never silently disappears.
-const checkGlobalRateLimit = async (ip) => {
-  const key = process.env.WORKER_RATE_CHECK_KEY;
+const checkGlobalRateLimit = async (ip, env) => {
+  const key = env.WORKER_RATE_CHECK_KEY;
   if (!key) return null;
   try {
     const controller = new AbortController();
@@ -163,7 +163,7 @@ export const onRequestPost = async (context) => {
   // Rate limit: prefer the Worker's shared DO (globally accurate); fall back
   // to the local per-isolate limiter when the Worker is unavailable.
   const clientIp = request.headers.get("CF-Connecting-IP") || "unknown";
-  const globalRate = await checkGlobalRateLimit(clientIp);
+  const globalRate = await checkGlobalRateLimit(clientIp, env);
   const allowed = globalRate ? globalRate.allowed : checkRateLimit(clientIp);
   if (!allowed) {
     return new Response(JSON.stringify({ error: "Too many requests. Please wait." }), {
