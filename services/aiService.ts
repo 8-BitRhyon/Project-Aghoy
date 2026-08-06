@@ -437,7 +437,9 @@ const phoneHashesFromText = async (text: string): Promise<string[]> => {
 
 // The brand layer is authoritative for victim-support routing: it can never
 // fall through to the default PNP-ACG card when a real brand is mentioned.
-const enrichResult = (result: AnalysisResult, contentToAnalyze: string): AnalysisResult => {
+// A deterministic verdict cross-check also guards against LLM under-detection
+// or prompt injection that tries to force a SAFE verdict on a real scam.
+export const enrichResult = (result: AnalysisResult, contentToAnalyze: string): AnalysisResult => {
   const matchedBrands = detectBrands({
     text: contentToAnalyze,
     senderEntity: result.senderEntity,
@@ -446,6 +448,26 @@ const enrichResult = (result: AnalysisResult, contentToAnalyze: string): Analysi
     limit: 3,
   });
   const intents = detectIntents(contentToAnalyze);
+  const deterministic = fallbackVerdict(contentToAnalyze);
+  const llmSaysSafe = result.verdict === "SAFE";
+  const deterministicHigh = deterministic && deterministic.verdict === "HIGH_RISK";
+  // The deterministic detector cannot be prompt-injected (it is rules, not an
+  // LLM), so an LLM SAFE on a deterministically HIGH_RISK input is escalated.
+  // The deterministic risk fields replace the (stale, safe-looking) LLM ones so
+  // downstream consumers never render a safe explanation for a real scam.
+  if (llmSaysSafe && deterministicHigh) {
+    return {
+      ...result,
+      verdict: "SUSPICIOUS" as Verdict,
+      riskScore: Math.max(result.riskScore, deterministic.riskScore),
+      scamType: deterministic.scamType,
+      redFlags: [...(result.redFlags || []), "UNDERDETECTION_OVERRIDE"],
+      analysis: deterministic.analysis,
+      educationalTip: deterministic.educationalTip,
+      matchedBrands,
+      intents,
+    };
+  }
   return { ...result, matchedBrands, intents };
 };
 
