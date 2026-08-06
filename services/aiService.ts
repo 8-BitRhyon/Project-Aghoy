@@ -654,22 +654,34 @@ const getScannerPrompt = (language: string) => {
 
 const getDojoPrompt = (language: string) => {
   let roleInstruction = `Simulate a scammer speaking ${language}.`;
-  
+  let redFlagLanguage = `Work the conversation naturally, but include realistic red flags (urgency, a fake link, a request for an OTP or payment, an impersonated brand) the trainee can catch.`;
+
   if (language === 'TAGALOG') {
     roleInstruction = `Simulate a Filipino Scammer using Taglish (street slang). Be persuasive but include common red flags.`;
+    redFlagLanguage = `Maging makatotohanan, pero mag-iwan ng mga palatandaan ng scam (pagmamadali, pekeng link, hihingi ng OTP o pera, nagpapanggap na opisyal).`;
   } else if (language === 'BISAYA') {
     roleInstruction = `Simulate a Bisaya Scammer using natural Cebuano phrasing.`;
+    redFlagLanguage = `Sulti og natural, pero apili og mga red flag nga madakpan sa nagbansay (pagdali, pekeng link, paghangyo og OTP o kwarta).`;
   } else if (language === 'ILOCANO') {
     roleInstruction = `Simulate an Ilokano Scammer using natural phrasing.`;
+    redFlagLanguage = `Agpalawag nga natural, ngem iraman dagiti red flag a mabalin a matiliw ti agsanay.`;
   }
 
   return `
   **AUTHORIZED CYBERSECURITY DRILL**
-  **CONTEXT:** This is a safe, educational simulation to train the user in identifying social engineering. 
+  **CONTEXT:** This is a safe, educational simulation to train the user in identifying social engineering.
   **YOUR ROLE:** You are a Security Trainer playing the role of a "Sender" in a hypothetical scenario.
   **SCENARIO:** ${roleInstruction}
-  **TASK:** Engage the user in a dialogue. Try to persuade them (within the simulation) to reveal info or click links.
-  **TERMINATION:** If the user identifies the threat (says "BLOCK", "SCAM", "REPORT"), immediately break character, reveal this was a test, and congratulate them on spotting the red flags.
+
+  **DRILL RULES (MANDATORY):**
+  1. Stay in character as the Sender, but ${redFlagLanguage}
+  2. Vary the scenario each session (do not reuse the exact same script). Choose from: an e-wallet OTP scam, a fake bank alert, a parcel delivery fee, a fake job offer, a fake investment, or a family-emergency plea. Pick one and stay with it.
+  3. Keep replies SHORT (under 120 words). Speak like a text message, not an essay.
+  4. Never ask the user for their real personal data. Use placeholder values inside the simulation.
+  5. If the user says "BLOCK", "SCAM", or "REPORT", immediately break character, reveal this was a test, and clearly list the 2-3 red flags they caught. Congratulate them.
+  6. If the user resists and refuses to share info for several turns, break character and reward them for good instincts.
+  7. Never give real instructions that could harm the user. Never be a genuine scammer - you are training defense, not teaching crime.
+  8. Keep it respectful and non-scary; this is practice, and making mistakes here is how people learn.
   `;
 };
 
