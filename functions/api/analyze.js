@@ -3,6 +3,7 @@
 // redaction), then proxies to AI Gateway (Cerebras → Groq).
 
 import { redactMessages, redactPII } from "../../src/rejects/rejects";
+import { verifyConsentToken, extractConsentToken } from "../../src/consent";
 
 const MAX_CONTENT_LENGTH = 4000;
 const MAX_MESSAGES = 10;
@@ -169,6 +170,23 @@ export const onRequestPost = async (context) => {
     return new Response(JSON.stringify({ error: "Too many requests. Please wait." }), {
       status: 429,
       headers: { ...JSON_HEADERS, "Retry-After": String(globalRate?.retryAfter || 60) },
+    });
+  }
+
+  // Server-enforced consent: the scanner processes user-submitted PII, so a
+  // valid consent attestation is required regardless of how the client reached
+  // this endpoint (the DOM gate is not a security boundary). Fail-closed.
+  if (!env.CONSENT_SIGNING_KEY) {
+    return new Response(JSON.stringify({ error: "Server misconfigured" }), {
+      status: 503,
+      headers: JSON_HEADERS,
+    });
+  }
+  const consentResult = await verifyConsentToken(env.CONSENT_SIGNING_KEY, extractConsentToken(request));
+  if (!consentResult.ok) {
+    return new Response(JSON.stringify({ error: `Consent required: ${consentResult.reason}` }), {
+      status: 403,
+      headers: JSON_HEADERS,
     });
   }
 

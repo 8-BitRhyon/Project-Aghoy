@@ -1,7 +1,7 @@
 import { AnalysisResult, Verdict } from "../types";
 import { redactPII } from "../src/rejects/rejects";
 import { detectBrands, detectIntents, fallbackVerdict, BrandMatch } from "../src/brands/brands";
-import { postReport, lookupIndicator, ReportPayload } from "../src/api/storageClient";
+import { postReport, lookupIndicator, ReportPayload, getConsentToken } from "../src/api/storageClient";
 import { WORKER_ORIGIN } from "../src/config";
 
 // vite/client types are not in tsconfig.json, so import.meta.env is declared
@@ -161,7 +161,7 @@ const fetchSimilarScams = async (payload: ReportPayload): Promise<Array<{ id: st
     try {
       const res = await fetch(`${WORKER_ORIGIN}/reports`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Consent-Token": getConsentToken() || "" },
         body: JSON.stringify(payload),
         signal: controller.signal,
       });
@@ -252,7 +252,7 @@ class SecureDojoHandler {
 
       const response = await fetch(API_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Consent-Token": getConsentToken() || "" },
         body: JSON.stringify({
           messages,
           jsonMode: false
@@ -349,7 +349,7 @@ class WorkerDojoHandler {
       // The Worker reads the token from the X-Session-Token header or the sessionToken body field.
       return await fetch(`${WORKER_ORIGIN}${path}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "X-Session-Token": token },
+        headers: { "Content-Type": "application/json", "X-Session-Token": token, "X-Consent-Token": getConsentToken() || "" },
         body: JSON.stringify(body),
         signal: controller.signal,
       });
@@ -531,7 +531,7 @@ export const analyzeContent = async (text: string, language: string, imageBase64
   try {
     const response = await fetch(API_ENDPOINT, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "X-Consent-Token": getConsentToken() || "" },
       body: JSON.stringify({
         messages: [
           { role: "system", content: systemInstruction + JSON_STRUCTURE_PROMPT },
@@ -545,6 +545,11 @@ export const analyzeContent = async (text: string, language: string, imageBase64
     // Throw instead of fabricating a verdict so App.tsx surfaces the cooldown and never counts it in stats/history.
     if (response.status === 429) {
       throw new Error("429: daily quota reached. Please wait 60 seconds before scanning another message.");
+    }
+
+    if (response.status === 403) {
+      const errData = await response.json().catch(() => ({})) as { error?: string };
+      throw new Error(`Consent required: ${errData.error || "re-accept the privacy protocols"}`);
     }
 
     if (!response.ok) {
