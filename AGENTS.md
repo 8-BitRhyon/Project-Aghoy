@@ -55,7 +55,7 @@ Project Aghoy is an AI-powered scam detector for the Philippine context. It anal
 - D1 database `project-aghoy-db` (id `c3463668-1ed1-4355-9efd-e3f0f41a204a`) is provisioned and migrations `0001_init.sql` are applied (remote + local).
 - Vectorize index `scam-index` (768 dims, cosine) already exists and is seeded (22 corpus entries via `POST /seed/vectorize`).
 - Worker `project-aghoy-dojo` is deployed at `https://project-aghoy-dojo.rhyonfs.workers.dev`.
-- **R2 is NOT yet enabled on the account** (Cloudflare dashboard action, code 10042). The `EVIDENCE` binding is commented out in `wrangler.toml` and the evidence routes return 501 until it is enabled. Once enabled: uncomment the binding, `npx wrangler r2 bucket create project-aghoy-evidence`, redeploy.
+- **R2 evidence storage is pending enablement.** The `EVIDENCE` binding is commented out in `wrangler.toml` and evidence routes return 501 until it is enabled. To enable: (1) subscribe/enable R2 in the Cloudflare dashboard, (2) run `bash scripts/setup-storage.sh enable-r2` (uncomments the binding, creates `project-aghoy-evidence`, redeploys), (3) set a budget alert under Billing (R2 free tier: 10GB + 1M writes + 10M reads/mo).
 - Admin secret `STORAGE_ADMIN_KEY` is set on the Worker (guards `/indicators/verify` and `/seed/vectorize`).
 - Only Rejects-layer output (`sanitizeForStorage` in `storage.ts`) may be written to D1/R2/Vectorize. Never persist raw user content.
 

@@ -7,6 +7,12 @@
 #   2. Create the D1 database, patch wrangler.toml with the real database_id,
 #      and apply migrations.
 #   3. Print the next manual steps (Vectorize index + Vectorize seed).
+#
+# After enabling R2 in the Cloudflare dashboard, run:
+#   bash scripts/setup-storage.sh enable-r2
+# to uncomment the EVIDENCE binding in wrangler.toml, create the bucket, and
+# redeploy the worker. R2 free tier covers 10GB + 1M writes + 10M reads/mo;
+# set a budget alert under Billing to guard against overages.
 
 set -euo pipefail
 
@@ -17,6 +23,35 @@ WRANGLER_CMD() { ${WRANGLER} "$@"; }
 DB_NAME="project-aghoy-db"
 BUCKET_NAME="project-aghoy-evidence"
 TOML="${REPO_DIR}/wrangler.toml"
+
+# === enable-r2 subcommand ===
+# Uncomments the commented-out [[r2_buckets]] block, creates the bucket, and
+# redeploys. Safe to re-run (idempotent).
+if [ "${1:-}" = "enable-r2" ]; then
+  echo "=== [storage] Enabling R2 evidence storage ==="
+  # Uncomment the binding block if still commented.
+  if grep -q "^# \[\[r2_buckets\]\]" "${TOML}"; then
+    if [ "$(uname)" = "Darwin" ]; then
+      sed -i '' 's|^# \[\[r2_buckets\]\]|[[r2_buckets]]|; s|^# binding = "EVIDENCE"|binding = "EVIDENCE"|; s|^# bucket_name = "project-aghoy-evidence"|bucket_name = "project-aghoy-evidence"|' "${TOML}"
+    else
+      sed -i 's|^# \[\[r2_buckets\]\]|[[r2_buckets]]|; s|^# binding = "EVIDENCE"|binding = "EVIDENCE"|; s|^# bucket_name = "project-aghoy-evidence"|bucket_name = "project-aghoy-evidence"|' "${TOML}"
+    fi
+    echo "[storage] Uncommented EVIDENCE binding in wrangler.toml"
+  else
+    echo "[storage] EVIDENCE binding already enabled."
+  fi
+
+  if WRANGLER_CMD r2 bucket list 2>/dev/null | grep -q "${BUCKET_NAME}"; then
+    echo "[storage] Bucket already exists, skipping."
+  else
+    WRANGLER_CMD r2 bucket create "${BUCKET_NAME}"
+  fi
+
+  echo "[storage] Redeploying worker with EVIDENCE binding..."
+  WRANGLER_CMD deploy
+  echo "[storage] R2 evidence storage enabled."
+  exit 0
+fi
 
 echo "=== [storage] R2 bucket: ${BUCKET_NAME} ==="
 if WRANGLER_CMD r2 bucket list 2>/dev/null | grep -q "${BUCKET_NAME}"; then
