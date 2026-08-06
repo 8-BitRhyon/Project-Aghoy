@@ -220,8 +220,8 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
     setReportedDomain(null);
     setReputation(null);
     const analysisText = result?.analysis || "";
-    const domainMatch = analysisText.match(/https?:\/\/([a-z0-9.-]+\.[a-z]{2,})/i) || analysisText.match(/\b([a-z0-9-]+\.(?:com|ph|net|org|top|xyz|site|click))\b/i);
-    const value = domainMatch ? domainMatch[1].replace(/^www\./, "").toLowerCase() : null;
+    const domainMatch = analysisText.match(/https?:\/\/([a-z0-9.-]+\.[a-z]{2,})/i) || analysisText.match(/\b[a-z0-9-]+\.(com|ph|net|org|top|xyz|site|click)\b/i);
+    const value = domainMatch ? (domainMatch[1] || domainMatch[0]).replace(/^www\./, "").toLowerCase() : null;
     if (!value) return;
     lookupIndicator("domain", value).then((status) => {
       if (cancelled) return;
@@ -233,10 +233,12 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
         setReportedDomain({ value, times: status.times_reported });
       }
     });
-    // Community reputation label (score/label from the feed).
+    // Community reputation label (score/label from the feed). Only render when
+    // the Worker marks it feedVisible (verified or >= 2 distinct reporters),
+    // so a single unverified report never shows an unqualified warning.
     domainReputation(value).then((rep) => {
       if (cancelled) return;
-      if (rep && rep.score >= 4) setReputation(rep);
+      if (rep && rep.feedVisible && rep.score >= 4) setReputation(rep);
     });
     return () => { cancelled = true; };
   }, [result]);

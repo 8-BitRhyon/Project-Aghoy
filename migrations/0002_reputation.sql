@@ -22,15 +22,18 @@ CREATE INDEX IF NOT EXISTS idx_repind_indicator_time
 -- 3. Vote ledger: one row per report->indicator contribution, with the
 --    reporter's weight. Enables retroactive weight revocation on honeypot hit
 --    or operator clear (PhishTank archive-not-delete semantics).
+--    UNIQUE(report_id, indicator_id) so a re-run never double-counts a vote.
 CREATE TABLE IF NOT EXISTS report_votes (
   id           INTEGER PRIMARY KEY AUTOINCREMENT,
   report_id    INTEGER NOT NULL REFERENCES reports(id) ON DELETE CASCADE,
   indicator_id INTEGER NOT NULL REFERENCES indicators(id) ON DELETE CASCADE,
   fingerprint  TEXT NOT NULL,
   weight       REAL NOT NULL DEFAULT 0,
-  created_at   TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at   TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE (report_id, indicator_id, fingerprint)
 );
 CREATE INDEX IF NOT EXISTS idx_votes_indicator ON report_votes(indicator_id);
+CREATE INDEX IF NOT EXISTS idx_votes_report ON report_votes(report_id);
 
 -- 4. Reporter trust table (AbuseIPDB-style tiering, decaying).
 CREATE TABLE IF NOT EXISTS reporters (

@@ -35,6 +35,22 @@ while IFS= read -r line; do
   [ -z "${value}" ] && continue
   [ -z "${type}" ] && type="domain"
 
+  # Validate to prevent SQL injection: value must be a safe hostname-like
+  # token, type must be one of the three indicator types.
+  case "${value}" in
+    *[\'\"]*|*\ *|*\;*|*\`*|*\(*|*\)*)
+      echo "Skipping invalid seed value: ${value}"
+      continue ;;
+  esac
+  case "${type}" in
+    domain|url|keyword) ;;
+    *) echo "Skipping invalid seed type: ${type}"; continue ;;
+  esac
+  if ! printf '%s' "${value}" | LC_ALL=C grep -Eq '^[A-Za-z0-9.-]+$'; then
+    echo "Skipping invalid seed value: ${value}"
+    continue
+  fi
+
   # Insert as seed; never touch times_reported (crowd lane). source='seed'
   # seeds never count as distinct user reports.
   WRANGLER_CMD d1 execute "${DB_NAME}" --remote --command \

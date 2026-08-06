@@ -6,6 +6,9 @@ import { redactPII } from "../rejects/rejects";
 import { gateReport, GateResult } from "./qualityGate";
 import { reputationScore, ReputationInputs, ReputationResult, reporterTrust } from "./reputation";
 
+const LOOKBACK_DAYS = 90;
+const clamp01 = (v: number): number => Math.max(0, Math.min(1, v));
+
 export interface StorageEnv {
   DB: D1Database;
   EVIDENCE?: R2Bucket;
@@ -89,18 +92,26 @@ export const storeReport = async (
   };
 
   if (fingerprint !== "legacy") {
+    // Compute gate inputs from the database, not hardcoded values: whether this
+    // fingerprint has reported these indicators before (repeat discount),
+    // whether every indicator is allowlisted, and whether any matches a
+    // brand-lookalike flag pattern.
+    const [firstForIndicator, allowlisted, flagMatched] = await Promise.all([
+      hasReportedIndicator(env, fingerprint, indicators),
+      areAllAllowlisted(env, indicators),
+      matchesFlagList(env, indicators),
+    ]);
     gate = gateReport({
       content: sanitizedContent,
       indicators: indicators.map((i) => i.type),
       phoneHashes,
       submitterVerdict: input.verdict,
       reporterTrust: reporter ? reporter.trust_score : 0.4,
-      isFirstForIndicator: true,
+      isFirstForIndicator: !firstForIndicator,
       honeypotHit: await hasHoneypot(env, indicators, phoneHashes),
-      allowlistedOnly: false,
-      flagMatch: false,
+      allowlistedOnly: allowlisted && indicators.length > 0,
+      flagMatch: flagMatched,
       source,
-      maxContentLength: 4000,
     });
   }
 
@@ -217,6 +228,32 @@ const touchReporter = async (
   )
     .bind(fingerprint, flags.hardReject ? 1 : 0)
     .run();
+
+  // Recompute trust from stored counters so penalties actually take effect.
+  // Queries the reporters row just written, then persists the new trust.
+  const row = await env.DB.prepare(
+    `SELECT reports_total, reports_24h, honeypot_hits, hard_rejects FROM reporters WHERE fingerprint = ?1`
+  )
+    .bind(fingerprint)
+    .first();
+  if (row) {
+    const r = row as { reports_total: number; reports_24h: number; honeypot_hits: number; hard_rejects: number };
+    const trust = reporterTrust({
+      corroborated: 0,
+      hardContradictions: 0,
+      burstDuplicates: 0,
+      clearedSupport: 0,
+      honeypotHit: r.honeypot_hits > 0,
+      hardRejects: r.hard_rejects,
+    });
+    await env.DB.prepare(
+      `UPDATE reporters SET trust_score = ?1,
+        status = CASE WHEN ?1 <= 0 THEN 'untrusted' ELSE 'active' END
+       WHERE fingerprint = ?2`
+    )
+      .bind(trust, fingerprint)
+      .run();
+  }
 };
 
 const hasHoneypot = async (
@@ -226,9 +263,7 @@ const hasHoneypot = async (
 ): Promise<boolean> => {
   if (phoneHashes.length > 0) {
     const placeholders = phoneHashes.map(() => "?").join(",");
-    const row = await env.DB.prepare(
-      `SELECT value FROM honeypots WHERE value IN (${placeholders})`
-    )
+    const row = await env.DB.prepare(`SELECT value FROM honeypots WHERE value IN (${placeholders})`)
       .bind(...phoneHashes)
       .first();
     if (row) return true;
@@ -237,6 +272,53 @@ const hasHoneypot = async (
     if (ind.type !== "phone") {
       const row = await env.DB.prepare(`SELECT value FROM honeypots WHERE value = ?1`).bind(ind.value).first();
       if (row) return true;
+    }
+  }
+  return false;
+};
+
+// Has this fingerprint already reported any of these indicators? (Repeat
+// discount for poisoning resistance.)
+const hasReportedIndicator = async (
+  env: StorageEnv,
+  fingerprint: string,
+  indicators: Indicator[]
+): Promise<boolean> => {
+  for (const ind of indicators) {
+    const row = await env.DB.prepare(
+      `SELECT 1 FROM report_votes v
+       JOIN indicators i ON i.id = v.indicator_id
+       WHERE v.fingerprint = ?1 AND i.type = ?2 AND i.value = ?3
+       LIMIT 1`
+    )
+      .bind(fingerprint, ind.type, ind.value)
+      .first();
+    if (row) return true;
+  }
+  return false;
+};
+
+// Are ALL non-phone indicators on the allowlist?
+const areAllAllowlisted = async (env: StorageEnv, indicators: Indicator[]): Promise<boolean> => {
+  const nonPhone = indicators.filter((i) => i.type !== "phone");
+  if (nonPhone.length === 0) return false;
+  for (const ind of nonPhone) {
+    const row = await env.DB.prepare("SELECT value FROM allowlist WHERE value = ?1").bind(ind.value).first();
+    if (!row) return false;
+  }
+  return true;
+};
+
+// Does any indicator match a brand-lookalike flag pattern?
+const matchesFlagList = async (env: StorageEnv, indicators: Indicator[]): Promise<boolean> => {
+  const patterns: RegExp[] = [
+    /\b(gcash|maya|paymaya|bdo|bpi|landbank|metrobank|unionbank|rcbc|gotyme|seabank|pag[- ]?ibig|egov|pnb)-?verify/i,
+    /\b(gcash|maya|bdo|bpi|landbank)[\s.-]*(alert|security|suspended|lock|update|login)/i,
+    /\b(verify|confirm|suspended|locked|unlock)[\s.-]*(gcash|maya|bdo|bpi|landbank|pnp|nbi|cicc)\b/i,
+  ];
+  for (const ind of indicators) {
+    for (const p of patterns) {
+      if (p.test(ind.value)) return true;
     }
   }
   return false;
@@ -295,18 +377,26 @@ export const recomputeDomainReputation = async (env: StorageEnv, domain: string)
   const distinct = new Set<string>();
   let lastSeen = 0;
   for (const r of rows || []) {
-    const ageDays = (Date.now() - new Date(r.created_at + "Z").getTime()) / 86400000;
+    const ts = Date.parse((r.created_at || "").replace(" ", "T") + "Z");
+    const ageDays = Number.isFinite(ts) ? (Date.now() - ts) / 86400000 : LOOKBACK_DAYS;
     nEff += r.weight * Math.pow(2, -ageDays / 30);
     if (r.verdict === "HIGH_RISK") nHigh++;
     else if (r.verdict === "SUSPICIOUS") nSusp++;
     else if (r.verdict === "SAFE") nSafe++;
     if (r.reporter_fp) distinct.add(r.reporter_fp);
-    const ts = new Date(r.created_at + "Z").getTime();
-    if (ts > lastSeen) lastSeen = ts;
+    if (Number.isFinite(ts) && ts > lastSeen) lastSeen = ts;
   }
   const total = rows?.length || 0;
-  const simPrior = 0; // filled by the caller when Vectorize is available
-  const daysSince = total ? (Date.now() - lastSeen) / 86400000 : 90;
+  // Vectorize semantic prior for cold start (best-effort; skips on failure).
+  let simPrior = 0;
+  try {
+    const matches = await findSimilarScams(env, domain, 1);
+    const top = matches[0];
+    if (top && typeof top.score === "number") simPrior = Math.max(0, Math.min(1, top.score));
+  } catch {
+    simPrior = 0;
+  }
+  const daysSince = total ? (Date.now() - lastSeen) / 86400000 : LOOKBACK_DAYS;
   const seedWeight = indicatorRow?.source === "seed" ? indicatorRow.seed_weight : 0;
 
   const input: ReputationInputs = {
@@ -402,7 +492,7 @@ export const getDomainReputation = async (
     highRiskShare: r.high_risk_share,
     suspiciousShare: r.suspicious_share,
     simPrior: r.sim_prior,
-    confidence: (r.n_eff / (r.n_eff + 5)) * (0.4 + 0.6 * (r.distinct_reporters / Math.max(1, r.n_reports))),
+    confidence: clamp01((r.n_eff / (r.n_eff + 5)) * (0.4 + 0.6 * (r.distinct_reporters / Math.max(1, r.n_eff)))),
     feedVisible: (r.score >= 7 || r.status === "verified") && (r.distinct_reporters >= 2 || r.status === "verified"),
     first_seen: r.first_seen,
     last_seen: r.last_seen,

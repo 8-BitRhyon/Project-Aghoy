@@ -25,7 +25,6 @@ export interface GateInput {
   allowlistedOnly: boolean; // every extracted indicator is allowlisted
   flagMatch: boolean; // indicator matches a brand-lookalike flag pattern
   source: string; // 'web' | 'extension' | 'seed' ...
-  maxContentLength: number;
 }
 
 export interface GateResult {
@@ -80,11 +79,13 @@ export const gateReport = (input: GateInput): GateResult => {
     reasons.push("low_signal_extension");
   }
 
-  // Flag-list (lookalike) matches are the legit-user case we want: boost.
+  // Flag-list (lookalike) matches are the legit-user case we most want to
+  // catch: boost the weight and ACCEPT (it is a real report of a likely
+  // lookalike domain, exactly the signal we want in the reputation feed).
   if (input.flagMatch) {
     weight = Math.min(1, weight * 1.5);
     reasons.push("lookalike_boost");
-    return { action: "suspect", weight, reasons };
+    return { action: "accept", weight, reasons };
   }
 
   if (weight < 0.3) {

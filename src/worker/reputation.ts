@@ -52,7 +52,7 @@ const LOOKBACK_DAYS = 90;
 // count a fraction (poisoning resistance).
 export const reportWeight = (trust: number, isFirstForIndicator: boolean): number => {
   const repeat = 0.15 * trust;
-  return clamp(isFirstForIndicator ? Math.max(reportWeight(trust, false), trust) : repeat, 0, 1);
+  return clamp(isFirstForIndicator ? Math.max(repeat, trust) : repeat, 0, 1);
 };
 
 // Recency weight for a single report age in days.
@@ -120,16 +120,21 @@ export const reputationScore = (input: ReputationInputs): ReputationResult => {
   }
 
   // Seed lane: a curated seed can lift a brand-new domain into SUSPICIOUS but
-  // never to HIGH_RISK on its own.
-  if (input.seedWeight > 0) {
-    score = clamp(score + input.seedWeight * 2, 0, 6.99);
+  // never to HIGH_RISK on its own. Cap the seed CONTRIBUTION, not the final
+  // score, so strong crowd evidence is never pulled back down.
+  if (input.seedWeight > 0 && input.distinctReporters === 0) {
+    score = clamp(score + Math.min(2.99, input.seedWeight * 2), 0, 10);
   }
 
   const label: ReputationLabel =
     score >= 9 ? "CRITICAL" : score >= 7 ? "HIGH_RISK" : score >= 4 ? "SUSPICIOUS" : score >= 1 ? "LOW" : "NONE";
 
-  // Confidence: more independent evidence = higher confidence.
-  const confidence = (nEffCapped / (nEffCapped + 5)) * (0.4 + 0.6 * (input.distinctReporters / Math.max(1, input.nEff)));
+  // Confidence: more independent evidence = higher confidence. Clamped 0..1.
+  const confidence = clamp(
+    (nEffCapped / (nEffCapped + 5)) * (0.4 + 0.6 * (input.distinctReporters / Math.max(1, nEffCapped))),
+    0,
+    1
+  );
 
   // Feed visibility: score >= 7 OR verified, AND at least 2 distinct reporters
   // OR verified (one reporter can never list a domain).

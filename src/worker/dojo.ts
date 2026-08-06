@@ -709,8 +709,14 @@ export default {
         }
       }
       try {
-        // Pseudonymous reporter fingerprint (HMAC of client IP). Never the raw IP.
-        const fingerprint = await reporterFingerprint(clientIp, env.CONSENT_SIGNING_KEY || "unset");
+        // Pseudonymous reporter fingerprint (HMAC of client IP). Never the raw
+        // IP. When the consent key is unset, fail closed: a report from an
+        // unknown fingerprint is treated as low-trust rather than merged into
+        // one shared bucket.
+        if (!env.CONSENT_SIGNING_KEY) {
+          return jsonResponse({ ok: true }, 200, origin);
+        }
+        const fingerprint = await reporterFingerprint(clientIp, env.CONSENT_SIGNING_KEY);
         const result = await storeReport(
           env,
           {
@@ -733,7 +739,7 @@ export default {
         const similar = content ? await findSimilarScams(env, content, 3) : [];
         return jsonResponse({ ...result, similar }, 200, origin);
       } catch (error: any) {
-        return jsonResponse({ error: `Internal error processing report: ${error?.message}` }, 400, origin);
+        return jsonResponse({ error: "Internal error processing report" }, 500, origin);
       }
     }
 
@@ -824,7 +830,27 @@ export default {
       if (!domain) return jsonResponse({ error: "Missing domain" }, 400, origin);
       const rep = await getDomainReputation(env, domain);
       if (!rep) {
-        return jsonResponse({ domain, score: 0, label: "NONE", feedVisible: false }, 200, origin);
+        // Complete contract: same shape as getDomainReputation, neutral values.
+        return jsonResponse(
+          {
+            domain,
+            score: 0,
+            label: "NONE",
+            status: "reported",
+            reason: "reported",
+            nEff: 0,
+            distinctReporters: 0,
+            highRiskShare: 0,
+            suspiciousShare: 0,
+            simPrior: 0,
+            confidence: 0,
+            feedVisible: false,
+            first_seen: null,
+            last_seen: null,
+          },
+          200,
+          origin
+        );
       }
       return jsonResponse(rep, 200, origin);
     }

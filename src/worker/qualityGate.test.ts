@@ -12,7 +12,6 @@ const base = {
   allowlistedOnly: false,
   flagMatch: false,
   source: 'web',
-  maxContentLength: 4000,
 };
 
 describe('gateReport - hard rejects', () => {
@@ -79,8 +78,9 @@ describe('gateReport - weights and suspect', () => {
     expect(r.weight).toBeLessThanOrEqual(0.15);
   });
 
-  it('boosts lookalike flag matches', () => {
+  it('accepts and boosts lookalike flag matches', () => {
     const r = gateReport({ ...base, flagMatch: true, source: 'extension' });
+    expect(r.action).toBe('accept');
     expect(r.weight).toBeGreaterThan(0.15);
     expect(r.reasons).toContain('lookalike_boost');
   });
