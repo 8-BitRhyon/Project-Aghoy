@@ -65,7 +65,7 @@ The rules are idempotent: re-running redaction over already-redacted text is a n
 
 ### RA 10173 context and consent
 
-The app shows a privacy consent gate before any analysis. The gate is implemented client-side in localStorage, which is a documented, deliberate decision: a browser consent gate cannot be a real security boundary. Nothing security-relevant depends on it. Only sanitized content is transmitted regardless of consent state, so the Rejects layer is the actual enforcement mechanism.
+The app shows a privacy consent gate before any analysis. Consent is **server-enforced**: the client calls `POST /consent/token` on the Worker only after the user accepts, receiving a signed, expiring, version-bound attestation (`src/consent.ts`). Every data-touching request (`/api/analyze`, `/reports`, `/inspect`, `/dojo/*`) requires that token and is rejected with 403 without it, so bypassing the DOM or calling the API directly does not process PII without consent. The token is version-bound (bumping the privacy text invalidates all prior consent) and expires after 90 days. The Rejects layer remains the PII-redaction boundary on top of this consent gate.
 
 Privacy contact: `projectaghoy@gmail.com`
 
