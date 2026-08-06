@@ -114,7 +114,7 @@ npm run dev
 3. **Storage setup.** Run `bash scripts/setup-storage.sh` to create the D1 database, apply migrations, and create the R2 evidence bucket (idempotent).
 4. **Secrets.** Set Worker secrets with `npx wrangler secret put`: `STORAGE_ADMIN_KEY`, `SESSION_SIGNING_KEY`, `CEREBRAS_API_KEY`, `GROQ_API_KEY`, `CF_ACCOUNT_ID`, `CF_GATEWAY_ID`. The Pages Function needs the same AI keys and gateway IDs as Pages environment variables.
 5. **Vectorize seed.** The `scam-index` already exists and is seeded. To reseed: `curl -X POST https://project-aghoy-dojo.rhyonfs.workers.dev/seed/vectorize -H "Authorization: Bearer $STORAGE_ADMIN_KEY" -d @corpus.json`.
-6. **R2 (pending).** Enable R2 on your Cloudflare account, uncomment the `EVIDENCE` binding in `Wrangler.Toml`, run `npx wrangler r2 bucket create project-aghoy-evidence`, and redeploy. Evidence routes return 501 until then.
+6. **R2 (pending).** Enable R2 on your Cloudflare account, uncomment the `EVIDENCE` binding in `wrangler.toml`, run `npx wrangler r2 bucket create project-aghoy-evidence`, and redeploy. Evidence routes return 501 until then.
 
 ## Project structure
 

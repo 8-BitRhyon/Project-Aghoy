@@ -8,7 +8,7 @@
 #      Pages Functions in functions/. `wrangler pages deploy` picks up the
 #      functions/ directory automatically when it sits at the repo root.
 #   2. The Dojo Worker (project-aghoy-dojo): `wrangler deploy` reads
-#      Wrangler.Toml (Durable Objects, D1, Vectorize, AI bindings).
+#      wrangler.toml (Durable Objects, D1, Vectorize, AI bindings).
 #
 # Secrets are supplied as GitHub Actions secrets; this workflow only ever
 # references them by name, never with values.
@@ -23,7 +23,7 @@
 #   - The Pages project `project-aghoy` must already exist
 #     (wrangler pages project create, or via the Cloudflare dashboard).
 #   - If evidence storage is ever enabled: uncomment the EVIDENCE binding
-#     in Wrangler.Toml and create the bucket once:
+#     in wrangler.toml and create the bucket once:
 #       npx wrangler r2 bucket create project-aghoy-evidence
 #
 # All actions are SHA-pinned (supply-chain policy; CI enforces this).

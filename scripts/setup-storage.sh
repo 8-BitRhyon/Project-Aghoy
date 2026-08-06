@@ -4,7 +4,7 @@
 #
 # Steps:
 #   1. Create the R2 evidence bucket (skip if it exists).
-#   2. Create the D1 database, patch Wrangler.Toml with the real database_id,
+#   2. Create the D1 database, patch wrangler.toml with the real database_id,
 #      and apply migrations.
 #   3. Print the next manual steps (Vectorize index + Vectorize seed).
 
@@ -16,7 +16,7 @@ WRANGLER="${WRANGLER:-npx wrangler}"
 WRANGLER_CMD() { ${WRANGLER} "$@"; }
 DB_NAME="project-aghoy-db"
 BUCKET_NAME="project-aghoy-evidence"
-TOML="${REPO_DIR}/Wrangler.Toml"
+TOML="${REPO_DIR}/wrangler.toml"
 
 echo "=== [storage] R2 bucket: ${BUCKET_NAME} ==="
 if WRANGLER_CMD r2 bucket list 2>/dev/null | grep -q "${BUCKET_NAME}"; then
@@ -40,7 +40,7 @@ fi
 DATABASE_ID="$(echo "${DB_INFO}" | grep -oE '^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}' | head -1)"
 if [ -z "${DATABASE_ID}" ]; then
   echo "[FAIL] Could not parse database_id from: ${DB_INFO}"
-  echo "Manually paste the id into Wrangler.Toml [[d1_databases]] database_id."
+  echo "Manually paste the id into wrangler.toml [[d1_databases]] database_id."
   exit 1
 fi
 
@@ -52,9 +52,9 @@ if grep -q "PLACEHOLDER_REPLACE_WITH_D1_DATABASE_ID" "${TOML}"; then
   else
     sed -i "s/PLACEHOLDER_REPLACE_WITH_D1_DATABASE_ID/${DATABASE_ID}/" "${TOML}"
   fi
-  echo "[storage] Patched database_id into Wrangler.Toml"
+  echo "[storage] Patched database_id into wrangler.toml"
 else
-  echo "[storage] Wrangler.Toml already has a database_id, leaving it."
+  echo "[storage] wrangler.toml already has a database_id, leaving it."
 fi
 
 echo ""
