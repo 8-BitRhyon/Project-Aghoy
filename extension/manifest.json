@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Project Aghoy - Scam Checker",
+  "version": "0.1.0",
+  "description": "Check and report Philippine scam links, pages, and messages. Free, private, non-profit. Report a scam once - it warns everyone.",
+  "permissions": ["contextMenus", "activeTab", "storage", "notifications"],
+  "host_permissions": ["https://project-aghoy-dojo.rhyonfs.workers.dev/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Project Aghoy - Check a scam"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
