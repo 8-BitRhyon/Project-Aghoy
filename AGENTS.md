@@ -57,6 +57,7 @@ Project Aghoy is an AI-powered scam detector for the Philippine context. It anal
 - Worker `project-aghoy-dojo` is deployed at `https://project-aghoy-dojo.rhyonfs.workers.dev`.
 - **R2 evidence storage is pending enablement.** The `EVIDENCE` binding is commented out in `wrangler.toml` and evidence routes return 501 until it is enabled. To enable: (1) subscribe/enable R2 in the Cloudflare dashboard, (2) run `bash scripts/setup-storage.sh enable-r2` (uncomments the binding, creates `project-aghoy-evidence`, redeploys), (3) set a budget alert under Billing (R2 free tier: 10GB + 1M writes + 10M reads/mo).
 - Admin secret `STORAGE_ADMIN_KEY` is set on the Worker (guards `/indicators/verify` and `/seed/vectorize`).
+- **Cross-isolate rate limiting**: `RATE_CHECK_KEY` (Worker secret) and `WORKER_RATE_CHECK_KEY` (Pages secret) share the same value. The Pages Function `/api/analyze` consults the Worker's `/ratelimit/check` endpoint (backed by the persisted RateLimiter DO) for a globally-accurate 5/min decision, falling back to the per-isolate limiter only when the Worker is unreachable.
 - Only Rejects-layer output (`sanitizeForStorage` in `storage.ts`) may be written to D1/R2/Vectorize. Never persist raw user content.
 
 ## OCR / Tesseract (self-hosted)
