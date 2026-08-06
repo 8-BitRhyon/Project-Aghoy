@@ -211,7 +211,11 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
     if (!value) return;
     lookupIndicator("domain", value).then((status) => {
       if (cancelled) return;
-      if (status && status.found && status.times_reported && status.times_reported >= 2) {
+      // Threshold of 5 distinct reports before a domain is surfaced as
+      // "reported N times". A single attacker repeating the same submission
+      // would only reach a low count, so this resists feed poisoning while
+      // still warning on genuinely repeated scam domains.
+      if (status && status.found && status.times_reported && status.times_reported >= 5) {
         setReportedDomain({ value, times: status.times_reported });
       }
     });

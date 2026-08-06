@@ -11,6 +11,7 @@ import {
   reportExists,
   findSimilarScams,
   seedVectorize,
+  getMetrics,
 } from "./storage";
 import { inspectUrl } from "./urlInspect";
 
@@ -487,7 +488,7 @@ export default {
     // Rate limiting is per-IP, never per-session. Storage routes carry their
     // own dedicated budgets or are read-only, so they are exempt here.
     const clientIp = getClientIp(request);
-    const isStorageRead = request.method === "GET" && (url.pathname === "/indicators" || url.pathname === "/evidence");
+    const isStorageRead = request.method === "GET" && (url.pathname === "/indicators" || url.pathname === "/evidence" || url.pathname === "/metrics");
     const isReportIngest = request.method === "POST" && url.pathname === "/reports";
     const isInspect = request.method === "POST" && url.pathname === "/inspect";
     const isRateCheck = request.method === "POST" && url.pathname === "/ratelimit/check";
@@ -744,6 +745,13 @@ export default {
       }
       const rows = await listIndicators(env, limit);
       return jsonResponse({ indicators: rows }, 200, origin);
+    }
+
+    // GET /metrics - aggregate observability (verdict/provider/fallback rates).
+    // Read-only, exempt from the global limiter like other storage reads.
+    if (url.pathname === "/metrics") {
+      const metrics = await getMetrics(env);
+      return jsonResponse(metrics, 200, origin);
     }
 
     // Requires STORAGE_ADMIN_KEY (bearer token) for write access.

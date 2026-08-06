@@ -25,10 +25,14 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: '20'
+          node-version: '22'
           cache: npm
       - name: Install
         run: npm ci
+      - name: Supply-chain audit (SCA)
+        # Fails on high/critical npm advisories. A non-zero audit exit blocks the
+        # PR, so a known advisory cannot silently reach production.
+        run: npm audit --audit-level=high
       - name: Typecheck
         run: npm run typecheck
       - name: Test

@@ -49,3 +49,6 @@ Thumbs.db
 .kilo/
 **/task.md
 **/walkthrough.md
+
+# Local database backups (live dumps - never commit)
+backups/
