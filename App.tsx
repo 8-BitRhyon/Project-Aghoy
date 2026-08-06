@@ -261,8 +261,11 @@ const App: React.FC = () => {
 
     const safeAnalysis = {
       ...analysis,
-      analysis: sanitizeText(analysis.analysis), 
-      senderEntity: analysis.senderEntity ? sanitizeText(analysis.senderEntity) : undefined
+      analysis: sanitizeText(analysis.analysis),
+      scamType: analysis.scamType ? sanitizeText(analysis.scamType) : undefined,
+      educationalTip: analysis.educationalTip ? sanitizeText(analysis.educationalTip) : undefined,
+      senderEntity: analysis.senderEntity ? sanitizeText(analysis.senderEntity) : undefined,
+      redFlags: Array.isArray(analysis.redFlags) ? analysis.redFlags.map((f) => sanitizeText(f)) : analysis.redFlags,
     };
 
     setScanHistory(prev => {

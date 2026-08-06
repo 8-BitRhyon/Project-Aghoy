@@ -1,8 +1,6 @@
-// Fire-and-forget reporting to the Worker storage layer + indicator lookups.
-// Only Rejects-layer output is ever sent. The Worker is CORS-allowlisted for
-// the Pages origin (see ALLOWED_ORIGINS in src/worker/dojo.ts).
+import { WORKER_ORIGIN } from "../config";
 
-const WORKER_ORIGIN = "https://project-aghoy-dojo.rhyonfs.workers.dev";
+const FETCH_TIMEOUT_MS = 5000;
 
 export interface ReportPayload {
   verdict: string;
@@ -21,9 +19,19 @@ export interface IndicatorStatus {
   times_reported?: number;
 }
 
+const fetchWithTimeout = async (url: string, init?: RequestInit): Promise<Response> => {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+};
+
 export const postReport = async (payload: ReportPayload): Promise<void> => {
   try {
-    await fetch(`${WORKER_ORIGIN}/reports`, {
+    await fetchWithTimeout(`${WORKER_ORIGIN}/reports`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...payload, source: payload.source || "web" }),
@@ -35,7 +43,7 @@ export const postReport = async (payload: ReportPayload): Promise<void> => {
 
 export const lookupIndicator = async (type: string, value: string): Promise<IndicatorStatus | null> => {
   try {
-    const res = await fetch(`${WORKER_ORIGIN}/indicators?type=${encodeURIComponent(type)}&value=${encodeURIComponent(value)}`);
+    const res = await fetchWithTimeout(`${WORKER_ORIGIN}/indicators?type=${encodeURIComponent(type)}&value=${encodeURIComponent(value)}`);
     if (res.status === 404) return { found: false };
     if (!res.ok) return null;
     const data = await res.json();

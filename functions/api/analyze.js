@@ -22,6 +22,12 @@ class ValidationError extends Error {}
 const ipRequestCounts = new Map();
 const checkRateLimit = (ip) => {
   const now = Date.now();
+  // Evict stale entries so the map cannot grow without bound.
+  if (ipRequestCounts.size > 1000) {
+    for (const [key, value] of ipRequestCounts) {
+      if (now - value.startTime > RATE_WINDOW_MS) ipRequestCounts.delete(key);
+    }
+  }
   const clientData = ipRequestCounts.get(ip) || { count: 0, startTime: now };
   if (now - clientData.startTime > RATE_WINDOW_MS) {
     clientData.count = 1;
