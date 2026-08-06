@@ -2,6 +2,7 @@ import { AnalysisResult, Verdict } from "../types";
 import { redactPII } from "../src/rejects/rejects";
 import { detectBrands, detectIntents, fallbackVerdict, BrandMatch } from "../src/brands/brands";
 import { postReport, lookupIndicator, ReportPayload } from "../src/api/storageClient";
+import { WORKER_ORIGIN } from "../src/config";
 
 // vite/client types are not in tsconfig.json, so import.meta.env is declared
 // locally.
@@ -16,7 +17,6 @@ const FETCH_TIMEOUT_MS = 30000;
 const MAX_DOJO_HISTORY = 6;
 const MAX_ASSISTANT_TEXT = 2000;
 
-const WORKER_ORIGIN = "https://project-aghoy-dojo.rhyonfs.workers.dev";
 const DOJO_SCENARIO = "A GCash OTP scammer trying to get you to share a verification code";
 
 const VALID_FLAGS = [

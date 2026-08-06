@@ -113,6 +113,25 @@ const priorityIndex = (key: string): number => {
   return idx === -1 ? IMPOSTER_PRIORITY.length : idx;
 };
 
+// Compile all brand alias regexes once at module load instead of per scan.
+// detectBrands previously rebuilt ~450 RegExp objects on every call.
+type AliasMatch = { key: string; alias: string; re: RegExp; normalized: boolean };
+const COMPILED_ALIASES: AliasMatch[] = (() => {
+  const out: AliasMatch[] = [];
+  for (const [key, aliases] of Object.entries(BRAND_ALIASES)) {
+    for (const alias of aliases) {
+      if (!/\s/.test(alias) && !/[&@$-]/.test(alias)) {
+        out.push({ key, alias, re: new RegExp(`\\b${escapeRegExp(alias)}\\b`, "gi"), normalized: false });
+      }
+      const normAlias = normalizeBrandText(alias);
+      if (normAlias) {
+        out.push({ key, alias, re: new RegExp(`\\b${escapeRegExp(normAlias)}\\b`, "g"), normalized: true });
+      }
+    }
+  }
+  return out;
+})();
+
 export const detectBrands = (input: {
   text?: string;
   senderEntity?: string;
@@ -155,55 +174,41 @@ export const detectBrands = (input: {
 
   const lowerCandidate = candidate.toLowerCase();
 
-  for (const [key, aliases] of Object.entries(BRAND_ALIASES)) {
-    for (const alias of aliases) {
-      if (!/\s/.test(alias) && !/[&@$-]/.test(alias)) {
-        const re = new RegExp(`\\b${escapeRegExp(alias)}\\b`, "gi");
-        const count = countMatches(lowerCandidate, re);
-        if (count > 0) {
-          register(key, alias, "text", count);
-        }
-      }
-    }
+  // Pass 1: boundary-aware on the lowercased original text.
+  for (const { key, alias, re, normalized } of COMPILED_ALIASES) {
+    if (normalized) continue;
+    const count = countMatches(lowerCandidate, re);
+    if (count > 0) register(key, alias, "text", count);
   }
 
   // Pass 2: collapsed pass catches separators/leetspeak variants that the
   // boundary pass cannot see (e.g. "g-cash", "paymaya"). Only add keys the
   // boundary pass did NOT already match, so plain "gcash" is not double-counted.
   const collapsed = normalizeBrandText(lowerCandidate);
-  for (const [key, aliases] of Object.entries(BRAND_ALIASES)) {
+  for (const { key, alias, re, normalized } of COMPILED_ALIASES) {
+    if (!normalized) continue;
     if (matches.has(key)) continue;
-    for (const alias of aliases) {
-      const normAlias = normalizeBrandText(alias);
-      if (!normAlias) continue;
-      const re = new RegExp(`\\b${escapeRegExp(normAlias)}\\b`, "g");
-      const count = countMatches(collapsed, re);
-      if (count > 0) {
-        register(key, alias, "text", count);
-      }
-    }
+    const count = countMatches(collapsed, re);
+    if (count > 0) register(key, alias, "text", count);
   }
 
   // Sender bonus: an explicit senderEntity match upgrades confidence to high
   // but never suppresses body matches.
   const sender = (input.senderEntity || "").toLowerCase();
-  for (const [key, aliases] of Object.entries(BRAND_ALIASES)) {
-    for (const alias of aliases) {
-      const re = new RegExp(`\\b${escapeRegExp(alias)}\\b`, "gi");
-      if (countMatches(sender, re) > 0) {
-        const existing = matches.get(key);
-        if (existing) {
-          existing.confidence = "high";
-          if (!existing.sources.includes("sender")) existing.sources.push("sender");
-        } else {
-          matches.set(key, {
-            key,
-            confidence: "high",
-            sources: ["sender"],
-            mentions: 1,
-            matchedOn: alias,
-          });
-        }
+  for (const { key, alias, re } of COMPILED_ALIASES) {
+    if (countMatches(sender, re) > 0) {
+      const existing = matches.get(key);
+      if (existing) {
+        existing.confidence = "high";
+        if (!existing.sources.includes("sender")) existing.sources.push("sender");
+      } else {
+        matches.set(key, {
+          key,
+          confidence: "high",
+          sources: ["sender"],
+          mentions: 1,
+          matchedOn: alias,
+        });
       }
     }
   }

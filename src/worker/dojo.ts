@@ -103,6 +103,16 @@ const fetchWithTimeout = async (url: string, options: RequestInit, timeoutMs: nu
   }
 };
 
+// Parse a JSON request body with a hard size cap so every public route is
+// bounded (memory-DoS protection). Throws on oversize or invalid JSON.
+const parseJsonBody = async (request: Request, maxBytes: number): Promise<any> => {
+  const declared = Number(request.headers.get("Content-Length") || 0);
+  if (declared > maxBytes) throw new Error("Request body too large");
+  const text = await request.text();
+  if (text.length > maxBytes) throw new Error("Request body too large");
+  return JSON.parse(text);
+};
+
 // X-Forwarded-For is attacker-controllable and never trusted; only
 // CF-Connecting-IP is used.
 const getClientIp = (request: Request): string => {
@@ -250,11 +260,8 @@ export class RateLimiter implements DurableObject {
   }
 
   async fetch(request: Request): Promise<Response> {
-    const { ip, limit, windowMs } = (await request.json()) as {
-      ip: string;
-      limit: number;
-      windowMs: number;
-    };
+    const body = await parseJsonBody(request, MAX_REPORT_BODY_BYTES) as { ip: string; limit: number; windowMs: number };
+    const { ip, limit, windowMs } = body;
     const now = Date.now();
 
     for (const [key, entry] of this.counts) {
@@ -327,9 +334,9 @@ export class DojoSession implements DurableObject {
       }
       let body: any;
       try {
-        body = await request.json();
+        body = await parseJsonBody(request, MAX_REPORT_BODY_BYTES);
       } catch {
-        return new Response(JSON.stringify({ error: "Invalid JSON body" }), { status: 400, headers });
+        return new Response(JSON.stringify({ error: "Invalid or too large JSON body" }), { status: 400, headers });
       }
       // Redact PII from the scenario before it reaches the model or storage.
       const rawScenario = (body.scenario || "").substring(0, 200);
@@ -380,9 +387,9 @@ export class DojoSession implements DurableObject {
 
       let body: any;
       try {
-        body = await request.json();
+        body = await parseJsonBody(request, MAX_REPORT_BODY_BYTES);
       } catch {
-        return new Response(JSON.stringify({ error: "Invalid JSON body" }), { status: 400, headers });
+        return new Response(JSON.stringify({ error: "Invalid or too large JSON body" }), { status: 400, headers });
       }
       const userMessage = redactPII((body.message || "").substring(0, MAX_CONTENT_LENGTH)).text;
       if (!userMessage) {
@@ -683,7 +690,7 @@ export default {
         );
       }
       try {
-        const body: any = await request.json();
+        const body: any = await parseJsonBody(request, MAX_REPORT_BODY_BYTES);
         const target = String(body.url || "").trim();
         if (!target) return jsonResponse({ error: "Missing url" }, 400, origin);
         const result = await inspectUrl(target);
@@ -716,7 +723,7 @@ export default {
       if (verifyAuth === 503) return authResponse(503, origin);
       if (verifyAuth === 401) return authResponse(401, origin);
       try {
-        const body: any = await request.json();
+        const body: any = await parseJsonBody(request, MAX_REPORT_BODY_BYTES);
         const ok = await verifyIndicator(env, body.type, body.value, body.verifiedBy, body.source, body.notes);
         return ok
           ? jsonResponse({ ok: true }, 200, origin)
@@ -788,7 +795,7 @@ export default {
       if (seedAuth === 503) return authResponse(503, origin);
       if (seedAuth === 401) return authResponse(401, origin);
       try {
-        const body: any = await request.json();
+        const body: any = await parseJsonBody(request, MAX_REPORT_BODY_BYTES);
         const result = await seedVectorize(env, body.entries);
         return jsonResponse(result, result.error ? 400 : 200, origin);
       } catch (error: any) {
@@ -806,9 +813,9 @@ async function handleScanner(request: Request, env: Env, origin: string): Promis
   try {
     let body: any;
     try {
-      body = await request.json();
+      body = await parseJsonBody(request, MAX_REPORT_BODY_BYTES);
     } catch {
-      return new Response(JSON.stringify({ error: "Invalid JSON body" }), { status: 400, headers });
+      return new Response(JSON.stringify({ error: "Invalid or too large JSON body" }), { status: 400, headers });
     }
 
     const { messages, jsonMode } = body;
