@@ -346,11 +346,17 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
             <HelpCircle className="w-8 h-8" />
           </div>
           <div>
-            <h3 className="text-cyan-400 font-bold text-lg md:text-xl font-['Press_Start_2P'] mb-2 uppercase">Train Your Scam Radar</h3>
+            <h3 className="text-cyan-400 font-bold text-lg md:text-xl font-['Press_Start_2P'] mb-2 uppercase">Protect Your Family from Scams</h3>
             <p className="text-cyan-100/90 text-lg md:text-xl">
-              Pick a scam family below, or let the Dojo build your daily session.
-              You will see real-looking scam messages and choose what to do.
-              No tech experience needed - this is for everyone, including your grandparents.
+              Scammers target the people who trust you most: lolas and lolos,
+              parents, OFW families. One 3-minute drill today can stop them
+              losing a lifetime of savings tomorrow. No tech experience needed -
+              built for grandparents.
+            </p>
+            <p className="mt-3 text-cyan-300 text-lg md:text-xl">
+              <span className="text-white font-bold">The one rule that stops most scams:</span>{" "}
+              no bank, no wallet, no government office ever asks for your OTP.
+              Practice the rest below.
             </p>
           </div>
         </div>
