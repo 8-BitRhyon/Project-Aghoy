@@ -1,7 +1,9 @@
 // src/training/sources.ts - registry of external training datasets usable by
 // the Aghoy data pipeline. Every source must carry a permissive license
-// (apache-2.0 / mit / cc-by-4.0 / cc0-1.0); assertLicenseAllowed() enforces
-// that at import time. Add a dataset here, then rerun:
+// (apache-2.0 / mit / cc-by-4.0 / cc0-1.0). The license gate is enforced in
+// two places: scripts/import-datasets.ts calls assertLicenseAllowed() for
+// every source before anything is downloaded, and getSource() re-checks it.
+// Add a dataset here, then rerun:
 //   npx tsx scripts/import-datasets.ts
 
 import { assertLicenseAllowed, TrainingChannel } from "./pipeline";

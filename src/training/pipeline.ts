@@ -140,10 +140,16 @@ export const mapRow = (raw: string[], index: number, opts: MapRowOptions): Train
   if (label === undefined) {
     throw new Error(`source "${opts.source}" row ${index}: unmapped label "${rawLabel}"`);
   }
-  const channel: TrainingChannel =
+  const rawChannelValue =
     typeof opts.channel === "function" && opts.columns.channel !== null
       ? opts.channel((raw[opts.columns.channel] ?? "").trim().toLowerCase())
       : (opts.channel as TrainingChannel);
+  // Runtime-validate the channel mapper's output so a buggy/unknown source
+  // value cannot silently corrupt the corpus with an invalid channel.
+  if (!["email", "sms", "job"].includes(rawChannelValue)) {
+    throw new Error(`source "${opts.source}" row ${index}: channel mapper returned "${rawChannelValue}"`);
+  }
+  const channel: TrainingChannel = rawChannelValue;
 
   const rejected = redactPII(rawText);
   return {
