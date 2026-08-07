@@ -68,7 +68,12 @@ export const verifyConsentToken = async (secret: string, token: string | null): 
 
   const key = await importConsentKey(secret);
   const expectedSig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payloadB64));
-  const givenSig = base64urlDecode(sigB64);
+  let givenSig: Uint8Array;
+  try {
+    givenSig = base64urlDecode(sigB64);
+  } catch {
+    return { ok: false, reason: "malformed" };
+  }
   // Constant-time comparison over equal-length digests.
   if (givenSig.length !== expectedSig.byteLength) return { ok: false, reason: "invalid" };
   let diff = 0;

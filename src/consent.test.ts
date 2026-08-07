@@ -18,6 +18,10 @@ describe('consent attestation', () => {
   it('rejects a malformed token', async () => {
     expect(await verifyConsentToken(SECRET, 'not-a-token')).toEqual({ ok: false, reason: 'malformed' });
     expect(await verifyConsentToken(SECRET, 'a.b.c')).toEqual({ ok: false, reason: 'malformed' });
+    // A token with a structurally invalid base64 signature must fail closed
+    // with malformed (never throw / 500).
+    expect(await verifyConsentToken(SECRET, 'fake.token')).toEqual({ ok: false, reason: 'malformed' });
+    expect(await verifyConsentToken(SECRET, 'abc.defg.hij')).toEqual({ ok: false, reason: 'malformed' });
   });
 
   it('rejects a token signed with a different secret', async () => {
