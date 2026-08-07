@@ -5,6 +5,7 @@ import { AnalysisResult, Verdict } from '../types';
 import { SUPPORT_DATABASE } from '../src/support/supportDatabase';
 import { lookupIndicator, inspectUrl, InspectResult, domainReputation, DomainReputation } from '../src/api/storageClient';
 import RiskGauge from './RiskGauge';
+import RecoveryLadder from './RecoveryLadder';
 import FamilyWarningCard from './FamilyWarningCard';
 import FlagKnowledgeModal from './FlagKnowledgeModal';
 import { playSound } from '../utils/sound';
@@ -317,6 +318,17 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
                <RiskGauge score={result.riskScore} />
             </div>
           </div>
+
+          {isSuspiciousOrHigh && (
+            <RecoveryLadder
+              verdict={result.verdict}
+              entities={(result.matchedBrands || []).map((b) => b.key)}
+              scamType={result.scamType}
+              redFlags={result.redFlags}
+              onCopyReport={handleCopyReport}
+              copied={copied}
+            />
+          )}
 
           {reportedDomain && (
             <div className="relative z-10 mb-4 border-2 border-red-800 bg-red-950/40 px-3 py-2 flex items-center gap-2">
