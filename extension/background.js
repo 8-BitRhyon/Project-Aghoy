@@ -73,9 +73,9 @@ const handleReportLink = async (url, tabId) => {
   });
   chrome.tabs.sendMessage(tabId, {
     type: "AGHOY_REPORTED",
-    message: report
+    message: report && report.ok && !report.rejected
       ? `Report recorded. Thank you - this protects other users.`
-      : "Report could not be recorded. Please try again.",
+      : `We could not count this report (it did not pass the quality check). Please only report links or numbers that actually look like a real scam.`,
   });
 };
 

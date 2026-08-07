@@ -46,15 +46,24 @@ const fetchWithTimeout = async (url: string, init?: RequestInit, externalSignal?
   }
 };
 
-export const postReport = async (payload: ReportPayload): Promise<void> => {
+export interface ReportResult {
+  ok: boolean;
+  rejected?: boolean;
+  id?: number | null;
+}
+
+export const postReport = async (payload: ReportPayload): Promise<ReportResult> => {
   try {
-    await fetchWithTimeout(`${WORKER_ORIGIN}/reports`, {
+    const res = await fetchWithTimeout(`${WORKER_ORIGIN}/reports`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "X-Consent-Token": getConsentToken() || "" },
       body: JSON.stringify({ ...payload, source: payload.source || "web" }),
     });
+    if (!res.ok) return { ok: false };
+    const data = (await res.json().catch(() => ({}))) as { rejected?: boolean; id?: number };
+    return { ok: true, rejected: !!data.rejected, id: data.id ?? null };
   } catch {
-    // Best-effort reporting; never block the scan on storage failure.
+    return { ok: false };
   }
 };
 

@@ -218,33 +218,46 @@ const touchReporter = async (
 ): Promise<void> => {
   if (fingerprint === "legacy") return;
   await env.DB.prepare(
-    `INSERT INTO reporters (fingerprint, reports_total, reports_24h, hard_rejects, last_seen)
-     VALUES (?1, 1, 1, ?2, datetime('now'))
+    `INSERT INTO reporters (fingerprint, reports_total, reports_24h, hard_rejects, last_seen, last_reject_at)
+     VALUES (?1, 1, 1, ?2, datetime('now'), CASE WHEN ?2 = 1 THEN datetime('now') ELSE NULL END)
      ON CONFLICT(fingerprint) DO UPDATE SET
        reports_total = reports_total + 1,
        reports_24h = CASE WHEN julianday('now') - julianday(last_seen) < 1 THEN reports_24h + 1 ELSE 1 END,
        hard_rejects = reporters.hard_rejects + ?2,
-       last_seen = datetime('now')`
+       last_seen = datetime('now'),
+       last_reject_at = CASE WHEN ?2 = 1 THEN datetime('now') ELSE reporters.last_reject_at END`
   )
     .bind(fingerprint, flags.hardReject ? 1 : 0)
     .run();
 
-  // Recompute trust from stored counters so penalties actually take effect.
-  // Queries the reporters row just written, then persists the new trust.
+  // Recompute trust from stored counters so penalties AND recovery actually
+  // take effect. Queries the row just written, then persists the new trust.
   const row = await env.DB.prepare(
-    `SELECT reports_total, reports_24h, honeypot_hits, hard_rejects FROM reporters WHERE fingerprint = ?1`
+    `SELECT reports_total, reports_24h, honeypot_hits, hard_rejects, last_reject_at, corroborated
+     FROM reporters WHERE fingerprint = ?1`
   )
     .bind(fingerprint)
     .first();
   if (row) {
-    const r = row as { reports_total: number; reports_24h: number; honeypot_hits: number; hard_rejects: number };
+    const r = row as {
+      reports_total: number;
+      reports_24h: number;
+      honeypot_hits: number;
+      hard_rejects: number;
+      last_reject_at: string | null;
+      corroborated: number;
+    };
+    const daysSinceLastReject = r.last_reject_at
+      ? Math.max(0, (Date.now() - Date.parse(r.last_reject_at.replace(" ", "T") + "Z")) / 86400000)
+      : 999;
     const trust = reporterTrust({
-      corroborated: 0,
+      corroborated: r.corroborated,
       hardContradictions: 0,
       burstDuplicates: 0,
       clearedSupport: 0,
       honeypotHit: r.honeypot_hits > 0,
       hardRejects: r.hard_rejects,
+      daysSinceLastReject,
     });
     await env.DB.prepare(
       `UPDATE reporters SET trust_score = ?1,

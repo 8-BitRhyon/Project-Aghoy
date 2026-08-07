@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { Loader2, Search, Info, Lock, AlertOctagon, Image as ImageIcon, X, Bot, Coffee, History, Shield, Volume2, VolumeX } from 'lucide-react';
 import { analyzeContent } from './services/aiService';
 import { AnalysisResult, Verdict, UserStats } from './types';
+import { t, normalizeLang } from './src/i18n';
+import RecoveryLadder from './components/RecoveryLadder';
 import ResultCard from './components/ResultCard';
 import PixelLogo from './components/PixelLogo';
 import StatsPanel from './components/StatsPanel';
@@ -79,6 +81,8 @@ const App: React.FC = () => {
   const [honeypot, setHoneypot] = useState('');
   
   const [language, setLanguage] = useState('TAGALOG');
+  const [showTriage, setShowTriage] = useState(false);
+  const [triageState, setTriageState] = useState<'asked' | 'victim'>('asked');
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [analysisId, setAnalysisId] = useState(0);
@@ -429,6 +433,52 @@ const App: React.FC = () => {
        <Suspense fallback={null}>
           <AboutModal isOpen={showAbout} onClose={() => setShowAbout(false)} />
        </Suspense>
+
+       {/* Victim triage modal: for someone who already lost money. No scan
+           needed - a fixed recovery ladder with real hotlines and script. */}
+       {showTriage && (
+         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/80 backdrop-blur-sm animate-in fade-in">
+           <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-slate-900 border-4 border-red-700 shadow-[0_0_40px_rgba(220,38,38,0.3)] p-4 md:p-6 font-['VT323'] relative">
+             <button onClick={() => setShowTriage(false)} aria-label="Close"
+               className="absolute top-2 right-2 p-2 text-slate-400 hover:text-white transition-colors min-w-[44px] min-h-[44px]">
+               <X className="w-5 h-5" />
+             </button>
+
+             {triageState === 'asked' ? (
+               <div>
+                 <h3 className="text-red-400 font-['Press_Start_2P'] text-sm md:text-base mb-2 uppercase">
+                   {t(normalizeLang(language), 'iLostMoney')}
+                 </h3>
+                 <p className="text-white text-lg md:text-xl mb-4 leading-tight">
+                   {t(normalizeLang(language), 'didYouSendMoney')}
+                 </p>
+                 <div className="flex flex-col gap-3">
+                   <button onClick={() => setTriageState('victim')} className="w-full py-3 bg-red-700 hover:bg-red-600 text-white font-['Press_Start_2P'] text-sm border-b-4 border-r-4 border-red-900 active:border-0 active:translate-y-1 transition-all min-h-[48px]">
+                     {t(normalizeLang(language), 'yesSent')}
+                   </button>
+                   <button onClick={() => { setShowTriage(false); handleTabChange('SCANNER'); }} className="w-full py-3 bg-slate-700 hover:bg-slate-600 text-white font-['Press_Start_2P'] text-sm border-b-4 border-r-4 border-slate-900 active:border-0 active:translate-y-1 transition-all min-h-[48px]">
+                     {t(normalizeLang(language), 'noNotYet')} - {t(normalizeLang(language), 'scanButton')}
+                   </button>
+                 </div>
+               </div>
+             ) : (
+               <div>
+                 <h3 className="text-red-400 font-['Press_Start_2P'] text-sm md:text-base mb-3 uppercase">
+                   {t(normalizeLang(language), 'iLostMoney')}
+                 </h3>
+                 <RecoveryLadder
+                   verdict={Verdict.HIGH_RISK}
+                   alreadyScammed
+                   language={normalizeLang(language)}
+                 />
+                 <button onClick={() => setShowTriage(false)} className="w-full mt-4 py-3 bg-slate-700 hover:bg-slate-600 text-white font-['Press_Start_2P'] text-xs border-b-4 border-r-4 border-slate-900 active:border-0 active:translate-y-1 transition-all">
+                   OK
+                 </button>
+               </div>
+             )}
+           </div>
+         </div>
+       )}
        
        <Suspense fallback={null}>
           <PrivacyPolicyModal isOpen={showPrivacyPolicy} onClose={() => setShowPrivacyPolicy(false)} />
@@ -578,9 +628,19 @@ const App: React.FC = () => {
 
                 {!result && (
                     <div className="space-y-4 max-w-3xl mx-auto">
+                        {/* Triage entry: the just-scammed victim path. Highest
+                            priority - this is someone who needs rescue, not a scan. */}
+                        <button
+                          onClick={() => { playSound('alert'); setTriageState('asked'); setShowTriage(true); }}
+                          className="w-full border-4 border-red-800 bg-red-950/40 px-4 py-3 md:py-4 flex items-center justify-center gap-3 hover:bg-red-900/40 transition-colors font-['Press_Start_2P'] text-xs md:text-sm text-red-300 min-h-[48px]"
+                        >
+                          <AlertOctagon className="w-5 h-5 md:w-6 md:h-6 shrink-0 animate-pulse" />
+                          {t(normalizeLang(language), 'iLostMoney')}
+                        </button>
+
                         <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-2 border-cyan-700 bg-cyan-950/20 px-3 py-2 font-['VT323'] text-lg">
                           <span className="text-cyan-100">
-                            Unsure about a message? <span className="text-white">Paste it here.</span>
+                            {t(normalizeLang(language), 'pasteHere')}
                           </span>
                           <button
                             onClick={() => handleTabChange('DOJO')}
@@ -691,6 +751,7 @@ const App: React.FC = () => {
                         key={analysisId}
                         analysisId={analysisId}
                         result={result} 
+                        language={language}
                         onReset={() => {
                             playSound('click');
                             setResult(null);
@@ -764,12 +825,24 @@ const App: React.FC = () => {
              </button>
 
              <a 
-                href="#" 
+                href="https://github.com/8-BitRhyon/project-aghoy" 
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => playSound('click')}
+                className="text-slate-500 hover:text-cyan-400 text-sm font-['Press_Start_2P'] flex items-center gap-2"
+                title="View the open-source code (MIT)"
+             >
+                <Shield className="w-4 h-4" />
+                SOURCE
+             </a>
+
+             <a 
+                href="https://github.com/8-BitRhyon/project-aghoy/blob/main/docs/compliance/README.md" 
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => playSound('click')}
                 className="text-slate-500 hover:text-yellow-400 text-sm font-['Press_Start_2P'] flex items-center gap-2"
-                title="Support Server Costs"
+                title="Non-profit, free forever. See how the project stays running."
              >
                 <Coffee className="w-4 h-4" />
                 SUPPORT

@@ -3,6 +3,7 @@ import SmartSupport from './SmartSupport';
 import React, { useState, useEffect, useRef } from 'react';
 import { AnalysisResult, Verdict } from '../types';
 import { SUPPORT_DATABASE } from '../src/support/supportDatabase';
+import { normalizeLang } from '../src/i18n';
 import { lookupIndicator, inspectUrl, InspectResult, domainReputation, DomainReputation } from '../src/api/storageClient';
 import RiskGauge from './RiskGauge';
 import RecoveryLadder from './RecoveryLadder';
@@ -186,9 +187,10 @@ interface ResultCardProps {
   result: AnalysisResult;
   onReset: () => void;
   analysisId?: string | number;
+  language?: string;
 }
 
-const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) => {
+const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId, language = 'TAGALOG' }) => {
   const [expandedEducation, setExpandedEducation] = useState(true);
   const [copied, setCopied] = useState(false);
   const [showWarningCard, setShowWarningCard] = useState(false);
@@ -327,6 +329,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId }) 
               redFlags={result.redFlags}
               onCopyReport={handleCopyReport}
               copied={copied}
+              language={normalizeLang(language)}
             />
           )}
 

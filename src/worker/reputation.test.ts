@@ -116,3 +116,27 @@ describe('reportWeight and recencyWeight', () => {
     expect(recencyWeight(90)).toBeCloseTo(0.125);
   });
 });
+
+describe('reporterTrust - recovery (permanent-lockout fix)', () => {
+  it('a burned reporter (3+ rejects) is locked out until the cooldown passes', () => {
+    expect(reporterTrust({ corroborated: 0, hardContradictions: 0, burstDuplicates: 0, clearedSupport: 0, hardRejects: 3, daysSinceLastReject: 5 })).toBe(0);
+    expect(reporterTrust({ corroborated: 0, hardContradictions: 0, burstDuplicates: 0, clearedSupport: 0, hardRejects: 3, daysSinceLastReject: 13 })).toBe(0);
+  });
+
+  it('recovers to a reduced baseline after 14 clean days', () => {
+    const recovered = reporterTrust({ corroborated: 0, hardContradictions: 0, burstDuplicates: 0, clearedSupport: 0, hardRejects: 3, daysSinceLastReject: 15 });
+    expect(recovered).toBeGreaterThan(0);
+    expect(recovered).toBeLessThanOrEqual(0.15);
+    // A recovered reporter corroborating others climbs back up.
+    const climbing = reporterTrust({ corroborated: 2, hardContradictions: 0, burstDuplicates: 0, clearedSupport: 0, hardRejects: 3, daysSinceLastReject: 20 });
+    expect(climbing).toBeGreaterThan(recovered);
+  });
+
+  it('honeypot hits are never forgiven', () => {
+    expect(reporterTrust({ corroborated: 4, hardContradictions: 0, burstDuplicates: 0, clearedSupport: 0, honeypotHit: true, daysSinceLastReject: 999 })).toBe(0);
+  });
+
+  it('no rejects means baseline without recovery logic', () => {
+    expect(reporterTrust({ corroborated: 0, hardContradictions: 0, burstDuplicates: 0, clearedSupport: 0 })).toBeCloseTo(0.4);
+  });
+});
