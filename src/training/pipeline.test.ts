@@ -128,6 +128,19 @@ describe("resolveColumns + mapRow", () => {
       })
     ).toThrow(/unmapped label/);
   });
+
+  it("rejects an invalid channel from a channel mapper", () => {
+    const cols = resolveColumns(["text", "label", "source"], { text: "text", label: "label", channel: "source" });
+    expect(() =>
+      mapRow(["text", "0", "unknown"], 0, {
+        source: "test",
+        license: "mit",
+        channel: () => "unknown" as "sms",
+        labelMap: { "0": "LEGIT", "1": "SCAM" },
+        columns: cols,
+      })
+    ).toThrow(/channel mapper returned "unknown"/);
+  });
 });
 
 describe("dedupe", () => {

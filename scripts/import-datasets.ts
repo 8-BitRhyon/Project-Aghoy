@@ -21,7 +21,7 @@ import { mkdirSync, readFileSync, writeFileSync, existsSync, statSync } from "no
 import { createHash } from "node:crypto";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { balanceRows, dedupe, mapRow, parseCsv, resolveColumns } from "../src/training/pipeline";
+import { balanceRows, assertLicenseAllowed, dedupe, mapRow, parseCsv, resolveColumns } from "../src/training/pipeline";
 import { TRAINING_SOURCES } from "../src/training/sources";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -35,10 +35,15 @@ const argValue = (flag: string): string | undefined => {
 const OUT_DIR = argValue("--out") ?? join(REPO_DIR, "data/training");
 const TMP_DIR = argValue("--tmp") ?? join(REPO_DIR, "data/training/.cache");
 const SEED = 20260807;
+const FRESH = args.includes("--fresh"); // bypass the local download cache
 
 const download = async (url: string, dest: string): Promise<void> => {
-  if (existsSync(dest) && statSync(dest).size > 0) return;
-  const res = await fetch(url, { redirect: "follow" });
+  if (!FRESH && existsSync(dest) && statSync(dest).size > 0) return;
+  // 60s timeout so a hung upstream cannot block the pipeline forever.
+  const res = await fetch(url, {
+    redirect: "follow",
+    signal: AbortSignal.timeout(60_000),
+  });
   if (!res.ok) throw new Error(`download failed (${res.status}) for ${url}`);
   const buf = Buffer.from(await res.arrayBuffer());
   if (buf.length < 32) throw new Error(`download too small (${buf.length}b) for ${url}`);
@@ -76,6 +81,10 @@ const run = async (): Promise<void> => {
   const perSource: Record<string, { rows: number; scam: number; legit: number; redacted_pct: number }> = {};
 
   for (const source of TRAINING_SOURCES) {
+    // Enforce the license gate here, not just in getSource(): any source a
+    // contributor adds to sources.ts is rejected before a single byte is
+    // downloaded unless it carries a permissive license.
+    assertLicenseAllowed(source.license, source.id);
     console.log(`\n[${source.id}] ${source.name} (${source.license})`);
     const rows: ReturnType<typeof mapRow>[] = [];
     for (const file of source.files) {
@@ -126,6 +135,9 @@ const run = async (): Promise<void> => {
   const scam = balanced.filter((r) => r.label === "SCAM").length;
   const legit = balanced.filter((r) => r.label === "LEGIT").length;
   const redacted = balanced.filter((r) => r.redacted).length;
+  if (balanced.length === 0) {
+    throw new Error("corpus is empty after dedupe/balance - refusing to write an empty training set");
+  }
   const byChannel: Record<string, number> = {};
   for (const r of balanced) byChannel[r.channel] = (byChannel[r.channel] ?? 0) + 1;
   manifest.totals = { rows: balanced.length, scam, legit, redacted, redacted_pct: Math.round((redacted / balanced.length) * 100), by_channel: byChannel, per_source: perSource };
