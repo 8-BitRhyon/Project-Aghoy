@@ -1,0 +1,25 @@
+Project Aghoy training corpus - third-party notices
+====================================================
+
+The corpus in this directory is built from the following externally published
+datasets. Each is included under its respective permissive license. Aghoy
+sanitizes every row through the Rejects PII layer before inclusion.
+
+- Dizzzy0x00 / LLMGen-Phishing-Email-Dataset (Apache-2.0)
+  License: apache-2.0
+  Source:  https://huggingface.co/datasets/Dizzzy0x00/LLMGen-Phishing-Email-Dataset
+  Files:   https://huggingface.co/datasets/Dizzzy0x00/LLMGen-Phishing-Email-Dataset/resolve/main/GPT_Phishing_Email_dataset.csv
+
+- UCI Machine Learning Repository SMS Spam Collection, mirrored by codesignal (CC-BY-4.0)
+  License: cc-by-4.0
+  Source:  https://huggingface.co/datasets/codesignal/sms-spam-collection
+  Files:   https://huggingface.co/datasets/codesignal/sms-spam-collection/resolve/main/sms-spam-collection.csv
+
+- Rehan M. / ScamShield Scam Detection Data (MIT)
+  License: mit
+  Source:  https://huggingface.co/datasets/rehan-ml/scamshield-scam-detection-data
+  Files:   https://huggingface.co/datasets/rehan-ml/scamshield-scam-detection-data/resolve/main/train.csv, https://huggingface.co/datasets/rehan-ml/scamshield-scam-detection-data/resolve/main/test.csv, https://huggingface.co/datasets/rehan-ml/scamshield-scam-detection-data/resolve/main/validation.csv
+
+
+The remainder of the corpus is Project Aghoy's own Taglish seed corpus and
+sanitized community reports (Project Aghoy, see LICENSE in the repo root).

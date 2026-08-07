@@ -1,0 +1,74 @@
+{
+  "generated_at": "2026-08-07T12:49:24.723Z",
+  "seed": 20260807,
+  "balanced": {
+    "max_majority_ratio": 2
+  },
+  "sources": [
+    {
+      "id": "llmgen-email",
+      "name": "LLMGen Phishing Email Dataset (GPT subset)",
+      "license": "apache-2.0",
+      "license_url": "https://huggingface.co/datasets/Dizzzy0x00/LLMGen-Phishing-Email-Dataset",
+      "attribution": "Dizzzy0x00 / LLMGen-Phishing-Email-Dataset (Apache-2.0)",
+      "files": [
+        "https://huggingface.co/datasets/Dizzzy0x00/LLMGen-Phishing-Email-Dataset/resolve/main/GPT_Phishing_Email_dataset.csv"
+      ]
+    },
+    {
+      "id": "uci-sms",
+      "name": "UCI SMS Spam Collection (codesignal mirror)",
+      "license": "cc-by-4.0",
+      "license_url": "https://huggingface.co/datasets/codesignal/sms-spam-collection",
+      "attribution": "UCI Machine Learning Repository SMS Spam Collection, mirrored by codesignal (CC-BY-4.0)",
+      "files": [
+        "https://huggingface.co/datasets/codesignal/sms-spam-collection/resolve/main/sms-spam-collection.csv"
+      ]
+    },
+    {
+      "id": "scamshield",
+      "name": "ScamShield Scam Detection Data",
+      "license": "mit",
+      "license_url": "https://huggingface.co/datasets/rehan-ml/scamshield-scam-detection-data",
+      "attribution": "Rehan M. / ScamShield Scam Detection Data (MIT)",
+      "files": [
+        "https://huggingface.co/datasets/rehan-ml/scamshield-scam-detection-data/resolve/main/train.csv",
+        "https://huggingface.co/datasets/rehan-ml/scamshield-scam-detection-data/resolve/main/test.csv",
+        "https://huggingface.co/datasets/rehan-ml/scamshield-scam-detection-data/resolve/main/validation.csv"
+      ]
+    }
+  ],
+  "totals": {
+    "rows": 12468,
+    "scam": 4156,
+    "legit": 8312,
+    "redacted": 3989,
+    "redacted_pct": 32,
+    "by_channel": {
+      "job": 6596,
+      "sms": 2864,
+      "email": 3008
+    },
+    "per_source": {
+      "llmgen-email": {
+        "rows": 3746,
+        "scam": 2477,
+        "legit": 1269,
+        "redacted_pct": 98
+      },
+      "uci-sms": {
+        "rows": 5110,
+        "scam": 611,
+        "legit": 4499,
+        "redacted_pct": 6
+      },
+      "scamshield": {
+        "rows": 21172,
+        "scam": 1471,
+        "legit": 19701,
+        "redacted_pct": 8
+      }
+    }
+  },
+  "corpus_sha256": "772049a005b793535c645c689df07610dadedd0766566e4e0e0d7dc1de0dd5a9"
+}
