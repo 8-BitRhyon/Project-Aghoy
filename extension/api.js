@@ -72,8 +72,11 @@ export const postReport = async (payload) => {
     },
     10000
   );
-  if (!res.ok) return null;
-  return res.json();
+  if (!res.ok) return { ok: false };
+  const data = await res.json();
+  // Honest result: a rejected report returns ok:true but rejected:true, so the
+  // caller can tell the user their report was not counted (community integrity).
+  return { ok: true, rejected: !!data.rejected, id: data.id ?? null };
 };
 
 // POST /inspect - SSRF-guarded server-side check of a suspicious URL.

@@ -66,10 +66,21 @@ export const reporterTrust = (input: {
   clearedSupport: number; // indicators this fp supported that were cleared
   honeypotHit?: boolean;
   hardRejects?: number;
+  // Recovery: days since the last hard reject. A burned reporter (3+ rejects)
+  // returns to the baseline after RECOVERY_DAYS of clean, corroborated reports,
+  // so a shared-NAT IP or a bad streak is not locked out of the community loop
+  // forever. This is the trust-recovery fix for the permanent-lockout finding.
+  daysSinceLastReject?: number;
 }): number => {
-  if (input.honeypotHit || (input.hardRejects || 0) >= 3) return 0;
+  // Honeypot hits are never forgiven (active malice). Hard rejects are, after a
+  // cooldown: the gate's own quality checks still block garbage reports, so
+  // letting trust recover only admits reporters who now pass the gate.
+  if (input.honeypotHit) return 0;
+  const rejects = input.hardRejects || 0;
+  if (rejects >= 3 && (input.daysSinceLastReject ?? 0) < 14) return 0;
+  const base = rejects >= 3 ? 0.15 : 0.4; // reduced baseline right after cooldown
   const score =
-    0.4 +
+    base +
     0.1 * Math.min(4, input.corroborated) -
     0.2 * input.hardContradictions -
     0.1 * input.burstDuplicates -

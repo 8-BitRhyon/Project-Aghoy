@@ -743,7 +743,11 @@ export default {
         // Quality gate: rejected reports return a neutral 200 so attackers
         // cannot probe the gate, and the similar-scam compute is skipped.
         if (result.gate?.action === "reject") {
-          return jsonResponse({ ok: true }, 200, origin);
+          // Honest feedback: the report was discarded by the quality gate. The
+          // neutral 200 prevents gate-probing, but the response MUST tell the
+          // truth so the community loop never silently drops a report. A user
+          // who thinks they warned everyone but did not is a trust-breaking bug.
+          return jsonResponse({ ok: true, rejected: true, reason: "quality_gate", details: result.gate.reasons }, 200, origin);
         }
         const similar = content ? await findSimilarScams(env, content, 3) : [];
         return jsonResponse({ ...result, similar }, 200, origin);

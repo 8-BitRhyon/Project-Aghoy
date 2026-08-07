@@ -17,9 +17,12 @@ describe('RecoveryLadder', () => {
         redFlags={['OTP_SHARING', 'URGENCY']}
       />
     );
-    expect(screen.getByText('FREEZE FUNDS')).toBeTruthy();
-    expect(screen.getByText('SAVE EVIDENCE')).toBeTruthy();
-    expect(screen.getByText('REPORT IT')).toBeTruthy();
+    // Default language is Tagalog, so the ladder renders the localized copy.
+    expect(screen.getByText('I-LOCK ANG ACCOUNT KO')).toBeTruthy();
+    expect(screen.getByText('MAG-SAVE NG EVIDENCE')).toBeTruthy();
+    expect(screen.getByText('ISUMBONG')).toBeTruthy();
+    // The definitive one-rule (not a hedge) is the banner.
+    expect(screen.getByText(/SCAM 'YAN\. WAG MAG-REPLY/)).toBeTruthy();
     // The CICC 1326 hand-off line is present on the high-risk path.
     expect(screen.getAllByText(/CICC 1326/).length).toBeGreaterThan(0);
   });
@@ -37,15 +40,14 @@ describe('RecoveryLadder', () => {
     expect(screen.getAllByText(/BDO/).length).toBeGreaterThan(0);
   });
 
-  it('uses a verify-first tone for SUSPICIOUS, not the panic ladder', () => {
+  it('uses a calm dontReply tone for SUSPICIOUS, not the panic ladder', () => {
     render(<RecoveryLadder verdict="SUSPICIOUS" />);
-    expect(screen.getByText(/verify through the official channel/i)).toBeTruthy();
-    // The high-risk banner ('this is what to do now') is absent; the
-    // government hand-off line still appears because reporting helps either way.
-    expect(screen.queryByText(/this is what to do now/i)).toBeFalsy();
+    expect(screen.getByText(/WAG KA MAG-REPLY/)).toBeTruthy();
+    // The high-risk banner ('SCAM YAN') is absent for SUSPICIOUS.
+    expect(screen.queryByText(/SCAM 'YAN\. WAG MAG-REPLY/)).toBeFalsy();
   });
 
-  it('shows COPY REPORT and fires the callback on click', () => {
+  it('shows the report button and fires the callback on click', () => {
     const onCopy = vi.fn();
     render(<RecoveryLadder verdict="HIGH_RISK" onCopyReport={onCopy} copied={false} />);
     const btn = screen.getByText('COPY REPORT');
@@ -55,11 +57,14 @@ describe('RecoveryLadder', () => {
   });
 
   it('falls back to the four wallets even when matched brands are all inactive', () => {
-    // Entities that do not exist in the support database must not produce an
-    // empty freeze list.
     render(<RecoveryLadder verdict="HIGH_RISK" entities={['NOT_A_BRAND', 'ALSO_FAKE']} />);
     expect(screen.getAllByText(/GCash/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Maya/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/BDO/).length).toBeGreaterThan(0);
+  });
+
+  it('shows the reassuring deleted-evidence message when alreadyScammed', () => {
+    render(<RecoveryLadder verdict="HIGH_RISK" alreadyScammed language="TAGALOG" />);
+    expect(screen.getByText(/Na-delete mo na ang text\? OK lang/)).toBeTruthy();
   });
 });

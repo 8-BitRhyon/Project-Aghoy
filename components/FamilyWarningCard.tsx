@@ -123,7 +123,7 @@ const FamilyWarningCard: React.FC<FamilyWarningCardProps> = ({ result, isOpen, o
 
             <div className="mt-6 md:mt-8 pt-3 md:pt-4 border-t-4 border-slate-700 flex justify-between items-end">
                  <div className="text-[10px] md:text-xs text-slate-400 max-w-[60%]">
-                    VERIFIED BY PROJECT AGHOY AI
+                    FLAGGED BY PROJECT AGHOY AI - CONFIRM BEFORE ACTING
                  </div>
                  <div className="text-[10px] md:text-xs text-white bg-slate-800 px-2 py-1">
                     #ProjectAghoy
