@@ -61,15 +61,15 @@ const PrivacyConsent: React.FC<PrivacyConsentProps> = ({ onConsentChange }) => {
         <div className="flex flex-col md:flex-row gap-4 mt-2">
           <div className="flex-1">
             <h3 className="text-white font-['Press_Start_2P'] text-xs mb-2">
-              INITIALIZE PRIVACY PROTOCOLS?
+              PROTECT YOUR FAMILY. PROTECT YOUR PRIVACY.
             </h3>
             <p className="font-['VT323'] text-slate-300 text-lg leading-tight text-justify">
-              Project Aghoy uses <span className="text-white font-bold">Advanced AI</span> to analyze messages.
-              Message text is processed by <span className="text-cyan-400 font-bold">third-party AI providers</span> to detect scams.
+              Project Aghoy helps you and your family spot scams before money is lost.
+              To check a message, text is processed by <span className="text-cyan-400 font-bold">third-party AI providers</span> to detect scams.
               <br/>
               <span className="text-green-400">MASKED:</span> Card numbers, PH mobile numbers, emails, IDs, and OTPs are redacted before sending.
               <br/>
-              <span className="text-green-400">ON-DEVICE:</span> Images never leave your device. Results are saved only on your device.
+              <span className="text-green-400">ON-DEVICE:</span> Images never leave your device. No accounts. No data sold. Ever.
             </p>
             {mintError && (
               <p className="mt-2 flex items-center gap-2 text-red-400 font-['VT323'] text-lg">

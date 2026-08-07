@@ -1,8 +1,14 @@
 # Project Aghoy
 
-**AI-powered scam detection for the Philippine context.** Scan text or a screenshot of any SMS, email, or job offer. Get an AI verdict with plain-language explanations, direct victim-assistance hotlines, government reporting channels, and a safe training Dojo where you practice spotting scammers.
+**Protect your family from scams - free, private, non-profit.**
 
-Project Aghoy is a free, open-source, non-profit community project. It is not a business and it does not collect data for profit.
+Scammers don't target tech-savvy people. They target your lola, your parents, your OFW relatives - the people who trust a text that says "your GCash is locked." Aghoy gives you three tools to shield them:
+
+- **Train them first (3 minutes a day).** The Dojo is a scam-radar trainer with 400+ realistic drills in plain language. Your grandmother can learn to spot a GCash OTP trap before she is ever targeted. You can watch her progress.
+- **Check before they act.** Paste any suspicious SMS, email, or job offer - or a screenshot - and get a plain-language verdict, the real wallet hotline to call, and the government channel to report it.
+- **Report once, warn everyone.** Every scam someone reports is sanitized and feeds a community blacklist, so the next person who receives that exact fake GCash alert sees "this domain has been reported."
+
+No accounts. No login. No data sold. A server-authoritative PII filter (the Rejects layer) redacts names, numbers, IDs, and secrets before any content leaves the device or is stored - honoring the Data Privacy Act of 2012 (RA 10173).
 
 ## Why it exists
 
@@ -11,7 +17,7 @@ Scams are a daily reality in the Philippines: SMS phishing, vishing calls, task 
 Project Aghoy meets that threat three ways:
 
 - **Detection:** analyze suspicious messages before you act, with explanations you can understand in your own language.
-- **Education:** the Dojo lets you practice recognizing social engineering in a safe simulation, and the flag library explains each red flag.
+- **Education:** the Dojo lets you practice recognizing social engineering in a safe simulation, and the flag library explains each red flag. It is built for grandparents - big text, no jargon, no tech experience needed.
 - **Privacy by design:** the messages you analyze contain personal data. A server-authoritative PII filter (the Rejects layer) redacts names, numbers, IDs, and secrets before any content leaves your device or is stored. This respects the spirit of the Data Privacy Act of 2012 (RA 10173).
 
 ## Features

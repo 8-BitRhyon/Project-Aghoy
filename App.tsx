@@ -85,7 +85,7 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [imageMimeType, setImageMimeType] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'SCANNER' | 'DOJO'>('SCANNER');
+  const [activeTab, setActiveTab] = useState<'SCANNER' | 'DOJO'>('DOJO');
   
   const [showAbout, setShowAbout] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
@@ -460,7 +460,7 @@ const App: React.FC = () => {
                   <h1 className="text-lg md:text-2xl font-bold text-white font-['Press_Start_2P'] tracking-tighter leading-none">
                     PROJECT <span className="text-cyan-400">AGHOY</span>
                   </h1>
-                  <p className="text-[10px] md:text-xs text-slate-400 font-mono tracking-widest mt-1">AI SCAM DETECTOR & DOJO</p>
+                  <p className="text-[10px] md:text-xs text-slate-400 font-mono tracking-widest mt-1">PROTECT YOUR FAMILY FROM SCAMS</p>
                </div>
            </div>
            
@@ -578,6 +578,17 @@ const App: React.FC = () => {
 
                 {!result && (
                     <div className="space-y-4 max-w-3xl mx-auto">
+                        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-2 border-cyan-700 bg-cyan-950/20 px-3 py-2 font-['VT323'] text-lg">
+                          <span className="text-cyan-100">
+                            Unsure about a message? <span className="text-white">Paste it here.</span>
+                          </span>
+                          <button
+                            onClick={() => handleTabChange('DOJO')}
+                            className="text-cyan-300 hover:text-white underline decoration-dotted underline-offset-4 transition-colors"
+                          >
+                            Or train your family first (3 min/day) &gt;
+                          </button>
+                        </div>
                         <div className="mb-4">
                           <p className="text-slate-400 text-xs font-['Press_Start_2P'] mb-2 uppercase">Quick Try:</p>
                           <div className="grid grid-cols-2 md:flex gap-2">
