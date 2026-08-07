@@ -1,0 +1,15 @@
+# Gitleaks allowlist (https://github.com/gitleaks/gitleaks)
+#
+# data/training/corpus.jsonl is a Rejects-sanitized scam-detection training
+# corpus committed to the repo. Legitimate job-posting rows contain URLs with
+# query parameters like `?AppKey=...`, which the generic-api-key rule mistakes
+# for secrets. The corpus is already scanned for PII (0 leaks verified) and is
+# training data, not credentials. The allowlist is scoped to this one file and
+# rule so real secrets anywhere else still fail the build.
+
+title = "Project Aghoy gitleaks config"
+
+[allowlist]
+  description = "Scam-detection training corpus: generic-api-key false positives"
+  files = ["data/training/corpus.jsonl"]
+  regexes = ["generic-api-key"]
