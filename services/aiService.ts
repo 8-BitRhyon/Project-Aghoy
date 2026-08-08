@@ -3,6 +3,7 @@ import { redactPII } from "../src/rejects/rejects";
 import { detectBrands, detectIntents, fallbackVerdict, BrandMatch } from "../src/brands/brands";
 import { postReport, lookupIndicator, ReportPayload, getConsentToken } from "../src/api/storageClient";
 import { WORKER_ORIGIN } from "../src/config";
+import { classifyText, fuseModelWithVerdict } from "./classifier";
 
 // vite/client types are not in tsconfig.json, so import.meta.env is declared
 // locally.
@@ -14,6 +15,11 @@ declare global {
 
 const API_ENDPOINT = "/api/analyze";
 const FETCH_TIMEOUT_MS = 30000;
+// On-device model inference races against this; the server verdict is already
+// complete and must not be blocked by a slow first model download or a hung
+// wasm session. 10s covers a cold ONNX+wasm load on a 2GB phone; CacheFirst
+// makes subsequent scans near-instant.
+const MODEL_INFERENCE_TIMEOUT_MS = 10000;
 const MAX_DOJO_HISTORY = 6;
 const MAX_ASSISTANT_TEXT = 2000;
 
@@ -578,7 +584,30 @@ export const analyzeContent = async (text: string, language: string, imageBase64
     }
 
     const enriched = enrichResult(result, contentToAnalyze);
-    // Hash phones from both the user note and OCR text so the blacklist works for screenshot scans.
+    // On-device classifier as a SECOND OPINION (verifier). Runs after Rejects
+    // redaction on the same content; lazy-loads the 14.6MB ONNX once. It can
+    // only escalate a non-HIGH_RISK result to SUSPICIOUS when the model flags
+    // at high confidence - it never forces HIGH_RISK and never downgrades.
+    // The inference is RACED against a timeout: the server verdict is already
+    // complete, so a slow first download / hung wasm must never block it.
+    // Any model failure (offline, unsupported device, timeout, OOM) degrades
+    // to the current result: the deterministic + server verdict is
+    // authoritative without it.
+    const modelVerdict = await Promise.race([
+      classifyText(contentToAnalyze),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), MODEL_INFERENCE_TIMEOUT_MS)),
+    ]);
+    if (modelVerdict && modelVerdict.flag && enriched.verdict !== Verdict.HIGH_RISK) {
+      const escalated = fuseModelWithVerdict(enriched.verdict, modelVerdict.scamProb);
+      // Only surface model evidence when the verdict actually escalated; a
+      // confident-legit or abstained call must not carry a bumped risk score
+      // or a contradictory ON_DEVICE_MODEL flag.
+      if (escalated !== enriched.verdict) {
+        enriched.verdict = escalated;
+        enriched.riskScore = Math.max(enriched.riskScore, 6);
+        enriched.redFlags = [...(enriched.redFlags || []), "ON_DEVICE_MODEL"];
+      }
+    }
     const ocrText = imageBase64 ? contentToAnalyze.match(/\[IMAGE CONTENT \(OCR\)\]:\s*([\s\S]*?)\s*$/) : null;
     const phoneHashes = await phoneHashesFromText(`${text} ${ocrText ? ocrText[1] : ""}`);
     const reportPayload: ReportPayload = {
