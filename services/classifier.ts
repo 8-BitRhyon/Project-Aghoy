@@ -19,9 +19,15 @@ import { pipeline, env } from "@huggingface/transformers";
 import { Verdict } from "../types";
 
 // Model assets are self-hosted under /models/ (like /ocr/) so no third-party
-// CDN is contacted at runtime (CSP: script-src 'self').
+// CDN is contacted at runtime (CSP: script-src 'self'). The ONNX Runtime wasm
+// is also self-hosted under /ort-wasm/ - without this, onnxruntime-web would
+// fetch it from cdn.jsdelivr.net, which the CSP connect-src blocks.
 env.allowLocalModels = true;
 env.useBrowserCache = true;
+if (env.backends?.onnx?.wasm) {
+  env.backends.onnx.wasm.wasmPaths = "/ort-wasm/";
+}
+export const ORT_WASM_DIR = "/ort-wasm";
 
 export const MODEL_DIR = "/models/tinybert-v1";
 export const MODEL_ID = `${MODEL_DIR}`;
