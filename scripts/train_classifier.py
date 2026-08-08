@@ -181,11 +181,16 @@ def main():
     trainer.train()
 
     # ---- lock threshold on VALIDATION only ----
+    # trainer.predict returns LOGITS, not probabilities. Convert everything to
+    # the probability domain ONCE so threshold tuning, test classification,
+    # fusion, and the Taglish check all compare apples to apples.
+    import torch as _torch
     val_logits = trainer.predict(val_ds).predictions[:, 1]
+    val_probs = _torch.sigmoid(_torch.from_numpy(val_logits)).numpy()
     val_true = np.array([1 if r["label"] == "SCAM" else 0 for r in val_rows])
     best_thresh, best_f1 = 0.5, -1.0
     for t in [x / 100 for x in range(5, 96, 1)]:
-        pred = (val_logits >= t).astype(int)
+        pred = (val_probs >= t).astype(int)
         f1 = precision_recall_fscore_support(val_true, pred, average="binary", pos_label=1)[2]
         if f1 > best_f1:
             best_f1, best_thresh = f1, t
@@ -194,8 +199,9 @@ def main():
     # ---- test evaluation at the locked threshold ----
     test_ds = ScamDataset(test_rows)
     test_logits = trainer.predict(test_ds).predictions[:, 1]
+    test_probs = _torch.sigmoid(_torch.from_numpy(test_logits)).numpy()
     test_true = np.array([1 if r["label"] == "SCAM" else 0 for r in test_rows])
-    pred = (test_logits >= best_thresh).astype(int)
+    pred = (test_probs >= best_thresh).astype(int)
     tn, fp, fn, tp = confusion_matrix(test_true, pred, labels=[0, 1]).ravel()
     p, r, f1, _ = precision_recall_fscore_support(test_true, pred, average="binary", pos_label=1)
     auc = roc_auc_score(test_true, test_logits)
@@ -225,14 +231,14 @@ def main():
           f"({tp}TP/{fp}FP/{fn}FN/{tn}TN)")
 
     if not args.no_fusion:
-        metrics["fusion"] = run_fusion_eval(test_rows, test_logits, best_thresh, out_dir)
-        metrics["taglish"] = run_taglish_eval(test_rows, test_logits, best_thresh, model, tokenizer)
+        metrics["fusion"] = run_fusion_eval(test_rows, test_probs, best_thresh, out_dir)
+        metrics["taglish"] = run_taglish_eval(test_rows, best_thresh, model, tokenizer, args.max_len)
 
     with open(out_dir / "metrics.json", "w", encoding="utf-8") as f:
         json.dump(metrics, f, indent=2)
     print(f"\nmetrics -> {out_dir / 'metrics.json'}")
 
-def run_fusion_eval(test_rows: list, test_logits, threshold, out_dir: Path):
+def run_fusion_eval(test_rows: list, test_probs, threshold, out_dir: Path):
     """Run the deterministic engine over the test fold, then compute the fused
     (engine-as-verifier) false-positive/recall numbers vs the model alone."""
     import numpy as np
@@ -266,21 +272,26 @@ def run_fusion_eval(test_rows: list, test_logits, threshold, out_dir: Path):
         return None
 
     true = np.array([1 if r["label"] == "SCAM" else 0 for r in test_rows])
-    model_prob = test_logits
+    model_prob = test_probs
     model_pred = (model_prob >= threshold).astype(int)
+    engine_high = np.array([engine[r["id"]]["verdict"] == "HIGH_RISK" for r in test_rows])
     engine_verdicts = np.array([engine[r["id"]]["verdict"] for r in test_rows])
 
-    # Verifier-correct fusion. The engine is a verifier, not a second flagger:
-    #   - engine HIGH_RISK confirms the model  (both-agree => flag)
-    #   - engine abstains/null                 => model fills in (its own call)
-    #   - engine HIGH_RISK but model says LEGIT => model wins (the engine is
-    #     PH-precision-biased; on non-PH text its HIGH_RISK is often a false
-    #     positive, which a blind OR-fusion would add). This is the anti-
-    #     false-positive property: the engine can raise recall only where the
-    #     model agrees, never force a flag the model rejects.
+    # Verifier-correct fusion with a real decision surface (not a tautology).
+    # The engine is a verifier that can ESCALATE near-misses but never override
+    # a clear LEGIT call:
+    #   - model >= threshold            => flag (primary)
+    #   - engine HIGH_RISK AND model in [escalation_floor, threshold) => flag
+    #     (the engine rescues a text the model under-confides, e.g. PH-brand
+    #      scams the English-trained model is unsure about)
+    #   - engine HIGH_RISK AND model < escalation_floor => no flag (model wins;
+    #     the engine's PH-biased HIGH_RISK on non-PH text is often a false
+    #     positive, and the model is confident it is not)
+    #   - engine NULL/SAFE/SUSPICIOUS   => model decides alone
+    escalation_floor = 0.30
     fused_both = np.where(
-        (engine_verdicts == "HIGH_RISK") & (model_pred == 1), 1,
-        np.where(engine_verdicts == "HIGH_RISK", 0, model_pred)
+        model_pred == 1, 1,
+        np.where((engine_high == 1) & (model_prob >= escalation_floor), 1, 0)
     ).astype(int)
 
     # Naive OR-fusion (kept for comparison only - shows why it is wrong).
@@ -304,7 +315,7 @@ def run_fusion_eval(test_rows: list, test_logits, threshold, out_dir: Path):
               "fused_or_naive": report("fused(OR)", fused_or)}
     return result
 
-def run_taglish_eval(test_rows: list, test_logits, threshold, model, tokenizer):
+def run_taglish_eval(test_rows: list, threshold, model, tokenizer, max_len: int):
     """PH-reality check: the 22 real Taglish/GCash seed rows (all SCAM, never
     in the training corpus) are the ground truth that matters for the actual
     users. The English test fold cannot tell us whether the model understands
@@ -329,7 +340,7 @@ def run_taglish_eval(test_rows: list, test_logits, threshold, model, tokenizer):
     import torch
     import numpy as np
     enc = tokenizer([r["text"] for r in seed], truncation=True, padding="max_length",
-                    max_length=128, return_tensors="pt")
+                    max_length=max_len, return_tensors="pt")
     model.eval()
     with torch.no_grad():
         logits = model(**enc).logits

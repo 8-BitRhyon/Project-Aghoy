@@ -22,6 +22,15 @@ if (!corpusPath) {
 const seed = Number(arg("--seed") ?? "20260808");
 const leakSim = Number(arg("--leak-sim") ?? "0.5");
 
+if (!Number.isSafeInteger(seed) || seed <= 0) {
+  console.error(`invalid --seed "${arg("--seed")}": must be a positive safe integer`);
+  process.exit(1);
+}
+if (!Number.isFinite(leakSim) || leakSim < 0 || leakSim > 1) {
+  console.error(`invalid --leak-sim "${arg("--leak-sim")}": must be in [0, 1]`);
+  process.exit(1);
+}
+
 const rows: CorpusRow[] = readFileSync(corpusPath, "utf8")
   .split("\n")
   .filter((l) => l.trim())

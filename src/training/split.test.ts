@@ -52,6 +52,18 @@ describe("provenanceStratifiedSplit", () => {
     expect(new Set(all).size).toBe(all.length);
     expect(all.length).toBe(50);
   });
+
+  it("fold membership is independent of corpus row order", () => {
+    const rows = Array.from({ length: 200 }, (_, i) =>
+      mk(`r-${i}`, `message about topic ${i}`, i % 3 === 0 ? "SCAM" : "LEGIT", i % 2 ? "src-a" : "src-b")
+    );
+    const shuffled = [...rows].sort(() => (Math.random() < 0.5 ? -1 : 1));
+    const a = provenanceStratifiedSplit(rows, { seed: 42 });
+    const b = provenanceStratifiedSplit(shuffled, { seed: 42 });
+    const foldKey = (s: { train: string[]; val: string[]; test: string[] }) =>
+      JSON.stringify([[...s.train].sort(), [...s.val].sort(), [...s.test].sort()]);
+    expect(foldKey(a)).toBe(foldKey(b));
+  });
 });
 
 describe("jaccard + tokenSet", () => {
@@ -108,5 +120,20 @@ describe("dropLeakage", () => {
     const b = dropLeakage(rows, split, 0.6);
     expect(a.test).toEqual(b.test);
     expect(a.droppedLeakage.map((d) => d.id)).toEqual(b.droppedLeakage.map((d) => d.id));
+  });
+
+  it("drops a test row that near-duplicates a RETAINED validation row", () => {
+    const rows = [
+      mk("train-1", "completely unrelated training message about the weather"),
+      mk("val-keep", "Your GCash is locked due to suspicious activity please verify immediately"),
+      mk("test-near-val", "Your GCash is locked! Due to suspicious activity, please verify immediately now"),
+    ];
+    // val-keep is NOT near train-1, so it is retained; test-near-val IS near
+    // val-keep, so it must be dropped even though it never matched train.
+    const split = { train: ["train-1"], val: ["val-keep"], test: ["test-near-val"] };
+    const out = dropLeakage(rows, split, 0.5);
+    expect(out.val).toContain("val-keep");
+    expect(out.test).not.toContain("test-near-val");
+    expect(out.droppedLeakage.map((d) => d.id)).toEqual(["test-near-val"]);
   });
 });

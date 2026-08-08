@@ -71,11 +71,18 @@ export const provenanceStratifiedSplit = (
     byLabel.get(r.label)!.push(r);
   }
 
-  for (const [, byLabel] of bySource) {
-    for (const [, pool] of byLabel) {
-      const ids = pool.map((r) => r.id);
+  // Iterate strata in SORTED order and derive each stratum's RNG seed from the
+  // source+label so the split is independent of corpus row ordering: reordering
+  // the same JSONL must produce the same fold membership for the same seed.
+  const sourceKeys = [...bySource.keys()].sort();
+  for (const source of sourceKeys) {
+    const byLabel = bySource.get(source)!;
+    const labelKeys = [...byLabel.keys()].sort();
+    for (const label of labelKeys) {
+      const pool = byLabel.get(label)!;
+      const ids = pool.map((r) => r.id).sort();
       // Deterministic shuffle within the (source, label) stratum.
-      let a = (seed ^ (ids.length * 2654435761)) >>> 0;
+      let a = (seed ^ hashStr(`${source}|${label}`) ^ (ids.length * 2654435761)) >>> 0;
       const rnd = () => {
         a |= 0;
         a = (a + 0x6d2b79f5) | 0;
@@ -98,6 +105,16 @@ export const provenanceStratifiedSplit = (
   return { train, val, test, droppedLeakage: [] };
 };
 
+// Deterministic string hash (FNV-1a, 32-bit) for stratum-seeded shuffling.
+const hashStr = (s: string): number => {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return h >>> 0;
+};
+
 // Second guard: drop val/test rows that near-duplicate a train row. This is
 // O(n^2) worst-case but the corpus is ~12k rows and each comparison is a
 // cheap Set intersection; acceptable for a one-shot offline pipeline.
@@ -107,7 +124,10 @@ export const dropLeakage = (
   maxSimilarity = 0.5
 ): SplitResult => {
   const byId = new Map(rows.map((r) => [r.id, r]));
-  const trainSets = split.train.map((id) => ({ id, set: tokenSet(byId.get(id)?.text ?? "") }));
+  // Comparison set grows: train rows first, then RETAINED val rows (so a test
+  // row that near-duplicates a validation row - which is used for threshold
+  // tuning - is also dropped, not just train duplicates).
+  const comparison = split.train.map((id) => ({ id, set: tokenSet(byId.get(id)?.text ?? "") }));
   const droppedLeakage: SplitResult["droppedLeakage"] = [];
   const keepVal: string[] = [];
   const keepTest: string[] = [];
@@ -122,7 +142,7 @@ export const dropLeakage = (
       const set = tokenSet(row.text);
       let bestSim = 0;
       let bestId = "";
-      for (const t of trainSets) {
+      for (const t of comparison) {
         const sim = jaccard(set, t.set);
         if (sim > bestSim) {
           bestSim = sim;
@@ -134,6 +154,9 @@ export const dropLeakage = (
         droppedLeakage.push({ id, bestTrainId: bestId, similarity: Math.round(bestSim * 100) / 100 });
       } else {
         fold.out.push(id);
+        // Retained rows join the comparison set for later folds (val -> test),
+        // so val-to-test leakage is caught too.
+        comparison.push({ id, set });
       }
     }
   }

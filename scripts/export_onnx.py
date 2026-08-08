@@ -9,15 +9,26 @@
 
 import argparse
 import shutil
-import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
+
+# Quantization profile per deployment target. The quantized runtime is NOT
+# portable across instruction sets, so the target is an explicit choice, not a
+# guess from sys.platform. arm64 = Apple Silicon / modern ARM Android phones;
+# avx512_vnni = x86-64 (desktop/server, incl. GH Actions runners).
+TARGET_PROFILES = {
+    "arm64": "arm64",
+    "x86": "avx512_vnni",
+    "x86-avx2": "avx2",
+}
 
 def parse_args():
     p = argparse.ArgumentParser()
     p.add_argument("--checkpoint", required=True, help="HF checkpoint dir (best checkpoint from training)")
     p.add_argument("--out", required=True, help="output dir for ONNX assets")
+    p.add_argument("--target", default="arm64", choices=list(TARGET_PROFILES),
+                   help="quantization profile: arm64 (phones/Apple) or x86/x86-avx2 (desktop/CI)")
     p.add_argument("--no-quantize", action="store_true", help="skip int8 dynamic quantization")
     return p.parse_args()
 
@@ -57,7 +68,8 @@ def main():
     from optimum.onnxruntime.configuration import AutoQuantizationConfig
 
     quantizer = ORTQuantizer.from_pretrained(save_dir)
-    dqconfig = AutoQuantizationConfig.arm64(is_static=False) if sys.platform == "darwin" else AutoQuantizationConfig.avx512_vnni(is_static=False)
+    profile = TARGET_PROFILES[args.target]
+    dqconfig = AutoQuantizationConfig.__dict__[profile](is_static=False)
     quantizer.quantize(save_dir=out, quantization_config=dqconfig)
     int8_model = out / "model_quantized.onnx"
     if not int8_model.exists():
