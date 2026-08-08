@@ -25,6 +25,12 @@ export default defineConfig(({ mode }) => {
             // and the transformers.js ONNX Runtime wasm) are only needed when a
             // scan actually runs. Exclude from precache and serve via runtime
             // caching instead so the service worker stays lean.
+            //
+            // Note: maximumFileSizeToCacheInBytes is deliberately NOT set. The
+            // workbox default (2 MiB) applies to PRECACHE only; the CacheFirst
+            // runtime rules below cache the 14.6MB ONNX and 23.6MB ort-wasm
+            // without that limit. Setting a cap here would silently block the
+            // model from the runtime cache.
             globIgnores: [
               'ocr/**',
               '**/ocr/*.wasm*',
@@ -32,7 +38,6 @@ export default defineConfig(({ mode }) => {
               '**/models/*.onnx',
               '**/ort-wasm*.wasm',
             ],
-            maximumFileSizeToCacheInBytes: 2 * 1024 * 1024,
             runtimeCaching: [
               {
                 urlPattern: ({ url }) => url.pathname.startsWith('/ocr/'),

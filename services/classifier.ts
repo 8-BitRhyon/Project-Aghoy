@@ -28,20 +28,28 @@ export const MODEL_ID = `${MODEL_DIR}`;
 // transformers.js appends the dtype suffix to the model file name: q8 => "_quantized",
 // so base "model" resolves to onnx/model_quantized.onnx (our committed int8 file).
 export const MODEL_FILE_NAME = "model";
+// Three-zone decision policy (non-overlapping, from the training protocol):
+//   p >= THRESHOLD (0.22, tuned on validation) => model wants to flag
+//   p <= FLOOR    (0.15)                        => model is confident LEGIT
+//   FLOOR < p < THRESHOLD                       => uncertain, model abstains
+// FLOOR is BELOW THRESHOLD so "flag" and "escalate" are the same zone - a
+// flagged score always escalates, and a confident-legit score never does.
 export const MODEL_THRESHOLD = 0.22; // tuned on validation fold (tinybert-v1)
-export const MODEL_ESCALATION_FLOOR = 0.3;
+export const MODEL_CONFIDENT_LEGIT_FLOOR = 0.15;
 
 export interface ClassifierVerdict {
   scamProb: number;
   flag: boolean; // scamProb >= MODEL_THRESHOLD
-  confidentLegit: boolean; // scamProb < MODEL_ESCALATION_FLOOR
+  confidentLegit: boolean; // scamProb <= MODEL_CONFIDENT_LEGIT_FLOOR
   loaded: boolean;
 }
 
 let classifierPromise: Promise<any> | null = null;
 
-// Lazy singleton: load once, reuse for the session. Never throws to callers -
-// returns null so callers fall through to the deterministic path.
+// Lazy singleton: load once, reuse for the session. On FAILURE the singleton
+// is reset so a later scan retries (a transient load error must not poison
+// the rest of the session). Never throws to callers - returns null so callers
+// fall through to the deterministic path.
 export const getClassifier = (): Promise<any | null> => {
   if (!classifierPromise) {
     classifierPromise = (async () => {
@@ -56,6 +64,7 @@ export const getClassifier = (): Promise<any | null> => {
         return cls;
       } catch (err) {
         console.error("[classifier] load failed:", err);
+        classifierPromise = null; // allow a retry on the next scan
         return null;
       }
     })();
@@ -69,22 +78,25 @@ export const clearClassifier = (): void => {
 
 // Pure fusion logic (testable without a model): given a classifier probability
 // and the current verdict, decide the final verdict. Rules-first; the model can
-// only escalate, never downgrade, and never overrides a confident LEGIT.
+// only escalate, never downgrade. Three zones (floor <= threshold, disjoint):
+//   p >= threshold  => model flags -> escalate SAFE/SUSPICIOUS to SUSPICIOUS
+//   p <= floor      => confident LEGIT -> never escalate
+//   floor < p < threshold => uncertain -> abstain, return current verdict
 export const fuseModelWithVerdict = (
   currentVerdict: Verdict,
   scamProb: number,
   opts: { threshold?: number; floor?: number } = {}
 ): Verdict => {
   const threshold = opts.threshold ?? MODEL_THRESHOLD;
-  const floor = opts.floor ?? MODEL_ESCALATION_FLOOR;
+  const floor = opts.floor ?? MODEL_CONFIDENT_LEGIT_FLOOR;
   // Never downgrade: HIGH_RISK stays.
   if (currentVerdict === Verdict.HIGH_RISK) return Verdict.HIGH_RISK;
   // A confident legit call is never escalated by the model.
-  if (scamProb < floor) return currentVerdict;
-  // Model flag with a non-HIGH_RISK current verdict: escalate to SUSPICIOUS
-  // (the model alone never forces HIGH_RISK - the deterministic engine or the
-  // server does that; this keeps the false-positive budget in check).
+  if (scamProb <= floor) return currentVerdict;
+  // Model flag: escalate to SUSPICIOUS (never HIGH_RISK - the deterministic
+  // engine or the server does that; this keeps the false-positive budget).
   if (scamProb >= threshold) return Verdict.SUSPICIOUS;
+  // Uncertain mid-band: abstain.
   return currentVerdict;
 };
 
@@ -101,7 +113,7 @@ export const classifyText = async (text: string): Promise<ClassifierVerdict | nu
     return {
       scamProb,
       flag: scamProb >= MODEL_THRESHOLD,
-      confidentLegit: scamProb < MODEL_ESCALATION_FLOOR,
+      confidentLegit: scamProb <= MODEL_CONFIDENT_LEGIT_FLOOR,
       loaded: true,
     };
   } catch (err) {
