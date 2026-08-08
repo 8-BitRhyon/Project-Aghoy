@@ -25,14 +25,17 @@ import { Verdict } from "../types";
 env.allowLocalModels = true;
 env.useBrowserCache = true;
 // The ONNX wasm backend object always exists in transformers.js v4 (verified:
-// env.backends.onnx.wasm). Assign unconditionally so a future reorder of
-// backend initialization can never silently skip the CSP-critical path. If the
-// structure ever changes shape, log it (the classifier still degrades to the
-// deterministic path via classifyText's catch) instead of silently hitting the
-// CDN and being blocked by CSP at inference time.
-const onnxWasm = env.backends?.onnx?.wasm as { wasmPaths?: string; proxy?: boolean } | undefined;
+// env.backends.onnx.wasm). wasmPaths must be an OBJECT with both URLs:
+// transformers.js's wasm pre-loader checks `typeof wasmPaths === "object" &&
+// wasmPaths?.wasm && wasmPaths?.mjs`; a bare directory string is treated as
+// falsy-for-cache, the pre-load is skipped, and onnxruntime-web falls back to
+// its CDN default (which CSP then blocks). Self-host both files under /ort-wasm/.
+const onnxWasm = env.backends?.onnx?.wasm as { wasmPaths?: unknown; proxy?: boolean } | undefined;
 if (onnxWasm) {
-  onnxWasm.wasmPaths = "/ort-wasm/";
+  onnxWasm.wasmPaths = {
+    wasm: "/ort-wasm/ort-wasm-simd-threaded.asyncify.wasm",
+    mjs: "/ort-wasm/ort-wasm-simd-threaded.asyncify.mjs",
+  };
 } else {
   console.warn("[classifier] onnx wasm backend missing - wasmPaths not set; inference may be CSP-blocked");
 }
