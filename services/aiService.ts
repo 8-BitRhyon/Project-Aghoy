@@ -3,6 +3,7 @@ import { redactPII } from "../src/rejects/rejects";
 import { detectBrands, detectIntents, fallbackVerdict, BrandMatch } from "../src/brands/brands";
 import { postReport, lookupIndicator, ReportPayload, getConsentToken } from "../src/api/storageClient";
 import { WORKER_ORIGIN } from "../src/config";
+import { classifyText, fuseModelWithVerdict } from "./classifier";
 
 // vite/client types are not in tsconfig.json, so import.meta.env is declared
 // locally.
@@ -578,7 +579,18 @@ export const analyzeContent = async (text: string, language: string, imageBase64
     }
 
     const enriched = enrichResult(result, contentToAnalyze);
-    // Hash phones from both the user note and OCR text so the blacklist works for screenshot scans.
+    // On-device classifier as a SECOND OPINION (verifier). Runs after Rejects
+    // redaction on the same content; lazy-loads the 14.6MB ONNX once. It can
+    // only escalate a non-HIGH_RISK result to SUSPICIOUS when the model flags
+    // at high confidence - it never forces HIGH_RISK and never downgrades. Any
+    // model failure (offline, unsupported device, OOM) degrades to the current
+    // result: the deterministic + server verdict is authoritative without it.
+    const modelVerdict = await classifyText(contentToAnalyze);
+    if (modelVerdict && modelVerdict.flag && enriched.verdict !== "HIGH_RISK") {
+      enriched.verdict = fuseModelWithVerdict(enriched.verdict, modelVerdict.scamProb);
+      enriched.riskScore = Math.max(enriched.riskScore, 6);
+      enriched.redFlags = [...(enriched.redFlags || []), "ON_DEVICE_MODEL"];
+    }
     const ocrText = imageBase64 ? contentToAnalyze.match(/\[IMAGE CONTENT \(OCR\)\]:\s*([\s\S]*?)\s*$/) : null;
     const phoneHashes = await phoneHashesFromText(`${text} ${ocrText ? ocrText[1] : ""}`);
     const reportPayload: ReportPayload = {

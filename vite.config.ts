@@ -21,10 +21,18 @@ export default defineConfig(({ mode }) => {
           registerType: 'autoUpdate',
           includeAssets: ['ProjectAghoyLogo.png'],
           workbox: {
-            // OCR assets (worker, wasm cores, ~15MB traineddata) are only needed
-            // when a screenshot is scanned. Exclude from precache and serve via
-            // runtime caching instead so the service worker stays lean.
-            globIgnores: ['ocr/**', '**/ocr/*.wasm*'],
+            // OCR + on-device model assets (worker, wasm cores, ONNX, traineddata,
+            // and the transformers.js ONNX Runtime wasm) are only needed when a
+            // scan actually runs. Exclude from precache and serve via runtime
+            // caching instead so the service worker stays lean.
+            globIgnores: [
+              'ocr/**',
+              '**/ocr/*.wasm*',
+              'models/**',
+              '**/models/*.onnx',
+              '**/ort-wasm*.wasm',
+            ],
+            maximumFileSizeToCacheInBytes: 2 * 1024 * 1024,
             runtimeCaching: [
               {
                 urlPattern: ({ url }) => url.pathname.startsWith('/ocr/'),
@@ -32,6 +40,24 @@ export default defineConfig(({ mode }) => {
                 options: {
                   cacheName: 'aghoy-ocr',
                   expiration: { maxEntries: 12, maxAgeSeconds: 60 * 60 * 24 * 30 },
+                },
+              },
+              {
+                urlPattern: ({ url }) => url.pathname.startsWith('/models/'),
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'aghoy-models',
+                  expiration: { maxEntries: 8, maxAgeSeconds: 60 * 60 * 24 * 30 },
+                },
+              },
+              {
+                // transformers.js fetches the ONNX Runtime wasm from the bundled
+                // assets/ dir at first inference. CacheFirst so it loads once.
+                urlPattern: ({ url }) => /\/assets\/ort-wasm.*\.wasm/.test(url.pathname),
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'aghoy-ort-wasm',
+                  expiration: { maxEntries: 4, maxAgeSeconds: 60 * 60 * 24 * 30 },
                 },
               },
             ],
