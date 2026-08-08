@@ -24,8 +24,17 @@ import { Verdict } from "../types";
 // fetch it from cdn.jsdelivr.net, which the CSP connect-src blocks.
 env.allowLocalModels = true;
 env.useBrowserCache = true;
-if (env.backends?.onnx?.wasm) {
-  env.backends.onnx.wasm.wasmPaths = "/ort-wasm/";
+// The ONNX wasm backend object always exists in transformers.js v4 (verified:
+// env.backends.onnx.wasm). Assign unconditionally so a future reorder of
+// backend initialization can never silently skip the CSP-critical path. If the
+// structure ever changes shape, log it (the classifier still degrades to the
+// deterministic path via classifyText's catch) instead of silently hitting the
+// CDN and being blocked by CSP at inference time.
+const onnxWasm = env.backends?.onnx?.wasm as { wasmPaths?: string; proxy?: boolean } | undefined;
+if (onnxWasm) {
+  onnxWasm.wasmPaths = "/ort-wasm/";
+} else {
+  console.warn("[classifier] onnx wasm backend missing - wasmPaths not set; inference may be CSP-blocked");
 }
 export const ORT_WASM_DIR = "/ort-wasm";
 
