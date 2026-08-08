@@ -1,0 +1,15 @@
+# scripts/requirements-train.txt - pinned deps for the Aghoy ML training venv.
+# Install: python3.12 -m venv .venv-train && .venv-train/bin/pip install -r scripts/requirements-train.txt
+#
+# Torch is installed separately from the CPU index on this machine:
+#   .venv-train/bin/pip install torch --index-url https://download.pytorch.org/whl/cpu
+# (Apple silicon also works without an index; MPS is disabled by the trainer
+# for determinism - training runs on CPU, which is fast enough for tiny models.)
+
+torch>=2.6
+transformers>=4.46
+accelerate>=1.1.0
+scikit-learn>=1.5
+onnxruntime>=1.19
+optimum>=1.22
+onnx>=1.16
