@@ -36,6 +36,8 @@ export default defineConfig(({ mode }) => {
               '**/ocr/*.wasm*',
               'models/**',
               '**/models/*.onnx',
+              'ort-wasm/**',
+              '**/ort-wasm/*.wasm',
               '**/ort-wasm*.wasm',
             ],
             runtimeCaching: [
@@ -56,13 +58,13 @@ export default defineConfig(({ mode }) => {
                 },
               },
               {
-                // transformers.js fetches the ONNX Runtime wasm from the bundled
-                // assets/ dir at first inference. CacheFirst so it loads once.
-                urlPattern: ({ url }) => /\/assets\/ort-wasm.*\.wasm/.test(url.pathname),
+                // Self-hosted ONNX Runtime wasm + factory (fetch at first
+                // inference). CacheFirst so it loads once, offline-ready.
+                urlPattern: ({ url }) => url.pathname.startsWith('/ort-wasm/'),
                 handler: 'CacheFirst',
                 options: {
                   cacheName: 'aghoy-ort-wasm',
-                  expiration: { maxEntries: 4, maxAgeSeconds: 60 * 60 * 24 * 30 },
+                  expiration: { maxEntries: 8, maxAgeSeconds: 60 * 60 * 24 * 30 },
                 },
               },
             ],
