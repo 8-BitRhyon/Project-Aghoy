@@ -56,3 +56,12 @@ backups/
 # Raw downloaded dataset files (pre-Rejects, may contain PII) - regenerate via
 # `npx tsx scripts/import-datasets.ts`. Only the sanitized corpus is committed.
 data/training/.cache/
+
+# ML training environment + model artifacts. The trained ONNX model is
+# committed under public/models/ for the PWA; the models/ working dir holds
+# checkpoints, the fp32 ONNX export, fusion probes, and metrics - all
+# reproducible via scripts/train_classifier.py + scripts/export_onnx.py.
+.venv-train/
+/models/
+__pycache__/
+*.pyc
