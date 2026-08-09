@@ -67,9 +67,21 @@ describe("license gate", () => {
     expect(() => assertLicenseAllowed("apache-2.0", "test")).not.toThrow();
   });
 
-  it("every registered source passes the gate", () => {
+  it("blocks non-commercial licenses unless explicitly opted-in with an audit note", () => {
+    expect(() => assertLicenseAllowed("cc-by-nc-sa-4.0", "test")).toThrow(/LICENSE GATE/);
+    // A bare boolean flag without an approval note is rejected.
+    expect(() => assertLicenseAllowed("cc-by-nc-sa-4.0", "test", { nonCommercial: true })).toThrow(/approval note/);
+    // A documented owner decision passes.
+    expect(() =>
+      assertLicenseAllowed("cc-by-nc-sa-4.0", "test", { nonCommercial: true, licenseNote: "owner decision 2026-08-08" })
+    ).not.toThrow();
+  });
+
+  it("every registered source passes the gate (incl. owner-approved non-commercial)", () => {
     for (const s of TRAINING_SOURCES) {
-      expect(() => assertLicenseAllowed(s.license, s.id)).not.toThrow();
+      expect(() =>
+        assertLicenseAllowed(s.license, s.id, { nonCommercial: s.nonCommercial, licenseNote: s.licenseNote })
+      ).not.toThrow();
     }
   });
 });
@@ -93,6 +105,19 @@ describe("resolveColumns + mapRow", () => {
     expect(row.redacted).toBe(true);
     expect(row.text).not.toContain("09171234567");
     expect(row.text).toContain("[REDACTED:MOBILE]");
+  });
+
+  it("labels every row via constantLabel when the CSV has no label column", () => {
+    const src = getSource("kaggle-ph-spam");
+    // Header has no label column (text, masked/hashed numbers, date, carrier).
+    const cols = resolveColumns(["masked_celphone_number", "hashed_cellphone_number", "date", "text", "carrier"], src.columns);
+    const row = mapRow(
+      ["+63969****493", "uuid", "2026-07-01", "Login at may 2 FREE Spin! 789bingo.com", "<unknown>"],
+      0,
+      { source: src.id, license: src.license, channel: src.channel, labelMap: src.labelMap, columns: cols, constantLabel: src.constantLabel }
+    );
+    expect(row.label).toBe("SCAM");
+    expect(row.channel).toBe("sms");
   });
 
   it("maps the scamshield source column to a channel", () => {
