@@ -108,6 +108,9 @@ export const TRAINING_SOURCES: DatasetSource[] = [
     files: [
       {
         path: "ph-spam.zip",
+        // Kaggle's download endpoint is public for this dataset but MAY
+        // require an active session for some datasets. If a rerun fails with a
+        // 401/403, provide a Kaggle API key: KAGGLE_USERNAME + KAGGLE_KEY.
         url: "https://www.kaggle.com/api/v1/datasets/download/bwandowando/philippine-spam-sms-messages",
         archiveEntry: "SPAM_SMS.csv",
       },

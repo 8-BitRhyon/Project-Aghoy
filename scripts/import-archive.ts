@@ -27,7 +27,12 @@ export const extractArchiveEntry = (zipPath: string, entryName: string): string 
     const extraLen = buf.readUInt16LE(offset + 28);
     const name = buf.subarray(offset + 30, offset + 30 + nameLen).toString("utf8");
     const dataStart = offset + 30 + nameLen + extraLen;
-    if (name === entryName) {
+    // Path-aware match: an archiveEntry may be specified as the bare file name
+    // ("SPAM_SMS.csv") even when the ZIP stores it under a subdirectory
+    // ("data/SPAM_SMS.csv" or "folder/SPAM_SMS.csv").
+    const matchesEntry = (): boolean =>
+      name === entryName || name.endsWith(`/${entryName}`) || name.split("/").pop() === entryName;
+    if (matchesEntry()) {
       const data = buf.subarray(dataStart, dataStart + compSize);
       const raw = method === 0 ? data : method === 8 ? inflateRawSync(data) : null;
       if (raw === null) {

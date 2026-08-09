@@ -135,7 +135,7 @@ public datasets (license-gated)         Project Aghoy's own corpus
 | Object storage | R2 (evidence; binding commented out until account enablement) |
 | OCR | Tesseract.js, self-hosted under `public/ocr/` |
 | Language | TypeScript (strict) for app and Worker |
-| Tests | Vitest, 287 tests across 9 suites |
+| Tests | Vitest, 287 tests across 20 files |
 | CI | GitHub Actions (SHA-pinned actions, gitleaks full-history secret scan, npm audit) |
 | ML training | Python 3.12 + PyTorch (CPU), pinned in `scripts/requirements-train.txt` |
 
@@ -229,21 +229,30 @@ migrations/                    D1 schema
 
 ## Testing
 
-- `npm test` runs the full Vitest suite: **287 tests across 9 suites**.
+- `npm test` runs the full Vitest suite: **287 tests across 20 files**.
 - `npm run check` is the local gate: typecheck + test + build. CI runs the same plus a SHA-pinned-actions audit, a gitleaks full-history secret scan, and `npm audit`.
 - The pre-commit hook (`bash scripts/install-hooks.sh`) runs the gate before every commit.
 
 | Suite | Tests | Covers |
 | --- | --- | --- |
-| `src/rejects/rejects.test.ts` | 44 | PII redaction rules, idempotency |
-| `src/brands/brands.test.ts` | 31 | brand detection, intents, fallback verdict |
-| `src/support/supportDatabase.test.ts` | 6 | support data integrity |
+| `src/rejects/rejects.test.ts` | 45 | PII redaction rules, idempotency |
+| `src/brands/brands.test.ts` | 33 | brand detection, intents, fallback verdict |
+| `src/dojo/*` (engine, generator, progress) | 69 | Dojo game engine, scenario generator, progress ledger |
+| `src/worker/reputation.test.ts` | 16 | reporter trust, recovery |
+| `src/worker/qualityGate.test.ts` | 12 | report quality gate |
+| `src/worker/urlInspect.test.ts` | 12 | URL inspection |
 | `src/worker/indicators.test.ts` | 10 | indicator extraction |
 | `src/training/pipeline.test.ts` | 19 | license gate, CSV parse, dedupe, balancing |
-| `src/training/split.test.ts` | 27 | anti-overfitting splits, leakage guard |
+| `src/training/split.test.ts` | 10 | anti-overfitting splits, leakage guard |
 | `services/classifier.test.ts` | 6 | on-device verifier fusion policy |
+| `services/aiService.test.ts` | 4 | analysis orchestration |
+| `src/support/supportDatabase.test.ts` | 6 | support data integrity |
+| `src/consent.test.ts` | 6 | consent gate |
 | `utils/privacy.test.ts` | 15 | client-side sanitization |
 | `utils/flagDefinitions.test.ts` | 9 | flag taxonomy |
+| `components/RecoveryLadder.test.tsx` | 7 | recovery ladder UI |
+| `src/hooks/useModal.test.tsx` | 5 | modal hook |
+| `src/brands/adversarial-corpus.test.ts` | 3 | adversarial brand corpus |
 
 ## Status and roadmap
 
