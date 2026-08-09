@@ -1,7 +1,7 @@
 # Risk Register
 
-**Project Aghoy** - last reviewed 2026-08-06
-**Owner:** single operator (acts as risk owner)
+**Project Aghoy** - last reviewed 2026-08-09
+**Owner:** Rhyon Caleb Foz-Santos (single operator, acts as risk owner; Internal Tools Engineer - Cybersecurity/GRC, Backend Systems, AI Governance)
 **Maps to:** ISO 27001 Clause 6.1 (planning / risk assessment), ISO 42001 6.1 (AI risk assessment)
 
 Method: likelihood x impact = score (1-3 each, 1-9 total). Score >= 6 = treat; < 6 = accept with rationale. Review at least annually and on major change.
