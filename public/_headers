@@ -5,11 +5,25 @@
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Embedder-Policy: require-corp
   Cross-Origin-Resource-Policy: same-origin
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://gateway.ai.cloudflare.com https://project-aghoy-dojo.rhyonfs.workers.dev; worker-src 'self' blob:; frame-ancestors 'none'
+  # script-src keeps unsafe-eval ONLY because onnxruntime-web's WASM runtime
+  # compiles kernels via new Function() at inference time (the on-device
+  # classifier). unsafe-inline was removed: no inline handlers/scripts remain.
+  # connect-src is locked to the AI Gateway + the Dojo worker - nothing else.
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://gateway.ai.cloudflare.com https://project-aghoy-dojo.rhyonfs.workers.dev; worker-src 'self' blob:; frame-ancestors 'none'; upgrade-insecure-requests; base-uri 'self'; form-action 'self'
+
+# API responses: never cache user analysis (privacy + no stale verdicts).
+/api/*
+  Cache-Control: no-store
+  X-Content-Type-Options: nosniff
+
+# Model/OCR assets: long cache, immutable-ish (hashed on deploy).
+/models/*
+/ocr/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
 
 # COEP note: require-corp unlocks SharedArrayBuffer so onnxruntime-web uses
 # its threaded wasm build (fast) instead of single-threaded Asyncify (slow) on
