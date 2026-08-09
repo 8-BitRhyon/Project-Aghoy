@@ -20,17 +20,18 @@ export default defineConfig(({ mode }) => {
         VitePWA({
           registerType: 'autoUpdate',
           includeAssets: ['ProjectAghoyLogo.png'],
-          workbox: {
-            // OCR + on-device model assets (worker, wasm cores, ONNX, traineddata,
-            // and the transformers.js ONNX Runtime wasm) are only needed when a
-            // scan actually runs. Exclude from precache and serve via runtime
-            // caching instead so the service worker stays lean.
-            //
-            // Note: maximumFileSizeToCacheInBytes is deliberately NOT set. The
-            // workbox default (2 MiB) applies to PRECACHE only; the CacheFirst
-            // runtime rules below cache the 14.6MB ONNX and 23.6MB ort-wasm
-            // without that limit. Setting a cap here would silently block the
-            // model from the runtime cache.
+          // Custom service worker (src/sw.ts): implements the Web Share Target
+          // (/share POST handler + /share-file) in addition to OCR/model
+          // runtime caching. injectManifest is required because a static page
+          // cannot read its own POST body - the SW must.
+          strategies: 'injectManifest',
+          srcDir: 'src',
+          filename: 'sw.ts',
+          injectManifest: {
+            // Large on-demand assets stay OUT of the precache (the SW runtime-
+            // caches them CacheFirst): the 14.6MB ONNX, 23.6MB ort-wasm, and
+            // 46MB OCR traineddata. maximumFileSizeToCacheInBytes is left at
+            // the workbox default so precache stays lean.
             globIgnores: [
               'ocr/**',
               '**/ocr/*.wasm*',
@@ -39,34 +40,6 @@ export default defineConfig(({ mode }) => {
               'ort-wasm/**',
               '**/ort-wasm/*.wasm',
               '**/ort-wasm*.wasm',
-            ],
-            runtimeCaching: [
-              {
-                urlPattern: ({ url }) => url.pathname.startsWith('/ocr/'),
-                handler: 'CacheFirst',
-                options: {
-                  cacheName: 'aghoy-ocr',
-                  expiration: { maxEntries: 12, maxAgeSeconds: 60 * 60 * 24 * 30 },
-                },
-              },
-              {
-                urlPattern: ({ url }) => url.pathname.startsWith('/models/'),
-                handler: 'CacheFirst',
-                options: {
-                  cacheName: 'aghoy-models',
-                  expiration: { maxEntries: 8, maxAgeSeconds: 60 * 60 * 24 * 30 },
-                },
-              },
-              {
-                // Self-hosted ONNX Runtime wasm + factory (fetch at first
-                // inference). CacheFirst so it loads once, offline-ready.
-                urlPattern: ({ url }) => url.pathname.startsWith('/ort-wasm/'),
-                handler: 'CacheFirst',
-                options: {
-                  cacheName: 'aghoy-ort-wasm',
-                  expiration: { maxEntries: 8, maxAgeSeconds: 60 * 60 * 24 * 30 },
-                },
-              },
             ],
           },
           manifest: {
@@ -94,7 +67,27 @@ export default defineConfig(({ mode }) => {
                 type: 'image/png',
                 purpose: 'any maskable'
               }
-            ]
+            ],
+            // Web Share Target: makes Aghoy appear in the system share sheet so
+            // users can highlight a suspicious SMS/chat/image and "Share > Aghoy"
+            // to scan it - no copy-paste, no tab juggling. text arrives as form
+            // data; images arrive as files routed to the OCR scanner.
+            share_target: {
+              action: '/share',
+              method: 'POST',
+              enctype: 'multipart/form-data',
+              params: {
+                title: 'title',
+                text: 'text',
+                url: 'url',
+                files: [
+                  {
+                    name: 'file',
+                    accept: ['image/*']
+                  }
+                ]
+              }
+            }
           }
         })
       ],
