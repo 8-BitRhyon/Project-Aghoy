@@ -8,7 +8,7 @@ No accounts. No login. No data sold. A server-authoritative PII filter (the **Re
 
 [![Live app](https://img.shields.io/badge/live-project--aghoy.pages.dev-cyan)](https://project-aghoy.pages.dev)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-287-green.svg)](#testing)
+[![Tests](https://img.shields.io/badge/tests-408-green.svg)](#testing)
 [![Privacy by design](https://img.shields.io/badge/privacy-Rejects%20layer-blue.svg)](SECURITY.md)
 
 ---
@@ -44,13 +44,24 @@ Tesseract.js runs entirely from `public/ocr/` (worker, wasm cores, pinned Englis
 A role-play chat where an AI simulates a scammer. Spot the red flags and end the game by reporting it. Authorized cybersecurity training, not a real scam assistant.
 
 ### Community blacklist
-Every scam someone reports is sanitized and feeds a shared database, so the next person who receives that exact fake GCash alert can be shown "this domain has been reported N times." Phone numbers are only ever stored as SHA-256 hashes. Reports are stored today; surfacing the lookup in the scanner result view is in progress (see [roadmap](#status-and-roadmap)).
+Every scam someone reports is sanitized and feeds a shared database, so the next person who receives that exact fake GCash alert can be shown "this domain has been reported N times." Phone numbers are only ever stored as SHA-256 hashes. Reported numbers/domains **escalate the verdict** (`REPORTED_PHONE` / `REPORTED_DOMAIN`), the reverse of the sender allowlist.
+
+### Identity layers (who sent it, not just what it says)
+Because scammers and real banks send the *same words*, detection leans on identity:
+- **Trusted-sender allowlist:** official PH shortcodes and sender IDs (GCash 2882/28966/8080, Maya 2343, BDO 2255, Smart, Globe, TNT, LBC...) are identity-verified and `VERIFIED_SENDER`-flagged. Measured: ~39% of real PH messages come from identifiable official senders.
+- **Layered fusion:** model, engine, URL, sender, and blacklist each contribute weighted evidence - no single layer is absolute. The verdict emerges from the sum.
+
+### Offline report queue
+Every report is persisted to IndexedDB *before* any network attempt, then flushed with exponential backoff - a scam detected offline is never lost. Reports auto-flush on reconnect/foreground. One-tap evidence packages route to PNP-ACG, CICC 1326, the eGov app, and telco Stop Spam (Globe 7726 / Smart 2920).
+
+### Share-to-scan
+Highlight any suspicious message or image and tap **Share > Aghoy** from the system share sheet - it opens in the scanner, no copy-paste needed.
 
 ### Everything else
 - **SmartSupport:** verified official channels for 36 banks, wallets, telcos, couriers, and government agencies, including PNP-ACG reporting guidance.
 - **4 languages:** Tagalog, Bisaya, Ilocano, English.
 - **Offline fallback verdict:** when the AI provider is unavailable, a deterministic rule engine still produces a verdict.
-- **PWA:** installable, offline-ready assets (OCR and model cached separately).
+- **PWA:** installable, offline-ready assets (OCR, model, and ONNX Runtime wasm cached separately); COEP-enabled for threaded WASM on budget phones.
 
 ## Machine learning
 
@@ -60,7 +71,7 @@ Project Aghoy trains and ships its own lightweight scam classifier - entirely fr
 public datasets (license-gated)         Project Aghoy's own corpus
       |                                          |
       v                                          v
- scripts/import-datasets.ts -> data/training/corpus.jsonl (15k+ rows)
+ scripts/import-datasets.ts -> data/training/corpus.jsonl (17k+ rows)
       |
       v
  scripts/train_classifier.py  ->  TinyBERT fine-tune (anti-overfitting
@@ -135,7 +146,7 @@ public datasets (license-gated)         Project Aghoy's own corpus
 | Object storage | R2 (evidence; binding commented out until account enablement) |
 | OCR | Tesseract.js, self-hosted under `public/ocr/` |
 | Language | TypeScript (strict) for app and Worker |
-| Tests | Vitest, 287 tests across 20 files |
+| Tests | Vitest, 408 tests across 24 files |
 | CI | GitHub Actions (SHA-pinned actions, gitleaks full-history secret scan, npm audit) |
 | ML training | Python 3.12 + PyTorch (CPU), pinned in `scripts/requirements-train.txt` |
 
@@ -229,7 +240,7 @@ migrations/                    D1 schema
 
 ## Testing
 
-- `npm test` runs the full Vitest suite: **287 tests across 20 files**.
+- `npm test` runs the full Vitest suite: **408 tests across 24 files**.
 - `npm run check` is the local gate: typecheck + test + build. CI runs the same plus a SHA-pinned-actions audit, a gitleaks full-history secret scan, and `npm audit`.
 - The pre-commit hook (`bash scripts/install-hooks.sh`) runs the gate before every commit.
 
@@ -256,23 +267,34 @@ migrations/                    D1 schema
 
 ## Status and roadmap
 
-Live today:
+The full, evidence-backed plan is in [docs/ROADMAP.md](docs/ROADMAP.md). In short:
+
+**Live today:**
 
 - Scanner (text + screenshot OCR) with AI verdicts through Cloudflare AI Gateway.
-- **On-device TinyBERT classifier** (offline, 14.6 MB, verifier-gated).
+- **On-device TinyBERT classifier** (offline, 14.6 MB int8 ONNX, verifier-gated).
 - Rejects layer enforced server-side on both endpoints and before every storage write.
 - Deterministic brand detection (43 brands) and the no-provider fallback verdict.
 - Dojo training game with per-token sessions and a hard per-session AI turn cap.
 - Storage layer: D1 reports and indicators, Vectorize similar-scam search, phone-hash "reported N times" blacklist.
-- License-gated ML training pipeline with a committed, sanitized 15k+ row corpus.
+- License-gated ML training pipeline with a committed, sanitized 17k+ row corpus (17,046 rows, 0 PII leaks) + frozen 2,618-row PH holdout (AUC 0.98, scam recall 97.9%).
 - Self-hosted OCR, PWA installability, 4 languages, SmartSupport routing, family warning share card, PNP-ACG report copy.
 
-Pending:
+**In progress (built, landing in PRs):**
 
-- R2 evidence store: blocked on account-level R2 enablement (Cloudflare error code 10042), then uncomment the binding and redeploy.
-- Cloudflare WAF rate limiting for `/api/analyze`: the current Pages limiter is per-isolate in-memory and not globally accurate (see SECURITY.md).
-- UI surfacing of indicator/blacklist lookups: `storageClient.lookupIndicator` is client-ready; wiring it into the scanner result view is in progress.
-- Taglish-specific training data: the first PH dataset is in (22/22 on the reality check); the roadmap is to expand the PH corpus further (community reports + licensed datasets) to harden coverage as scam tactics evolve.
+- On-device URL grader (official-domain allowlist + link signals).
+- Trusted-sender allowlist (GCash/BDO/Maya/telco IDs + shortcodes).
+- Community-blacklist escalation (reported phone/domain -> SUSPICIOUS).
+- Share-to-scan flow (highlight -> Share > Aghoy -> scan) via custom service worker.
+- ML regression gate (train + holdout eval in CI, fails on regression).
+
+**Pending (see roadmap for order + exit criteria):**
+
+- R2 evidence store: blocked on account-level R2 enablement (Cloudflare error code 10042).
+- Cloudflare WAF rate limiting for `/api/analyze` (current Pages limiter is per-isolate, see SECURITY.md).
+- Offline report queue, COEP threaded-WASM fix, CICC 1326 / eGov / telco report routing.
+- Default-SMS-handler app (QKSMS fork) for automatic on-device filtering - the path to "the user is not the last line of defense".
+
 
 ## Contributing
 
