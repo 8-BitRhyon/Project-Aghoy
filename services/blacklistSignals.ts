@@ -1,13 +1,4 @@
-// services/blacklistSignals.ts - the community-blacklist escalation layer.
-//
-// The reverse of the sender allowlist. Where a VERIFIED official sender means
-// "trust the message regardless of body", a phone number or domain that the
-// community has already reported as a scam means "this message has a
-// reputation trail" - and the verdict should reflect it.
-//
-// Pure + testable: given the extracted indicators and their community
-// reputation status, compute the escalated verdict and red flags. The caller
-// (aiService) does the async storage lookups; this module is deterministic.
+// Community-blacklist escalation: a reported phone/domain adds risk. Pure + testable; caller does the async lookups.
 
 import { Verdict } from "../types";
 import type { Indicator } from "../src/worker/indicators";
@@ -27,10 +18,7 @@ export interface BlacklistEscalation {
 export const REPORTED_PHONE_FLAG = "REPORTED_PHONE";
 export const REPORTED_DOMAIN_FLAG = "REPORTED_DOMAIN";
 
-// A phone reported >= 2 times (matching the existing >= 2 threshold) or a
-// domain reported >= 1 time raises the message to SUSPICIOUS. The blacklist
-// never forces HIGH_RISK (a reported indicator is strong but not conclusive -
-// operators can retract via /indicators/clear) and never downgrades.
+// Phone >=2 or domain >=1 reported raises to SUSPICIOUS; never forces HIGH_RISK, never downgrades.
 export const escalateFromReputation = (
   currentVerdict: Verdict,
   reputations: CommunityReputation[],

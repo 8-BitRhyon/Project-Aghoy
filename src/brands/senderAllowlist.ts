@@ -1,16 +1,4 @@
-// src/brands/senderAllowlist.ts - deterministic trusted-sender layer for
-// Project Aghoy. Closes the identity gap the text model cannot: legitimate
-// bank/wallet/delivery notifications are TEXTUALLY IDENTICAL to scams, so no
-// text classifier can separate them. The differentiator is WHO sent it.
-//
-// A verified official sender (alphanumeric sender ID or registered shortcode)
-// is strong evidence of legitimacy. Per the ScamShield pattern ("only scan
-// unknown numbers"), a known sender overrides a text-flag: the message is
-// trusted, and the body is never escalated. This is the highest-leverage
-// false-positive reduction available - it neutralizes the ~79 bank-wallet FPs
-// the model produces on legit notifications.
-//
-// Pure, deterministic, testable. No network, no state.
+// Trusted-sender allowlist: official PH sender IDs/shortcodes are identity-verified. Pure, deterministic, testable.
 
 export interface SenderCheck {
   trusted: boolean;
@@ -19,12 +7,7 @@ export interface SenderCheck {
   isShortcode: boolean; // numeric shortcode vs alphanumeric sender ID
 }
 
-// Official alphanumeric sender IDs used by PH institutions in 2026. These are
-// the SMS "sender names" that appear as the FROM field. Sender IDs can be
-// spoofed, but only when a telco fails to register the alphanumeric sender;
-// treat a match as strong-but-not-absolute evidence (see verdict policy in
-// the caller - it can veto a HIGH_RISK but should not force SAFE against a
-// confirmed scam pattern).
+// Official alphanumeric sender IDs (the SMS FROM field). Spoofable only if a telco fails to register them; strong-but-not-absolute evidence.
 const OFFICIAL_SENDER_IDS: Record<string, string> = {
   GCASH: "gcash",
   BDO: "bdo",
@@ -75,9 +58,7 @@ const OFFICIAL_SENDER_IDS: Record<string, string> = {
   NTC: "ntc",
 };
 
-// Numeric shortcodes registered by PH institutions (the FROM field for SMS
-// from a shortcode). Numeric shortcodes are harder to spoof than alphanumeric
-// sender IDs because the telco must route them.
+// Numeric shortcodes (telco-routed, harder to spoof than alphanumeric IDs).
 const OFFICIAL_SHORTCODES: Record<string, string> = {
   "2882": "gcash", // GCash hotline / official
   "28966": "gcash", // GCash official

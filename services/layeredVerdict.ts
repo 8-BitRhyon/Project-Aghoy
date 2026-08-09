@@ -1,15 +1,4 @@
-// services/layeredVerdict.ts - weighted multi-layer verdict fusion.
-//
-// The previous design used hard vetoes: the sender allowlist BLOCKED the model,
-// the blacklist FORCED escalation, the URL grade shifted one threshold. Hard
-// vetoes are brittle - one wrong allowlist entry or one false-positive report
-// can flip a verdict. This refactor treats every signal as EVIDENCE: each layer
-// contributes a signed delta to a 0-100 risk score, and the verdict emerges
-// from the weighted sum. Layers can still be strong (a verified official
-// sender is a large negative delta) but nothing is absolute.
-//
-// Pure + testable. The caller gathers the signals; this module computes the
-// verdict.
+// Weighted multi-layer fusion: each layer adds evidence (no hard vetoes), verdict from the sum. Pure + testable.
 
 import { Verdict } from "../types";
 
@@ -21,12 +10,7 @@ export const LAYER_WEIGHTS = {
   blacklist: 1.2, // community-reported phone/domain
 } as const;
 
-// The on-device model is overconfident in both directions (scams sit at
-// p>=0.99, legit at p<=0.14 on the PH holdout). A raw linear transform of the
-// probability over-flags legit text. The model layer uses a SIGMOID centered on
-// the F1-optimal holdout threshold (0.90): below it the model contributes
-// almost nothing, above it the contribution rises steeply. This makes the
-// model a *sharp* evidence source instead of a noisy one.
+// Model layer uses a sigmoid centered on the F1-optimal holdout threshold (0.90): overconfident below, sharp above.
 export const MODEL_SIGMOID_CENTER = 0.9;
 export const MODEL_SIGMOID_STEEPNESS = 18;
 
@@ -54,8 +38,7 @@ export interface LayeredVerdict {
 
 const clamp = (v: number, lo: number, hi: number): number => Math.max(lo, Math.min(hi, v));
 
-// Convert the 0-10 risk score to a verdict. Thresholds are deliberately wide:
-// SAFE <= 3, HIGH_RISK >= 7, otherwise SUSPICIOUS.
+// Score -> verdict: SAFE <= 3, HIGH_RISK >= 7, otherwise SUSPICIOUS.
 export const scoreToVerdict = (score: number): Verdict => {
   if (score <= 3) return Verdict.SAFE;
   if (score >= 7) return Verdict.HIGH_RISK;
@@ -68,15 +51,7 @@ export const fuseLayers = (signals: LayerSignals): LayeredVerdict => {
   // Evidence then moves the score; the verdict emerges from the sum.
   let score = 5.0;
 
-  // Deterministic engine: contributes risk ONLY at HIGH_RISK (>=7). Measured
-  // on the PH holdout (2026-08-09 failure hunt): the engine's SUSPICIOUS band
-  // (3-6) is 94% false-positive on real PH text (6.3% precision, 11.8% FPR) -
-  // its brand-precision bias fires impersonation on ANY brand mention, scoring
-  // legit BDO/Globe/TNT marketing as suspicious. Only the >=7 band carries a
-  // real signal (clear brand-scams like GCash OTP phishing). Below 7 the
-  // engine ABSTAINS (contributes nothing) rather than polluting the score.
-  // When a trusted sender is present, even a HIGH_RISK engine call is
-  // discounted - the real BDO is allowed to talk about OTP.
+  // Engine: risk only at >=7. Its 3-6 band is 94% FP on PH text (measured 2026-08-09); trusted sender discounts even HIGH_RISK.
   if (signals.engineScore != null && signals.engineScore >= 7) {
     const discount = signals.verifiedSender ? 0.4 : 1.0;
     const contrib = (signals.engineScore - 3) * 0.8;
