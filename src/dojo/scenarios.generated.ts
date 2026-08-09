@@ -761,6 +761,48 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
+    "id": "ewallet-easy-018",
+    "title": "ewallet drill 18",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "ewallet",
+    "archetype": "redirect",
+    "category": "ewallet",
+    "setup": "Lola in the province. A text says you must act now. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "ShopeePay",
+        "message": "ShopeePay: Your MPIN will expire today. Update it at g-cash-verify-ph.top to keep using your wallet.",
+        "question": "A text says you must act now. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the real SHOPEEPAY app myself and check my account.",
+            "correct": true,
+            "feedback": "Correct. You checked the real SHOPEEPAY app instead of trusting the text. Your account is the source of truth, not a message."
+          },
+          {
+            "id": "b",
+            "text": "Pay the release fee so I can receive the transfer.",
+            "correct": false,
+            "feedback": "If you pay to receive money, it is a scam."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text to verify.",
+            "correct": false,
+            "feedback": "If you pay to receive money, it is a scam."
+          }
+        ],
+        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
+      }
+    ],
+    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
     "id": "ewallet-medium-019",
     "title": "ewallet drill 19",
     "icon": "ShieldCheck",
@@ -878,6 +920,48 @@ export const GENERATED_SCENARIOS: Scenario[] = [
             "text": "Call the number in the text to verify.",
             "correct": false,
             "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
+          }
+        ],
+        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
+      }
+    ],
+    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "ewallet-medium-022",
+    "title": "ewallet drill 22",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "ewallet",
+    "archetype": "trap",
+    "category": "ewallet",
+    "setup": "sari-sari store owner. A text says you must act now. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "GoTyme",
+        "message": "GoTyme: Your MPIN will expire today. Update it at jnt-tracking-ph.site to keep using your wallet.",
+        "question": "A text says you must act now. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the real GOTYME app myself and check my account.",
+            "correct": true,
+            "feedback": "Correct. You checked the real GOTYME app instead of trusting the text. Your account is the source of truth, not a message."
+          },
+          {
+            "id": "b",
+            "text": "Call the number in the text to verify.",
+            "correct": false,
+            "feedback": "Real GOTYME never asks for your OTP. That message is the scam."
+          },
+          {
+            "id": "c",
+            "text": "Pay the release fee so I can receive the transfer.",
+            "correct": false,
+            "feedback": "Real GOTYME never asks for your OTP. That message is the scam."
           }
         ],
         "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
@@ -1028,6 +1112,90 @@ export const GENERATED_SCENARIOS: Scenario[] = [
         "senderLabel": "GoTyme",
         "message": "GoTyme Alert: this is your last chance. Verify at gov-ph-tax.site or your account will be suspended.",
         "question": "A message says this is your last chance and asks for your OTP. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the real GOTYME app myself and check my account.",
+            "correct": true,
+            "feedback": "Correct. You checked the real GOTYME app instead of trusting the text. Your account is the source of truth, not a message."
+          },
+          {
+            "id": "b",
+            "text": "Reply with the OTP right away so my money is safe.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
+          },
+          {
+            "id": "c",
+            "text": "Pay the release fee so I can receive the transfer.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
+          }
+        ],
+        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
+      }
+    ],
+    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "ewallet-easy-027",
+    "title": "ewallet drill 27",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "ewallet",
+    "archetype": "redirect",
+    "category": "ewallet",
+    "setup": "sari-sari store owner. A message says your money will be gone in 24 hours and asks for your OTP. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "Maya",
+        "message": "Maya: Double refund error! To correct it, confirm your account at bit.ly/verify-now within 24 hours.",
+        "question": "A message says your money will be gone in 24 hours and asks for your OTP. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the real MAYA app myself and check my account.",
+            "correct": true,
+            "feedback": "Correct. You checked the real MAYA app instead of trusting the text. Your account is the source of truth, not a message."
+          },
+          {
+            "id": "b",
+            "text": "Call the number in the text to verify.",
+            "correct": false,
+            "feedback": "If you pay to receive money, it is a scam."
+          },
+          {
+            "id": "c",
+            "text": "Reply with the OTP right away so my money is safe.",
+            "correct": false,
+            "feedback": "If you pay to receive money, it is a scam."
+          }
+        ],
+        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
+      }
+    ],
+    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "ewallet-medium-028",
+    "title": "ewallet drill 28",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "ewallet",
+    "archetype": "redirect",
+    "category": "ewallet",
+    "setup": "call-center agent. A text says you must act now. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "GoTyme",
+        "message": "GoTyme: Your MPIN will expire today. Update it at g-cash-verify-ph.top to keep using your wallet.",
+        "question": "A text says you must act now. What do you do?",
         "options": [
           {
             "id": "a",
@@ -1349,6 +1517,48 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
+    "id": "ewallet-easy-036",
+    "title": "ewallet drill 36",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "ewallet",
+    "archetype": "redirect",
+    "category": "ewallet",
+    "setup": "sari-sari store owner. A text says you must act now. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "Maya",
+        "message": "Maya: You have an incoming transfer of P150! Pay a small release fee first to receive it.",
+        "question": "A text says you must act now. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the real MAYA app myself and check my account.",
+            "correct": true,
+            "feedback": "Correct. You checked the real MAYA app instead of trusting the text. Your account is the source of truth, not a message."
+          },
+          {
+            "id": "b",
+            "text": "Pay the release fee so I can receive the transfer.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official Maya hotline *788 number only."
+          },
+          {
+            "id": "c",
+            "text": "Reply with the OTP right away so my money is safe.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official Maya hotline *788 number only."
+          }
+        ],
+        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
+      }
+    ],
+    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
     "id": "ewallet-medium-037",
     "title": "ewallet drill 37",
     "icon": "ShieldCheck",
@@ -1391,6 +1601,90 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
+    "id": "ewallet-hard-038",
+    "title": "ewallet drill 38",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "ewallet",
+    "archetype": "redirect",
+    "category": "ewallet",
+    "setup": "senior pensioner. A text says you must act now. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "ShopeePay",
+        "message": "ShopeePay: We detected a suspicious login on your account. Verify now at gcash-update.ph-verify.top or it will be locked.",
+        "question": "A text says you must act now. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the real SHOPEEPAY app myself and check my account.",
+            "correct": true,
+            "feedback": "Correct. You checked the real SHOPEEPAY app instead of trusting the text. Your account is the source of truth, not a message."
+          },
+          {
+            "id": "b",
+            "text": "Call the number in the text to verify.",
+            "correct": false,
+            "feedback": "Real SHOPEEPAY never asks for your OTP. That message is the scam."
+          },
+          {
+            "id": "c",
+            "text": "Pay the release fee so I can receive the transfer.",
+            "correct": false,
+            "feedback": "Real SHOPEEPAY never asks for your OTP. That message is the scam."
+          }
+        ],
+        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
+      }
+    ],
+    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "ewallet-easy-039",
+    "title": "ewallet drill 39",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "ewallet",
+    "archetype": "trap",
+    "category": "ewallet",
+    "setup": "jeepney driver. A message says your benefits will be cancelled and asks for your OTP. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "GoTyme",
+        "message": "GoTyme: Your MPIN will expire today. Update it at gov-ph-tax.site to keep using your wallet.",
+        "question": "A message says your benefits will be cancelled and asks for your OTP. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the real GOTYME app myself and check my account.",
+            "correct": true,
+            "feedback": "Correct. You checked the real GOTYME app instead of trusting the text. Your account is the source of truth, not a message."
+          },
+          {
+            "id": "b",
+            "text": "Pay the release fee so I can receive the transfer.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text to verify.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
+          }
+        ],
+        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
+      }
+    ],
+    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
     "id": "ewallet-medium-040",
     "title": "ewallet drill 40",
     "icon": "ShieldCheck",
@@ -1424,6 +1718,132 @@ export const GENERATED_SCENARIOS: Scenario[] = [
             "text": "Pay the release fee so I can receive the transfer.",
             "correct": false,
             "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
+          }
+        ],
+        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
+      }
+    ],
+    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "ewallet-hard-041",
+    "title": "ewallet drill 41",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "ewallet",
+    "archetype": "trap",
+    "category": "ewallet",
+    "setup": "call-center agent. A text says you must act now. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "GCash",
+        "message": "GCash: We detected a suspicious login on your account. Verify now at pagibig-loan-release.site or it will be locked.",
+        "question": "A text says you must act now. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the real GCASH app myself and check my account.",
+            "correct": true,
+            "feedback": "Correct. You checked the real GCASH app instead of trusting the text. Your account is the source of truth, not a message."
+          },
+          {
+            "id": "b",
+            "text": "Call the number in the text to verify.",
+            "correct": false,
+            "feedback": "Real GCASH never asks for your OTP. That message is the scam."
+          },
+          {
+            "id": "c",
+            "text": "Pay the release fee so I can receive the transfer.",
+            "correct": false,
+            "feedback": "Real GCASH never asks for your OTP. That message is the scam."
+          }
+        ],
+        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
+      }
+    ],
+    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "ewallet-easy-042",
+    "title": "ewallet drill 42",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "ewallet",
+    "archetype": "redirect",
+    "category": "ewallet",
+    "setup": "college student in Manila. A text says you must act now. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "Maya",
+        "message": "Maya: your parcel will be returned Reply with your OTP now to reactivate, or your money will be gone in 24 hours.",
+        "question": "A text says you must act now. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the real MAYA app myself and check my account.",
+            "correct": true,
+            "feedback": "Correct. You checked the real MAYA app instead of trusting the text. Your account is the source of truth, not a message."
+          },
+          {
+            "id": "b",
+            "text": "Pay the release fee so I can receive the transfer.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official Maya hotline *788 number only."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text to verify.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official Maya hotline *788 number only."
+          }
+        ],
+        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
+      }
+    ],
+    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "ewallet-medium-043",
+    "title": "ewallet drill 43",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "ewallet",
+    "archetype": "trap",
+    "category": "ewallet",
+    "setup": "OFW in Riyadh. A message says your money will be gone in 24 hours and asks for your OTP. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "GCash",
+        "message": "GCash: We detected a suspicious login on your account. Verify now at jnt-tracking-ph.site or it will be locked.",
+        "question": "A message says your money will be gone in 24 hours and asks for your OTP. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the real GCASH app myself and check my account.",
+            "correct": true,
+            "feedback": "Correct. You checked the real GCASH app instead of trusting the text. Your account is the source of truth, not a message."
+          },
+          {
+            "id": "b",
+            "text": "Pay the release fee so I can receive the transfer.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official GCash hotline 2882 number only."
+          },
+          {
+            "id": "c",
+            "text": "Reply with the OTP right away so my money is safe.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official GCash hotline 2882 number only."
           }
         ],
         "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
@@ -1550,6 +1970,48 @@ export const GENERATED_SCENARIOS: Scenario[] = [
             "text": "Reply with the OTP right away so my money is safe.",
             "correct": false,
             "feedback": "That number belongs to the scammer. Use the official Maya hotline *788 number only."
+          }
+        ],
+        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
+      }
+    ],
+    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "ewallet-hard-047",
+    "title": "ewallet drill 47",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "ewallet",
+    "archetype": "redirect",
+    "category": "ewallet",
+    "setup": "college student in Manila. A message says your account is locked and asks for your OTP. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "GCash",
+        "message": "GCash: You have an incoming transfer of P500! Pay a small release fee first to receive it.",
+        "question": "A message says your account is locked and asks for your OTP. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the real GCASH app myself and check my account.",
+            "correct": true,
+            "feedback": "Correct. You checked the real GCASH app instead of trusting the text. Your account is the source of truth, not a message."
+          },
+          {
+            "id": "b",
+            "text": "Pay the release fee so I can receive the transfer.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official GCash hotline 2882 number only."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text to verify.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official GCash hotline 2882 number only."
           }
         ],
         "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
@@ -1769,6 +2231,48 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
+    "id": "ewallet-hard-053",
+    "title": "ewallet drill 53",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "ewallet",
+    "archetype": "trap",
+    "category": "ewallet",
+    "setup": "Lola in the province. A message says a case number has been filed against you and asks for your OTP. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "Maya",
+        "message": "Maya: Your MPIN will expire today. Update it at gcash-update.ph-verify.top to keep using your wallet.",
+        "question": "A message says a case number has been filed against you and asks for your OTP. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the real MAYA app myself and check my account.",
+            "correct": true,
+            "feedback": "Correct. You checked the real MAYA app instead of trusting the text. Your account is the source of truth, not a message."
+          },
+          {
+            "id": "b",
+            "text": "Reply with the OTP right away so my money is safe.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official Maya hotline *788 number only."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text to verify.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official Maya hotline *788 number only."
+          }
+        ],
+        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
+      }
+    ],
+    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
     "id": "ewallet-easy-054",
     "title": "ewallet drill 54",
     "icon": "ShieldCheck",
@@ -1844,6 +2348,48 @@ export const GENERATED_SCENARIOS: Scenario[] = [
             "text": "Reply with the OTP right away so my money is safe.",
             "correct": false,
             "feedback": "If you pay to receive money, it is a scam."
+          }
+        ],
+        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
+      }
+    ],
+    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "ewallet-hard-056",
+    "title": "ewallet drill 56",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "ewallet",
+    "archetype": "redirect",
+    "category": "ewallet",
+    "setup": "small online seller. A text says you must act now. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "ShopeePay",
+        "message": "ShopeePay: We detected a suspicious login on your account. Verify now at bit.ly/verify-now or it will be locked.",
+        "question": "A text says you must act now. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the real SHOPEEPAY app myself and check my account.",
+            "correct": true,
+            "feedback": "Correct. You checked the real SHOPEEPAY app instead of trusting the text. Your account is the source of truth, not a message."
+          },
+          {
+            "id": "b",
+            "text": "Call the number in the text to verify.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
+          },
+          {
+            "id": "c",
+            "text": "Reply with the OTP right away so my money is safe.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
           }
         ],
         "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
@@ -1970,6 +2516,90 @@ export const GENERATED_SCENARIOS: Scenario[] = [
             "text": "Pay the release fee so I can receive the transfer.",
             "correct": false,
             "feedback": "If you pay to receive money, it is a scam."
+          }
+        ],
+        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
+      }
+    ],
+    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "ewallet-easy-060",
+    "title": "ewallet drill 60",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "ewallet",
+    "archetype": "trap",
+    "category": "ewallet",
+    "setup": "jeepney driver. A text says you must act now. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "GCash",
+        "message": "GCash: Your MPIN will expire today. Update it at bdo-secure-login-verify.top to keep using your wallet.",
+        "question": "A text says you must act now. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the real GCASH app myself and check my account.",
+            "correct": true,
+            "feedback": "Correct. You checked the real GCASH app instead of trusting the text. Your account is the source of truth, not a message."
+          },
+          {
+            "id": "b",
+            "text": "Call the number in the text to verify.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official GCash hotline 2882 number only."
+          },
+          {
+            "id": "c",
+            "text": "Pay the release fee so I can receive the transfer.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official GCash hotline 2882 number only."
+          }
+        ],
+        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
+      }
+    ],
+    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "ewallet-medium-061",
+    "title": "ewallet drill 61",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "ewallet",
+    "archetype": "redirect",
+    "category": "ewallet",
+    "setup": "college student in Manila. A text says you must act now. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "GoTyme",
+        "message": "GoTyme: your benefits will be cancelled Reply with your OTP now to reactivate, or your money will be gone in 24 hours.",
+        "question": "A text says you must act now. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the real GOTYME app myself and check my account.",
+            "correct": true,
+            "feedback": "Correct. You checked the real GOTYME app instead of trusting the text. Your account is the source of truth, not a message."
+          },
+          {
+            "id": "b",
+            "text": "Pay the release fee so I can receive the transfer.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text to verify.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
           }
         ],
         "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
@@ -2147,6 +2777,90 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
+    "id": "ewallet-easy-066",
+    "title": "ewallet drill 66",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "ewallet",
+    "archetype": "trap",
+    "category": "ewallet",
+    "setup": "senior pensioner. A text says you must act now. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "GoTyme",
+        "message": "GoTyme: We detected a suspicious login on your account. Verify now at maya-security-alert.xyz or it will be locked.",
+        "question": "A text says you must act now. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the real GOTYME app myself and check my account.",
+            "correct": true,
+            "feedback": "Correct. You checked the real GOTYME app instead of trusting the text. Your account is the source of truth, not a message."
+          },
+          {
+            "id": "b",
+            "text": "Call the number in the text to verify.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
+          },
+          {
+            "id": "c",
+            "text": "Pay the release fee so I can receive the transfer.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
+          }
+        ],
+        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
+      }
+    ],
+    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "ewallet-medium-067",
+    "title": "ewallet drill 67",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "ewallet",
+    "archetype": "trap",
+    "category": "ewallet",
+    "setup": "sari-sari store owner. A text says you must act now. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "GoTyme",
+        "message": "GoTyme: We detected a suspicious login on your account. Verify now at gcash-update.ph-verify.top or it will be locked.",
+        "question": "A text says you must act now. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the real GOTYME app myself and check my account.",
+            "correct": true,
+            "feedback": "Correct. You checked the real GOTYME app instead of trusting the text. Your account is the source of truth, not a message."
+          },
+          {
+            "id": "b",
+            "text": "Reply with the OTP right away so my money is safe.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text to verify.",
+            "correct": false,
+            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
+          }
+        ],
+        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
+      }
+    ],
+    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
     "id": "ewallet-hard-068",
     "title": "ewallet drill 68",
     "icon": "ShieldCheck",
@@ -2273,724 +2987,1060 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "ewallet-hard-071",
-    "title": "ewallet drill 71",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "ewallet",
-    "archetype": "trap",
-    "category": "ewallet",
-    "setup": "sari-sari store owner. A text says you must act now. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "GoTyme",
-        "message": "GoTyme Alert: your money will be gone in 24 hours. Verify at g-cash-verify-ph.top or your account will be suspended.",
-        "question": "A text says you must act now. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the real GOTYME app myself and check my account.",
-            "correct": true,
-            "feedback": "Correct. You checked the real GOTYME app instead of trusting the text. Your account is the source of truth, not a message."
-          },
-          {
-            "id": "b",
-            "text": "Pay the release fee so I can receive the transfer.",
-            "correct": false,
-            "feedback": "Real GOTYME never asks for your OTP. That message is the scam."
-          },
-          {
-            "id": "c",
-            "text": "Reply with the OTP right away so my money is safe.",
-            "correct": false,
-            "feedback": "Real GOTYME never asks for your OTP. That message is the scam."
-          }
-        ],
-        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
-      }
-    ],
-    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "ewallet-medium-073",
-    "title": "ewallet drill 73",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "ewallet",
-    "archetype": "trap",
-    "category": "ewallet",
-    "setup": "call-center agent. A message says this is your last chance and asks for your OTP. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "GoTyme",
-        "message": "GoTyme: You have an incoming transfer of P100,000! Pay a small release fee first to receive it.",
-        "question": "A message says this is your last chance and asks for your OTP. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the real GOTYME app myself and check my account.",
-            "correct": true,
-            "feedback": "Correct. You checked the real GOTYME app instead of trusting the text. Your account is the source of truth, not a message."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text to verify.",
-            "correct": false,
-            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
-          },
-          {
-            "id": "c",
-            "text": "Pay the release fee so I can receive the transfer.",
-            "correct": false,
-            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
-          }
-        ],
-        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
-      }
-    ],
-    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "ewallet-easy-075",
-    "title": "ewallet drill 75",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "ewallet",
-    "archetype": "trap",
-    "category": "ewallet",
-    "setup": "OFW in Riyadh. A text says you must act now. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "ShopeePay",
-        "message": "ShopeePay Alert: this is your last chance. Verify at jnt-tracking-ph.site or your account will be suspended.",
-        "question": "A text says you must act now. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the real SHOPEEPAY app myself and check my account.",
-            "correct": true,
-            "feedback": "Correct. You checked the real SHOPEEPAY app instead of trusting the text. Your account is the source of truth, not a message."
-          },
-          {
-            "id": "b",
-            "text": "Pay the release fee so I can receive the transfer.",
-            "correct": false,
-            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
-          },
-          {
-            "id": "c",
-            "text": "Reply with the OTP right away so my money is safe.",
-            "correct": false,
-            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
-          }
-        ],
-        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
-      }
-    ],
-    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "ewallet-hard-077",
-    "title": "ewallet drill 77",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "ewallet",
-    "archetype": "redirect",
-    "category": "ewallet",
-    "setup": "college student in Manila. A message says your SIM will be deactivated and asks for your OTP. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "Maya",
-        "message": "Maya: Double refund error! To correct it, confirm your account at smart-rewar-ds.top within 24 hours.",
-        "question": "A message says your SIM will be deactivated and asks for your OTP. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the real MAYA app myself and check my account.",
-            "correct": true,
-            "feedback": "Correct. You checked the real MAYA app instead of trusting the text. Your account is the source of truth, not a message."
-          },
-          {
-            "id": "b",
-            "text": "Pay the release fee so I can receive the transfer.",
-            "correct": false,
-            "feedback": "If you pay to receive money, it is a scam."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text to verify.",
-            "correct": false,
-            "feedback": "If you pay to receive money, it is a scam."
-          }
-        ],
-        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
-      }
-    ],
-    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "ewallet-easy-078",
-    "title": "ewallet drill 78",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "ewallet",
-    "archetype": "redirect",
-    "category": "ewallet",
-    "setup": "call-center agent. A message says your SIM will be deactivated and asks for your OTP. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Maya",
-        "message": "Maya Alert: your SIM will be deactivated. Verify at bdo-secure-login-verify.top or your account will be suspended.",
-        "question": "A message says your SIM will be deactivated and asks for your OTP. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the real MAYA app myself and check my account.",
-            "correct": true,
-            "feedback": "Correct. You checked the real MAYA app instead of trusting the text. Your account is the source of truth, not a message."
-          },
-          {
-            "id": "b",
-            "text": "Reply with the OTP right away so my money is safe.",
-            "correct": false,
-            "feedback": "If you pay to receive money, it is a scam."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text to verify.",
-            "correct": false,
-            "feedback": "If you pay to receive money, it is a scam."
-          }
-        ],
-        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
-      }
-    ],
-    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "ewallet-medium-079",
-    "title": "ewallet drill 79",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "ewallet",
-    "archetype": "trap",
-    "category": "ewallet",
-    "setup": "small online seller. A message says your benefits will be cancelled and asks for your OTP. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "Maya",
-        "message": "Maya: You have an incoming transfer of P500! Pay a small release fee first to receive it.",
-        "question": "A message says your benefits will be cancelled and asks for your OTP. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the real MAYA app myself and check my account.",
-            "correct": true,
-            "feedback": "Correct. You checked the real MAYA app instead of trusting the text. Your account is the source of truth, not a message."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text to verify.",
-            "correct": false,
-            "feedback": "Real MAYA never asks for your OTP. That message is the scam."
-          },
-          {
-            "id": "c",
-            "text": "Reply with the OTP right away so my money is safe.",
-            "correct": false,
-            "feedback": "Real MAYA never asks for your OTP. That message is the scam."
-          }
-        ],
-        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
-      }
-    ],
-    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "ewallet-easy-081",
-    "title": "ewallet drill 81",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "ewallet",
-    "archetype": "redirect",
-    "category": "ewallet",
-    "setup": "small online seller. A message says an unauthorized transfer was detected and asks for your OTP. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "Maya",
-        "message": "Maya: We detected a suspicious login on your account. Verify now at pagibig-loan-release.site or it will be locked.",
-        "question": "A message says an unauthorized transfer was detected and asks for your OTP. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the real MAYA app myself and check my account.",
-            "correct": true,
-            "feedback": "Correct. You checked the real MAYA app instead of trusting the text. Your account is the source of truth, not a message."
-          },
-          {
-            "id": "b",
-            "text": "Pay the release fee so I can receive the transfer.",
-            "correct": false,
-            "feedback": "If you pay to receive money, it is a scam."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text to verify.",
-            "correct": false,
-            "feedback": "If you pay to receive money, it is a scam."
-          }
-        ],
-        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
-      }
-    ],
-    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "ewallet-hard-083",
-    "title": "ewallet drill 83",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "ewallet",
-    "archetype": "trap",
-    "category": "ewallet",
-    "setup": "Lola in the province. A message says your SIM will be deactivated and asks for your OTP. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "GoTyme",
-        "message": "GoTyme: your SIM will be deactivated Reply with your OTP now to reactivate, or your money will be gone in 24 hours.",
-        "question": "A message says your SIM will be deactivated and asks for your OTP. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the real GOTYME app myself and check my account.",
-            "correct": true,
-            "feedback": "Correct. You checked the real GOTYME app instead of trusting the text. Your account is the source of truth, not a message."
-          },
-          {
-            "id": "b",
-            "text": "Pay the release fee so I can receive the transfer.",
-            "correct": false,
-            "feedback": "Real GOTYME never asks for your OTP. That message is the scam."
-          },
-          {
-            "id": "c",
-            "text": "Reply with the OTP right away so my money is safe.",
-            "correct": false,
-            "feedback": "Real GOTYME never asks for your OTP. That message is the scam."
-          }
-        ],
-        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
-      }
-    ],
-    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "ewallet-easy-084",
-    "title": "ewallet drill 84",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "ewallet",
-    "archetype": "trap",
-    "category": "ewallet",
-    "setup": "Lola in the province. A message says an unauthorized transfer was detected and asks for your OTP. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "GoTyme",
-        "message": "GoTyme: Double refund error! To correct it, confirm your account at bit.ly/verify-now within 24 hours.",
-        "question": "A message says an unauthorized transfer was detected and asks for your OTP. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the real GOTYME app myself and check my account.",
-            "correct": true,
-            "feedback": "Correct. You checked the real GOTYME app instead of trusting the text. Your account is the source of truth, not a message."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text to verify.",
-            "correct": false,
-            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
-          },
-          {
-            "id": "c",
-            "text": "Reply with the OTP right away so my money is safe.",
-            "correct": false,
-            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
-          }
-        ],
-        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
-      }
-    ],
-    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "ewallet-medium-085",
-    "title": "ewallet drill 85",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "ewallet",
-    "archetype": "trap",
-    "category": "ewallet",
-    "setup": "senior pensioner. A text says you must act now. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "Maya",
-        "message": "Maya Alert: your money will be gone in 24 hours. Verify at jnt-tracking-ph.site or your account will be suspended.",
-        "question": "A text says you must act now. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the real MAYA app myself and check my account.",
-            "correct": true,
-            "feedback": "Correct. You checked the real MAYA app instead of trusting the text. Your account is the source of truth, not a message."
-          },
-          {
-            "id": "b",
-            "text": "Reply with the OTP right away so my money is safe.",
-            "correct": false,
-            "feedback": "If you pay to receive money, it is a scam."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text to verify.",
-            "correct": false,
-            "feedback": "If you pay to receive money, it is a scam."
-          }
-        ],
-        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
-      }
-    ],
-    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "ewallet-hard-086",
-    "title": "ewallet drill 86",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "ewallet",
-    "archetype": "trap",
-    "category": "ewallet",
-    "setup": "jeepney driver. A text says you must act now. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "GoTyme",
-        "message": "GoTyme Alert: your parcel will be returned. Verify at pagibig-loan-release.site or your account will be suspended.",
-        "question": "A text says you must act now. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the real GOTYME app myself and check my account.",
-            "correct": true,
-            "feedback": "Correct. You checked the real GOTYME app instead of trusting the text. Your account is the source of truth, not a message."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text to verify.",
-            "correct": false,
-            "feedback": "Real GOTYME never asks for your OTP. That message is the scam."
-          },
-          {
-            "id": "c",
-            "text": "Reply with the OTP right away so my money is safe.",
-            "correct": false,
-            "feedback": "Real GOTYME never asks for your OTP. That message is the scam."
-          }
-        ],
-        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
-      }
-    ],
-    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "ewallet-easy-087",
-    "title": "ewallet drill 87",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "ewallet",
-    "archetype": "trap",
-    "category": "ewallet",
-    "setup": "senior pensioner. A text says you must act now. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "Maya",
-        "message": "Maya: your benefits will be cancelled Reply with your OTP now to reactivate, or your money will be gone in 24 hours.",
-        "question": "A text says you must act now. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the real MAYA app myself and check my account.",
-            "correct": true,
-            "feedback": "Correct. You checked the real MAYA app instead of trusting the text. Your account is the source of truth, not a message."
-          },
-          {
-            "id": "b",
-            "text": "Reply with the OTP right away so my money is safe.",
-            "correct": false,
-            "feedback": "Real MAYA never asks for your OTP. That message is the scam."
-          },
-          {
-            "id": "c",
-            "text": "Pay the release fee so I can receive the transfer.",
-            "correct": false,
-            "feedback": "Real MAYA never asks for your OTP. That message is the scam."
-          }
-        ],
-        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
-      }
-    ],
-    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "ewallet-hard-089",
-    "title": "ewallet drill 89",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "ewallet",
-    "archetype": "trap",
-    "category": "ewallet",
-    "setup": "OFW in Riyadh. A text says you must act now. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "GoTyme",
-        "message": "GoTyme: Your MPIN will expire today. Update it at g-cash-verify-ph.top to keep using your wallet.",
-        "question": "A text says you must act now. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the real GOTYME app myself and check my account.",
-            "correct": true,
-            "feedback": "Correct. You checked the real GOTYME app instead of trusting the text. Your account is the source of truth, not a message."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text to verify.",
-            "correct": false,
-            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
-          },
-          {
-            "id": "c",
-            "text": "Reply with the OTP right away so my money is safe.",
-            "correct": false,
-            "feedback": "That number belongs to the scammer. Use the official the official hotline number only."
-          }
-        ],
-        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
-      }
-    ],
-    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "ewallet-medium-091",
-    "title": "ewallet drill 91",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "ewallet",
-    "archetype": "trap",
-    "category": "ewallet",
-    "setup": "OFW in Riyadh. A message says an unauthorized transfer was detected and asks for your OTP. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "Maya",
-        "message": "Maya: an unauthorized transfer was detected Reply with your OTP now to reactivate, or your money will be gone in 24 hours.",
-        "question": "A message says an unauthorized transfer was detected and asks for your OTP. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the real MAYA app myself and check my account.",
-            "correct": true,
-            "feedback": "Correct. You checked the real MAYA app instead of trusting the text. Your account is the source of truth, not a message."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text to verify.",
-            "correct": false,
-            "feedback": "If you pay to receive money, it is a scam."
-          },
-          {
-            "id": "c",
-            "text": "Reply with the OTP right away so my money is safe.",
-            "correct": false,
-            "feedback": "If you pay to receive money, it is a scam."
-          }
-        ],
-        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
-      }
-    ],
-    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "ewallet-easy-093",
-    "title": "ewallet drill 93",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "ewallet",
-    "archetype": "redirect",
-    "category": "ewallet",
-    "setup": "senior pensioner. A message says your SIM will be deactivated and asks for your OTP. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "GCash",
-        "message": "GCash: We detected a suspicious login on your account. Verify now at shopee-refund-ph.site or it will be locked.",
-        "question": "A message says your SIM will be deactivated and asks for your OTP. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the real GCASH app myself and check my account.",
-            "correct": true,
-            "feedback": "Correct. You checked the real GCASH app instead of trusting the text. Your account is the source of truth, not a message."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text to verify.",
-            "correct": false,
-            "feedback": "That number belongs to the scammer. Use the official GCash hotline 2882 number only."
-          },
-          {
-            "id": "c",
-            "text": "Pay the release fee so I can receive the transfer.",
-            "correct": false,
-            "feedback": "That number belongs to the scammer. Use the official GCash hotline 2882 number only."
-          }
-        ],
-        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
-      }
-    ],
-    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "ewallet-medium-094",
-    "title": "ewallet drill 94",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "ewallet",
-    "archetype": "trap",
-    "category": "ewallet",
-    "setup": "college student in Manila. A message says your money will be gone in 24 hours and asks for your OTP. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "Maya",
-        "message": "Maya: Your MPIN will expire today. Update it at jnt-tracking-ph.site to keep using your wallet.",
-        "question": "A message says your money will be gone in 24 hours and asks for your OTP. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the real MAYA app myself and check my account.",
-            "correct": true,
-            "feedback": "Correct. You checked the real MAYA app instead of trusting the text. Your account is the source of truth, not a message."
-          },
-          {
-            "id": "b",
-            "text": "Pay the release fee so I can receive the transfer.",
-            "correct": false,
-            "feedback": "That number belongs to the scammer. Use the official Maya hotline *788 number only."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text to verify.",
-            "correct": false,
-            "feedback": "That number belongs to the scammer. Use the official Maya hotline *788 number only."
-          }
-        ],
-        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
-      }
-    ],
-    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "ewallet-hard-095",
-    "title": "ewallet drill 95",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "ewallet",
-    "archetype": "trap",
-    "category": "ewallet",
-    "setup": "jeepney driver. A message says an unauthorized transfer was detected and asks for your OTP. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "GCash",
-        "message": "GCash: Your MPIN will expire today. Update it at gov-ph-tax.site to keep using your wallet.",
-        "question": "A message says an unauthorized transfer was detected and asks for your OTP. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the real GCASH app myself and check my account.",
-            "correct": true,
-            "feedback": "Correct. You checked the real GCASH app instead of trusting the text. Your account is the source of truth, not a message."
-          },
-          {
-            "id": "b",
-            "text": "Reply with the OTP right away so my money is safe.",
-            "correct": false,
-            "feedback": "That number belongs to the scammer. Use the official GCash hotline 2882 number only."
-          },
-          {
-            "id": "c",
-            "text": "Pay the release fee so I can receive the transfer.",
-            "correct": false,
-            "feedback": "That number belongs to the scammer. Use the official GCash hotline 2882 number only."
-          }
-        ],
-        "tip": "OTPs are secret. A real company NEVER asks you to send your OTP."
-      }
-    ],
-    "debrief": "You practiced the rule: OTPs are secret. A real company NEVER asks you to send your OTP.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
     "id": "bank-easy-000",
     "title": "bank drill 0",
     "icon": "ShieldCheck",
     "difficulty": "easy",
+    "family": "bank",
+    "archetype": "trap",
+    "category": "bank",
+    "setup": "sari-sari store owner. The caller says your card was used for fraud. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "RCBC",
+        "message": "RCBC Fraud Dept: an unauthorized transfer of P1,000,000 was detected. Reply with your card details to reverse it.",
+        "question": "The caller says your card was used for fraud. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open my bank app directly and check for any real alert.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read my card number and the 3-digit code to stop the fraud.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-medium-001",
+    "title": "bank drill 1",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "bank",
+    "archetype": "redirect",
+    "category": "bank",
+    "setup": "senior pensioner. The caller says your card was used for fraud. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "LandBank",
+        "message": "LandBank Fraud Dept: an unauthorized transfer of P45,000 was detected. Reply with your card details to reverse it.",
+        "question": "The caller says your card was used for fraud. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read my card number and the 3-digit code to stop the fraud.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-hard-002",
+    "title": "bank drill 2",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "bank",
+    "archetype": "trap",
+    "category": "bank",
+    "setup": "call-center agent. An email says your account is at risk. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "LandBank",
+        "message": "LandBank: Your account is on hold for review. Confirm your identity at smart-rewar-ds.top to restore access.",
+        "question": "An email says your account is at risk. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-easy-003",
+    "title": "bank drill 3",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "bank",
+    "archetype": "trap",
+    "category": "bank",
+    "setup": "small online seller. An email says your account is at risk. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "Security Bank",
+        "message": "Security Bank Fraud Dept: an unauthorized transfer of P2,000 was detected. Reply with your card details to reverse it.",
+        "question": "An email says your account is at risk. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-medium-004",
+    "title": "bank drill 4",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "bank",
+    "archetype": "trap",
+    "category": "bank",
+    "setup": "OFW in Riyadh. The caller says your card was used for fraud. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "PNB",
+        "message": "PNB: this is your last chance. Click jnt-tracking-ph.site to verify your identity now.",
+        "question": "The caller says your card was used for fraud. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read my card number and the 3-digit code to stop the fraud.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-hard-005",
+    "title": "bank drill 5",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "bank",
+    "archetype": "redirect",
+    "category": "bank",
+    "setup": "college student in Manila. The caller says your card was used for fraud. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "PNB",
+        "message": "PNB Fraud Dept: an unauthorized transfer of P1,500 was detected. Reply with your card details to reverse it.",
+        "question": "The caller says your card was used for fraud. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open my bank app directly and check for any real alert.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-easy-006",
+    "title": "bank drill 6",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "bank",
+    "archetype": "redirect",
+    "category": "bank",
+    "setup": "college student in Manila. An email says your account is at risk. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "UnionBank",
+        "message": "UnionBank: Your card will be closed due to inactivity. Reactivate at smart-rewar-ds.top.",
+        "question": "An email says your account is at risk. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your UnionBank card number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-medium-007",
+    "title": "bank drill 7",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "bank",
+    "archetype": "redirect",
+    "category": "bank",
+    "setup": "call-center agent. An email says your account is at risk. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "UnionBank",
+        "message": "UnionBank Fraud Dept: an unauthorized transfer of P100,000 was detected. Reply with your card details to reverse it.",
+        "question": "An email says your account is at risk. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open my bank app directly and check for any real alert.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your UnionBank card number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read my card number and the 3-digit code to stop the fraud.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-hard-008",
+    "title": "bank drill 8",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "bank",
+    "archetype": "trap",
+    "category": "bank",
+    "setup": "small online seller. An email says your account is at risk. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "UnionBank",
+        "message": "UnionBank Fraud Dept: an unauthorized transfer of P500 was detected. Reply with your card details to reverse it.",
+        "question": "An email says your account is at risk. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your UnionBank card number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read my card number and the 3-digit code to stop the fraud.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-easy-009",
+    "title": "bank drill 9",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "bank",
+    "archetype": "redirect",
+    "category": "bank",
+    "setup": "college student in Manila. An email says your account is at risk. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "Security Bank",
+        "message": "Security Bank Security: A new device tried to log in. Approve or decline at g-cash-verify-ph.top.",
+        "question": "An email says your account is at risk. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-medium-010",
+    "title": "bank drill 10",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "bank",
+    "archetype": "redirect",
+    "category": "bank",
+    "setup": "small online seller. An email says your account is at risk. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "Metrobank",
+        "message": "Metrobank: Your account is on hold for review. Confirm your identity at pagibig-loan-release.site to restore access.",
+        "question": "An email says your account is at risk. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open my bank app directly and check for any real alert.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your Metrobank card number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-hard-011",
+    "title": "bank drill 11",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "bank",
+    "archetype": "redirect",
+    "category": "bank",
+    "setup": "jeepney driver. An email says your account is at risk. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "BPI",
+        "message": "BPI: your money will be gone in 24 hours. Click smart-rewar-ds.top to verify your identity now.",
+        "question": "An email says your account is at risk. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open my bank app directly and check for any real alert.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your BPI card number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read my card number and the 3-digit code to stop the fraud.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-easy-012",
+    "title": "bank drill 12",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "bank",
+    "archetype": "trap",
+    "category": "bank",
+    "setup": "Lola in the province. An email says your account is at risk. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "RCBC",
+        "message": "RCBC: your SIM will be deactivated. Click g-cash-verify-ph.top to verify your identity now.",
+        "question": "An email says your account is at risk. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open my bank app directly and check for any real alert.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read my card number and the 3-digit code to stop the fraud.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-medium-013",
+    "title": "bank drill 13",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "bank",
+    "archetype": "trap",
+    "category": "bank",
+    "setup": "Lola in the province. An email says your account is at risk. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "LandBank",
+        "message": "LandBank: Your card will be closed due to inactivity. Reactivate at bit.ly/verify-now.",
+        "question": "An email says your account is at risk. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read my card number and the 3-digit code to stop the fraud.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-hard-014",
+    "title": "bank drill 14",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "bank",
+    "archetype": "trap",
+    "category": "bank",
+    "setup": "senior pensioner. The caller says your card was used for fraud. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "UnionBank",
+        "message": "UnionBank Fraud Dept: an unauthorized transfer of P500 was detected. Reply with your card details to reverse it.",
+        "question": "The caller says your card was used for fraud. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open my bank app directly and check for any real alert.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your UnionBank card number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read my card number and the 3-digit code to stop the fraud.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-easy-015",
+    "title": "bank drill 15",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "bank",
+    "archetype": "trap",
+    "category": "bank",
+    "setup": "jeepney driver. The caller says your card was used for fraud. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "LandBank",
+        "message": "LandBank Fraud Dept: an unauthorized transfer of P2,000 was detected. Reply with your card details to reverse it.",
+        "question": "The caller says your card was used for fraud. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read my card number and the 3-digit code to stop the fraud.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-medium-016",
+    "title": "bank drill 16",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "bank",
+    "archetype": "trap",
+    "category": "bank",
+    "setup": "senior pensioner. The caller says your card was used for fraud. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "UnionBank",
+        "message": "UnionBank: your benefits will be cancelled. Click bdo-secure-login-verify.top to verify your identity now.",
+        "question": "The caller says your card was used for fraud. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open my bank app directly and check for any real alert.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your UnionBank card number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read my card number and the 3-digit code to stop the fraud.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-hard-017",
+    "title": "bank drill 17",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "bank",
+    "archetype": "redirect",
+    "category": "bank",
+    "setup": "call-center agent. The caller says your card was used for fraud. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "Metrobank",
+        "message": "Metrobank Security: A new device tried to log in. Approve or decline at pagibig-loan-release.site.",
+        "question": "The caller says your card was used for fraud. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open my bank app directly and check for any real alert.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your Metrobank card number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read my card number and the 3-digit code to stop the fraud.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-easy-018",
+    "title": "bank drill 18",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "bank",
+    "archetype": "trap",
+    "category": "bank",
+    "setup": "OFW in Riyadh. The caller says your card was used for fraud. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "LandBank",
+        "message": "LandBank Security: A new device tried to log in. Approve or decline at g-cash-verify-ph.top.",
+        "question": "The caller says your card was used for fraud. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open my bank app directly and check for any real alert.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read my card number and the 3-digit code to stop the fraud.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-medium-019",
+    "title": "bank drill 19",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "bank",
+    "archetype": "redirect",
+    "category": "bank",
+    "setup": "college student in Manila. The caller says your card was used for fraud. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "BDO Alerts",
+        "message": "BDO Alerts Security: A new device tried to log in. Approve or decline at jnt-tracking-ph.site.",
+        "question": "The caller says your card was used for fraud. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your BDO card number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-hard-020",
+    "title": "bank drill 20",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "bank",
+    "archetype": "trap",
+    "category": "bank",
+    "setup": "OFW in Riyadh. An email says your account is at risk. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "UnionBank",
+        "message": "UnionBank: an unauthorized transfer was detected. Click maya-security-alert.xyz to verify your identity now.",
+        "question": "An email says your account is at risk. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your UnionBank card number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read my card number and the 3-digit code to stop the fraud.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-easy-021",
+    "title": "bank drill 21",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "bank",
+    "archetype": "redirect",
+    "category": "bank",
+    "setup": "sari-sari store owner. An email says your account is at risk. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "PNB",
+        "message": "PNB: Your card will be closed due to inactivity. Reactivate at g-cash-verify-ph.top.",
+        "question": "An email says your account is at risk. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-medium-022",
+    "title": "bank drill 22",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "bank",
+    "archetype": "redirect",
+    "category": "bank",
+    "setup": "senior pensioner. An email says your account is at risk. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "BDO Alerts",
+        "message": "BDO Alerts: Your account is on hold for review. Confirm your identity at shopee-refund-ph.site to restore access.",
+        "question": "An email says your account is at risk. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open my bank app directly and check for any real alert.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your BDO card number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-hard-023",
+    "title": "bank drill 23",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "bank",
+    "archetype": "trap",
+    "category": "bank",
+    "setup": "college student in Manila. An email says your account is at risk. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "Metrobank",
+        "message": "Metrobank: Your card will be closed due to inactivity. Reactivate at jnt-tracking-ph.site.",
+        "question": "An email says your account is at risk. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open my bank app directly and check for any real alert.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your Metrobank card number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-easy-024",
+    "title": "bank drill 24",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "bank",
+    "archetype": "trap",
+    "category": "bank",
+    "setup": "jeepney driver. An email says your account is at risk. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "BDO Alerts",
+        "message": "BDO Alerts Security: A new device tried to log in. Approve or decline at gov-ph-tax.site.",
+        "question": "An email says your account is at risk. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open my bank app directly and check for any real alert.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your BDO card number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read my card number and the 3-digit code to stop the fraud.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-medium-025",
+    "title": "bank drill 25",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
     "family": "bank",
     "archetype": "trap",
     "category": "bank",
@@ -3029,10 +4079,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-medium-001",
-    "title": "bank drill 1",
+    "id": "bank-hard-026",
+    "title": "bank drill 26",
     "icon": "ShieldCheck",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "family": "bank",
     "archetype": "trap",
     "category": "bank",
@@ -3071,10 +4121,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-hard-002",
-    "title": "bank drill 2",
+    "id": "bank-easy-027",
+    "title": "bank drill 27",
     "icon": "ShieldCheck",
-    "difficulty": "hard",
+    "difficulty": "easy",
     "family": "bank",
     "archetype": "redirect",
     "category": "bank",
@@ -3113,10 +4163,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-easy-003",
-    "title": "bank drill 3",
+    "id": "bank-medium-028",
+    "title": "bank drill 28",
     "icon": "ShieldCheck",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "family": "bank",
     "archetype": "redirect",
     "category": "bank",
@@ -3155,10 +4205,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-medium-004",
-    "title": "bank drill 4",
+    "id": "bank-hard-029",
+    "title": "bank drill 29",
     "icon": "ShieldCheck",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "family": "bank",
     "archetype": "redirect",
     "category": "bank",
@@ -3197,10 +4247,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-hard-005",
-    "title": "bank drill 5",
+    "id": "bank-easy-030",
+    "title": "bank drill 30",
     "icon": "ShieldCheck",
-    "difficulty": "hard",
+    "difficulty": "easy",
     "family": "bank",
     "archetype": "redirect",
     "category": "bank",
@@ -3239,10 +4289,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-easy-006",
-    "title": "bank drill 6",
+    "id": "bank-medium-031",
+    "title": "bank drill 31",
     "icon": "ShieldCheck",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "family": "bank",
     "archetype": "trap",
     "category": "bank",
@@ -3281,10 +4331,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-medium-007",
-    "title": "bank drill 7",
+    "id": "bank-hard-032",
+    "title": "bank drill 32",
     "icon": "ShieldCheck",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "family": "bank",
     "archetype": "trap",
     "category": "bank",
@@ -3323,10 +4373,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-hard-008",
-    "title": "bank drill 8",
+    "id": "bank-easy-033",
+    "title": "bank drill 33",
     "icon": "ShieldCheck",
-    "difficulty": "hard",
+    "difficulty": "easy",
     "family": "bank",
     "archetype": "redirect",
     "category": "bank",
@@ -3365,10 +4415,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-easy-009",
-    "title": "bank drill 9",
+    "id": "bank-medium-034",
+    "title": "bank drill 34",
     "icon": "ShieldCheck",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "family": "bank",
     "archetype": "redirect",
     "category": "bank",
@@ -3407,10 +4457,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-medium-010",
-    "title": "bank drill 10",
+    "id": "bank-hard-035",
+    "title": "bank drill 35",
     "icon": "ShieldCheck",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "family": "bank",
     "archetype": "redirect",
     "category": "bank",
@@ -3449,10 +4499,52 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-easy-012",
-    "title": "bank drill 12",
+    "id": "bank-easy-036",
+    "title": "bank drill 36",
     "icon": "ShieldCheck",
     "difficulty": "easy",
+    "family": "bank",
+    "archetype": "trap",
+    "category": "bank",
+    "setup": "OFW in Riyadh. An email says your account is at risk. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "BPI",
+        "message": "BPI Fraud Dept: an unauthorized transfer of P150 was detected. Reply with your card details to reverse it.",
+        "question": "An email says your account is at risk. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open my bank app directly and check for any real alert.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your BPI card number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-medium-037",
+    "title": "bank drill 37",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
     "family": "bank",
     "archetype": "trap",
     "category": "bank",
@@ -3491,10 +4583,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-medium-013",
-    "title": "bank drill 13",
+    "id": "bank-hard-038",
+    "title": "bank drill 38",
     "icon": "ShieldCheck",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "family": "bank",
     "archetype": "redirect",
     "category": "bank",
@@ -3533,10 +4625,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-hard-014",
-    "title": "bank drill 14",
+    "id": "bank-easy-039",
+    "title": "bank drill 39",
     "icon": "ShieldCheck",
-    "difficulty": "hard",
+    "difficulty": "easy",
     "family": "bank",
     "archetype": "redirect",
     "category": "bank",
@@ -3575,10 +4667,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-easy-015",
-    "title": "bank drill 15",
+    "id": "bank-medium-040",
+    "title": "bank drill 40",
     "icon": "ShieldCheck",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "family": "bank",
     "archetype": "trap",
     "category": "bank",
@@ -3617,10 +4709,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-medium-016",
-    "title": "bank drill 16",
+    "id": "bank-hard-041",
+    "title": "bank drill 41",
     "icon": "ShieldCheck",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "family": "bank",
     "archetype": "trap",
     "category": "bank",
@@ -3659,10 +4751,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-hard-017",
-    "title": "bank drill 17",
+    "id": "bank-easy-042",
+    "title": "bank drill 42",
     "icon": "ShieldCheck",
-    "difficulty": "hard",
+    "difficulty": "easy",
     "family": "bank",
     "archetype": "redirect",
     "category": "bank",
@@ -3701,10 +4793,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-easy-018",
-    "title": "bank drill 18",
+    "id": "bank-medium-043",
+    "title": "bank drill 43",
     "icon": "ShieldCheck",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "family": "bank",
     "archetype": "trap",
     "category": "bank",
@@ -3743,10 +4835,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-medium-019",
-    "title": "bank drill 19",
+    "id": "bank-hard-044",
+    "title": "bank drill 44",
     "icon": "ShieldCheck",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "family": "bank",
     "archetype": "redirect",
     "category": "bank",
@@ -3785,10 +4877,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-hard-020",
-    "title": "bank drill 20",
+    "id": "bank-easy-045",
+    "title": "bank drill 45",
     "icon": "ShieldCheck",
-    "difficulty": "hard",
+    "difficulty": "easy",
     "family": "bank",
     "archetype": "trap",
     "category": "bank",
@@ -3827,10 +4919,52 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-medium-022",
-    "title": "bank drill 22",
+    "id": "bank-medium-046",
+    "title": "bank drill 46",
     "icon": "ShieldCheck",
     "difficulty": "medium",
+    "family": "bank",
+    "archetype": "trap",
+    "category": "bank",
+    "setup": "sari-sari store owner. The caller says your card was used for fraud. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "UnionBank",
+        "message": "UnionBank Fraud Dept: an unauthorized transfer of P12,000 was detected. Reply with your card details to reverse it.",
+        "question": "The caller says your card was used for fraud. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open my bank app directly and check for any real alert.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your UnionBank card number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-hard-047",
+    "title": "bank drill 47",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
     "family": "bank",
     "archetype": "trap",
     "category": "bank",
@@ -3869,10 +5003,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-hard-023",
-    "title": "bank drill 23",
+    "id": "bank-easy-048",
+    "title": "bank drill 48",
     "icon": "ShieldCheck",
-    "difficulty": "hard",
+    "difficulty": "easy",
     "family": "bank",
     "archetype": "trap",
     "category": "bank",
@@ -3911,10 +5045,94 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-hard-026",
-    "title": "bank drill 26",
+    "id": "bank-medium-049",
+    "title": "bank drill 49",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "bank",
+    "archetype": "redirect",
+    "category": "bank",
+    "setup": "OFW in Riyadh. The caller says your card was used for fraud. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "UnionBank",
+        "message": "UnionBank Fraud Dept: an unauthorized transfer of P1,000,000 was detected. Reply with your card details to reverse it.",
+        "question": "The caller says your card was used for fraud. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open my bank app directly and check for any real alert.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your UnionBank card number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-hard-050",
+    "title": "bank drill 50",
     "icon": "ShieldCheck",
     "difficulty": "hard",
+    "family": "bank",
+    "archetype": "redirect",
+    "category": "bank",
+    "setup": "small online seller. The caller says your card was used for fraud. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "BPI",
+        "message": "BPI Fraud Dept: an unauthorized transfer of P45,000 was detected. Reply with your card details to reverse it.",
+        "question": "The caller says your card was used for fraud. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open my bank app directly and check for any real alert.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your BPI card number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-easy-051",
+    "title": "bank drill 51",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
     "family": "bank",
     "archetype": "trap",
     "category": "bank",
@@ -3953,10 +5171,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-easy-027",
-    "title": "bank drill 27",
+    "id": "bank-medium-052",
+    "title": "bank drill 52",
     "icon": "ShieldCheck",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "family": "bank",
     "archetype": "trap",
     "category": "bank",
@@ -3995,10 +5213,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-medium-028",
-    "title": "bank drill 28",
+    "id": "bank-hard-053",
+    "title": "bank drill 53",
     "icon": "ShieldCheck",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "family": "bank",
     "archetype": "trap",
     "category": "bank",
@@ -4037,10 +5255,94 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-medium-031",
-    "title": "bank drill 31",
+    "id": "bank-easy-054",
+    "title": "bank drill 54",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "bank",
+    "archetype": "redirect",
+    "category": "bank",
+    "setup": "call-center agent. The caller says your card was used for fraud. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "Metrobank",
+        "message": "Metrobank Fraud Dept: an unauthorized transfer of P5,000 was detected. Reply with your card details to reverse it.",
+        "question": "The caller says your card was used for fraud. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open my bank app directly and check for any real alert.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your Metrobank card number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read my card number and the 3-digit code to stop the fraud.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-medium-055",
+    "title": "bank drill 55",
     "icon": "ShieldCheck",
     "difficulty": "medium",
+    "family": "bank",
+    "archetype": "redirect",
+    "category": "bank",
+    "setup": "senior pensioner. The caller says your card was used for fraud. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "Security Bank",
+        "message": "Security Bank Fraud Dept: an unauthorized transfer of P100,000 was detected. Reply with your card details to reverse it.",
+        "question": "The caller says your card was used for fraud. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read my card number and the 3-digit code to stop the fraud.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-hard-056",
+    "title": "bank drill 56",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
     "family": "bank",
     "archetype": "trap",
     "category": "bank",
@@ -4079,10 +5381,52 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-easy-033",
-    "title": "bank drill 33",
+    "id": "bank-easy-057",
+    "title": "bank drill 57",
     "icon": "ShieldCheck",
     "difficulty": "easy",
+    "family": "bank",
+    "archetype": "redirect",
+    "category": "bank",
+    "setup": "call-center agent. The caller says your card was used for fraud. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "BDO Alerts",
+        "message": "BDO Alerts: Your account is on hold for review. Confirm your identity at gov-ph-tax.site to restore access.",
+        "question": "The caller says your card was used for fraud. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open my bank app directly and check for any real alert.",
+            "correct": true,
+            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your BDO card number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read my card number and the 3-digit code to stop the fraud.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my login so my account is not closed.",
+            "correct": false,
+            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
+          }
+        ],
+        "tip": "No real bank ever asks for your OTP or card code."
+      }
+    ],
+    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "bank-medium-058",
+    "title": "bank drill 58",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
     "family": "bank",
     "archetype": "trap",
     "category": "bank",
@@ -4121,1364 +5465,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "bank-medium-037",
-    "title": "bank drill 37",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "bank",
-    "archetype": "trap",
-    "category": "bank",
-    "setup": "Lola in the province. The caller says your card was used for fraud. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "LandBank",
-        "message": "LandBank Fraud Dept: an unauthorized transfer of P500 was detected. Reply with your card details to reverse it.",
-        "question": "The caller says your card was used for fraud. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Hang up, then call the number on the back of my card.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-hard-038",
-    "title": "bank drill 38",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "bank",
-    "archetype": "redirect",
-    "category": "bank",
-    "setup": "Lola in the province. An email says your account is at risk. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "BPI",
-        "message": "BPI Security: A new device tried to log in. Approve or decline at bit.ly/verify-now.",
-        "question": "An email says your account is at risk. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Hang up, then call the number on the back of my card.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your BPI card number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-hard-041",
-    "title": "bank drill 41",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "bank",
-    "archetype": "redirect",
-    "category": "bank",
-    "setup": "call-center agent. The caller says your card was used for fraud. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "LandBank",
-        "message": "LandBank: Your account is on hold for review. Confirm your identity at bdo-secure-login-verify.top to restore access.",
-        "question": "The caller says your card was used for fraud. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Hang up, then call the number on the back of my card.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-medium-043",
-    "title": "bank drill 43",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "bank",
-    "archetype": "redirect",
-    "category": "bank",
-    "setup": "college student in Manila. An email says your account is at risk. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "LandBank",
-        "message": "LandBank Security: A new device tried to log in. Approve or decline at bdo-secure-login-verify.top.",
-        "question": "An email says your account is at risk. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open my bank app directly and check for any real alert.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-easy-045",
-    "title": "bank drill 45",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "bank",
-    "archetype": "trap",
-    "category": "bank",
-    "setup": "college student in Manila. An email says your account is at risk. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "Security Bank",
-        "message": "Security Bank: an unauthorized transfer was detected. Click pagibig-loan-release.site to verify your identity now.",
-        "question": "An email says your account is at risk. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Hang up, then call the number on the back of my card.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-medium-046",
-    "title": "bank drill 46",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "bank",
-    "archetype": "redirect",
-    "category": "bank",
-    "setup": "call-center agent. The caller says your card was used for fraud. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "Security Bank",
-        "message": "Security Bank: Your card will be closed due to inactivity. Reactivate at gov-ph-tax.site.",
-        "question": "The caller says your card was used for fraud. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open my bank app directly and check for any real alert.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-hard-047",
-    "title": "bank drill 47",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "bank",
-    "archetype": "redirect",
-    "category": "bank",
-    "setup": "sari-sari store owner. An email says your account is at risk. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "RCBC",
-        "message": "RCBC: your SIM will be deactivated. Click shopee-refund-ph.site to verify your identity now.",
-        "question": "An email says your account is at risk. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open my bank app directly and check for any real alert.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-medium-049",
-    "title": "bank drill 49",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "bank",
-    "archetype": "trap",
-    "category": "bank",
-    "setup": "senior pensioner. The caller says your card was used for fraud. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "Metrobank",
-        "message": "Metrobank: Your card will be closed due to inactivity. Reactivate at g-cash-verify-ph.top.",
-        "question": "The caller says your card was used for fraud. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open my bank app directly and check for any real alert.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your Metrobank card number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-easy-051",
-    "title": "bank drill 51",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "bank",
-    "archetype": "redirect",
-    "category": "bank",
-    "setup": "Lola in the province. An email says your account is at risk. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "BDO Alerts",
-        "message": "BDO Alerts: your parcel will be returned. Click bdo-secure-login-verify.top to verify your identity now.",
-        "question": "An email says your account is at risk. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open my bank app directly and check for any real alert.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your BDO card number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-medium-052",
-    "title": "bank drill 52",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "bank",
-    "archetype": "trap",
-    "category": "bank",
-    "setup": "call-center agent. An email says your account is at risk. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "BPI",
-        "message": "BPI: your money will be gone in 24 hours. Click maya-security-alert.xyz to verify your identity now.",
-        "question": "An email says your account is at risk. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open my bank app directly and check for any real alert.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your BPI card number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-hard-053",
-    "title": "bank drill 53",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "bank",
-    "archetype": "redirect",
-    "category": "bank",
-    "setup": "call-center agent. The caller says your card was used for fraud. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "UnionBank",
-        "message": "UnionBank: Your card will be closed due to inactivity. Reactivate at pagibig-loan-release.site.",
-        "question": "The caller says your card was used for fraud. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open my bank app directly and check for any real alert.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your UnionBank card number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-easy-057",
-    "title": "bank drill 57",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "bank",
-    "archetype": "redirect",
-    "category": "bank",
-    "setup": "senior pensioner. An email says your account is at risk. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "UnionBank",
-        "message": "UnionBank Security: A new device tried to log in. Approve or decline at shopee-refund-ph.site.",
-        "question": "An email says your account is at risk. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open my bank app directly and check for any real alert.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your UnionBank card number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-medium-058",
-    "title": "bank drill 58",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "bank",
-    "archetype": "trap",
-    "category": "bank",
-    "setup": "call-center agent. The caller says your card was used for fraud. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "BDO Alerts",
-        "message": "BDO Alerts: Your account is on hold for review. Confirm your identity at gcash-update.ph-verify.top to restore access.",
-        "question": "The caller says your card was used for fraud. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open my bank app directly and check for any real alert.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your BDO card number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-easy-060",
-    "title": "bank drill 60",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "bank",
-    "archetype": "trap",
-    "category": "bank",
-    "setup": "small online seller. The caller says your card was used for fraud. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "BDO Alerts",
-        "message": "BDO Alerts: your benefits will be cancelled. Click maya-security-alert.xyz to verify your identity now.",
-        "question": "The caller says your card was used for fraud. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Hang up, then call the number on the back of my card.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your BDO card number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-medium-061",
-    "title": "bank drill 61",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "bank",
-    "archetype": "trap",
-    "category": "bank",
-    "setup": "sari-sari store owner. An email says your account is at risk. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "BPI",
-        "message": "BPI: Your card will be closed due to inactivity. Reactivate at smart-rewar-ds.top.",
-        "question": "An email says your account is at risk. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Hang up, then call the number on the back of my card.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your BPI card number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-easy-066",
-    "title": "bank drill 66",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "bank",
-    "archetype": "redirect",
-    "category": "bank",
-    "setup": "college student in Manila. An email says your account is at risk. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "PNB",
-        "message": "PNB: your SIM will be deactivated. Click jnt-tracking-ph.site to verify your identity now.",
-        "question": "An email says your account is at risk. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Hang up, then call the number on the back of my card.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-medium-070",
-    "title": "bank drill 70",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "bank",
-    "archetype": "redirect",
-    "category": "bank",
-    "setup": "college student in Manila. The caller says your card was used for fraud. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "BPI",
-        "message": "BPI: your benefits will be cancelled. Click bdo-secure-login-verify.top to verify your identity now.",
-        "question": "The caller says your card was used for fraud. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Hang up, then call the number on the back of my card.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your BPI card number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-hard-071",
-    "title": "bank drill 71",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "bank",
-    "archetype": "trap",
-    "category": "bank",
-    "setup": "sari-sari store owner. An email says your account is at risk. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Metrobank",
-        "message": "Metrobank: Your account is on hold for review. Confirm your identity at gcash-update.ph-verify.top to restore access.",
-        "question": "An email says your account is at risk. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Hang up, then call the number on the back of my card.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your Metrobank card number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-hard-074",
-    "title": "bank drill 74",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "bank",
-    "archetype": "trap",
-    "category": "bank",
-    "setup": "call-center agent. An email says your account is at risk. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "RCBC",
-        "message": "RCBC: Your card will be closed due to inactivity. Reactivate at gov-ph-tax.site.",
-        "question": "An email says your account is at risk. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open my bank app directly and check for any real alert.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-medium-076",
-    "title": "bank drill 76",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "bank",
-    "archetype": "trap",
-    "category": "bank",
-    "setup": "senior pensioner. The caller says your card was used for fraud. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Security Bank",
-        "message": "Security Bank: Your account is on hold for review. Confirm your identity at g-cash-verify-ph.top to restore access.",
-        "question": "The caller says your card was used for fraud. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Hang up, then call the number on the back of my card.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-hard-077",
-    "title": "bank drill 77",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "bank",
-    "archetype": "trap",
-    "category": "bank",
-    "setup": "OFW in Riyadh. The caller says your card was used for fraud. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "PNB",
-        "message": "PNB Security: A new device tried to log in. Approve or decline at bdo-secure-login-verify.top.",
-        "question": "The caller says your card was used for fraud. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Hang up, then call the number on the back of my card.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-easy-078",
-    "title": "bank drill 78",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "bank",
-    "archetype": "trap",
-    "category": "bank",
-    "setup": "call-center agent. An email says your account is at risk. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "Metrobank",
-        "message": "Metrobank: your account is locked. Click bdo-secure-login-verify.top to verify your identity now.",
-        "question": "An email says your account is at risk. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open my bank app directly and check for any real alert.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your Metrobank card number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-medium-079",
-    "title": "bank drill 79",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "bank",
-    "archetype": "trap",
-    "category": "bank",
-    "setup": "jeepney driver. The caller says your card was used for fraud. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "RCBC",
-        "message": "RCBC Security: A new device tried to log in. Approve or decline at gov-ph-tax.site.",
-        "question": "The caller says your card was used for fraud. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Hang up, then call the number on the back of my card.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-medium-085",
-    "title": "bank drill 85",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "bank",
-    "archetype": "redirect",
-    "category": "bank",
-    "setup": "OFW in Riyadh. An email says your account is at risk. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "Metrobank",
-        "message": "Metrobank Fraud Dept: an unauthorized transfer of P45,000 was detected. Reply with your card details to reverse it.",
-        "question": "An email says your account is at risk. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open my bank app directly and check for any real alert.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your Metrobank card number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-medium-088",
-    "title": "bank drill 88",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "bank",
-    "archetype": "trap",
-    "category": "bank",
-    "setup": "small online seller. An email says your account is at risk. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "BDO Alerts",
-        "message": "BDO Alerts: Your card will be closed due to inactivity. Reactivate at shopee-refund-ph.site.",
-        "question": "An email says your account is at risk. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open my bank app directly and check for any real alert.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your BDO card number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-hard-089",
-    "title": "bank drill 89",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "bank",
-    "archetype": "trap",
-    "category": "bank",
-    "setup": "senior pensioner. The caller says your card was used for fraud. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "BPI",
-        "message": "BPI: an unauthorized transfer was detected. Click shopee-refund-ph.site to verify your identity now.",
-        "question": "The caller says your card was used for fraud. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open my bank app directly and check for any real alert.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your BPI card number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-medium-091",
-    "title": "bank drill 91",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "bank",
-    "archetype": "redirect",
-    "category": "bank",
-    "setup": "call-center agent. An email says your account is at risk. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "BDO Alerts",
-        "message": "BDO Alerts: Your card will be closed due to inactivity. Reactivate at gov-ph-tax.site.",
-        "question": "An email says your account is at risk. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open my bank app directly and check for any real alert.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your BDO card number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-easy-093",
-    "title": "bank drill 93",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "bank",
-    "archetype": "redirect",
-    "category": "bank",
-    "setup": "jeepney driver. An email says your account is at risk. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "PNB",
-        "message": "PNB Security: A new device tried to log in. Approve or decline at maya-security-alert.xyz.",
-        "question": "An email says your account is at risk. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Hang up, then call the number on the back of my card.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-medium-094",
-    "title": "bank drill 94",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "bank",
-    "archetype": "trap",
-    "category": "bank",
-    "setup": "call-center agent. An email says your account is at risk. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "UnionBank",
-        "message": "UnionBank: your money will be gone in 24 hours. Click gcash-update.ph-verify.top to verify your identity now.",
-        "question": "An email says your account is at risk. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open my bank app directly and check for any real alert.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your UnionBank card number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-hard-095",
-    "title": "bank drill 95",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "bank",
-    "archetype": "trap",
-    "category": "bank",
-    "setup": "jeepney driver. An email says your account is at risk. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "RCBC",
-        "message": "RCBC: Your card will be closed due to inactivity. Reactivate at shopee-refund-ph.site.",
-        "question": "An email says your account is at risk. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Hang up, then call the number on the back of my card.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real the official hotline number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-hard-098",
-    "title": "bank drill 98",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "bank",
-    "archetype": "redirect",
-    "category": "bank",
-    "setup": "college student in Manila. The caller says your card was used for fraud. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "BDO Alerts",
-        "message": "BDO Alerts Security: A new device tried to log in. Approve or decline at maya-security-alert.xyz.",
-        "question": "The caller says your card was used for fraud. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open my bank app directly and check for any real alert.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your BDO card number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Read my card number and the 3-digit code to stop the fraud.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "bank-easy-099",
-    "title": "bank drill 99",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "bank",
-    "archetype": "trap",
-    "category": "bank",
-    "setup": "call-center agent. An email says your account is at risk. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "BDO Alerts",
-        "message": "BDO Alerts: Your account is on hold for review. Confirm your identity at shopee-refund-ph.site to restore access.",
-        "question": "An email says your account is at risk. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Hang up, then call the number on the back of my card.",
-            "correct": true,
-            "feedback": "Correct. Caller ID and sender names can be faked. Always call the real number on the back of your BDO card number yourself."
-          },
-          {
-            "id": "b",
-            "text": "Read back the code they sent me.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my login so my account is not closed.",
-            "correct": false,
-            "feedback": "Never give card details or codes over the phone or a text link. Real banks already have your card number."
-          }
-        ],
-        "tip": "No real bank ever asks for your OTP or card code."
-      }
-    ],
-    "debrief": "You practiced the rule: No real bank ever asks for your OTP or card code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
     "id": "job-easy-000",
     "title": "job drill 0",
     "icon": "ShieldCheck",
     "difficulty": "easy",
     "family": "job",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "job",
-    "setup": "jeepney driver. A dream job found you first. What do you do?",
+    "setup": "OFW in Riyadh. A dream job found you first. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "email",
-        "senderLabel": "CryptoGlobal",
-        "message": "Your first task: transfer P8,000 as a refundable performance deposit.",
+        "senderLabel": "RemoteHire",
+        "message": "Congratulations! You passed our screening. Pay a P250 processing fee at maya-security-alert.xyz to start.",
         "question": "A dream job found you first. What do you do?",
         "options": [
           {
@@ -5489,13 +5489,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Download the app immediately before they pick someone else.",
+            "text": "Send half and ask for proof.",
             "correct": false,
             "feedback": "Real employers pay YOU. They never ask you to pay to start working."
           },
           {
             "id": "c",
-            "text": "Send the deposit. It says it is refundable.",
+            "text": "Download the app immediately before they pick someone else.",
             "correct": false,
             "feedback": "Real employers pay YOU. They never ask you to pay to start working."
           }
@@ -5514,13 +5514,97 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "job",
     "archetype": "redirect",
     "category": "job",
+    "setup": "college student in Manila. A dream job found you first. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "RemoteHire",
+        "message": "Congratulations! You passed our screening. Pay a P2,000 processing fee at pagibig-loan-release.site to start.",
+        "question": "A dream job found you first. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. No real job asks you to pay to work.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Send half and ask for proof.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Download the app immediately before they pick someone else.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-hard-002",
+    "title": "job drill 2",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "job",
+    "archetype": "redirect",
+    "category": "job",
     "setup": "call-center agent. They want a deposit to start the job. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "linkedin",
-        "senderLabel": "CryptoGlobal",
-        "message": "Your first task: transfer P8,000 as a refundable performance deposit.",
+        "channel": "email",
+        "senderLabel": "RemoteHire",
+        "message": "Your first task: transfer P500 as a refundable performance deposit.",
+        "question": "They want a deposit to start the job. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Search the company name and check their real website first.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Send the deposit. It says it is refundable.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Send half and ask for proof.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-easy-003",
+    "title": "job drill 3",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "job",
+    "archetype": "trap",
+    "category": "job",
+    "setup": "Lola in the province. They want a deposit to start the job. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "DataEntryPH",
+        "message": "Your first task: transfer P500 as a refundable performance deposit.",
         "question": "They want a deposit to start the job. What do you do?",
         "options": [
           {
@@ -5549,105 +5633,21 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "job-hard-002",
-    "title": "job drill 2",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "job",
-    "archetype": "trap",
-    "category": "job",
-    "setup": "OFW in Riyadh. A dream job found you first. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "linkedin",
-        "senderLabel": "CryptoGlobal",
-        "message": "We love your profile! P8,000/month working from home. Download this app to start training today.",
-        "question": "A dream job found you first. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Say no. No real job asks you to pay to work.",
-            "correct": true,
-            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
-          },
-          {
-            "id": "b",
-            "text": "Download the app immediately before they pick someone else.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          },
-          {
-            "id": "c",
-            "text": "Send the deposit. It says it is refundable.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          }
-        ],
-        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "job-easy-003",
-    "title": "job drill 3",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "job",
-    "archetype": "trap",
-    "category": "job",
-    "setup": "small online seller. A dream job found you first. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "CryptoGlobal",
-        "message": "Your first task: transfer P5,000 as a refundable performance deposit.",
-        "question": "A dream job found you first. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Say no. No real job asks you to pay to work.",
-            "correct": true,
-            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
-          },
-          {
-            "id": "b",
-            "text": "Download the app immediately before they pick someone else.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          },
-          {
-            "id": "c",
-            "text": "Send the deposit. It says it is refundable.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          }
-        ],
-        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
     "id": "job-medium-004",
     "title": "job drill 4",
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "job",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "job",
-    "setup": "jeepney driver. They want a deposit to start the job. What do you do?",
+    "setup": "Lola in the province. A dream job found you first. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "RemoteHire",
-        "message": "You are shortlisted! Confirm your slot at pagibig-loan-release.site within 24 hours.",
-        "question": "They want a deposit to start the job. What do you do?",
+        "senderLabel": "CryptoGlobal",
+        "message": "HR here: your onboarding is almost done. Complete it at bit.ly/verify-now for P1,000,000 refundable deposit.",
+        "question": "A dream job found you first. What do you do?",
         "options": [
           {
             "id": "a",
@@ -5657,7 +5657,49 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Send the deposit. It says it is refundable.",
+            "text": "Send half and ask for proof.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Download the app immediately before they pick someone else.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-hard-005",
+    "title": "job drill 5",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "job",
+    "archetype": "trap",
+    "category": "job",
+    "setup": "small online seller. They want a deposit to start the job. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "CryptoGlobal",
+        "message": "HR here: your onboarding is almost done. Complete it at g-cash-verify-ph.top for P1,500 refundable deposit.",
+        "question": "They want a deposit to start the job. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. No real job asks you to pay to work.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Send half and ask for proof.",
             "correct": false,
             "feedback": "Real employers pay YOU. They never ask you to pay to start working."
           },
@@ -5688,7 +5730,49 @@ export const GENERATED_SCENARIOS: Scenario[] = [
         "id": "s1",
         "channel": "email",
         "senderLabel": "DataEntryPH",
-        "message": "We love your profile! P2,000/month working from home. Download this app to start training today.",
+        "message": "Your first task: transfer P12,000 as a refundable performance deposit.",
+        "question": "They want a deposit to start the job. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Search the company name and check their real website first.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Send half and ask for proof.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Send the deposit. It says it is refundable.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-medium-007",
+    "title": "job drill 7",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "job",
+    "archetype": "redirect",
+    "category": "job",
+    "setup": "call-center agent. They want a deposit to start the job. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "linkedin",
+        "senderLabel": "RemoteHire",
+        "message": "Congratulations! You passed our screening. Pay a P500 processing fee at bdo-secure-login-verify.top to start.",
         "question": "They want a deposit to start the job. What do you do?",
         "options": [
           {
@@ -5724,24 +5808,24 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "job",
     "archetype": "redirect",
     "category": "job",
-    "setup": "call-center agent. A dream job found you first. What do you do?",
+    "setup": "sari-sari store owner. A dream job found you first. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "linkedin",
-        "senderLabel": "CryptoGlobal",
-        "message": "You are shortlisted! Confirm your slot at jnt-tracking-ph.site within 24 hours.",
+        "channel": "chat",
+        "senderLabel": "DataEntryPH",
+        "message": "HR here: your onboarding is almost done. Complete it at smart-rewar-ds.top for P8,000 refundable deposit.",
         "question": "A dream job found you first. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Search the company name and check their real website first.",
+            "text": "Say no. No real job asks you to pay to work.",
             "correct": true,
             "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
           },
           {
             "id": "b",
-            "text": "Send half and ask for proof.",
+            "text": "Download the app immediately before they pick someone else.",
             "correct": false,
             "feedback": "Real employers pay YOU. They never ask you to pay to start working."
           },
@@ -5764,15 +5848,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "easy",
     "family": "job",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "job",
-    "setup": "small online seller. A dream job found you first. What do you do?",
+    "setup": "college student in Manila. A dream job found you first. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
-        "senderLabel": "RemoteHire",
-        "message": "HR here: your onboarding is almost done. Complete it at bit.ly/verify-now for P12,000 refundable deposit.",
+        "channel": "chat",
+        "senderLabel": "DataEntryPH",
+        "message": "HR here: your onboarding is almost done. Complete it at bdo-secure-login-verify.top for P12,000 refundable deposit.",
         "question": "A dream job found you first. What do you do?",
         "options": [
           {
@@ -5808,18 +5892,60 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "job",
     "archetype": "redirect",
     "category": "job",
-    "setup": "college student in Manila. They want a deposit to start the job. What do you do?",
+    "setup": "small online seller. They want a deposit to start the job. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "linkedin",
-        "senderLabel": "CryptoGlobal",
-        "message": "Congratulations! You passed our screening. Pay a P2,000 processing fee at gov-ph-tax.site to start.",
+        "channel": "chat",
+        "senderLabel": "RemoteHire",
+        "message": "Your first task: transfer P2,000 as a refundable performance deposit.",
         "question": "They want a deposit to start the job. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Say no. No real job asks you to pay to work.",
+            "text": "Search the company name and check their real website first.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Download the app immediately before they pick someone else.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Send half and ask for proof.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-hard-011",
+    "title": "job drill 11",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "job",
+    "archetype": "trap",
+    "category": "job",
+    "setup": "college student in Manila. A dream job found you first. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "linkedin",
+        "senderLabel": "DataEntryPH",
+        "message": "We love your profile! P100,000/month working from home. Download this app to start training today.",
+        "question": "A dream job found you first. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Search the company name and check their real website first.",
             "correct": true,
             "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
           },
@@ -5843,37 +5969,79 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "job-hard-011",
-    "title": "job drill 11",
+    "id": "job-easy-012",
+    "title": "job drill 12",
     "icon": "ShieldCheck",
-    "difficulty": "hard",
+    "difficulty": "easy",
     "family": "job",
     "archetype": "redirect",
     "category": "job",
-    "setup": "jeepney driver. They want a deposit to start the job. What do you do?",
+    "setup": "call-center agent. They want a deposit to start the job. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "email",
-        "senderLabel": "CryptoGlobal",
-        "message": "Your first task: transfer P12,000 as a refundable performance deposit.",
+        "senderLabel": "DataEntryPH",
+        "message": "You are shortlisted! Confirm your slot at gov-ph-tax.site within 24 hours.",
         "question": "They want a deposit to start the job. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Search the company name and check their real website first.",
+            "text": "Say no. No real job asks you to pay to work.",
             "correct": true,
             "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
           },
           {
             "id": "b",
-            "text": "Send the deposit. It says it is refundable.",
+            "text": "Send half and ask for proof.",
             "correct": false,
             "feedback": "Real employers pay YOU. They never ask you to pay to start working."
           },
           {
             "id": "c",
-            "text": "Download the app immediately before they pick someone else.",
+            "text": "Send the deposit. It says it is refundable.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-medium-013",
+    "title": "job drill 13",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "job",
+    "archetype": "redirect",
+    "category": "job",
+    "setup": "sari-sari store owner. A dream job found you first. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "linkedin",
+        "senderLabel": "RemoteHire",
+        "message": "We love your profile! P5,000/month working from home. Download this app to start training today.",
+        "question": "A dream job found you first. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. No real job asks you to pay to work.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Send half and ask for proof.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Send the deposit. It says it is refundable.",
             "correct": false,
             "feedback": "Real employers pay YOU. They never ask you to pay to start working."
           }
@@ -5892,18 +6060,18 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "job",
     "archetype": "trap",
     "category": "job",
-    "setup": "senior pensioner. They want a deposit to start the job. What do you do?",
+    "setup": "jeepney driver. They want a deposit to start the job. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "linkedin",
+        "channel": "chat",
         "senderLabel": "DataEntryPH",
-        "message": "You are shortlisted! Confirm your slot at bdo-secure-login-verify.top within 24 hours.",
+        "message": "We love your profile! P150/month working from home. Download this app to start training today.",
         "question": "They want a deposit to start the job. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Search the company name and check their real website first.",
+            "text": "Say no. No real job asks you to pay to work.",
             "correct": true,
             "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
           },
@@ -5934,18 +6102,60 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "job",
     "archetype": "trap",
     "category": "job",
-    "setup": "senior pensioner. A dream job found you first. What do you do?",
+    "setup": "senior pensioner. They want a deposit to start the job. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
-        "senderLabel": "CryptoGlobal",
-        "message": "HR here: your onboarding is almost done. Complete it at gcash-update.ph-verify.top for P150 refundable deposit.",
-        "question": "A dream job found you first. What do you do?",
+        "channel": "linkedin",
+        "senderLabel": "RemoteHire",
+        "message": "You are shortlisted! Confirm your slot at g-cash-verify-ph.top within 24 hours.",
+        "question": "They want a deposit to start the job. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Search the company name and check their real website first.",
+            "text": "Say no. No real job asks you to pay to work.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Download the app immediately before they pick someone else.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Send half and ask for proof.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-medium-016",
+    "title": "job drill 16",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "job",
+    "archetype": "trap",
+    "category": "job",
+    "setup": "college student in Manila. They want a deposit to start the job. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "DataEntryPH",
+        "message": "Your first task: transfer P500 as a refundable performance deposit.",
+        "question": "They want a deposit to start the job. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. No real job asks you to pay to work.",
             "correct": true,
             "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
           },
@@ -5976,14 +6186,14 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "job",
     "archetype": "redirect",
     "category": "job",
-    "setup": "Lola in the province. They want a deposit to start the job. What do you do?",
+    "setup": "Lola in the province. A dream job found you first. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
-        "senderLabel": "RemoteHire",
-        "message": "You are shortlisted! Confirm your slot at gcash-update.ph-verify.top within 24 hours.",
-        "question": "They want a deposit to start the job. What do you do?",
+        "channel": "linkedin",
+        "senderLabel": "CryptoGlobal",
+        "message": "We love your profile! P1,000,000/month working from home. Download this app to start training today.",
+        "question": "A dream job found you first. What do you do?",
         "options": [
           {
             "id": "a",
@@ -6018,13 +6228,97 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "job",
     "archetype": "trap",
     "category": "job",
-    "setup": "OFW in Riyadh. They want a deposit to start the job. What do you do?",
+    "setup": "call-center agent. A dream job found you first. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "CryptoGlobal",
+        "message": "We love your profile! P8,000/month working from home. Download this app to start training today.",
+        "question": "A dream job found you first. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. No real job asks you to pay to work.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Send the deposit. It says it is refundable.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Download the app immediately before they pick someone else.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-medium-019",
+    "title": "job drill 19",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "job",
+    "archetype": "redirect",
+    "category": "job",
+    "setup": "call-center agent. They want a deposit to start the job. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "RemoteHire",
+        "message": "You are shortlisted! Confirm your slot at pagibig-loan-release.site within 24 hours.",
+        "question": "They want a deposit to start the job. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. No real job asks you to pay to work.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Send the deposit. It says it is refundable.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Download the app immediately before they pick someone else.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-hard-020",
+    "title": "job drill 20",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "job",
+    "archetype": "redirect",
+    "category": "job",
+    "setup": "jeepney driver. They want a deposit to start the job. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "linkedin",
-        "senderLabel": "CryptoGlobal",
-        "message": "We love your profile! P25,000/month working from home. Download this app to start training today.",
+        "senderLabel": "DataEntryPH",
+        "message": "Congratulations! You passed our screening. Pay a P12,000 processing fee at bdo-secure-login-verify.top to start.",
         "question": "They want a deposit to start the job. What do you do?",
         "options": [
           {
@@ -6060,24 +6354,24 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "job",
     "archetype": "redirect",
     "category": "job",
-    "setup": "OFW in Riyadh. They want a deposit to start the job. What do you do?",
+    "setup": "senior pensioner. They want a deposit to start the job. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
-        "senderLabel": "RemoteHire",
-        "message": "Congratulations! You passed our screening. Pay a P8,000 processing fee at pagibig-loan-release.site to start.",
+        "channel": "chat",
+        "senderLabel": "CryptoGlobal",
+        "message": "Your first task: transfer P5,000 as a refundable performance deposit.",
         "question": "They want a deposit to start the job. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Search the company name and check their real website first.",
+            "text": "Say no. No real job asks you to pay to work.",
             "correct": true,
             "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
           },
           {
             "id": "b",
-            "text": "Send the deposit. It says it is refundable.",
+            "text": "Download the app immediately before they pick someone else.",
             "correct": false,
             "feedback": "Real employers pay YOU. They never ask you to pay to start working."
           },
@@ -6100,15 +6394,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "job",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "job",
-    "setup": "OFW in Riyadh. A dream job found you first. What do you do?",
+    "setup": "sari-sari store owner. A dream job found you first. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "email",
         "senderLabel": "CryptoGlobal",
-        "message": "We love your profile! P12,000/month working from home. Download this app to start training today.",
+        "message": "Your first task: transfer P150 as a refundable performance deposit.",
         "question": "A dream job found you first. What do you do?",
         "options": [
           {
@@ -6144,13 +6438,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "job",
     "archetype": "redirect",
     "category": "job",
-    "setup": "college student in Manila. A dream job found you first. What do you do?",
+    "setup": "senior pensioner. A dream job found you first. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "linkedin",
+        "channel": "email",
         "senderLabel": "RemoteHire",
-        "message": "Your first task: transfer P1,000,000 as a refundable performance deposit.",
+        "message": "HR here: your onboarding is almost done. Complete it at shopee-refund-ph.site for P5,000 refundable deposit.",
         "question": "A dream job found you first. What do you do?",
         "options": [
           {
@@ -6179,25 +6473,25 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "job-medium-025",
-    "title": "job drill 25",
+    "id": "job-easy-024",
+    "title": "job drill 24",
     "icon": "ShieldCheck",
-    "difficulty": "medium",
+    "difficulty": "easy",
     "family": "job",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "job",
-    "setup": "college student in Manila. They want a deposit to start the job. What do you do?",
+    "setup": "call-center agent. They want a deposit to start the job. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
-        "senderLabel": "RemoteHire",
-        "message": "HR here: your onboarding is almost done. Complete it at gcash-update.ph-verify.top for P500 refundable deposit.",
+        "channel": "chat",
+        "senderLabel": "CryptoGlobal",
+        "message": "Congratulations! You passed our screening. Pay a P2,000 processing fee at gcash-update.ph-verify.top to start.",
         "question": "They want a deposit to start the job. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Search the company name and check their real website first.",
+            "text": "Say no. No real job asks you to pay to work.",
             "correct": true,
             "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
           },
@@ -6210,6 +6504,48 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           {
             "id": "c",
             "text": "Send the deposit. It says it is refundable.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-medium-025",
+    "title": "job drill 25",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "job",
+    "archetype": "trap",
+    "category": "job",
+    "setup": "call-center agent. A dream job found you first. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "CryptoGlobal",
+        "message": "HR here: your onboarding is almost done. Complete it at bit.ly/verify-now for P1,000,000 refundable deposit.",
+        "question": "A dream job found you first. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. No real job asks you to pay to work.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Download the app immediately before they pick someone else.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Send half and ask for proof.",
             "correct": false,
             "feedback": "Real employers pay YOU. They never ask you to pay to start working."
           }
@@ -6228,14 +6564,14 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "job",
     "archetype": "trap",
     "category": "job",
-    "setup": "college student in Manila. A dream job found you first. What do you do?",
+    "setup": "small online seller. They want a deposit to start the job. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "DataEntryPH",
-        "message": "Congratulations! You passed our screening. Pay a P150 processing fee at bdo-secure-login-verify.top to start.",
-        "question": "A dream job found you first. What do you do?",
+        "senderLabel": "CryptoGlobal",
+        "message": "We love your profile! P1,000,000/month working from home. Download this app to start training today.",
+        "question": "They want a deposit to start the job. What do you do?",
         "options": [
           {
             "id": "a",
@@ -6245,13 +6581,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Send half and ask for proof.",
+            "text": "Download the app immediately before they pick someone else.",
             "correct": false,
             "feedback": "Real employers pay YOU. They never ask you to pay to start working."
           },
           {
             "id": "c",
-            "text": "Send the deposit. It says it is refundable.",
+            "text": "Send half and ask for proof.",
             "correct": false,
             "feedback": "Real employers pay YOU. They never ask you to pay to start working."
           }
@@ -6270,305 +6606,11 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "job",
     "archetype": "trap",
     "category": "job",
-    "setup": "OFW in Riyadh. A dream job found you first. What do you do?",
+    "setup": "sari-sari store owner. A dream job found you first. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "RemoteHire",
-        "message": "You are shortlisted! Confirm your slot at jnt-tracking-ph.site within 24 hours.",
-        "question": "A dream job found you first. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Say no. No real job asks you to pay to work.",
-            "correct": true,
-            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
-          },
-          {
-            "id": "b",
-            "text": "Send half and ask for proof.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          },
-          {
-            "id": "c",
-            "text": "Download the app immediately before they pick someone else.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          }
-        ],
-        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "job-easy-033",
-    "title": "job drill 33",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "job",
-    "archetype": "trap",
-    "category": "job",
-    "setup": "Lola in the province. They want a deposit to start the job. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "CryptoGlobal",
-        "message": "HR here: your onboarding is almost done. Complete it at pagibig-loan-release.site for P25,000 refundable deposit.",
-        "question": "They want a deposit to start the job. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Search the company name and check their real website first.",
-            "correct": true,
-            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
-          },
-          {
-            "id": "b",
-            "text": "Send the deposit. It says it is refundable.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          },
-          {
-            "id": "c",
-            "text": "Download the app immediately before they pick someone else.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          }
-        ],
-        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "job-medium-034",
-    "title": "job drill 34",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "job",
-    "archetype": "redirect",
-    "category": "job",
-    "setup": "senior pensioner. They want a deposit to start the job. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "DataEntryPH",
-        "message": "Congratulations! You passed our screening. Pay a P150 processing fee at smart-rewar-ds.top to start.",
-        "question": "They want a deposit to start the job. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Search the company name and check their real website first.",
-            "correct": true,
-            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
-          },
-          {
-            "id": "b",
-            "text": "Download the app immediately before they pick someone else.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          },
-          {
-            "id": "c",
-            "text": "Send half and ask for proof.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          }
-        ],
-        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "job-easy-042",
-    "title": "job drill 42",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "job",
-    "archetype": "redirect",
-    "category": "job",
-    "setup": "call-center agent. They want a deposit to start the job. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "CryptoGlobal",
-        "message": "We love your profile! P250/month working from home. Download this app to start training today.",
-        "question": "They want a deposit to start the job. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Say no. No real job asks you to pay to work.",
-            "correct": true,
-            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
-          },
-          {
-            "id": "b",
-            "text": "Send the deposit. It says it is refundable.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          },
-          {
-            "id": "c",
-            "text": "Download the app immediately before they pick someone else.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          }
-        ],
-        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "job-easy-048",
-    "title": "job drill 48",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "job",
-    "archetype": "trap",
-    "category": "job",
-    "setup": "college student in Manila. A dream job found you first. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "RemoteHire",
-        "message": "Congratulations! You passed our screening. Pay a P250 processing fee at gcash-update.ph-verify.top to start.",
-        "question": "A dream job found you first. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Say no. No real job asks you to pay to work.",
-            "correct": true,
-            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
-          },
-          {
-            "id": "b",
-            "text": "Download the app immediately before they pick someone else.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          },
-          {
-            "id": "c",
-            "text": "Send the deposit. It says it is refundable.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          }
-        ],
-        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "job-easy-051",
-    "title": "job drill 51",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "job",
-    "archetype": "redirect",
-    "category": "job",
-    "setup": "jeepney driver. A dream job found you first. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "linkedin",
-        "senderLabel": "DataEntryPH",
-        "message": "HR here: your onboarding is almost done. Complete it at gov-ph-tax.site for P25,000 refundable deposit.",
-        "question": "A dream job found you first. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Say no. No real job asks you to pay to work.",
-            "correct": true,
-            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
-          },
-          {
-            "id": "b",
-            "text": "Download the app immediately before they pick someone else.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          },
-          {
-            "id": "c",
-            "text": "Send the deposit. It says it is refundable.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          }
-        ],
-        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "job-easy-057",
-    "title": "job drill 57",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "job",
-    "archetype": "redirect",
-    "category": "job",
-    "setup": "Lola in the province. A dream job found you first. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "RemoteHire",
-        "message": "Congratulations! You passed our screening. Pay a P45,000 processing fee at gov-ph-tax.site to start.",
-        "question": "A dream job found you first. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Say no. No real job asks you to pay to work.",
-            "correct": true,
-            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
-          },
-          {
-            "id": "b",
-            "text": "Send half and ask for proof.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          },
-          {
-            "id": "c",
-            "text": "Send the deposit. It says it is refundable.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          }
-        ],
-        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "job-hard-059",
-    "title": "job drill 59",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "job",
-    "archetype": "trap",
-    "category": "job",
-    "setup": "call-center agent. A dream job found you first. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
         "senderLabel": "CryptoGlobal",
         "message": "You are shortlisted! Confirm your slot at smart-rewar-ds.top within 24 hours.",
         "question": "A dream job found you first. What do you do?",
@@ -6599,199 +6641,115 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "job-easy-063",
-    "title": "job drill 63",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "job",
-    "archetype": "trap",
-    "category": "job",
-    "setup": "sari-sari store owner. A dream job found you first. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "linkedin",
-        "senderLabel": "DataEntryPH",
-        "message": "Congratulations! You passed our screening. Pay a P2,000 processing fee at smart-rewar-ds.top to start.",
-        "question": "A dream job found you first. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Say no. No real job asks you to pay to work.",
-            "correct": true,
-            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
-          },
-          {
-            "id": "b",
-            "text": "Download the app immediately before they pick someone else.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          },
-          {
-            "id": "c",
-            "text": "Send the deposit. It says it is refundable.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          }
-        ],
-        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "job-medium-067",
-    "title": "job drill 67",
+    "id": "job-medium-028",
+    "title": "job drill 28",
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "job",
-    "archetype": "redirect",
-    "category": "job",
-    "setup": "OFW in Riyadh. They want a deposit to start the job. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "linkedin",
-        "senderLabel": "DataEntryPH",
-        "message": "Congratulations! You passed our screening. Pay a P45,000 processing fee at g-cash-verify-ph.top to start.",
-        "question": "They want a deposit to start the job. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Search the company name and check their real website first.",
-            "correct": true,
-            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
-          },
-          {
-            "id": "b",
-            "text": "Send the deposit. It says it is refundable.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          },
-          {
-            "id": "c",
-            "text": "Download the app immediately before they pick someone else.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          }
-        ],
-        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "job-medium-073",
-    "title": "job drill 73",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "job",
-    "archetype": "redirect",
-    "category": "job",
-    "setup": "senior pensioner. A dream job found you first. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "RemoteHire",
-        "message": "We love your profile! P5,000/month working from home. Download this app to start training today.",
-        "question": "A dream job found you first. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Say no. No real job asks you to pay to work.",
-            "correct": true,
-            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
-          },
-          {
-            "id": "b",
-            "text": "Send half and ask for proof.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          },
-          {
-            "id": "c",
-            "text": "Send the deposit. It says it is refundable.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          }
-        ],
-        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "job-easy-081",
-    "title": "job drill 81",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "job",
     "archetype": "trap",
-    "category": "job",
-    "setup": "OFW in Riyadh. They want a deposit to start the job. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "CryptoGlobal",
-        "message": "Your first task: transfer P100,000 as a refundable performance deposit.",
-        "question": "They want a deposit to start the job. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Search the company name and check their real website first.",
-            "correct": true,
-            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
-          },
-          {
-            "id": "b",
-            "text": "Send the deposit. It says it is refundable.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          },
-          {
-            "id": "c",
-            "text": "Download the app immediately before they pick someone else.",
-            "correct": false,
-            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
-          }
-        ],
-        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "job-easy-093",
-    "title": "job drill 93",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "job",
-    "archetype": "redirect",
     "category": "job",
     "setup": "senior pensioner. They want a deposit to start the job. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "linkedin",
-        "senderLabel": "RemoteHire",
-        "message": "HR here: your onboarding is almost done. Complete it at g-cash-verify-ph.top for P500 refundable deposit.",
+        "senderLabel": "DataEntryPH",
+        "message": "Your first task: transfer P5,000 as a refundable performance deposit.",
         "question": "They want a deposit to start the job. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Say no. No real job asks you to pay to work.",
+            "text": "Search the company name and check their real website first.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Send half and ask for proof.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Download the app immediately before they pick someone else.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-hard-029",
+    "title": "job drill 29",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "job",
+    "archetype": "trap",
+    "category": "job",
+    "setup": "college student in Manila. A dream job found you first. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "linkedin",
+        "senderLabel": "CryptoGlobal",
+        "message": "We love your profile! P12,000/month working from home. Download this app to start training today.",
+        "question": "A dream job found you first. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Search the company name and check their real website first.",
             "correct": true,
             "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
           },
           {
             "id": "b",
             "text": "Send the deposit. It says it is refundable.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Download the app immediately before they pick someone else.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-easy-030",
+    "title": "job drill 30",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "job",
+    "archetype": "trap",
+    "category": "job",
+    "setup": "senior pensioner. A dream job found you first. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "DataEntryPH",
+        "message": "Congratulations! You passed our screening. Pay a P12,000 processing fee at shopee-refund-ph.site to start.",
+        "question": "A dream job found you first. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Search the company name and check their real website first.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Download the app immediately before they pick someone else.",
             "correct": false,
             "feedback": "Real employers pay YOU. They never ask you to pay to start working."
           },
@@ -6809,20 +6767,146 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "job-easy-096",
-    "title": "job drill 96",
+    "id": "job-medium-031",
+    "title": "job drill 31",
     "icon": "ShieldCheck",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "family": "job",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "job",
-    "setup": "Lola in the province. They want a deposit to start the job. What do you do?",
+    "setup": "college student in Manila. They want a deposit to start the job. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
+        "channel": "linkedin",
+        "senderLabel": "DataEntryPH",
+        "message": "HR here: your onboarding is almost done. Complete it at pagibig-loan-release.site for P12,000 refundable deposit.",
+        "question": "They want a deposit to start the job. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. No real job asks you to pay to work.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Send the deposit. It says it is refundable.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Download the app immediately before they pick someone else.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-hard-032",
+    "title": "job drill 32",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "job",
+    "archetype": "redirect",
+    "category": "job",
+    "setup": "college student in Manila. A dream job found you first. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "DataEntryPH",
+        "message": "We love your profile! P12,000/month working from home. Download this app to start training today.",
+        "question": "A dream job found you first. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Search the company name and check their real website first.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Download the app immediately before they pick someone else.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Send half and ask for proof.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-easy-033",
+    "title": "job drill 33",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "job",
+    "archetype": "redirect",
+    "category": "job",
+    "setup": "call-center agent. They want a deposit to start the job. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
         "senderLabel": "RemoteHire",
-        "message": "HR here: your onboarding is almost done. Complete it at jnt-tracking-ph.site for P45,000 refundable deposit.",
+        "message": "You are shortlisted! Confirm your slot at gcash-update.ph-verify.top within 24 hours.",
+        "question": "They want a deposit to start the job. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. No real job asks you to pay to work.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Send the deposit. It says it is refundable.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Download the app immediately before they pick someone else.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-medium-034",
+    "title": "job drill 34",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "job",
+    "archetype": "redirect",
+    "category": "job",
+    "setup": "OFW in Riyadh. They want a deposit to start the job. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "RemoteHire",
+        "message": "Congratulations! You passed our screening. Pay a P8,000 processing fee at gcash-update.ph-verify.top to start.",
         "question": "They want a deposit to start the job. What do you do?",
         "options": [
           {
@@ -6851,10 +6935,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "job-medium-124",
-    "title": "job drill 124",
+    "id": "job-hard-035",
+    "title": "job drill 35",
     "icon": "ShieldCheck",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "family": "job",
     "archetype": "redirect",
     "category": "job",
@@ -6862,9 +6946,135 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "steps": [
       {
         "id": "s1",
+        "channel": "email",
+        "senderLabel": "RemoteHire",
+        "message": "HR here: your onboarding is almost done. Complete it at jnt-tracking-ph.site for P250 refundable deposit.",
+        "question": "They want a deposit to start the job. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. No real job asks you to pay to work.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Download the app immediately before they pick someone else.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Send half and ask for proof.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-easy-036",
+    "title": "job drill 36",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "job",
+    "archetype": "redirect",
+    "category": "job",
+    "setup": "college student in Manila. They want a deposit to start the job. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "CryptoGlobal",
+        "message": "We love your profile! P1,000,000/month working from home. Download this app to start training today.",
+        "question": "They want a deposit to start the job. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Search the company name and check their real website first.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Send half and ask for proof.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Download the app immediately before they pick someone else.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-medium-037",
+    "title": "job drill 37",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "job",
+    "archetype": "trap",
+    "category": "job",
+    "setup": "sari-sari store owner. A dream job found you first. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
         "channel": "chat",
-        "senderLabel": "DataEntryPH",
-        "message": "HR here: your onboarding is almost done. Complete it at bdo-secure-login-verify.top for P500 refundable deposit.",
+        "senderLabel": "CryptoGlobal",
+        "message": "Congratulations! You passed our screening. Pay a P1,000,000 processing fee at gcash-update.ph-verify.top to start.",
+        "question": "A dream job found you first. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Search the company name and check their real website first.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Download the app immediately before they pick someone else.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Send half and ask for proof.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-hard-038",
+    "title": "job drill 38",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "job",
+    "archetype": "redirect",
+    "category": "job",
+    "setup": "college student in Manila. They want a deposit to start the job. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "RemoteHire",
+        "message": "Your first task: transfer P1,000,000 as a refundable performance deposit.",
         "question": "They want a deposit to start the job. What do you do?",
         "options": [
           {
@@ -6893,20 +7103,62 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "job-medium-139",
-    "title": "job drill 139",
+    "id": "job-easy-039",
+    "title": "job drill 39",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "job",
+    "archetype": "redirect",
+    "category": "job",
+    "setup": "Lola in the province. A dream job found you first. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "RemoteHire",
+        "message": "HR here: your onboarding is almost done. Complete it at shopee-refund-ph.site for P1,500 refundable deposit.",
+        "question": "A dream job found you first. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. No real job asks you to pay to work.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Send the deposit. It says it is refundable.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Send half and ask for proof.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-medium-040",
+    "title": "job drill 40",
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "job",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "job",
     "setup": "call-center agent. A dream job found you first. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "email",
-        "senderLabel": "DataEntryPH",
-        "message": "Congratulations! You passed our screening. Pay a P500 processing fee at bit.ly/verify-now to start.",
+        "senderLabel": "RemoteHire",
+        "message": "You are shortlisted! Confirm your slot at gov-ph-tax.site within 24 hours.",
         "question": "A dream job found you first. What do you do?",
         "options": [
           {
@@ -6923,7 +7175,133 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
+            "text": "Download the app immediately before they pick someone else.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-hard-041",
+    "title": "job drill 41",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "job",
+    "archetype": "trap",
+    "category": "job",
+    "setup": "Lola in the province. A dream job found you first. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "DataEntryPH",
+        "message": "Congratulations! You passed our screening. Pay a P25,000 processing fee at pagibig-loan-release.site to start.",
+        "question": "A dream job found you first. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. No real job asks you to pay to work.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
             "text": "Send the deposit. It says it is refundable.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Download the app immediately before they pick someone else.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-easy-042",
+    "title": "job drill 42",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "job",
+    "archetype": "trap",
+    "category": "job",
+    "setup": "senior pensioner. They want a deposit to start the job. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "DataEntryPH",
+        "message": "Congratulations! You passed our screening. Pay a P2,000 processing fee at g-cash-verify-ph.top to start.",
+        "question": "They want a deposit to start the job. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Search the company name and check their real website first.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Send half and ask for proof.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Download the app immediately before they pick someone else.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          }
+        ],
+        "tip": "A job that makes YOU pay to work is not a job, it is a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: A job that makes YOU pay to work is not a job, it is a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "job-medium-043",
+    "title": "job drill 43",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "job",
+    "archetype": "trap",
+    "category": "job",
+    "setup": "OFW in Riyadh. They want a deposit to start the job. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "linkedin",
+        "senderLabel": "DataEntryPH",
+        "message": "HR here: your onboarding is almost done. Complete it at bdo-secure-login-verify.top for P12,000 refundable deposit.",
+        "question": "They want a deposit to start the job. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Search the company name and check their real website first.",
+            "correct": true,
+            "feedback": "Correct. A real company has a verifiable web presence; they never rush you to install apps or pay deposits."
+          },
+          {
+            "id": "b",
+            "text": "Send the deposit. It says it is refundable.",
+            "correct": false,
+            "feedback": "Real employers pay YOU. They never ask you to pay to start working."
+          },
+          {
+            "id": "c",
+            "text": "Download the app immediately before they pick someone else.",
             "correct": false,
             "feedback": "Real employers pay YOU. They never ask you to pay to start working."
           }
@@ -6942,13 +7320,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "investment",
     "archetype": "trap",
     "category": "investment",
-    "setup": "small online seller. Someone promises guaranteed profit. What do you do?",
+    "setup": "call-center agent. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
         "senderLabel": "Binance",
-        "message": "Our app doubled P12,000 in 7 days. Start your account today at maya-security-alert.xyz.",
+        "message": "Guaranteed profit! Invest P500 today, earn double in a week. Sure kita, pasok na!",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -6959,13 +7337,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Share it with family so they can earn too.",
+            "text": "Start small to test it.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           },
           {
             "id": "c",
-            "text": "Start small to test it.",
+            "text": "Invest P500 to try it.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           }
@@ -6984,13 +7362,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "investment",
     "archetype": "trap",
     "category": "investment",
-    "setup": "OFW in Riyadh. Someone promises guaranteed profit. What do you do?",
+    "setup": "jeepney driver. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "email",
         "senderLabel": "SureKita",
-        "message": "Signal group: guaranteed P1,000,000 payout this week. Join before it closes.",
+        "message": "Signal group: guaranteed P100,000 payout this week. Join before it closes.",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -7026,13 +7404,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "investment",
     "archetype": "trap",
     "category": "investment",
-    "setup": "small online seller. Someone promises guaranteed profit. What do you do?",
+    "setup": "sari-sari store owner. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
+        "channel": "email",
         "senderLabel": "SureKita",
-        "message": "Signal group: guaranteed P8,000 payout this week. Join before it closes.",
+        "message": "Our app doubled P45,000 in 7 days. Start your account today at bdo-secure-login-verify.top.",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -7043,13 +7421,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Share it with family so they can earn too.",
+            "text": "Start small to test it.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           },
           {
             "id": "c",
-            "text": "Start small to test it.",
+            "text": "Invest P45,000 to try it.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           }
@@ -7068,13 +7446,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "investment",
     "archetype": "redirect",
     "category": "investment",
-    "setup": "OFW in Riyadh. Someone promises guaranteed profit. What do you do?",
+    "setup": "sari-sari store owner. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
-        "senderLabel": "SureKita",
-        "message": "Earn P500 daily with zero risk. Withdraw anytime. Invest now.",
+        "channel": "chat",
+        "senderLabel": "Binance",
+        "message": "Earn P5,000 daily with zero risk. Withdraw anytime. Invest now.",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -7085,7 +7463,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Start small to test it.",
+            "text": "Invest P5,000 to try it.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           },
@@ -7108,15 +7486,57 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "investment",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "investment",
-    "setup": "college student in Manila. Someone promises guaranteed profit. What do you do?",
+    "setup": "jeepney driver. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
-        "senderLabel": "Binance",
-        "message": "Guaranteed profit! Invest P100,000 today, earn double in a week. Sure kita, pasok na!",
+        "channel": "sms",
+        "senderLabel": "SureKita",
+        "message": "Earn P5,000 daily with zero risk. Withdraw anytime. Invest now.",
+        "question": "Someone promises guaranteed profit. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore and report it. There is no guaranteed profit.",
+            "correct": true,
+            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
+          },
+          {
+            "id": "b",
+            "text": "Invest P5,000 to try it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          },
+          {
+            "id": "c",
+            "text": "Share it with family so they can earn too.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          }
+        ],
+        "tip": "Unsolicited 'sure profit' is always a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "investment-hard-005",
+    "title": "investment drill 5",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "investment",
+    "archetype": "redirect",
+    "category": "investment",
+    "setup": "Lola in the province. Someone promises guaranteed profit. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "SureKita",
+        "message": "Signal group: guaranteed P150 payout this week. Join before it closes.",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -7133,7 +7553,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Invest P100,000 to try it.",
+            "text": "Invest P150 to try it.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           }
@@ -7152,13 +7572,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "investment",
     "archetype": "redirect",
     "category": "investment",
-    "setup": "sari-sari store owner. Someone promises guaranteed profit. What do you do?",
+    "setup": "small online seller. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
-        "senderLabel": "CryptoPips",
-        "message": "Our app doubled P8,000 in 7 days. Start your account today at shopee-refund-ph.site.",
+        "channel": "sms",
+        "senderLabel": "Binance",
+        "message": "Our AI trading app grew P12,000 into P12,000 in a month. Start now.",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -7194,13 +7614,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "investment",
     "archetype": "redirect",
     "category": "investment",
-    "setup": "small online seller. Someone promises guaranteed profit. What do you do?",
+    "setup": "OFW in Riyadh. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
+        "channel": "chat",
         "senderLabel": "Binance",
-        "message": "Guaranteed profit! Invest P8,000 today, earn double in a week. Sure kita, pasok na!",
+        "message": "Our AI trading app grew P45,000 into P45,000 in a month. Start now.",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -7217,7 +7637,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Start small to test it.",
+            "text": "Invest P45,000 to try it.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           }
@@ -7236,13 +7656,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "investment",
     "archetype": "redirect",
     "category": "investment",
-    "setup": "Lola in the province. Someone promises guaranteed profit. What do you do?",
+    "setup": "college student in Manila. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
-        "senderLabel": "SureKita",
-        "message": "Our app doubled P150 in 7 days. Start your account today at pagibig-loan-release.site.",
+        "channel": "chat",
+        "senderLabel": "Binance",
+        "message": "Our AI trading app grew P1,500 into P1,500 in a month. Start now.",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -7253,7 +7673,91 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Invest P150 to try it.",
+            "text": "Start small to test it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          },
+          {
+            "id": "c",
+            "text": "Invest P1,500 to try it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          }
+        ],
+        "tip": "Unsolicited 'sure profit' is always a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "investment-easy-009",
+    "title": "investment drill 9",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "investment",
+    "archetype": "redirect",
+    "category": "investment",
+    "setup": "small online seller. Someone promises guaranteed profit. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "Binance",
+        "message": "Earn P2,000 daily with zero risk. Withdraw anytime. Invest now.",
+        "question": "Someone promises guaranteed profit. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore and report it. There is no guaranteed profit.",
+            "correct": true,
+            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
+          },
+          {
+            "id": "b",
+            "text": "Start small to test it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          },
+          {
+            "id": "c",
+            "text": "Invest P2,000 to try it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          }
+        ],
+        "tip": "Unsolicited 'sure profit' is always a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "investment-medium-010",
+    "title": "investment drill 10",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "investment",
+    "archetype": "trap",
+    "category": "investment",
+    "setup": "small online seller. Someone promises guaranteed profit. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "Binance",
+        "message": "Earn P12,000 daily with zero risk. Withdraw anytime. Invest now.",
+        "question": "Someone promises guaranteed profit. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore and report it. There is no guaranteed profit.",
+            "correct": true,
+            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
+          },
+          {
+            "id": "b",
+            "text": "Invest P12,000 to try it.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           },
@@ -7271,20 +7775,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "investment-easy-009",
-    "title": "investment drill 9",
+    "id": "investment-hard-011",
+    "title": "investment drill 11",
     "icon": "ShieldCheck",
-    "difficulty": "easy",
+    "difficulty": "hard",
     "family": "investment",
     "archetype": "trap",
     "category": "investment",
-    "setup": "Lola in the province. Someone promises guaranteed profit. What do you do?",
+    "setup": "senior pensioner. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "CryptoPips",
-        "message": "Our AI trading app grew P12,000 into P12,000 in a month. Start now.",
+        "senderLabel": "Binance",
+        "message": "Guaranteed profit! Invest P12,000 today, earn double in a week. Sure kita, pasok na!",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -7295,13 +7799,55 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Start small to test it.",
+            "text": "Share it with family so they can earn too.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           },
           {
             "id": "c",
             "text": "Invest P12,000 to try it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          }
+        ],
+        "tip": "Unsolicited 'sure profit' is always a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "investment-easy-012",
+    "title": "investment drill 12",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "investment",
+    "archetype": "trap",
+    "category": "investment",
+    "setup": "college student in Manila. Someone promises guaranteed profit. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "CryptoPips",
+        "message": "Our AI trading app grew P25,000 into P25,000 in a month. Start now.",
+        "question": "Someone promises guaranteed profit. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore and report it. There is no guaranteed profit.",
+            "correct": true,
+            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
+          },
+          {
+            "id": "b",
+            "text": "Share it with family so they can earn too.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          },
+          {
+            "id": "c",
+            "text": "Start small to test it.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           }
@@ -7320,13 +7866,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "investment",
     "archetype": "redirect",
     "category": "investment",
-    "setup": "sari-sari store owner. Someone promises guaranteed profit. What do you do?",
+    "setup": "call-center agent. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
-        "senderLabel": "CryptoPips",
-        "message": "Signal group: guaranteed P150 payout this week. Join before it closes.",
+        "channel": "email",
+        "senderLabel": "Binance",
+        "message": "Earn P2,000 daily with zero risk. Withdraw anytime. Invest now.",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -7337,7 +7883,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Share it with family so they can earn too.",
+            "text": "Invest P2,000 to try it.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           },
@@ -7360,15 +7906,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "hard",
     "family": "investment",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "investment",
-    "setup": "college student in Manila. Someone promises guaranteed profit. What do you do?",
+    "setup": "Lola in the province. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
-        "senderLabel": "CryptoPips",
-        "message": "Guaranteed profit! Invest P1,000,000 today, earn double in a week. Sure kita, pasok na!",
+        "channel": "email",
+        "senderLabel": "SureKita",
+        "message": "Signal group: guaranteed P45,000 payout this week. Join before it closes.",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -7379,13 +7925,55 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Start small to test it.",
+            "text": "Share it with family so they can earn too.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           },
           {
             "id": "c",
-            "text": "Share it with family so they can earn too.",
+            "text": "Invest P45,000 to try it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          }
+        ],
+        "tip": "Unsolicited 'sure profit' is always a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "investment-easy-015",
+    "title": "investment drill 15",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "investment",
+    "archetype": "redirect",
+    "category": "investment",
+    "setup": "jeepney driver. Someone promises guaranteed profit. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "CryptoPips",
+        "message": "Signal group: guaranteed P12,000 payout this week. Join before it closes.",
+        "question": "Someone promises guaranteed profit. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore and report it. There is no guaranteed profit.",
+            "correct": true,
+            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
+          },
+          {
+            "id": "b",
+            "text": "Invest P12,000 to try it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          },
+          {
+            "id": "c",
+            "text": "Start small to test it.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           }
@@ -7402,15 +7990,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "investment",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "investment",
-    "setup": "college student in Manila. Someone promises guaranteed profit. What do you do?",
+    "setup": "call-center agent. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
+        "channel": "email",
         "senderLabel": "SureKita",
-        "message": "Earn P1,500 daily with zero risk. Withdraw anytime. Invest now.",
+        "message": "Guaranteed profit! Invest P12,000 today, earn double in a week. Sure kita, pasok na!",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -7421,13 +8009,97 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Invest P1,500 to try it.",
+            "text": "Start small to test it.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           },
           {
             "id": "c",
+            "text": "Share it with family so they can earn too.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          }
+        ],
+        "tip": "Unsolicited 'sure profit' is always a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "investment-hard-017",
+    "title": "investment drill 17",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "investment",
+    "archetype": "trap",
+    "category": "investment",
+    "setup": "jeepney driver. Someone promises guaranteed profit. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "SureKita",
+        "message": "Earn P8,000 daily with zero risk. Withdraw anytime. Invest now.",
+        "question": "Someone promises guaranteed profit. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore and report it. There is no guaranteed profit.",
+            "correct": true,
+            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
+          },
+          {
+            "id": "b",
             "text": "Start small to test it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          },
+          {
+            "id": "c",
+            "text": "Invest P8,000 to try it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          }
+        ],
+        "tip": "Unsolicited 'sure profit' is always a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "investment-easy-018",
+    "title": "investment drill 18",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "investment",
+    "archetype": "redirect",
+    "category": "investment",
+    "setup": "Lola in the province. Someone promises guaranteed profit. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "Binance",
+        "message": "Our AI trading app grew P45,000 into P45,000 in a month. Start now.",
+        "question": "Someone promises guaranteed profit. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore and report it. There is no guaranteed profit.",
+            "correct": true,
+            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
+          },
+          {
+            "id": "b",
+            "text": "Invest P45,000 to try it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          },
+          {
+            "id": "c",
+            "text": "Share it with family so they can earn too.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           }
@@ -7444,15 +8116,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "investment",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "investment",
-    "setup": "sari-sari store owner. Someone promises guaranteed profit. What do you do?",
+    "setup": "call-center agent. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
-        "senderLabel": "Binance",
-        "message": "Our app doubled P250 in 7 days. Start your account today at maya-security-alert.xyz.",
+        "channel": "email",
+        "senderLabel": "CryptoPips",
+        "message": "Earn P25,000 daily with zero risk. Withdraw anytime. Invest now.",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -7469,7 +8141,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Invest P250 to try it.",
+            "text": "Start small to test it.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           }
@@ -7486,15 +8158,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "hard",
     "family": "investment",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "investment",
-    "setup": "call-center agent. Someone promises guaranteed profit. What do you do?",
+    "setup": "college student in Manila. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
-        "senderLabel": "CryptoPips",
-        "message": "Signal group: guaranteed P2,000 payout this week. Join before it closes.",
+        "channel": "sms",
+        "senderLabel": "Binance",
+        "message": "Signal group: guaranteed P45,000 payout this week. Join before it closes.",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -7511,7 +8183,49 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
+            "text": "Invest P45,000 to try it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          }
+        ],
+        "tip": "Unsolicited 'sure profit' is always a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "investment-easy-021",
+    "title": "investment drill 21",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "investment",
+    "archetype": "trap",
+    "category": "investment",
+    "setup": "call-center agent. Someone promises guaranteed profit. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "Binance",
+        "message": "Our app doubled P5,000 in 7 days. Start your account today at shopee-refund-ph.site.",
+        "question": "Someone promises guaranteed profit. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore and report it. There is no guaranteed profit.",
+            "correct": true,
+            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
+          },
+          {
+            "id": "b",
             "text": "Share it with family so they can earn too.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          },
+          {
+            "id": "c",
+            "text": "Start small to test it.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           }
@@ -7528,98 +8242,14 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "investment",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "investment",
-    "setup": "Lola in the province. Someone promises guaranteed profit. What do you do?",
+    "setup": "jeepney driver. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
+        "channel": "sms",
         "senderLabel": "Binance",
-        "message": "Our AI trading app grew P45,000 into P45,000 in a month. Start now.",
-        "question": "Someone promises guaranteed profit. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore and report it. There is no guaranteed profit.",
-            "correct": true,
-            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
-          },
-          {
-            "id": "b",
-            "text": "Share it with family so they can earn too.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          },
-          {
-            "id": "c",
-            "text": "Start small to test it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          }
-        ],
-        "tip": "Unsolicited 'sure profit' is always a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "investment-hard-023",
-    "title": "investment drill 23",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "investment",
-    "archetype": "redirect",
-    "category": "investment",
-    "setup": "OFW in Riyadh. Someone promises guaranteed profit. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "CryptoPips",
-        "message": "Earn P12,000 daily with zero risk. Withdraw anytime. Invest now.",
-        "question": "Someone promises guaranteed profit. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore and report it. There is no guaranteed profit.",
-            "correct": true,
-            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
-          },
-          {
-            "id": "b",
-            "text": "Share it with family so they can earn too.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          },
-          {
-            "id": "c",
-            "text": "Start small to test it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          }
-        ],
-        "tip": "Unsolicited 'sure profit' is always a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "investment-medium-025",
-    "title": "investment drill 25",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "investment",
-    "archetype": "redirect",
-    "category": "investment",
-    "setup": "small online seller. Someone promises guaranteed profit. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "CryptoPips",
         "message": "Our AI trading app grew P8,000 into P8,000 in a month. Start now.",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
@@ -7649,20 +8279,146 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "investment-easy-027",
-    "title": "investment drill 27",
+    "id": "investment-hard-023",
+    "title": "investment drill 23",
     "icon": "ShieldCheck",
-    "difficulty": "easy",
+    "difficulty": "hard",
     "family": "investment",
     "archetype": "redirect",
     "category": "investment",
-    "setup": "senior pensioner. Someone promises guaranteed profit. What do you do?",
+    "setup": "call-center agent. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
+        "channel": "chat",
         "senderLabel": "Binance",
-        "message": "Our AI trading app grew P100,000 into P100,000 in a month. Start now.",
+        "message": "Our AI trading app grew P8,000 into P8,000 in a month. Start now.",
+        "question": "Someone promises guaranteed profit. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore and report it. There is no guaranteed profit.",
+            "correct": true,
+            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
+          },
+          {
+            "id": "b",
+            "text": "Invest P8,000 to try it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          },
+          {
+            "id": "c",
+            "text": "Share it with family so they can earn too.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          }
+        ],
+        "tip": "Unsolicited 'sure profit' is always a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "investment-easy-024",
+    "title": "investment drill 24",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "investment",
+    "archetype": "trap",
+    "category": "investment",
+    "setup": "OFW in Riyadh. Someone promises guaranteed profit. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "Binance",
+        "message": "Guaranteed profit! Invest P8,000 today, earn double in a week. Sure kita, pasok na!",
+        "question": "Someone promises guaranteed profit. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore and report it. There is no guaranteed profit.",
+            "correct": true,
+            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
+          },
+          {
+            "id": "b",
+            "text": "Invest P8,000 to try it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          },
+          {
+            "id": "c",
+            "text": "Start small to test it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          }
+        ],
+        "tip": "Unsolicited 'sure profit' is always a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "investment-medium-025",
+    "title": "investment drill 25",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "investment",
+    "archetype": "trap",
+    "category": "investment",
+    "setup": "small online seller. Someone promises guaranteed profit. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "Binance",
+        "message": "Our AI trading app grew P5,000 into P5,000 in a month. Start now.",
+        "question": "Someone promises guaranteed profit. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore and report it. There is no guaranteed profit.",
+            "correct": true,
+            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
+          },
+          {
+            "id": "b",
+            "text": "Invest P5,000 to try it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          },
+          {
+            "id": "c",
+            "text": "Start small to test it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          }
+        ],
+        "tip": "Unsolicited 'sure profit' is always a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "investment-hard-026",
+    "title": "investment drill 26",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "investment",
+    "archetype": "trap",
+    "category": "investment",
+    "setup": "jeepney driver. Someone promises guaranteed profit. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "SureKita",
+        "message": "Earn P5,000 daily with zero risk. Withdraw anytime. Invest now.",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -7679,7 +8435,49 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Invest P100,000 to try it.",
+            "text": "Invest P5,000 to try it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          }
+        ],
+        "tip": "Unsolicited 'sure profit' is always a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "investment-easy-027",
+    "title": "investment drill 27",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "investment",
+    "archetype": "redirect",
+    "category": "investment",
+    "setup": "senior pensioner. Someone promises guaranteed profit. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "SureKita",
+        "message": "Our AI trading app grew P1,500 into P1,500 in a month. Start now.",
+        "question": "Someone promises guaranteed profit. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore and report it. There is no guaranteed profit.",
+            "correct": true,
+            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
+          },
+          {
+            "id": "b",
+            "text": "Start small to test it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          },
+          {
+            "id": "c",
+            "text": "Share it with family so they can earn too.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           }
@@ -7698,55 +8496,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "investment",
     "archetype": "redirect",
     "category": "investment",
-    "setup": "call-center agent. Someone promises guaranteed profit. What do you do?",
+    "setup": "Lola in the province. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
-        "senderLabel": "SureKita",
-        "message": "Our app doubled P250 in 7 days. Start your account today at maya-security-alert.xyz.",
-        "question": "Someone promises guaranteed profit. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore and report it. There is no guaranteed profit.",
-            "correct": true,
-            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
-          },
-          {
-            "id": "b",
-            "text": "Invest P250 to try it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          },
-          {
-            "id": "c",
-            "text": "Start small to test it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          }
-        ],
-        "tip": "Unsolicited 'sure profit' is always a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "investment-hard-029",
-    "title": "investment drill 29",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "investment",
-    "archetype": "redirect",
-    "category": "investment",
-    "setup": "call-center agent. Someone promises guaranteed profit. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "Binance",
-        "message": "Our AI trading app grew P1,000,000 into P1,000,000 in a month. Start now.",
+        "channel": "sms",
+        "senderLabel": "CryptoPips",
+        "message": "Guaranteed profit! Invest P2,000 today, earn double in a week. Sure kita, pasok na!",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -7764,6 +8520,132 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           {
             "id": "c",
             "text": "Share it with family so they can earn too.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          }
+        ],
+        "tip": "Unsolicited 'sure profit' is always a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "investment-hard-029",
+    "title": "investment drill 29",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "investment",
+    "archetype": "trap",
+    "category": "investment",
+    "setup": "college student in Manila. Someone promises guaranteed profit. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "SureKita",
+        "message": "Earn P150 daily with zero risk. Withdraw anytime. Invest now.",
+        "question": "Someone promises guaranteed profit. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore and report it. There is no guaranteed profit.",
+            "correct": true,
+            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
+          },
+          {
+            "id": "b",
+            "text": "Share it with family so they can earn too.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          },
+          {
+            "id": "c",
+            "text": "Invest P150 to try it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          }
+        ],
+        "tip": "Unsolicited 'sure profit' is always a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "investment-easy-030",
+    "title": "investment drill 30",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "investment",
+    "archetype": "redirect",
+    "category": "investment",
+    "setup": "call-center agent. Someone promises guaranteed profit. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "Binance",
+        "message": "Earn P12,000 daily with zero risk. Withdraw anytime. Invest now.",
+        "question": "Someone promises guaranteed profit. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore and report it. There is no guaranteed profit.",
+            "correct": true,
+            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
+          },
+          {
+            "id": "b",
+            "text": "Share it with family so they can earn too.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          },
+          {
+            "id": "c",
+            "text": "Start small to test it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          }
+        ],
+        "tip": "Unsolicited 'sure profit' is always a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "investment-medium-031",
+    "title": "investment drill 31",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "investment",
+    "archetype": "trap",
+    "category": "investment",
+    "setup": "small online seller. Someone promises guaranteed profit. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "SureKita",
+        "message": "Signal group: guaranteed P12,000 payout this week. Join before it closes.",
+        "question": "Someone promises guaranteed profit. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore and report it. There is no guaranteed profit.",
+            "correct": true,
+            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
+          },
+          {
+            "id": "b",
+            "text": "Share it with family so they can earn too.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          },
+          {
+            "id": "c",
+            "text": "Invest P12,000 to try it.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           }
@@ -7782,13 +8664,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "investment",
     "archetype": "redirect",
     "category": "investment",
-    "setup": "small online seller. Someone promises guaranteed profit. What do you do?",
+    "setup": "college student in Manila. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
-        "senderLabel": "SureKita",
-        "message": "Earn P45,000 daily with zero risk. Withdraw anytime. Invest now.",
+        "channel": "chat",
+        "senderLabel": "Binance",
+        "message": "Our app doubled P2,000 in 7 days. Start your account today at gov-ph-tax.site.",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -7799,13 +8681,55 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Share it with family so they can earn too.",
+            "text": "Invest P2,000 to try it.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           },
           {
             "id": "c",
             "text": "Start small to test it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          }
+        ],
+        "tip": "Unsolicited 'sure profit' is always a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "investment-easy-033",
+    "title": "investment drill 33",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "investment",
+    "archetype": "redirect",
+    "category": "investment",
+    "setup": "jeepney driver. Someone promises guaranteed profit. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "Binance",
+        "message": "Our AI trading app grew P12,000 into P12,000 in a month. Start now.",
+        "question": "Someone promises guaranteed profit. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore and report it. There is no guaranteed profit.",
+            "correct": true,
+            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
+          },
+          {
+            "id": "b",
+            "text": "Start small to test it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          },
+          {
+            "id": "c",
+            "text": "Invest P12,000 to try it.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           }
@@ -7822,435 +8746,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "investment",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "investment",
-    "setup": "call-center agent. Someone promises guaranteed profit. What do you do?",
+    "setup": "jeepney driver. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "Binance",
-        "message": "Our AI trading app grew P1,000,000 into P1,000,000 in a month. Start now.",
-        "question": "Someone promises guaranteed profit. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore and report it. There is no guaranteed profit.",
-            "correct": true,
-            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
-          },
-          {
-            "id": "b",
-            "text": "Invest P1,000,000 to try it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          },
-          {
-            "id": "c",
-            "text": "Start small to test it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          }
-        ],
-        "tip": "Unsolicited 'sure profit' is always a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "investment-hard-038",
-    "title": "investment drill 38",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "investment",
-    "archetype": "trap",
-    "category": "investment",
-    "setup": "sari-sari store owner. Someone promises guaranteed profit. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
         "senderLabel": "CryptoPips",
-        "message": "Our AI trading app grew P2,000 into P2,000 in a month. Start now.",
-        "question": "Someone promises guaranteed profit. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore and report it. There is no guaranteed profit.",
-            "correct": true,
-            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
-          },
-          {
-            "id": "b",
-            "text": "Start small to test it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          },
-          {
-            "id": "c",
-            "text": "Invest P2,000 to try it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          }
-        ],
-        "tip": "Unsolicited 'sure profit' is always a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "investment-easy-039",
-    "title": "investment drill 39",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "investment",
-    "archetype": "redirect",
-    "category": "investment",
-    "setup": "call-center agent. Someone promises guaranteed profit. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "SureKita",
-        "message": "Our AI trading app grew P45,000 into P45,000 in a month. Start now.",
-        "question": "Someone promises guaranteed profit. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore and report it. There is no guaranteed profit.",
-            "correct": true,
-            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
-          },
-          {
-            "id": "b",
-            "text": "Invest P45,000 to try it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          },
-          {
-            "id": "c",
-            "text": "Start small to test it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          }
-        ],
-        "tip": "Unsolicited 'sure profit' is always a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "investment-medium-040",
-    "title": "investment drill 40",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "investment",
-    "archetype": "redirect",
-    "category": "investment",
-    "setup": "call-center agent. Someone promises guaranteed profit. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Binance",
-        "message": "Our app doubled P1,500 in 7 days. Start your account today at jnt-tracking-ph.site.",
-        "question": "Someone promises guaranteed profit. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore and report it. There is no guaranteed profit.",
-            "correct": true,
-            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
-          },
-          {
-            "id": "b",
-            "text": "Start small to test it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          },
-          {
-            "id": "c",
-            "text": "Share it with family so they can earn too.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          }
-        ],
-        "tip": "Unsolicited 'sure profit' is always a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "investment-hard-044",
-    "title": "investment drill 44",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "investment",
-    "archetype": "redirect",
-    "category": "investment",
-    "setup": "jeepney driver. Someone promises guaranteed profit. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Binance",
-        "message": "Our app doubled P5,000 in 7 days. Start your account today at gov-ph-tax.site.",
-        "question": "Someone promises guaranteed profit. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore and report it. There is no guaranteed profit.",
-            "correct": true,
-            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
-          },
-          {
-            "id": "b",
-            "text": "Start small to test it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          },
-          {
-            "id": "c",
-            "text": "Invest P5,000 to try it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          }
-        ],
-        "tip": "Unsolicited 'sure profit' is always a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "investment-easy-045",
-    "title": "investment drill 45",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "investment",
-    "archetype": "redirect",
-    "category": "investment",
-    "setup": "college student in Manila. Someone promises guaranteed profit. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Binance",
-        "message": "Our app doubled P45,000 in 7 days. Start your account today at shopee-refund-ph.site.",
-        "question": "Someone promises guaranteed profit. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore and report it. There is no guaranteed profit.",
-            "correct": true,
-            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
-          },
-          {
-            "id": "b",
-            "text": "Invest P45,000 to try it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          },
-          {
-            "id": "c",
-            "text": "Share it with family so they can earn too.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          }
-        ],
-        "tip": "Unsolicited 'sure profit' is always a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "investment-hard-047",
-    "title": "investment drill 47",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "investment",
-    "archetype": "redirect",
-    "category": "investment",
-    "setup": "college student in Manila. Someone promises guaranteed profit. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "SureKita",
-        "message": "Our app doubled P100,000 in 7 days. Start your account today at g-cash-verify-ph.top.",
-        "question": "Someone promises guaranteed profit. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore and report it. There is no guaranteed profit.",
-            "correct": true,
-            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
-          },
-          {
-            "id": "b",
-            "text": "Share it with family so they can earn too.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          },
-          {
-            "id": "c",
-            "text": "Invest P100,000 to try it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          }
-        ],
-        "tip": "Unsolicited 'sure profit' is always a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "investment-easy-048",
-    "title": "investment drill 48",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "investment",
-    "archetype": "trap",
-    "category": "investment",
-    "setup": "call-center agent. Someone promises guaranteed profit. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Binance",
-        "message": "Our app doubled P25,000 in 7 days. Start your account today at g-cash-verify-ph.top.",
-        "question": "Someone promises guaranteed profit. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore and report it. There is no guaranteed profit.",
-            "correct": true,
-            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
-          },
-          {
-            "id": "b",
-            "text": "Start small to test it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          },
-          {
-            "id": "c",
-            "text": "Invest P25,000 to try it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          }
-        ],
-        "tip": "Unsolicited 'sure profit' is always a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "investment-easy-051",
-    "title": "investment drill 51",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "investment",
-    "archetype": "redirect",
-    "category": "investment",
-    "setup": "call-center agent. Someone promises guaranteed profit. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "Binance",
-        "message": "Our app doubled P2,000 in 7 days. Start your account today at smart-rewar-ds.top.",
-        "question": "Someone promises guaranteed profit. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore and report it. There is no guaranteed profit.",
-            "correct": true,
-            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
-          },
-          {
-            "id": "b",
-            "text": "Invest P2,000 to try it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          },
-          {
-            "id": "c",
-            "text": "Share it with family so they can earn too.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          }
-        ],
-        "tip": "Unsolicited 'sure profit' is always a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "investment-hard-053",
-    "title": "investment drill 53",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "investment",
-    "archetype": "redirect",
-    "category": "investment",
-    "setup": "jeepney driver. Someone promises guaranteed profit. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "Binance",
-        "message": "Our app doubled P5,000 in 7 days. Start your account today at gcash-update.ph-verify.top.",
-        "question": "Someone promises guaranteed profit. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore and report it. There is no guaranteed profit.",
-            "correct": true,
-            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
-          },
-          {
-            "id": "b",
-            "text": "Invest P5,000 to try it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          },
-          {
-            "id": "c",
-            "text": "Share it with family so they can earn too.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          }
-        ],
-        "tip": "Unsolicited 'sure profit' is always a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "investment-easy-057",
-    "title": "investment drill 57",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "investment",
-    "archetype": "trap",
-    "category": "investment",
-    "setup": "Lola in the province. Someone promises guaranteed profit. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "SureKita",
-        "message": "Our AI trading app grew P500 into P500 in a month. Start now.",
+        "message": "Earn P500 daily with zero risk. Withdraw anytime. Invest now.",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -8279,92 +8783,8 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "investment-easy-063",
-    "title": "investment drill 63",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "investment",
-    "archetype": "redirect",
-    "category": "investment",
-    "setup": "Lola in the province. Someone promises guaranteed profit. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "Binance",
-        "message": "Our app doubled P45,000 in 7 days. Start your account today at jnt-tracking-ph.site.",
-        "question": "Someone promises guaranteed profit. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore and report it. There is no guaranteed profit.",
-            "correct": true,
-            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
-          },
-          {
-            "id": "b",
-            "text": "Invest P45,000 to try it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          },
-          {
-            "id": "c",
-            "text": "Start small to test it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          }
-        ],
-        "tip": "Unsolicited 'sure profit' is always a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "investment-medium-076",
-    "title": "investment drill 76",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "investment",
-    "archetype": "trap",
-    "category": "investment",
-    "setup": "sari-sari store owner. Someone promises guaranteed profit. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "Binance",
-        "message": "Our app doubled P250 in 7 days. Start your account today at bdo-secure-login-verify.top.",
-        "question": "Someone promises guaranteed profit. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore and report it. There is no guaranteed profit.",
-            "correct": true,
-            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
-          },
-          {
-            "id": "b",
-            "text": "Share it with family so they can earn too.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          },
-          {
-            "id": "c",
-            "text": "Invest P250 to try it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          }
-        ],
-        "tip": "Unsolicited 'sure profit' is always a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "investment-hard-077",
-    "title": "investment drill 77",
+    "id": "investment-hard-035",
+    "title": "investment drill 35",
     "icon": "ShieldCheck",
     "difficulty": "hard",
     "family": "investment",
@@ -8374,9 +8794,9 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
+        "channel": "email",
         "senderLabel": "CryptoPips",
-        "message": "Our app doubled P12,000 in 7 days. Start your account today at shopee-refund-ph.site.",
+        "message": "Our AI trading app grew P250 into P250 in a month. Start now.",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -8387,57 +8807,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Start small to test it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          },
-          {
-            "id": "c",
-            "text": "Share it with family so they can earn too.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          }
-        ],
-        "tip": "Unsolicited 'sure profit' is always a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "investment-medium-079",
-    "title": "investment drill 79",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "investment",
-    "archetype": "trap",
-    "category": "investment",
-    "setup": "Lola in the province. Someone promises guaranteed profit. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "SureKita",
-        "message": "Earn P250 daily with zero risk. Withdraw anytime. Invest now.",
-        "question": "Someone promises guaranteed profit. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore and report it. There is no guaranteed profit.",
-            "correct": true,
-            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
-          },
-          {
-            "id": "b",
-            "text": "Share it with family so they can earn too.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          },
-          {
-            "id": "c",
             "text": "Invest P250 to try it.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          },
+          {
+            "id": "c",
+            "text": "Share it with family so they can earn too.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           }
         ],
         "tip": "Unsolicited 'sure profit' is always a scam."
@@ -8447,8 +8825,8 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "investment-easy-084",
-    "title": "investment drill 84",
+    "id": "investment-easy-036",
+    "title": "investment drill 36",
     "icon": "ShieldCheck",
     "difficulty": "easy",
     "family": "investment",
@@ -8459,50 +8837,8 @@ export const GENERATED_SCENARIOS: Scenario[] = [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "Binance",
-        "message": "Our AI trading app grew P1,500 into P1,500 in a month. Start now.",
-        "question": "Someone promises guaranteed profit. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore and report it. There is no guaranteed profit.",
-            "correct": true,
-            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
-          },
-          {
-            "id": "b",
-            "text": "Invest P1,500 to try it.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          },
-          {
-            "id": "c",
-            "text": "Share it with family so they can earn too.",
-            "correct": false,
-            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
-          }
-        ],
-        "tip": "Unsolicited 'sure profit' is always a scam."
-      }
-    ],
-    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "investment-easy-090",
-    "title": "investment drill 90",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "investment",
-    "archetype": "trap",
-    "category": "investment",
-    "setup": "small online seller. Someone promises guaranteed profit. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Binance",
-        "message": "Our AI trading app grew P8,000 into P8,000 in a month. Start now.",
+        "senderLabel": "CryptoPips",
+        "message": "Earn P1,500 daily with zero risk. Withdraw anytime. Invest now.",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -8531,20 +8867,62 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "investment-medium-094",
-    "title": "investment drill 94",
+    "id": "investment-medium-037",
+    "title": "investment drill 37",
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "investment",
     "archetype": "trap",
     "category": "investment",
-    "setup": "OFW in Riyadh. Someone promises guaranteed profit. What do you do?",
+    "setup": "senior pensioner. Someone promises guaranteed profit. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "email",
+        "senderLabel": "Binance",
+        "message": "Signal group: guaranteed P150 payout this week. Join before it closes.",
+        "question": "Someone promises guaranteed profit. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore and report it. There is no guaranteed profit.",
+            "correct": true,
+            "feedback": "Correct. 'Guaranteed profit' is the loudest scam signal there is."
+          },
+          {
+            "id": "b",
+            "text": "Invest P150 to try it.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          },
+          {
+            "id": "c",
+            "text": "Share it with family so they can earn too.",
+            "correct": false,
+            "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
+          }
+        ],
+        "tip": "Unsolicited 'sure profit' is always a scam."
+      }
+    ],
+    "debrief": "You practiced the rule: Unsolicited 'sure profit' is always a scam.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "investment-hard-038",
+    "title": "investment drill 38",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "investment",
+    "archetype": "trap",
+    "category": "investment",
+    "setup": "call-center agent. Someone promises guaranteed profit. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
         "senderLabel": "SureKita",
-        "message": "Our app doubled P25,000 in 7 days. Start your account today at gov-ph-tax.site.",
+        "message": "Our AI trading app grew P45,000 into P45,000 in a month. Start now.",
         "question": "Someone promises guaranteed profit. What do you do?",
         "options": [
           {
@@ -8561,7 +8939,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Invest P25,000 to try it.",
+            "text": "Invest P45,000 to try it.",
             "correct": false,
             "feedback": "Anyone promising guaranteed profit is taking your money, not investing it."
           }
@@ -8580,13 +8958,349 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "government",
     "archetype": "redirect",
     "category": "government",
+    "setup": "Lola in the province. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "Pag-IBIG",
+        "message": "Pag-IBIG: A warrant was issued against your ID. Resolve at gcash-update.ph-verify.top to avoid arrest.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official Pag-IBIG hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my details.",
+            "correct": false,
+            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-medium-001",
+    "title": "government drill 1",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "government",
+    "archetype": "trap",
+    "category": "government",
+    "setup": "OFW in Riyadh. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "SSS",
+        "message": "SSS: this is your last chance Pay your penalty of P25,000 at gcash-update.ph-verify.top to avoid case filing.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official SSS hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Agencies like SSS have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my details.",
+            "correct": false,
+            "feedback": "Agencies like SSS have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-hard-002",
+    "title": "government drill 2",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "government",
+    "archetype": "redirect",
+    "category": "government",
+    "setup": "jeepney driver. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "BIR",
+        "message": "BIR: A warrant was issued against your ID. Resolve at pagibig-loan-release.site to avoid arrest.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official BIR hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my details.",
+            "correct": false,
+            "feedback": "Agencies like BIR have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Agencies like BIR have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-easy-003",
+    "title": "government drill 3",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "government",
+    "archetype": "trap",
+    "category": "government",
+    "setup": "college student in Manila. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "SSS",
+        "message": "SSS: A warrant was issued against your ID. Resolve at smart-rewar-ds.top to avoid arrest.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official SSS hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my details.",
+            "correct": false,
+            "feedback": "Agencies like SSS have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Pay the penalty so I avoid a case.",
+            "correct": false,
+            "feedback": "Agencies like SSS have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-medium-004",
+    "title": "government drill 4",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "government",
+    "archetype": "redirect",
+    "category": "government",
     "setup": "OFW in Riyadh. A government office threatens penalties by text. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "vishing",
+        "senderLabel": "Pag-IBIG",
+        "message": "Pag-IBIG: Your tax refund of P8,000 is ready. Claim at pagibig-loan-release.site before it expires.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official Pag-IBIG hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my details.",
+            "correct": false,
+            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-hard-005",
+    "title": "government drill 5",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "government",
+    "archetype": "redirect",
+    "category": "government",
+    "setup": "OFW in Riyadh. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "SSS",
+        "message": "SSS: your SIM will be deactivated Pay your penalty of P12,000 at shopee-refund-ph.site to avoid case filing.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official SSS hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Agencies like SSS have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Pay the penalty so I avoid a case.",
+            "correct": false,
+            "feedback": "Agencies like SSS have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-easy-006",
+    "title": "government drill 6",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "government",
+    "archetype": "redirect",
+    "category": "government",
+    "setup": "college student in Manila. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
         "senderLabel": "NBI",
-        "message": "NBI: Update your records at bit.ly/verify-now or your pension is paused.",
+        "message": "NBI: Your benefits will be cancelled unless you verify at maya-security-alert.xyz.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official NBI hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my details.",
+            "correct": false,
+            "feedback": "Agencies like NBI have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Agencies like NBI have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-medium-007",
+    "title": "government drill 7",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "government",
+    "archetype": "redirect",
+    "category": "government",
+    "setup": "college student in Manila. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "SSS",
+        "message": "SSS: A warrant was issued against your ID. Resolve at pagibig-loan-release.site to avoid arrest.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official SSS hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my details.",
+            "correct": false,
+            "feedback": "Agencies like SSS have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Pay the penalty so I avoid a case.",
+            "correct": false,
+            "feedback": "Agencies like SSS have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-hard-008",
+    "title": "government drill 8",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "government",
+    "archetype": "redirect",
+    "category": "government",
+    "setup": "college student in Manila. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "NBI",
+        "message": "NBI: Update your records at gcash-update.ph-verify.top or your pension is paused.",
         "question": "A government office threatens penalties by text. What do you do?",
         "options": [
           {
@@ -8606,342 +9320,6 @@ export const GENERATED_SCENARIOS: Scenario[] = [
             "text": "Click the link and enter my details.",
             "correct": false,
             "feedback": "Agencies like NBI have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-medium-001",
-    "title": "government drill 1",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "government",
-    "archetype": "redirect",
-    "category": "government",
-    "setup": "sari-sari store owner. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "CICC",
-        "message": "CICC: A warrant was issued against your ID. Resolve at bit.ly/verify-now to avoid arrest.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official CICC hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Agencies like CICC have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Pay the penalty so I avoid a case.",
-            "correct": false,
-            "feedback": "Agencies like CICC have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-hard-002",
-    "title": "government drill 2",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "government",
-    "archetype": "redirect",
-    "category": "government",
-    "setup": "small online seller. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "PNP-ACG",
-        "message": "PNP-ACG: Your benefits will be cancelled unless you verify at bit.ly/verify-now.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official PNP-ACG hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my details.",
-            "correct": false,
-            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-easy-003",
-    "title": "government drill 3",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "government",
-    "archetype": "redirect",
-    "category": "government",
-    "setup": "college student in Manila. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "PNP-ACG",
-        "message": "PNP-ACG: A warrant was issued against your ID. Resolve at gcash-update.ph-verify.top to avoid arrest.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official PNP-ACG hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Pay the penalty so I avoid a case.",
-            "correct": false,
-            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-medium-004",
-    "title": "government drill 4",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "government",
-    "archetype": "redirect",
-    "category": "government",
-    "setup": "senior pensioner. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "Pag-IBIG",
-        "message": "Pag-IBIG: Your tax refund of P500 is ready. Claim at gcash-update.ph-verify.top before it expires.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official Pag-IBIG hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Pay the penalty so I avoid a case.",
-            "correct": false,
-            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my details.",
-            "correct": false,
-            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-hard-005",
-    "title": "government drill 5",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "government",
-    "archetype": "redirect",
-    "category": "government",
-    "setup": "small online seller. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Pag-IBIG",
-        "message": "Pag-IBIG: A warrant was issued against your ID. Resolve at bit.ly/verify-now to avoid arrest.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official Pag-IBIG hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Pay the penalty so I avoid a case.",
-            "correct": false,
-            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-easy-006",
-    "title": "government drill 6",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "government",
-    "archetype": "trap",
-    "category": "government",
-    "setup": "OFW in Riyadh. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "SSS",
-        "message": "SSS: your parcel will be returned Pay your penalty of P45,000 at smart-rewar-ds.top to avoid case filing.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official SSS hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Pay the penalty so I avoid a case.",
-            "correct": false,
-            "feedback": "Agencies like SSS have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my details.",
-            "correct": false,
-            "feedback": "Agencies like SSS have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-medium-007",
-    "title": "government drill 7",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "government",
-    "archetype": "trap",
-    "category": "government",
-    "setup": "sari-sari store owner. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "PNP-ACG",
-        "message": "PNP-ACG: your money will be gone in 24 hours Pay your penalty of P12,000 at pagibig-loan-release.site to avoid case filing.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official PNP-ACG hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my details.",
-            "correct": false,
-            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Pay the penalty so I avoid a case.",
-            "correct": false,
-            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-hard-008",
-    "title": "government drill 8",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "government",
-    "archetype": "redirect",
-    "category": "government",
-    "setup": "sari-sari store owner. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "Pag-IBIG",
-        "message": "Pag-IBIG: A warrant was issued against your ID. Resolve at pagibig-loan-release.site to avoid arrest.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official Pag-IBIG hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Pay the penalty so I avoid a case.",
-            "correct": false,
-            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
           }
         ],
         "tip": "No government office asks for fees or OTP by text."
@@ -8962,28 +9340,28 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
-        "senderLabel": "BIR",
-        "message": "BIR: A warrant was issued against your ID. Resolve at jnt-tracking-ph.site to avoid arrest.",
+        "channel": "email",
+        "senderLabel": "PNP-ACG",
+        "message": "PNP-ACG: Your tax refund of P150 is ready. Claim at bdo-secure-login-verify.top before it expires.",
         "question": "A government office threatens penalties by text. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Call the official BIR hotline to verify.",
+            "text": "Call the official PNP-ACG hotline to verify.",
             "correct": true,
             "feedback": "Correct. Government offices never collect fees by text; call the official number."
           },
           {
             "id": "b",
-            "text": "Pay the penalty so I avoid a case.",
+            "text": "Call the number in the text.",
             "correct": false,
-            "feedback": "Agencies like BIR have official channels. The text is impersonation."
+            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
           },
           {
             "id": "c",
             "text": "Click the link and enter my details.",
             "correct": false,
-            "feedback": "Agencies like BIR have official channels. The text is impersonation."
+            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
           }
         ],
         "tip": "No government office asks for fees or OTP by text."
@@ -8998,15 +9376,267 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "government",
+    "archetype": "trap",
+    "category": "government",
+    "setup": "OFW in Riyadh. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "PhilHealth",
+        "message": "PhilHealth: A warrant was issued against your ID. Resolve at jnt-tracking-ph.site to avoid arrest.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official PhilHealth hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Agencies like PhilHealth have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Pay the penalty so I avoid a case.",
+            "correct": false,
+            "feedback": "Agencies like PhilHealth have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-hard-011",
+    "title": "government drill 11",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "government",
+    "archetype": "trap",
+    "category": "government",
+    "setup": "jeepney driver. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "CICC",
+        "message": "CICC: an unauthorized transfer was detected Pay your penalty of P250 at g-cash-verify-ph.top to avoid case filing.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official CICC hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Pay the penalty so I avoid a case.",
+            "correct": false,
+            "feedback": "Agencies like CICC have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Agencies like CICC have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-easy-012",
+    "title": "government drill 12",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "government",
     "archetype": "redirect",
     "category": "government",
-    "setup": "small online seller. A government office threatens penalties by text. What do you do?",
+    "setup": "jeepney driver. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "CICC",
+        "message": "CICC: Your benefits will be cancelled unless you verify at bdo-secure-login-verify.top.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official CICC hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Pay the penalty so I avoid a case.",
+            "correct": false,
+            "feedback": "Agencies like CICC have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Agencies like CICC have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-medium-013",
+    "title": "government drill 13",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "government",
+    "archetype": "redirect",
+    "category": "government",
+    "setup": "OFW in Riyadh. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "PNP-ACG",
+        "message": "PNP-ACG: A warrant was issued against your ID. Resolve at gcash-update.ph-verify.top to avoid arrest.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official PNP-ACG hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Pay the penalty so I avoid a case.",
+            "correct": false,
+            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-hard-014",
+    "title": "government drill 14",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "government",
+    "archetype": "trap",
+    "category": "government",
+    "setup": "senior pensioner. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "PNP-ACG",
+        "message": "PNP-ACG: Update your records at smart-rewar-ds.top or your pension is paused.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official PNP-ACG hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my details.",
+            "correct": false,
+            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Pay the penalty so I avoid a case.",
+            "correct": false,
+            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-easy-015",
+    "title": "government drill 15",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "government",
+    "archetype": "trap",
+    "category": "government",
+    "setup": "jeepney driver. A government office threatens penalties by text. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
+        "senderLabel": "Pag-IBIG",
+        "message": "Pag-IBIG: Your benefits will be cancelled unless you verify at pagibig-loan-release.site.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official Pag-IBIG hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Pay the penalty so I avoid a case.",
+            "correct": false,
+            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-medium-016",
+    "title": "government drill 16",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "government",
+    "archetype": "trap",
+    "category": "government",
+    "setup": "Lola in the province. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
         "senderLabel": "SSS",
-        "message": "SSS: an unauthorized transfer was detected Pay your penalty of P500 at shopee-refund-ph.site to avoid case filing.",
+        "message": "SSS: Update your records at pagibig-loan-release.site or your pension is paused.",
         "question": "A government office threatens penalties by text. What do you do?",
         "options": [
           {
@@ -9035,20 +9665,272 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "government-hard-011",
-    "title": "government drill 11",
+    "id": "government-hard-017",
+    "title": "government drill 17",
     "icon": "ShieldCheck",
     "difficulty": "hard",
     "family": "government",
     "archetype": "redirect",
     "category": "government",
-    "setup": "Lola in the province. A government office threatens penalties by text. What do you do?",
+    "setup": "senior pensioner. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "PNP-ACG",
+        "message": "PNP-ACG: Your tax refund of P150 is ready. Claim at smart-rewar-ds.top before it expires.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official PNP-ACG hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Pay the penalty so I avoid a case.",
+            "correct": false,
+            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-easy-018",
+    "title": "government drill 18",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "government",
+    "archetype": "trap",
+    "category": "government",
+    "setup": "OFW in Riyadh. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "Pag-IBIG",
+        "message": "Pag-IBIG: Update your records at shopee-refund-ph.site or your pension is paused.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official Pag-IBIG hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my details.",
+            "correct": false,
+            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-medium-019",
+    "title": "government drill 19",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "government",
+    "archetype": "redirect",
+    "category": "government",
+    "setup": "call-center agent. A government office threatens penalties by text. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "vishing",
+        "senderLabel": "PNP-ACG",
+        "message": "PNP-ACG: Update your records at bit.ly/verify-now or your pension is paused.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official PNP-ACG hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my details.",
+            "correct": false,
+            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-hard-020",
+    "title": "government drill 20",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "government",
+    "archetype": "redirect",
+    "category": "government",
+    "setup": "call-center agent. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "CICC",
+        "message": "CICC: A warrant was issued against your ID. Resolve at bdo-secure-login-verify.top to avoid arrest.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official CICC hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my details.",
+            "correct": false,
+            "feedback": "Agencies like CICC have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Pay the penalty so I avoid a case.",
+            "correct": false,
+            "feedback": "Agencies like CICC have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-easy-021",
+    "title": "government drill 21",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "government",
+    "archetype": "trap",
+    "category": "government",
+    "setup": "call-center agent. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "SSS",
+        "message": "SSS: Your benefits will be cancelled unless you verify at gcash-update.ph-verify.top.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official SSS hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my details.",
+            "correct": false,
+            "feedback": "Agencies like SSS have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Pay the penalty so I avoid a case.",
+            "correct": false,
+            "feedback": "Agencies like SSS have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-medium-022",
+    "title": "government drill 22",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "government",
+    "archetype": "redirect",
+    "category": "government",
+    "setup": "college student in Manila. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
         "senderLabel": "NBI",
-        "message": "NBI: A warrant was issued against your ID. Resolve at g-cash-verify-ph.top to avoid arrest.",
+        "message": "NBI: A warrant was issued against your ID. Resolve at pagibig-loan-release.site to avoid arrest.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official NBI hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Pay the penalty so I avoid a case.",
+            "correct": false,
+            "feedback": "Agencies like NBI have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Agencies like NBI have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-hard-023",
+    "title": "government drill 23",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "government",
+    "archetype": "trap",
+    "category": "government",
+    "setup": "small online seller. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "NBI",
+        "message": "NBI: A warrant was issued against your ID. Resolve at maya-security-alert.xyz to avoid arrest.",
         "question": "A government office threatens penalties by text. What do you do?",
         "options": [
           {
@@ -9077,230 +9959,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "government-easy-012",
-    "title": "government drill 12",
+    "id": "government-easy-024",
+    "title": "government drill 24",
     "icon": "ShieldCheck",
     "difficulty": "easy",
     "family": "government",
     "archetype": "trap",
-    "category": "government",
-    "setup": "jeepney driver. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "SSS",
-        "message": "SSS: Your tax refund of P250 is ready. Claim at shopee-refund-ph.site before it expires.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official SSS hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Pay the penalty so I avoid a case.",
-            "correct": false,
-            "feedback": "Agencies like SSS have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Agencies like SSS have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-hard-014",
-    "title": "government drill 14",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "government",
-    "archetype": "trap",
-    "category": "government",
-    "setup": "Lola in the province. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "PhilHealth",
-        "message": "PhilHealth: Your tax refund of P100,000 is ready. Claim at gov-ph-tax.site before it expires.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official PhilHealth hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my details.",
-            "correct": false,
-            "feedback": "Agencies like PhilHealth have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Pay the penalty so I avoid a case.",
-            "correct": false,
-            "feedback": "Agencies like PhilHealth have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-easy-015",
-    "title": "government drill 15",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "government",
-    "archetype": "trap",
-    "category": "government",
-    "setup": "Lola in the province. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "PhilHealth",
-        "message": "PhilHealth: an unauthorized transfer was detected Pay your penalty of P25,000 at bdo-secure-login-verify.top to avoid case filing.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official PhilHealth hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Agencies like PhilHealth have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my details.",
-            "correct": false,
-            "feedback": "Agencies like PhilHealth have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-hard-017",
-    "title": "government drill 17",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "government",
-    "archetype": "trap",
-    "category": "government",
-    "setup": "senior pensioner. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "PhilHealth",
-        "message": "PhilHealth: Your benefits will be cancelled unless you verify at smart-rewar-ds.top.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official PhilHealth hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Pay the penalty so I avoid a case.",
-            "correct": false,
-            "feedback": "Agencies like PhilHealth have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Agencies like PhilHealth have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-easy-018",
-    "title": "government drill 18",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "government",
-    "archetype": "redirect",
     "category": "government",
     "setup": "sari-sari store owner. A government office threatens penalties by text. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "email",
-        "senderLabel": "SSS",
-        "message": "SSS: Your benefits will be cancelled unless you verify at bdo-secure-login-verify.top.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official SSS hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Pay the penalty so I avoid a case.",
-            "correct": false,
-            "feedback": "Agencies like SSS have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Agencies like SSS have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-medium-019",
-    "title": "government drill 19",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "government",
-    "archetype": "redirect",
-    "category": "government",
-    "setup": "Lola in the province. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
         "senderLabel": "BIR",
-        "message": "BIR: Your benefits will be cancelled unless you verify at jnt-tracking-ph.site.",
+        "message": "BIR: Your benefits will be cancelled unless you verify at pagibig-loan-release.site.",
         "question": "A government office threatens penalties by text. What do you do?",
         "options": [
           {
@@ -9311,15 +9983,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Agencies like BIR have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
             "text": "Pay the penalty so I avoid a case.",
             "correct": false,
             "feedback": "Agencies like BIR have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my details.",
-            "correct": false,
-            "feedback": "Agencies like BIR have official channels. The text is impersonation."
           }
         ],
         "tip": "No government office asks for fees or OTP by text."
@@ -9329,151 +10001,25 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "government-easy-021",
-    "title": "government drill 21",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "government",
-    "archetype": "trap",
-    "category": "government",
-    "setup": "jeepney driver. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "SSS",
-        "message": "SSS: your parcel will be returned Pay your penalty of P250 at g-cash-verify-ph.top to avoid case filing.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official SSS hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my details.",
-            "correct": false,
-            "feedback": "Agencies like SSS have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Agencies like SSS have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-medium-022",
-    "title": "government drill 22",
+    "id": "government-medium-025",
+    "title": "government drill 25",
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "government",
-    "archetype": "trap",
-    "category": "government",
-    "setup": "OFW in Riyadh. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "CICC",
-        "message": "CICC: Your benefits will be cancelled unless you verify at g-cash-verify-ph.top.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official CICC hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Pay the penalty so I avoid a case.",
-            "correct": false,
-            "feedback": "Agencies like CICC have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Agencies like CICC have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-hard-023",
-    "title": "government drill 23",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "government",
     "archetype": "redirect",
     "category": "government",
-    "setup": "college student in Manila. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "PhilHealth",
-        "message": "PhilHealth: Your tax refund of P500 is ready. Claim at bit.ly/verify-now before it expires.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official PhilHealth hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Agencies like PhilHealth have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my details.",
-            "correct": false,
-            "feedback": "Agencies like PhilHealth have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-easy-024",
-    "title": "government drill 24",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "government",
-    "archetype": "redirect",
-    "category": "government",
-    "setup": "Lola in the province. A government office threatens penalties by text. What do you do?",
+    "setup": "call-center agent. A government office threatens penalties by text. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "email",
-        "senderLabel": "CICC",
-        "message": "CICC: Update your records at bit.ly/verify-now or your pension is paused.",
+        "senderLabel": "BIR",
+        "message": "BIR: this is your last chance Pay your penalty of P250 at bdo-secure-login-verify.top to avoid case filing.",
         "question": "A government office threatens penalties by text. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Call the official CICC hotline to verify.",
+            "text": "Call the official BIR hotline to verify.",
             "correct": true,
             "feedback": "Correct. Government offices never collect fees by text; call the official number."
           },
@@ -9481,13 +10027,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
             "id": "b",
             "text": "Click the link and enter my details.",
             "correct": false,
-            "feedback": "Agencies like CICC have official channels. The text is impersonation."
+            "feedback": "Agencies like BIR have official channels. The text is impersonation."
           },
           {
             "id": "c",
-            "text": "Call the number in the text.",
+            "text": "Pay the penalty so I avoid a case.",
             "correct": false,
-            "feedback": "Agencies like CICC have official channels. The text is impersonation."
+            "feedback": "Agencies like BIR have official channels. The text is impersonation."
           }
         ],
         "tip": "No government office asks for fees or OTP by text."
@@ -9504,18 +10050,18 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "government",
     "archetype": "redirect",
     "category": "government",
-    "setup": "OFW in Riyadh. A government office threatens penalties by text. What do you do?",
+    "setup": "sari-sari store owner. A government office threatens penalties by text. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
-        "senderLabel": "BIR",
-        "message": "BIR: Update your records at pagibig-loan-release.site or your pension is paused.",
+        "channel": "email",
+        "senderLabel": "PhilHealth",
+        "message": "PhilHealth: your benefits will be cancelled Pay your penalty of P250 at gov-ph-tax.site to avoid case filing.",
         "question": "A government office threatens penalties by text. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Call the official BIR hotline to verify.",
+            "text": "Call the official PhilHealth hotline to verify.",
             "correct": true,
             "feedback": "Correct. Government offices never collect fees by text; call the official number."
           },
@@ -9523,13 +10069,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
             "id": "b",
             "text": "Call the number in the text.",
             "correct": false,
-            "feedback": "Agencies like BIR have official channels. The text is impersonation."
+            "feedback": "Agencies like PhilHealth have official channels. The text is impersonation."
           },
           {
             "id": "c",
-            "text": "Click the link and enter my details.",
+            "text": "Pay the penalty so I avoid a case.",
             "correct": false,
-            "feedback": "Agencies like BIR have official channels. The text is impersonation."
+            "feedback": "Agencies like PhilHealth have official channels. The text is impersonation."
           }
         ],
         "tip": "No government office asks for fees or OTP by text."
@@ -9546,32 +10092,74 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "government",
     "archetype": "trap",
     "category": "government",
-    "setup": "OFW in Riyadh. A government office threatens penalties by text. What do you do?",
+    "setup": "college student in Manila. A government office threatens penalties by text. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "email",
-        "senderLabel": "PNP-ACG",
-        "message": "PNP-ACG: A warrant was issued against your ID. Resolve at shopee-refund-ph.site to avoid arrest.",
+        "senderLabel": "NBI",
+        "message": "NBI: Your benefits will be cancelled unless you verify at bit.ly/verify-now.",
         "question": "A government office threatens penalties by text. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Call the official PNP-ACG hotline to verify.",
+            "text": "Call the official NBI hotline to verify.",
             "correct": true,
             "feedback": "Correct. Government offices never collect fees by text; call the official number."
           },
           {
             "id": "b",
-            "text": "Pay the penalty so I avoid a case.",
+            "text": "Click the link and enter my details.",
             "correct": false,
-            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
+            "feedback": "Agencies like NBI have official channels. The text is impersonation."
           },
           {
             "id": "c",
+            "text": "Pay the penalty so I avoid a case.",
+            "correct": false,
+            "feedback": "Agencies like NBI have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-medium-028",
+    "title": "government drill 28",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "government",
+    "archetype": "trap",
+    "category": "government",
+    "setup": "sari-sari store owner. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "CICC",
+        "message": "CICC: Your benefits will be cancelled unless you verify at smart-rewar-ds.top.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official CICC hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
             "text": "Click the link and enter my details.",
             "correct": false,
-            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
+            "feedback": "Agencies like CICC have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Pay the penalty so I avoid a case.",
+            "correct": false,
+            "feedback": "Agencies like CICC have official channels. The text is impersonation."
           }
         ],
         "tip": "No government office asks for fees or OTP by text."
@@ -9593,8 +10181,92 @@ export const GENERATED_SCENARIOS: Scenario[] = [
       {
         "id": "s1",
         "channel": "email",
+        "senderLabel": "SSS",
+        "message": "SSS: your benefits will be cancelled Pay your penalty of P25,000 at gov-ph-tax.site to avoid case filing.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official SSS hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Agencies like SSS have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my details.",
+            "correct": false,
+            "feedback": "Agencies like SSS have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-easy-030",
+    "title": "government drill 30",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "government",
+    "archetype": "redirect",
+    "category": "government",
+    "setup": "call-center agent. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "CICC",
+        "message": "CICC: Your benefits will be cancelled unless you verify at g-cash-verify-ph.top.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official CICC hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Pay the penalty so I avoid a case.",
+            "correct": false,
+            "feedback": "Agencies like CICC have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my details.",
+            "correct": false,
+            "feedback": "Agencies like CICC have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-medium-031",
+    "title": "government drill 31",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "government",
+    "archetype": "trap",
+    "category": "government",
+    "setup": "college student in Manila. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
         "senderLabel": "Pag-IBIG",
-        "message": "Pag-IBIG: Your tax refund of P100,000 is ready. Claim at bit.ly/verify-now before it expires.",
+        "message": "Pag-IBIG: Your tax refund of P250 is ready. Claim at gcash-update.ph-verify.top before it expires.",
         "question": "A government office threatens penalties by text. What do you do?",
         "options": [
           {
@@ -9611,9 +10283,51 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Call the number in the text.",
+            "text": "Click the link and enter my details.",
             "correct": false,
             "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-hard-032",
+    "title": "government drill 32",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "government",
+    "archetype": "redirect",
+    "category": "government",
+    "setup": "OFW in Riyadh. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "BIR",
+        "message": "BIR: Update your records at gov-ph-tax.site or your pension is paused.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official BIR hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my details.",
+            "correct": false,
+            "feedback": "Agencies like BIR have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Agencies like BIR have official channels. The text is impersonation."
           }
         ],
         "tip": "No government office asks for fees or OTP by text."
@@ -9628,20 +10342,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "easy",
     "family": "government",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "government",
-    "setup": "small online seller. A government office threatens penalties by text. What do you do?",
+    "setup": "call-center agent. A government office threatens penalties by text. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Pag-IBIG",
-        "message": "Pag-IBIG: Update your records at bit.ly/verify-now or your pension is paused.",
+        "channel": "email",
+        "senderLabel": "NBI",
+        "message": "NBI: Update your records at g-cash-verify-ph.top or your pension is paused.",
         "question": "A government office threatens penalties by text. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Call the official Pag-IBIG hotline to verify.",
+            "text": "Call the official NBI hotline to verify.",
             "correct": true,
             "feedback": "Correct. Government offices never collect fees by text; call the official number."
           },
@@ -9649,13 +10363,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
             "id": "b",
             "text": "Click the link and enter my details.",
             "correct": false,
-            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
+            "feedback": "Agencies like NBI have official channels. The text is impersonation."
           },
           {
             "id": "c",
             "text": "Pay the penalty so I avoid a case.",
             "correct": false,
-            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
+            "feedback": "Agencies like NBI have official channels. The text is impersonation."
           }
         ],
         "tip": "No government office asks for fees or OTP by text."
@@ -9670,34 +10384,34 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "government",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "government",
-    "setup": "senior pensioner. A government office threatens penalties by text. What do you do?",
+    "setup": "jeepney driver. A government office threatens penalties by text. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
-        "senderLabel": "PhilHealth",
-        "message": "PhilHealth: your SIM will be deactivated Pay your penalty of P150 at bit.ly/verify-now to avoid case filing.",
+        "channel": "sms",
+        "senderLabel": "NBI",
+        "message": "NBI: Update your records at gov-ph-tax.site or your pension is paused.",
         "question": "A government office threatens penalties by text. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Call the official PhilHealth hotline to verify.",
+            "text": "Call the official NBI hotline to verify.",
             "correct": true,
             "feedback": "Correct. Government offices never collect fees by text; call the official number."
           },
           {
             "id": "b",
-            "text": "Click the link and enter my details.",
+            "text": "Pay the penalty so I avoid a case.",
             "correct": false,
-            "feedback": "Agencies like PhilHealth have official channels. The text is impersonation."
+            "feedback": "Agencies like NBI have official channels. The text is impersonation."
           },
           {
             "id": "c",
-            "text": "Pay the penalty so I avoid a case.",
+            "text": "Click the link and enter my details.",
             "correct": false,
-            "feedback": "Agencies like PhilHealth have official channels. The text is impersonation."
+            "feedback": "Agencies like NBI have official channels. The text is impersonation."
           }
         ],
         "tip": "No government office asks for fees or OTP by text."
@@ -9712,34 +10426,34 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "hard",
     "family": "government",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "government",
-    "setup": "college student in Manila. A government office threatens penalties by text. What do you do?",
+    "setup": "jeepney driver. A government office threatens penalties by text. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "vishing",
-        "senderLabel": "CICC",
-        "message": "CICC: Your benefits will be cancelled unless you verify at maya-security-alert.xyz.",
+        "senderLabel": "NBI",
+        "message": "NBI: Your benefits will be cancelled unless you verify at smart-rewar-ds.top.",
         "question": "A government office threatens penalties by text. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Call the official CICC hotline to verify.",
+            "text": "Call the official NBI hotline to verify.",
             "correct": true,
             "feedback": "Correct. Government offices never collect fees by text; call the official number."
           },
           {
             "id": "b",
-            "text": "Click the link and enter my details.",
+            "text": "Call the number in the text.",
             "correct": false,
-            "feedback": "Agencies like CICC have official channels. The text is impersonation."
+            "feedback": "Agencies like NBI have official channels. The text is impersonation."
           },
           {
             "id": "c",
             "text": "Pay the penalty so I avoid a case.",
             "correct": false,
-            "feedback": "Agencies like CICC have official channels. The text is impersonation."
+            "feedback": "Agencies like NBI have official channels. The text is impersonation."
           }
         ],
         "tip": "No government office asks for fees or OTP by text."
@@ -9754,267 +10468,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "easy",
     "family": "government",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "government",
-    "setup": "small online seller. A government office threatens penalties by text. What do you do?",
+    "setup": "OFW in Riyadh. A government office threatens penalties by text. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "PNP-ACG",
-        "message": "PNP-ACG: A warrant was issued against your ID. Resolve at smart-rewar-ds.top to avoid arrest.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official PNP-ACG hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Pay the penalty so I avoid a case.",
-            "correct": false,
-            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-medium-037",
-    "title": "government drill 37",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "government",
-    "archetype": "trap",
-    "category": "government",
-    "setup": "Lola in the province. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "PhilHealth",
-        "message": "PhilHealth: Your tax refund of P8,000 is ready. Claim at pagibig-loan-release.site before it expires.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official PhilHealth hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Pay the penalty so I avoid a case.",
-            "correct": false,
-            "feedback": "Agencies like PhilHealth have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my details.",
-            "correct": false,
-            "feedback": "Agencies like PhilHealth have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-medium-040",
-    "title": "government drill 40",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "government",
-    "archetype": "redirect",
-    "category": "government",
-    "setup": "sari-sari store owner. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "NBI",
-        "message": "NBI: A warrant was issued against your ID. Resolve at g-cash-verify-ph.top to avoid arrest.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official NBI hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Agencies like NBI have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Pay the penalty so I avoid a case.",
-            "correct": false,
-            "feedback": "Agencies like NBI have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-hard-041",
-    "title": "government drill 41",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "government",
-    "archetype": "redirect",
-    "category": "government",
-    "setup": "call-center agent. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "NBI",
-        "message": "NBI: Your benefits will be cancelled unless you verify at shopee-refund-ph.site.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official NBI hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Agencies like NBI have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my details.",
-            "correct": false,
-            "feedback": "Agencies like NBI have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-easy-042",
-    "title": "government drill 42",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "government",
-    "archetype": "redirect",
-    "category": "government",
-    "setup": "sari-sari store owner. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "CICC",
-        "message": "CICC: Update your records at gov-ph-tax.site or your pension is paused.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official CICC hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my details.",
-            "correct": false,
-            "feedback": "Agencies like CICC have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Agencies like CICC have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-medium-043",
-    "title": "government drill 43",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "government",
-    "archetype": "trap",
-    "category": "government",
-    "setup": "college student in Manila. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "NBI",
-        "message": "NBI: an unauthorized transfer was detected Pay your penalty of P25,000 at pagibig-loan-release.site to avoid case filing.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official NBI hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Pay the penalty so I avoid a case.",
-            "correct": false,
-            "feedback": "Agencies like NBI have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Agencies like NBI have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-hard-044",
-    "title": "government drill 44",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "government",
-    "archetype": "trap",
-    "category": "government",
-    "setup": "college student in Manila. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
         "senderLabel": "SSS",
-        "message": "SSS: your SIM will be deactivated Pay your penalty of P150 at maya-security-alert.xyz to avoid case filing.",
+        "message": "SSS: your account is locked Pay your penalty of P12,000 at gcash-update.ph-verify.top to avoid case filing.",
         "question": "A government office threatens penalties by text. What do you do?",
         "options": [
           {
@@ -10031,7 +10493,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Call the number in the text.",
+            "text": "Pay the penalty so I avoid a case.",
             "correct": false,
             "feedback": "Agencies like SSS have official channels. The text is impersonation."
           }
@@ -10043,165 +10505,81 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "government-medium-046",
-    "title": "government drill 46",
+    "id": "government-medium-037",
+    "title": "government drill 37",
     "icon": "ShieldCheck",
     "difficulty": "medium",
-    "family": "government",
-    "archetype": "trap",
-    "category": "government",
-    "setup": "call-center agent. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Pag-IBIG",
-        "message": "Pag-IBIG: Your benefits will be cancelled unless you verify at gov-ph-tax.site.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official Pag-IBIG hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my details.",
-            "correct": false,
-            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Pay the penalty so I avoid a case.",
-            "correct": false,
-            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-hard-047",
-    "title": "government drill 47",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
     "family": "government",
     "archetype": "redirect",
-    "category": "government",
-    "setup": "senior pensioner. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "NBI",
-        "message": "NBI: Your tax refund of P150 is ready. Claim at maya-security-alert.xyz before it expires.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official NBI hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my details.",
-            "correct": false,
-            "feedback": "Agencies like NBI have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Pay the penalty so I avoid a case.",
-            "correct": false,
-            "feedback": "Agencies like NBI have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-easy-048",
-    "title": "government drill 48",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "government",
-    "archetype": "trap",
-    "category": "government",
-    "setup": "sari-sari store owner. A government office threatens penalties by text. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "Pag-IBIG",
-        "message": "Pag-IBIG: Update your records at g-cash-verify-ph.top or your pension is paused.",
-        "question": "A government office threatens penalties by text. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official Pag-IBIG hotline to verify.",
-            "correct": true,
-            "feedback": "Correct. Government offices never collect fees by text; call the official number."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my details.",
-            "correct": false,
-            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
-          },
-          {
-            "id": "c",
-            "text": "Pay the penalty so I avoid a case.",
-            "correct": false,
-            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
-          }
-        ],
-        "tip": "No government office asks for fees or OTP by text."
-      }
-    ],
-    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "government-medium-049",
-    "title": "government drill 49",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "government",
-    "archetype": "trap",
     "category": "government",
     "setup": "college student in Manila. A government office threatens penalties by text. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "NBI",
-        "message": "NBI: Your tax refund of P12,000 is ready. Claim at bit.ly/verify-now before it expires.",
+        "channel": "email",
+        "senderLabel": "PNP-ACG",
+        "message": "PNP-ACG: your SIM will be deactivated Pay your penalty of P150 at bdo-secure-login-verify.top to avoid case filing.",
         "question": "A government office threatens penalties by text. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Call the official NBI hotline to verify.",
+            "text": "Call the official PNP-ACG hotline to verify.",
             "correct": true,
             "feedback": "Correct. Government offices never collect fees by text; call the official number."
           },
           {
             "id": "b",
-            "text": "Click the link and enter my details.",
+            "text": "Call the number in the text.",
             "correct": false,
-            "feedback": "Agencies like NBI have official channels. The text is impersonation."
+            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
           },
           {
             "id": "c",
-            "text": "Pay the penalty so I avoid a case.",
+            "text": "Click the link and enter my details.",
             "correct": false,
-            "feedback": "Agencies like NBI have official channels. The text is impersonation."
+            "feedback": "Agencies like PNP-ACG have official channels. The text is impersonation."
+          }
+        ],
+        "tip": "No government office asks for fees or OTP by text."
+      }
+    ],
+    "debrief": "You practiced the rule: No government office asks for fees or OTP by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "government-hard-038",
+    "title": "government drill 38",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "government",
+    "archetype": "redirect",
+    "category": "government",
+    "setup": "sari-sari store owner. A government office threatens penalties by text. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "Pag-IBIG",
+        "message": "Pag-IBIG: Your tax refund of P2,000 is ready. Claim at maya-security-alert.xyz before it expires.",
+        "question": "A government office threatens penalties by text. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official Pag-IBIG hotline to verify.",
+            "correct": true,
+            "feedback": "Correct. Government offices never collect fees by text; call the official number."
+          },
+          {
+            "id": "b",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my details.",
+            "correct": false,
+            "feedback": "Agencies like Pag-IBIG have official channels. The text is impersonation."
           }
         ],
         "tip": "No government office asks for fees or OTP by text."
@@ -10218,30 +10596,30 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "telco",
     "archetype": "trap",
     "category": "telco",
-    "setup": "college student in Manila. A message offers points or warns about your line. What do you do?",
+    "setup": "sari-sari store owner. A message offers points or warns about your line. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "Smart",
-        "message": "Smart: a case number has been filed against you Reply with your registered name and address to keep your line.",
+        "senderLabel": "PLDT Home",
+        "message": "PLDT Home: Your points are expiring! Redeem P250 worth now at bdo-secure-login-verify.top.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Open the official SMART app and check there.",
+            "text": "Open the official PLDT app and check there.",
             "correct": true,
-            "feedback": "Correct. Check the official SMART app; never trust a text link."
+            "feedback": "Correct. Check the official PLDT app; never trust a text link."
           },
           {
             "id": "b",
-            "text": "Click the link and enter my details to redeem.",
+            "text": "Reply with my full name and address.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           },
           {
             "id": "c",
-            "text": "Reply with my full name and address.",
+            "text": "Click the link and enter my details to redeem.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           }
@@ -10260,30 +10638,30 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "telco",
     "archetype": "redirect",
     "category": "telco",
-    "setup": "college student in Manila. A message offers points or warns about your line. What do you do?",
+    "setup": "Lola in the province. A message offers points or warns about your line. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Globe",
-        "message": "Globe: Free P100,000 load for you! Claim at jnt-tracking-ph.site now.",
+        "channel": "chat",
+        "senderLabel": "Smart",
+        "message": "Smart: Your account is about to expire. Renew at gov-ph-tax.site to keep your number.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Open the official GLOBE app and check there.",
+            "text": "Open the official SMART app and check there.",
             "correct": true,
-            "feedback": "Correct. Check the official GLOBE app; never trust a text link."
+            "feedback": "Correct. Check the official SMART app; never trust a text link."
           },
           {
             "id": "b",
-            "text": "Reply with my full name and address.",
+            "text": "Call the number in the text.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           },
           {
             "id": "c",
-            "text": "Click the link and enter my details to redeem.",
+            "text": "Reply with my full name and address.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           }
@@ -10300,22 +10678,22 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "telco",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "telco",
     "setup": "college student in Manila. A message offers points or warns about your line. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "Smart",
-        "message": "Smart: Your account is about to expire. Renew at pagibig-loan-release.site to keep your number.",
+        "senderLabel": "DITO",
+        "message": "DITO: your account is locked Reply with your registered name and address to keep your line.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Open the official SMART app and check there.",
+            "text": "Open the official DITO app and check there.",
             "correct": true,
-            "feedback": "Correct. Check the official SMART app; never trust a text link."
+            "feedback": "Correct. Check the official DITO app; never trust a text link."
           },
           {
             "id": "b",
@@ -10325,7 +10703,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Call the number in the text.",
+            "text": "Reply with my full name and address.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           }
@@ -10342,32 +10720,74 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "easy",
     "family": "telco",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "telco",
-    "setup": "small online seller. A message offers points or warns about your line. What do you do?",
+    "setup": "call-center agent. A message offers points or warns about your line. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "Smart",
-        "message": "Smart: Your points are expiring! Redeem P45,000 worth now at bdo-secure-login-verify.top.",
+        "senderLabel": "Globe",
+        "message": "Globe: Your bill is overdue. Pay P150 at smart-rewar-ds.top to avoid disconnection.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Open the official SMART app and check there.",
+            "text": "Open the official GLOBE app and check there.",
             "correct": true,
-            "feedback": "Correct. Check the official SMART app; never trust a text link."
+            "feedback": "Correct. Check the official GLOBE app; never trust a text link."
           },
           {
             "id": "b",
-            "text": "Call the number in the text.",
+            "text": "Reply with my full name and address.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           },
           {
             "id": "c",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Replying or clicking tells scammers your number and details are live."
+          }
+        ],
+        "tip": "Telcos never ask for your OTP or personal ID by text."
+      }
+    ],
+    "debrief": "You practiced the rule: Telcos never ask for your OTP or personal ID by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "telco-medium-004",
+    "title": "telco drill 4",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "telco",
+    "archetype": "trap",
+    "category": "telco",
+    "setup": "jeepney driver. A message offers points or warns about your line. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "Globe",
+        "message": "Globe: Your bill is overdue. Pay P45,000 at bit.ly/verify-now to avoid disconnection.",
+        "question": "A message offers points or warns about your line. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the official GLOBE app and check there.",
+            "correct": true,
+            "feedback": "Correct. Check the official GLOBE app; never trust a text link."
+          },
+          {
+            "id": "b",
             "text": "Click the link and enter my details to redeem.",
+            "correct": false,
+            "feedback": "Replying or clicking tells scammers your number and details are live."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           }
@@ -10384,26 +10804,26 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "telco",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "telco",
     "setup": "small online seller. A message offers points or warns about your line. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
-        "senderLabel": "DITO",
-        "message": "DITO: Your bill is overdue. Pay P1,500 at shopee-refund-ph.site to avoid disconnection.",
+        "channel": "sms",
+        "senderLabel": "Smart",
+        "message": "Smart: Your bill is overdue. Pay P250 at g-cash-verify-ph.top to avoid disconnection.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Open the official DITO app and check there.",
+            "text": "Open the official SMART app and check there.",
             "correct": true,
-            "feedback": "Correct. Check the official DITO app; never trust a text link."
+            "feedback": "Correct. Check the official SMART app; never trust a text link."
           },
           {
             "id": "b",
-            "text": "Click the link and enter my details to redeem.",
+            "text": "Call the number in the text.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           },
@@ -10434,7 +10854,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
         "id": "s1",
         "channel": "sms",
         "senderLabel": "Globe",
-        "message": "Globe: Your account is about to expire. Renew at gov-ph-tax.site to keep your number.",
+        "message": "Globe: Your points are expiring! Redeem P250 worth now at bit.ly/verify-now.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
@@ -10445,13 +10865,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Call the number in the text.",
+            "text": "Click the link and enter my details to redeem.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           },
           {
             "id": "c",
-            "text": "Click the link and enter my details to redeem.",
+            "text": "Reply with my full name and address.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           }
@@ -10470,13 +10890,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "telco",
     "archetype": "trap",
     "category": "telco",
-    "setup": "small online seller. A message offers points or warns about your line. What do you do?",
+    "setup": "sari-sari store owner. A message offers points or warns about your line. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
         "senderLabel": "PLDT Home",
-        "message": "PLDT Home: an unauthorized transfer was detected Reply with your registered name and address to keep your line.",
+        "message": "PLDT Home: Your account is about to expire. Renew at smart-rewar-ds.top to keep your number.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
@@ -10512,13 +10932,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "telco",
     "archetype": "trap",
     "category": "telco",
-    "setup": "call-center agent. A message offers points or warns about your line. What do you do?",
+    "setup": "OFW in Riyadh. A message offers points or warns about your line. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
+        "channel": "sms",
         "senderLabel": "Globe",
-        "message": "Globe: Your account is about to expire. Renew at smart-rewar-ds.top to keep your number.",
+        "message": "Globe: Your points are expiring! Redeem P45,000 worth now at gov-ph-tax.site.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
@@ -10554,13 +10974,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "telco",
     "archetype": "trap",
     "category": "telco",
-    "setup": "small online seller. A message offers points or warns about your line. What do you do?",
+    "setup": "sari-sari store owner. A message offers points or warns about your line. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
         "senderLabel": "Smart",
-        "message": "Smart: your money will be gone in 24 hours Reply with your registered name and address to keep your line.",
+        "message": "Smart: Free P5,000 load for you! Claim at gcash-update.ph-verify.top now.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
@@ -10571,13 +10991,55 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
+            "text": "Reply with my full name and address.",
+            "correct": false,
+            "feedback": "Replying or clicking tells scammers your number and details are live."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my details to redeem.",
+            "correct": false,
+            "feedback": "Replying or clicking tells scammers your number and details are live."
+          }
+        ],
+        "tip": "Telcos never ask for your OTP or personal ID by text."
+      }
+    ],
+    "debrief": "You practiced the rule: Telcos never ask for your OTP or personal ID by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "telco-medium-010",
+    "title": "telco drill 10",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "telco",
+    "archetype": "redirect",
+    "category": "telco",
+    "setup": "call-center agent. A message offers points or warns about your line. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "DITO",
+        "message": "DITO: Free P1,000,000 load for you! Claim at bit.ly/verify-now now.",
+        "question": "A message offers points or warns about your line. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the official DITO app and check there.",
+            "correct": true,
+            "feedback": "Correct. Check the official DITO app; never trust a text link."
+          },
+          {
+            "id": "b",
             "text": "Click the link and enter my details to redeem.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           },
           {
             "id": "c",
-            "text": "Call the number in the text.",
+            "text": "Reply with my full name and address.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           }
@@ -10596,20 +11058,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "telco",
     "archetype": "redirect",
     "category": "telco",
-    "setup": "college student in Manila. A message offers points or warns about your line. What do you do?",
+    "setup": "OFW in Riyadh. A message offers points or warns about your line. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "Smart",
-        "message": "Smart: Your account is about to expire. Renew at gcash-update.ph-verify.top to keep your number.",
+        "senderLabel": "DITO",
+        "message": "DITO: Your account is about to expire. Renew at g-cash-verify-ph.top to keep your number.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Open the official SMART app and check there.",
+            "text": "Open the official DITO app and check there.",
             "correct": true,
-            "feedback": "Correct. Check the official SMART app; never trust a text link."
+            "feedback": "Correct. Check the official DITO app; never trust a text link."
           },
           {
             "id": "b",
@@ -10638,30 +11100,30 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "telco",
     "archetype": "redirect",
     "category": "telco",
-    "setup": "college student in Manila. A message offers points or warns about your line. What do you do?",
+    "setup": "small online seller. A message offers points or warns about your line. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "PLDT Home",
-        "message": "PLDT Home: Your bill is overdue. Pay P500 at gov-ph-tax.site to avoid disconnection.",
+        "senderLabel": "Smart",
+        "message": "Smart: Your points are expiring! Redeem P1,000,000 worth now at smart-rewar-ds.top.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Open the official PLDT app and check there.",
+            "text": "Open the official SMART app and check there.",
             "correct": true,
-            "feedback": "Correct. Check the official PLDT app; never trust a text link."
+            "feedback": "Correct. Check the official SMART app; never trust a text link."
           },
           {
             "id": "b",
-            "text": "Reply with my full name and address.",
+            "text": "Call the number in the text.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           },
           {
             "id": "c",
-            "text": "Click the link and enter my details to redeem.",
+            "text": "Reply with my full name and address.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           }
@@ -10680,24 +11142,24 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "telco",
     "archetype": "redirect",
     "category": "telco",
-    "setup": "small online seller. A message offers points or warns about your line. What do you do?",
+    "setup": "college student in Manila. A message offers points or warns about your line. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "PLDT Home",
-        "message": "PLDT Home: Free P1,000,000 load for you! Claim at gcash-update.ph-verify.top now.",
+        "senderLabel": "Smart",
+        "message": "Smart: Your bill is overdue. Pay P1,000,000 at gov-ph-tax.site to avoid disconnection.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Open the official PLDT app and check there.",
+            "text": "Open the official SMART app and check there.",
             "correct": true,
-            "feedback": "Correct. Check the official PLDT app; never trust a text link."
+            "feedback": "Correct. Check the official SMART app; never trust a text link."
           },
           {
             "id": "b",
-            "text": "Click the link and enter my details to redeem.",
+            "text": "Reply with my full name and address.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           },
@@ -10722,30 +11184,30 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "telco",
     "archetype": "redirect",
     "category": "telco",
-    "setup": "OFW in Riyadh. A message offers points or warns about your line. What do you do?",
+    "setup": "call-center agent. A message offers points or warns about your line. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
-        "senderLabel": "Smart",
-        "message": "Smart: Your bill is overdue. Pay P45,000 at g-cash-verify-ph.top to avoid disconnection.",
+        "channel": "sms",
+        "senderLabel": "PLDT Home",
+        "message": "PLDT Home: Your bill is overdue. Pay P1,000,000 at gcash-update.ph-verify.top to avoid disconnection.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Open the official SMART app and check there.",
+            "text": "Open the official PLDT app and check there.",
             "correct": true,
-            "feedback": "Correct. Check the official SMART app; never trust a text link."
+            "feedback": "Correct. Check the official PLDT app; never trust a text link."
           },
           {
             "id": "b",
-            "text": "Reply with my full name and address.",
+            "text": "Click the link and enter my details to redeem.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           },
           {
             "id": "c",
-            "text": "Click the link and enter my details to redeem.",
+            "text": "Reply with my full name and address.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           }
@@ -10762,15 +11224,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "easy",
     "family": "telco",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "telco",
-    "setup": "Lola in the province. A message offers points or warns about your line. What do you do?",
+    "setup": "senior pensioner. A message offers points or warns about your line. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
+        "channel": "sms",
         "senderLabel": "Globe",
-        "message": "Globe: Your points are expiring! Redeem P500 worth now at pagibig-loan-release.site.",
+        "message": "Globe: Your points are expiring! Redeem P250 worth now at gcash-update.ph-verify.top.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
@@ -10781,13 +11243,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Click the link and enter my details to redeem.",
+            "text": "Reply with my full name and address.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           },
           {
             "id": "c",
-            "text": "Call the number in the text.",
+            "text": "Click the link and enter my details to redeem.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           }
@@ -10806,20 +11268,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "telco",
     "archetype": "trap",
     "category": "telco",
-    "setup": "college student in Manila. A message offers points or warns about your line. What do you do?",
+    "setup": "sari-sari store owner. A message offers points or warns about your line. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
-        "senderLabel": "Smart",
-        "message": "Smart: a case number has been filed against you Reply with your registered name and address to keep your line.",
+        "channel": "sms",
+        "senderLabel": "Globe",
+        "message": "Globe: Your points are expiring! Redeem P1,000,000 worth now at jnt-tracking-ph.site.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Open the official SMART app and check there.",
+            "text": "Open the official GLOBE app and check there.",
             "correct": true,
-            "feedback": "Correct. Check the official SMART app; never trust a text link."
+            "feedback": "Correct. Check the official GLOBE app; never trust a text link."
           },
           {
             "id": "b",
@@ -10841,10 +11303,10 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "telco-easy-018",
-    "title": "telco drill 18",
+    "id": "telco-medium-017",
+    "title": "telco drill 17",
     "icon": "ShieldCheck",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "family": "telco",
     "archetype": "redirect",
     "category": "telco",
@@ -10854,7 +11316,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
         "id": "s1",
         "channel": "chat",
         "senderLabel": "DITO",
-        "message": "DITO: Your points are expiring! Redeem P500 worth now at g-cash-verify-ph.top.",
+        "message": "DITO: Your points are expiring! Redeem P5,000 worth now at smart-rewar-ds.top.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
@@ -10883,20 +11345,62 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "telco-medium-020",
-    "title": "telco drill 20",
+    "id": "telco-easy-018",
+    "title": "telco drill 18",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "telco",
+    "archetype": "redirect",
+    "category": "telco",
+    "setup": "Lola in the province. A message offers points or warns about your line. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "PLDT Home",
+        "message": "PLDT Home: Your account is about to expire. Renew at shopee-refund-ph.site to keep your number.",
+        "question": "A message offers points or warns about your line. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the official PLDT app and check there.",
+            "correct": true,
+            "feedback": "Correct. Check the official PLDT app; never trust a text link."
+          },
+          {
+            "id": "b",
+            "text": "Reply with my full name and address.",
+            "correct": false,
+            "feedback": "Replying or clicking tells scammers your number and details are live."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my details to redeem.",
+            "correct": false,
+            "feedback": "Replying or clicking tells scammers your number and details are live."
+          }
+        ],
+        "tip": "Telcos never ask for your OTP or personal ID by text."
+      }
+    ],
+    "debrief": "You practiced the rule: Telcos never ask for your OTP or personal ID by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "telco-medium-019",
+    "title": "telco drill 19",
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "telco",
     "archetype": "trap",
     "category": "telco",
-    "setup": "senior pensioner. A message offers points or warns about your line. What do you do?",
+    "setup": "jeepney driver. A message offers points or warns about your line. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
+        "channel": "sms",
         "senderLabel": "Globe",
-        "message": "Globe: Your bill is overdue. Pay P2,000 at maya-security-alert.xyz to avoid disconnection.",
+        "message": "Globe: Your points are expiring! Redeem P150 worth now at jnt-tracking-ph.site.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
@@ -10907,13 +11411,55 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Reply with my full name and address.",
+            "text": "Call the number in the text.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           },
           {
             "id": "c",
+            "text": "Click the link and enter my details to redeem.",
+            "correct": false,
+            "feedback": "Replying or clicking tells scammers your number and details are live."
+          }
+        ],
+        "tip": "Telcos never ask for your OTP or personal ID by text."
+      }
+    ],
+    "debrief": "You practiced the rule: Telcos never ask for your OTP or personal ID by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "telco-medium-020",
+    "title": "telco drill 20",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "telco",
+    "archetype": "trap",
+    "category": "telco",
+    "setup": "small online seller. A message offers points or warns about your line. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "PLDT Home",
+        "message": "PLDT Home: Your points are expiring! Redeem P150 worth now at gov-ph-tax.site.",
+        "question": "A message offers points or warns about your line. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the official PLDT app and check there.",
+            "correct": true,
+            "feedback": "Correct. Check the official PLDT app; never trust a text link."
+          },
+          {
+            "id": "b",
             "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Replying or clicking tells scammers your number and details are live."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my details to redeem.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           }
@@ -10938,7 +11484,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
         "id": "s1",
         "channel": "chat",
         "senderLabel": "Smart",
-        "message": "Smart: Free P100,000 load for you! Claim at g-cash-verify-ph.top now.",
+        "message": "Smart: Your bill is overdue. Pay P2,000 at bit.ly/verify-now to avoid disconnection.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
@@ -10949,7 +11495,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Click the link and enter my details to redeem.",
+            "text": "Reply with my full name and address.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           },
@@ -10974,20 +11520,62 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "telco",
     "archetype": "redirect",
     "category": "telco",
-    "setup": "small online seller. A message offers points or warns about your line. What do you do?",
+    "setup": "call-center agent. A message offers points or warns about your line. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Globe",
-        "message": "Globe: Your points are expiring! Redeem P8,000 worth now at bit.ly/verify-now.",
+        "channel": "chat",
+        "senderLabel": "DITO",
+        "message": "DITO: Your points are expiring! Redeem P250 worth now at bdo-secure-login-verify.top.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Open the official GLOBE app and check there.",
+            "text": "Open the official DITO app and check there.",
             "correct": true,
-            "feedback": "Correct. Check the official GLOBE app; never trust a text link."
+            "feedback": "Correct. Check the official DITO app; never trust a text link."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my details to redeem.",
+            "correct": false,
+            "feedback": "Replying or clicking tells scammers your number and details are live."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Replying or clicking tells scammers your number and details are live."
+          }
+        ],
+        "tip": "Telcos never ask for your OTP or personal ID by text."
+      }
+    ],
+    "debrief": "You practiced the rule: Telcos never ask for your OTP or personal ID by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "telco-medium-023",
+    "title": "telco drill 23",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "telco",
+    "archetype": "trap",
+    "category": "telco",
+    "setup": "senior pensioner. A message offers points or warns about your line. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "Smart",
+        "message": "Smart: Your bill is overdue. Pay P1,000,000 at gcash-update.ph-verify.top to avoid disconnection.",
+        "question": "A message offers points or warns about your line. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the official SMART app and check there.",
+            "correct": true,
+            "feedback": "Correct. Check the official SMART app; never trust a text link."
           },
           {
             "id": "b",
@@ -11009,20 +11597,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "telco-medium-023",
-    "title": "telco drill 23",
+    "id": "telco-easy-024",
+    "title": "telco drill 24",
     "icon": "ShieldCheck",
-    "difficulty": "medium",
+    "difficulty": "easy",
     "family": "telco",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "telco",
-    "setup": "sari-sari store owner. A message offers points or warns about your line. What do you do?",
+    "setup": "small online seller. A message offers points or warns about your line. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
+        "channel": "chat",
         "senderLabel": "Smart",
-        "message": "Smart: this is your last chance Reply with your registered name and address to keep your line.",
+        "message": "Smart: Your bill is overdue. Pay P12,000 at pagibig-loan-release.site to avoid disconnection.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
@@ -11033,13 +11621,55 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Click the link and enter my details to redeem.",
+            "text": "Reply with my full name and address.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           },
           {
             "id": "c",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "Replying or clicking tells scammers your number and details are live."
+          }
+        ],
+        "tip": "Telcos never ask for your OTP or personal ID by text."
+      }
+    ],
+    "debrief": "You practiced the rule: Telcos never ask for your OTP or personal ID by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "telco-medium-025",
+    "title": "telco drill 25",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "telco",
+    "archetype": "trap",
+    "category": "telco",
+    "setup": "OFW in Riyadh. A message offers points or warns about your line. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "Globe",
+        "message": "Globe: a case number has been filed against you Reply with your registered name and address to keep your line.",
+        "question": "A message offers points or warns about your line. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the official GLOBE app and check there.",
+            "correct": true,
+            "feedback": "Correct. Check the official GLOBE app; never trust a text link."
+          },
+          {
+            "id": "b",
             "text": "Reply with my full name and address.",
+            "correct": false,
+            "feedback": "Replying or clicking tells scammers your number and details are live."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my details to redeem.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           }
@@ -11058,30 +11688,72 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "telco",
     "archetype": "trap",
     "category": "telco",
-    "setup": "Lola in the province. A message offers points or warns about your line. What do you do?",
+    "setup": "senior pensioner. A message offers points or warns about your line. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "Smart",
-        "message": "Smart: Free P25,000 load for you! Claim at gcash-update.ph-verify.top now.",
+        "senderLabel": "Globe",
+        "message": "Globe: Your points are expiring! Redeem P2,000 worth now at gov-ph-tax.site.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Open the official SMART app and check there.",
+            "text": "Open the official GLOBE app and check there.",
             "correct": true,
-            "feedback": "Correct. Check the official SMART app; never trust a text link."
+            "feedback": "Correct. Check the official GLOBE app; never trust a text link."
           },
           {
             "id": "b",
-            "text": "Call the number in the text.",
+            "text": "Click the link and enter my details to redeem.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           },
           {
             "id": "c",
             "text": "Reply with my full name and address.",
+            "correct": false,
+            "feedback": "Replying or clicking tells scammers your number and details are live."
+          }
+        ],
+        "tip": "Telcos never ask for your OTP or personal ID by text."
+      }
+    ],
+    "debrief": "You practiced the rule: Telcos never ask for your OTP or personal ID by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "telco-easy-027",
+    "title": "telco drill 27",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "telco",
+    "archetype": "trap",
+    "category": "telco",
+    "setup": "Lola in the province. A message offers points or warns about your line. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "PLDT Home",
+        "message": "PLDT Home: Free P1,000,000 load for you! Claim at gov-ph-tax.site now.",
+        "question": "A message offers points or warns about your line. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the official PLDT app and check there.",
+            "correct": true,
+            "feedback": "Correct. Check the official PLDT app; never trust a text link."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my details to redeem.",
+            "correct": false,
+            "feedback": "Replying or clicking tells scammers your number and details are live."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           }
@@ -11098,48 +11770,6 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "telco",
-    "archetype": "redirect",
-    "category": "telco",
-    "setup": "senior pensioner. A message offers points or warns about your line. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "PLDT Home",
-        "message": "PLDT Home: Your points are expiring! Redeem P2,000 worth now at maya-security-alert.xyz.",
-        "question": "A message offers points or warns about your line. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the official PLDT app and check there.",
-            "correct": true,
-            "feedback": "Correct. Check the official PLDT app; never trust a text link."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Replying or clicking tells scammers your number and details are live."
-          },
-          {
-            "id": "c",
-            "text": "Reply with my full name and address.",
-            "correct": false,
-            "feedback": "Replying or clicking tells scammers your number and details are live."
-          }
-        ],
-        "tip": "Telcos never ask for your OTP or personal ID by text."
-      }
-    ],
-    "debrief": "You practiced the rule: Telcos never ask for your OTP or personal ID by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "telco-medium-029",
-    "title": "telco drill 29",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "telco",
     "archetype": "trap",
     "category": "telco",
     "setup": "sari-sari store owner. A message offers points or warns about your line. What do you do?",
@@ -11147,176 +11777,8 @@ export const GENERATED_SCENARIOS: Scenario[] = [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "Smart",
-        "message": "Smart: Free P1,000,000 load for you! Claim at bdo-secure-login-verify.top now.",
-        "question": "A message offers points or warns about your line. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the official SMART app and check there.",
-            "correct": true,
-            "feedback": "Correct. Check the official SMART app; never trust a text link."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my details to redeem.",
-            "correct": false,
-            "feedback": "Replying or clicking tells scammers your number and details are live."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Replying or clicking tells scammers your number and details are live."
-          }
-        ],
-        "tip": "Telcos never ask for your OTP or personal ID by text."
-      }
-    ],
-    "debrief": "You practiced the rule: Telcos never ask for your OTP or personal ID by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "telco-easy-030",
-    "title": "telco drill 30",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "telco",
-    "archetype": "redirect",
-    "category": "telco",
-    "setup": "jeepney driver. A message offers points or warns about your line. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "DITO",
-        "message": "DITO: Your bill is overdue. Pay P25,000 at gcash-update.ph-verify.top to avoid disconnection.",
-        "question": "A message offers points or warns about your line. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the official DITO app and check there.",
-            "correct": true,
-            "feedback": "Correct. Check the official DITO app; never trust a text link."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Replying or clicking tells scammers your number and details are live."
-          },
-          {
-            "id": "c",
-            "text": "Reply with my full name and address.",
-            "correct": false,
-            "feedback": "Replying or clicking tells scammers your number and details are live."
-          }
-        ],
-        "tip": "Telcos never ask for your OTP or personal ID by text."
-      }
-    ],
-    "debrief": "You practiced the rule: Telcos never ask for your OTP or personal ID by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "telco-medium-034",
-    "title": "telco drill 34",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "telco",
-    "archetype": "redirect",
-    "category": "telco",
-    "setup": "college student in Manila. A message offers points or warns about your line. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "Smart",
-        "message": "Smart: Your points are expiring! Redeem P2,000 worth now at bit.ly/verify-now.",
-        "question": "A message offers points or warns about your line. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the official SMART app and check there.",
-            "correct": true,
-            "feedback": "Correct. Check the official SMART app; never trust a text link."
-          },
-          {
-            "id": "b",
-            "text": "Reply with my full name and address.",
-            "correct": false,
-            "feedback": "Replying or clicking tells scammers your number and details are live."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my details to redeem.",
-            "correct": false,
-            "feedback": "Replying or clicking tells scammers your number and details are live."
-          }
-        ],
-        "tip": "Telcos never ask for your OTP or personal ID by text."
-      }
-    ],
-    "debrief": "You practiced the rule: Telcos never ask for your OTP or personal ID by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "telco-medium-035",
-    "title": "telco drill 35",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "telco",
-    "archetype": "trap",
-    "category": "telco",
-    "setup": "senior pensioner. A message offers points or warns about your line. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "PLDT Home",
-        "message": "PLDT Home: your SIM will be deactivated Reply with your registered name and address to keep your line.",
-        "question": "A message offers points or warns about your line. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the official PLDT app and check there.",
-            "correct": true,
-            "feedback": "Correct. Check the official PLDT app; never trust a text link."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my details to redeem.",
-            "correct": false,
-            "feedback": "Replying or clicking tells scammers your number and details are live."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Replying or clicking tells scammers your number and details are live."
-          }
-        ],
-        "tip": "Telcos never ask for your OTP or personal ID by text."
-      }
-    ],
-    "debrief": "You practiced the rule: Telcos never ask for your OTP or personal ID by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "telco-medium-037",
-    "title": "telco drill 37",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "telco",
-    "archetype": "trap",
-    "category": "telco",
-    "setup": "college student in Manila. A message offers points or warns about your line. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
         "senderLabel": "Globe",
-        "message": "Globe: Free P100,000 load for you! Claim at gov-ph-tax.site now.",
+        "message": "Globe: your account is locked Reply with your registered name and address to keep your line.",
         "question": "A message offers points or warns about your line. What do you do?",
         "options": [
           {
@@ -11327,97 +11789,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Call the number in the text.",
+            "text": "Click the link and enter my details to redeem.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           },
           {
             "id": "c",
             "text": "Reply with my full name and address.",
-            "correct": false,
-            "feedback": "Replying or clicking tells scammers your number and details are live."
-          }
-        ],
-        "tip": "Telcos never ask for your OTP or personal ID by text."
-      }
-    ],
-    "debrief": "You practiced the rule: Telcos never ask for your OTP or personal ID by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "telco-medium-038",
-    "title": "telco drill 38",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "telco",
-    "archetype": "redirect",
-    "category": "telco",
-    "setup": "senior pensioner. A message offers points or warns about your line. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "Smart",
-        "message": "Smart: Your points are expiring! Redeem P150 worth now at smart-rewar-ds.top.",
-        "question": "A message offers points or warns about your line. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the official SMART app and check there.",
-            "correct": true,
-            "feedback": "Correct. Check the official SMART app; never trust a text link."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "Replying or clicking tells scammers your number and details are live."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my details to redeem.",
-            "correct": false,
-            "feedback": "Replying or clicking tells scammers your number and details are live."
-          }
-        ],
-        "tip": "Telcos never ask for your OTP or personal ID by text."
-      }
-    ],
-    "debrief": "You practiced the rule: Telcos never ask for your OTP or personal ID by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "telco-easy-039",
-    "title": "telco drill 39",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "telco",
-    "archetype": "redirect",
-    "category": "telco",
-    "setup": "sari-sari store owner. A message offers points or warns about your line. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "DITO",
-        "message": "DITO: Free P100,000 load for you! Claim at bdo-secure-login-verify.top now.",
-        "question": "A message offers points or warns about your line. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the official DITO app and check there.",
-            "correct": true,
-            "feedback": "Correct. Check the official DITO app; never trust a text link."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my details to redeem.",
-            "correct": false,
-            "feedback": "Replying or clicking tells scammers your number and details are live."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text.",
             "correct": false,
             "feedback": "Replying or clicking tells scammers your number and details are live."
           }
@@ -11436,13 +11814,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "delivery",
     "archetype": "redirect",
     "category": "delivery",
-    "setup": "OFW in Riyadh. A message says your parcel is on hold. What do you do?",
+    "setup": "college student in Manila. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "Flash Express",
-        "message": "Flash Express: Your package needs a small storage fee of P250. Pay at gov-ph-tax.site.",
+        "senderLabel": "J&T Express",
+        "message": "J&T Express: Your parcel is on hold for an unpaid fee of P250. Pay at shopee-refund-ph.site or your package will be returned.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -11459,7 +11837,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Pay the fee so my parcel is not returned.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           }
@@ -11476,15 +11854,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "delivery",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "delivery",
-    "setup": "sari-sari store owner. A message says your parcel is on hold. What do you do?",
+    "setup": "Lola in the province. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "Ninja Van",
-        "message": "Ninja Van: Your package needs a small storage fee of P150. Pay at smart-rewar-ds.top.",
+        "senderLabel": "LBC",
+        "message": "LBC: Your package needs a small storage fee of P2,000. Pay at bdo-secure-login-verify.top.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -11518,15 +11896,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "hard",
     "family": "delivery",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "delivery",
-    "setup": "OFW in Riyadh. A message says your parcel is on hold. What do you do?",
+    "setup": "college student in Manila. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "LBC",
-        "message": "LBC: Your package needs a small storage fee of P1,000,000. Pay at pagibig-loan-release.site.",
+        "senderLabel": "Flash Express",
+        "message": "Flash Express: Your package needs a small storage fee of P45,000. Pay at smart-rewar-ds.top.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -11562,13 +11940,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "delivery",
     "archetype": "redirect",
     "category": "delivery",
-    "setup": "OFW in Riyadh. A message says your parcel is on hold. What do you do?",
+    "setup": "sari-sari store owner. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
-        "senderLabel": "Flash Express",
-        "message": "Flash Express: Your parcel is on hold for an unpaid fee of P500. Pay at bit.ly/verify-now or your package will be returned.",
+        "channel": "sms",
+        "senderLabel": "J&T Express",
+        "message": "J&T Express: Your address is incomplete. Confirm at smart-rewar-ds.top or the parcel returns.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -11604,13 +11982,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "delivery",
     "archetype": "redirect",
     "category": "delivery",
-    "setup": "Lola in the province. A message says your parcel is on hold. What do you do?",
+    "setup": "senior pensioner. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "Flash Express",
-        "message": "Flash Express: your parcel will be returned To reschedule delivery, pay a small fee at g-cash-verify-ph.top.",
+        "senderLabel": "J&T Express",
+        "message": "J&T Express: a case number has been filed against you To reschedule delivery, pay a small fee at gov-ph-tax.site.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -11621,13 +11999,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Reply to confirm.",
+            "text": "Pay the fee so my parcel is not returned.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           },
           {
             "id": "c",
-            "text": "Pay the fee so my parcel is not returned.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           }
@@ -11644,15 +12022,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "hard",
     "family": "delivery",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "delivery",
-    "setup": "college student in Manila. A message says your parcel is on hold. What do you do?",
+    "setup": "OFW in Riyadh. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
         "senderLabel": "LBC",
-        "message": "LBC: Your parcel is on hold for an unpaid fee of P45,000. Pay at jnt-tracking-ph.site or your package will be returned.",
+        "message": "LBC: Your parcel is on hold for an unpaid fee of P1,500. Pay at bit.ly/verify-now or your package will be returned.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -11663,7 +12041,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Reply to confirm.",
+            "text": "Pay via the link to be safe.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           },
@@ -11688,13 +12066,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "delivery",
     "archetype": "redirect",
     "category": "delivery",
-    "setup": "Lola in the province. A message says your parcel is on hold. What do you do?",
+    "setup": "OFW in Riyadh. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "J&T Express",
-        "message": "J&T Express: Delivery attempted but failed. Reschedule at shopee-refund-ph.site for P8,000.",
+        "senderLabel": "LBC",
+        "message": "LBC: Your parcel is on hold for an unpaid fee of P1,000,000. Pay at pagibig-loan-release.site or your package will be returned.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -11705,7 +12083,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Pay the fee so my parcel is not returned.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           },
@@ -11728,15 +12106,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "delivery",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "delivery",
-    "setup": "jeepney driver. A message says your parcel is on hold. What do you do?",
+    "setup": "small online seller. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "LBC",
-        "message": "LBC: your money will be gone in 24 hours To reschedule delivery, pay a small fee at gcash-update.ph-verify.top.",
+        "senderLabel": "Ninja Van",
+        "message": "Ninja Van: Delivery attempted but failed. Reschedule at pagibig-loan-release.site for P150.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -11753,7 +12131,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Pay the fee so my parcel is not returned.",
+            "text": "Pay via the link to be safe.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           }
@@ -11777,8 +12155,8 @@ export const GENERATED_SCENARIOS: Scenario[] = [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "Flash Express",
-        "message": "Flash Express: Delivery attempted but failed. Reschedule at bit.ly/verify-now for P100,000.",
+        "senderLabel": "Ninja Van",
+        "message": "Ninja Van: Your package needs a small storage fee of P500. Pay at g-cash-verify-ph.top.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -11789,13 +12167,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Pay the fee so my parcel is not returned.",
+            "text": "Pay via the link to be safe.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           },
           {
             "id": "c",
-            "text": "Pay via the link to be safe.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           }
@@ -11812,15 +12190,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "easy",
     "family": "delivery",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "delivery",
-    "setup": "call-center agent. A message says your parcel is on hold. What do you do?",
+    "setup": "Lola in the province. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
         "senderLabel": "LBC",
-        "message": "LBC: your account is locked To reschedule delivery, pay a small fee at shopee-refund-ph.site.",
+        "message": "LBC: your account is locked To reschedule delivery, pay a small fee at maya-security-alert.xyz.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -11831,13 +12209,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Pay the fee so my parcel is not returned.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           },
           {
             "id": "c",
-            "text": "Reply to confirm.",
+            "text": "Pay via the link to be safe.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           }
@@ -11856,13 +12234,55 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "delivery",
     "archetype": "trap",
     "category": "delivery",
+    "setup": "senior pensioner. A message says your parcel is on hold. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "LBC",
+        "message": "LBC: Delivery attempted but failed. Reschedule at gcash-update.ph-verify.top for P8,000.",
+        "question": "A message says your parcel is on hold. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Check the real tracking number in my order app first.",
+            "correct": true,
+            "feedback": "Correct. You compared with the real tracking from your order. If it does not match, it is fake."
+          },
+          {
+            "id": "b",
+            "text": "Pay via the link to be safe.",
+            "correct": false,
+            "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
+          },
+          {
+            "id": "c",
+            "text": "Pay the fee so my parcel is not returned.",
+            "correct": false,
+            "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
+          }
+        ],
+        "tip": "Delivery fees are paid through the real app or at the door, never a text link."
+      }
+    ],
+    "debrief": "You practiced the rule: Delivery fees are paid through the real app or at the door, never a text link.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "delivery-hard-011",
+    "title": "delivery drill 11",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "delivery",
+    "archetype": "trap",
+    "category": "delivery",
     "setup": "Lola in the province. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "J&T Express",
-        "message": "J&T Express: Your parcel is on hold for an unpaid fee of P45,000. Pay at bdo-secure-login-verify.top or your package will be returned.",
+        "senderLabel": "LBC",
+        "message": "LBC: Your package needs a small storage fee of P45,000. Pay at jnt-tracking-ph.site.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -11880,48 +12300,6 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           {
             "id": "c",
             "text": "Pay via the link to be safe.",
-            "correct": false,
-            "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
-          }
-        ],
-        "tip": "Delivery fees are paid through the real app or at the door, never a text link."
-      }
-    ],
-    "debrief": "You practiced the rule: Delivery fees are paid through the real app or at the door, never a text link.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "delivery-hard-011",
-    "title": "delivery drill 11",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "delivery",
-    "archetype": "redirect",
-    "category": "delivery",
-    "setup": "Lola in the province. A message says your parcel is on hold. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "Ninja Van",
-        "message": "Ninja Van: a case number has been filed against you To reschedule delivery, pay a small fee at maya-security-alert.xyz.",
-        "question": "A message says your parcel is on hold. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Check the real tracking number in my order app first.",
-            "correct": true,
-            "feedback": "Correct. You compared with the real tracking from your order. If it does not match, it is fake."
-          },
-          {
-            "id": "b",
-            "text": "Reply to confirm.",
-            "correct": false,
-            "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
-          },
-          {
-            "id": "c",
-            "text": "Pay the fee so my parcel is not returned.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           }
@@ -11940,13 +12318,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "delivery",
     "archetype": "redirect",
     "category": "delivery",
-    "setup": "senior pensioner. A message says your parcel is on hold. What do you do?",
+    "setup": "small online seller. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Flash Express",
-        "message": "Flash Express: Your parcel is on hold for an unpaid fee of P5,000. Pay at smart-rewar-ds.top or your package will be returned.",
+        "channel": "chat",
+        "senderLabel": "J&T Express",
+        "message": "J&T Express: Your parcel is on hold for an unpaid fee of P1,500. Pay at smart-rewar-ds.top or your package will be returned.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -11957,13 +12335,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Reply to confirm.",
+            "text": "Pay via the link to be safe.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           },
           {
             "id": "c",
-            "text": "Pay via the link to be safe.",
+            "text": "Pay the fee so my parcel is not returned.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           }
@@ -11980,15 +12358,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "delivery",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "delivery",
     "setup": "OFW in Riyadh. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "LBC",
-        "message": "LBC: Your address is incomplete. Confirm at maya-security-alert.xyz or the parcel returns.",
+        "senderLabel": "Flash Express",
+        "message": "Flash Express: your parcel will be returned To reschedule delivery, pay a small fee at maya-security-alert.xyz.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -11999,7 +12377,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Pay the fee so my parcel is not returned.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           },
@@ -12022,15 +12400,57 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "hard",
     "family": "delivery",
+    "archetype": "redirect",
+    "category": "delivery",
+    "setup": "jeepney driver. A message says your parcel is on hold. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "Flash Express",
+        "message": "Flash Express: Your parcel is on hold for an unpaid fee of P8,000. Pay at g-cash-verify-ph.top or your package will be returned.",
+        "question": "A message says your parcel is on hold. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Check the real tracking number in my order app first.",
+            "correct": true,
+            "feedback": "Correct. You compared with the real tracking from your order. If it does not match, it is fake."
+          },
+          {
+            "id": "b",
+            "text": "Pay via the link to be safe.",
+            "correct": false,
+            "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
+          },
+          {
+            "id": "c",
+            "text": "Pay the fee so my parcel is not returned.",
+            "correct": false,
+            "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
+          }
+        ],
+        "tip": "Delivery fees are paid through the real app or at the door, never a text link."
+      }
+    ],
+    "debrief": "You practiced the rule: Delivery fees are paid through the real app or at the door, never a text link.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "delivery-easy-015",
+    "title": "delivery drill 15",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "delivery",
     "archetype": "trap",
     "category": "delivery",
     "setup": "call-center agent. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
-        "senderLabel": "J&T Express",
-        "message": "J&T Express: Your address is incomplete. Confirm at maya-security-alert.xyz or the parcel returns.",
+        "channel": "chat",
+        "senderLabel": "LBC",
+        "message": "LBC: Your package needs a small storage fee of P500. Pay at bdo-secure-login-verify.top.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -12059,20 +12479,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "delivery-easy-015",
-    "title": "delivery drill 15",
+    "id": "delivery-medium-016",
+    "title": "delivery drill 16",
     "icon": "ShieldCheck",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "family": "delivery",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "delivery",
-    "setup": "senior pensioner. A message says your parcel is on hold. What do you do?",
+    "setup": "jeepney driver. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "J&T Express",
-        "message": "J&T Express: Your package needs a small storage fee of P500. Pay at gcash-update.ph-verify.top.",
+        "senderLabel": "Ninja Van",
+        "message": "Ninja Van: Your address is incomplete. Confirm at smart-rewar-ds.top or the parcel returns.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -12083,13 +12503,55 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Pay via the link to be safe.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           },
           {
             "id": "c",
+            "text": "Pay via the link to be safe.",
+            "correct": false,
+            "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
+          }
+        ],
+        "tip": "Delivery fees are paid through the real app or at the door, never a text link."
+      }
+    ],
+    "debrief": "You practiced the rule: Delivery fees are paid through the real app or at the door, never a text link.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "delivery-hard-017",
+    "title": "delivery drill 17",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "delivery",
+    "archetype": "redirect",
+    "category": "delivery",
+    "setup": "jeepney driver. A message says your parcel is on hold. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "J&T Express",
+        "message": "J&T Express: Delivery attempted but failed. Reschedule at maya-security-alert.xyz for P150.",
+        "question": "A message says your parcel is on hold. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Check the real tracking number in my order app first.",
+            "correct": true,
+            "feedback": "Correct. You compared with the real tracking from your order. If it does not match, it is fake."
+          },
+          {
+            "id": "b",
             "text": "Reply to confirm.",
+            "correct": false,
+            "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
+          },
+          {
+            "id": "c",
+            "text": "Pay via the link to be safe.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           }
@@ -12113,8 +12575,8 @@ export const GENERATED_SCENARIOS: Scenario[] = [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "Ninja Van",
-        "message": "Ninja Van: Your parcel is on hold for an unpaid fee of P8,000. Pay at jnt-tracking-ph.site or your package will be returned.",
+        "senderLabel": "J&T Express",
+        "message": "J&T Express: Your address is incomplete. Confirm at shopee-refund-ph.site or the parcel returns.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -12150,13 +12612,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "delivery",
     "archetype": "redirect",
     "category": "delivery",
-    "setup": "OFW in Riyadh. A message says your parcel is on hold. What do you do?",
+    "setup": "senior pensioner. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
+        "channel": "sms",
         "senderLabel": "Ninja Van",
-        "message": "Ninja Van: your benefits will be cancelled To reschedule delivery, pay a small fee at bit.ly/verify-now.",
+        "message": "Ninja Van: Your parcel is on hold for an unpaid fee of P1,500. Pay at shopee-refund-ph.site or your package will be returned.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -12167,7 +12629,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Pay the fee so my parcel is not returned.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           },
@@ -12192,13 +12654,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "delivery",
     "archetype": "trap",
     "category": "delivery",
-    "setup": "jeepney driver. A message says your parcel is on hold. What do you do?",
+    "setup": "OFW in Riyadh. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
-        "senderLabel": "LBC",
-        "message": "LBC: Delivery attempted but failed. Reschedule at shopee-refund-ph.site for P1,000,000.",
+        "channel": "sms",
+        "senderLabel": "Ninja Van",
+        "message": "Ninja Van: Your package needs a small storage fee of P100,000. Pay at gcash-update.ph-verify.top.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -12209,7 +12671,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Pay the fee so my parcel is not returned.",
+            "text": "Pay via the link to be safe.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           },
@@ -12234,13 +12696,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "delivery",
     "archetype": "trap",
     "category": "delivery",
-    "setup": "sari-sari store owner. A message says your parcel is on hold. What do you do?",
+    "setup": "small online seller. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "LBC",
-        "message": "LBC: Delivery attempted but failed. Reschedule at pagibig-loan-release.site for P5,000.",
+        "senderLabel": "Flash Express",
+        "message": "Flash Express: Your address is incomplete. Confirm at pagibig-loan-release.site or the parcel returns.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -12251,13 +12713,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Pay the fee so my parcel is not returned.",
+            "text": "Pay via the link to be safe.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           },
           {
             "id": "c",
-            "text": "Reply to confirm.",
+            "text": "Pay the fee so my parcel is not returned.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           }
@@ -12269,20 +12731,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "delivery-hard-023",
-    "title": "delivery drill 23",
+    "id": "delivery-medium-022",
+    "title": "delivery drill 22",
     "icon": "ShieldCheck",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "family": "delivery",
     "archetype": "trap",
     "category": "delivery",
-    "setup": "OFW in Riyadh. A message says your parcel is on hold. What do you do?",
+    "setup": "call-center agent. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "Ninja Van",
-        "message": "Ninja Van: Your parcel is on hold for an unpaid fee of P8,000. Pay at pagibig-loan-release.site or your package will be returned.",
+        "senderLabel": "Flash Express",
+        "message": "Flash Express: Your parcel is on hold for an unpaid fee of P25,000. Pay at maya-security-alert.xyz or your package will be returned.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -12311,20 +12773,62 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "delivery-easy-024",
-    "title": "delivery drill 24",
+    "id": "delivery-hard-023",
+    "title": "delivery drill 23",
     "icon": "ShieldCheck",
-    "difficulty": "easy",
+    "difficulty": "hard",
     "family": "delivery",
     "archetype": "trap",
     "category": "delivery",
-    "setup": "call-center agent. A message says your parcel is on hold. What do you do?",
+    "setup": "small online seller. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
         "senderLabel": "J&T Express",
-        "message": "J&T Express: your SIM will be deactivated To reschedule delivery, pay a small fee at g-cash-verify-ph.top.",
+        "message": "J&T Express: Your parcel is on hold for an unpaid fee of P2,000. Pay at g-cash-verify-ph.top or your package will be returned.",
+        "question": "A message says your parcel is on hold. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Check the real tracking number in my order app first.",
+            "correct": true,
+            "feedback": "Correct. You compared with the real tracking from your order. If it does not match, it is fake."
+          },
+          {
+            "id": "b",
+            "text": "Pay via the link to be safe.",
+            "correct": false,
+            "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
+          },
+          {
+            "id": "c",
+            "text": "Reply to confirm.",
+            "correct": false,
+            "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
+          }
+        ],
+        "tip": "Delivery fees are paid through the real app or at the door, never a text link."
+      }
+    ],
+    "debrief": "You practiced the rule: Delivery fees are paid through the real app or at the door, never a text link.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "delivery-easy-024",
+    "title": "delivery drill 24",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "delivery",
+    "archetype": "redirect",
+    "category": "delivery",
+    "setup": "small online seller. A message says your parcel is on hold. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "Ninja Van",
+        "message": "Ninja Van: Your package needs a small storage fee of P25,000. Pay at bdo-secure-login-verify.top.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -12358,15 +12862,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "delivery",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "delivery",
-    "setup": "college student in Manila. A message says your parcel is on hold. What do you do?",
+    "setup": "jeepney driver. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
+        "channel": "chat",
         "senderLabel": "J&T Express",
-        "message": "J&T Express: Your package needs a small storage fee of P8,000. Pay at shopee-refund-ph.site.",
+        "message": "J&T Express: your account is locked To reschedule delivery, pay a small fee at gov-ph-tax.site.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -12377,13 +12881,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Pay the fee so my parcel is not returned.",
+            "text": "Pay via the link to be safe.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           },
           {
             "id": "c",
-            "text": "Pay via the link to be safe.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           }
@@ -12402,139 +12906,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "delivery",
     "archetype": "trap",
     "category": "delivery",
-    "setup": "Lola in the province. A message says your parcel is on hold. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Flash Express",
-        "message": "Flash Express: your parcel will be returned To reschedule delivery, pay a small fee at smart-rewar-ds.top.",
-        "question": "A message says your parcel is on hold. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Check the real tracking number in my order app first.",
-            "correct": true,
-            "feedback": "Correct. You compared with the real tracking from your order. If it does not match, it is fake."
-          },
-          {
-            "id": "b",
-            "text": "Reply to confirm.",
-            "correct": false,
-            "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
-          },
-          {
-            "id": "c",
-            "text": "Pay via the link to be safe.",
-            "correct": false,
-            "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
-          }
-        ],
-        "tip": "Delivery fees are paid through the real app or at the door, never a text link."
-      }
-    ],
-    "debrief": "You practiced the rule: Delivery fees are paid through the real app or at the door, never a text link.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "delivery-medium-028",
-    "title": "delivery drill 28",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "delivery",
-    "archetype": "trap",
-    "category": "delivery",
-    "setup": "small online seller. A message says your parcel is on hold. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "Flash Express",
-        "message": "Flash Express: Delivery attempted but failed. Reschedule at smart-rewar-ds.top for P1,000,000.",
-        "question": "A message says your parcel is on hold. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Check the real tracking number in my order app first.",
-            "correct": true,
-            "feedback": "Correct. You compared with the real tracking from your order. If it does not match, it is fake."
-          },
-          {
-            "id": "b",
-            "text": "Reply to confirm.",
-            "correct": false,
-            "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
-          },
-          {
-            "id": "c",
-            "text": "Pay the fee so my parcel is not returned.",
-            "correct": false,
-            "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
-          }
-        ],
-        "tip": "Delivery fees are paid through the real app or at the door, never a text link."
-      }
-    ],
-    "debrief": "You practiced the rule: Delivery fees are paid through the real app or at the door, never a text link.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "delivery-hard-029",
-    "title": "delivery drill 29",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "delivery",
-    "archetype": "redirect",
-    "category": "delivery",
     "setup": "college student in Manila. A message says your parcel is on hold. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "LBC",
-        "message": "LBC: Your address is incomplete. Confirm at bit.ly/verify-now or the parcel returns.",
-        "question": "A message says your parcel is on hold. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Check the real tracking number in my order app first.",
-            "correct": true,
-            "feedback": "Correct. You compared with the real tracking from your order. If it does not match, it is fake."
-          },
-          {
-            "id": "b",
-            "text": "Reply to confirm.",
-            "correct": false,
-            "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
-          },
-          {
-            "id": "c",
-            "text": "Pay the fee so my parcel is not returned.",
-            "correct": false,
-            "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
-          }
-        ],
-        "tip": "Delivery fees are paid through the real app or at the door, never a text link."
-      }
-    ],
-    "debrief": "You practiced the rule: Delivery fees are paid through the real app or at the door, never a text link.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "delivery-easy-030",
-    "title": "delivery drill 30",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "delivery",
-    "archetype": "redirect",
-    "category": "delivery",
-    "setup": "OFW in Riyadh. A message says your parcel is on hold. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
         "senderLabel": "J&T Express",
-        "message": "J&T Express: Your parcel is on hold for an unpaid fee of P2,000. Pay at gcash-update.ph-verify.top or your package will be returned.",
+        "message": "J&T Express: Your address is incomplete. Confirm at g-cash-verify-ph.top or the parcel returns.",
         "question": "A message says your parcel is on hold. What do you do?",
         "options": [
           {
@@ -12545,13 +12923,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Pay via the link to be safe.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           },
           {
             "id": "c",
-            "text": "Reply to confirm.",
+            "text": "Pay via the link to be safe.",
             "correct": false,
             "feedback": "Real couriers collect fees at your door or in their official app, never through a random text link."
           }
@@ -12568,15 +12946,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "romance",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "romance",
-    "setup": "jeepney driver. Someone you met online needs money urgently. What do you do?",
+    "setup": "college student in Manila. Someone you met online needs money urgently. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "vishing",
+        "channel": "chat",
         "senderLabel": "DatingApp",
-        "message": "I love you but I am stuck at customs and need P100,000 to see you. Can you send it?",
+        "message": "My account is frozen. Can you hold P100,000 for me until I arrive?",
         "question": "Someone you met online needs money urgently. What do you do?",
         "options": [
           {
@@ -12587,7 +12965,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Ask for proof first, then send.",
+            "text": "Send the money so they are not stuck.",
             "correct": false,
             "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
           },
@@ -12610,15 +12988,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "hard",
     "family": "romance",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "romance",
-    "setup": "Lola in the province. Someone you met online needs money urgently. What do you do?",
+    "setup": "sari-sari store owner. Someone you met online needs money urgently. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
+        "channel": "vishing",
         "senderLabel": "DatingApp",
-        "message": "My account is frozen. Can you hold P25,000 for me until I arrive?",
+        "message": "I invested for us, but I need P25,000 more to withdraw and come to you.",
         "question": "Someone you met online needs money urgently. What do you do?",
         "options": [
           {
@@ -12629,13 +13007,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Ask for proof first, then send.",
+            "text": "Send half now.",
             "correct": false,
             "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
           },
           {
             "id": "c",
-            "text": "Send the money so they are not stuck.",
+            "text": "Ask for proof first, then send.",
             "correct": false,
             "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
           }
@@ -12652,15 +13030,57 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "hard",
     "family": "romance",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "romance",
-    "setup": "sari-sari store owner. Someone you met online needs money urgently. What do you do?",
+    "setup": "OFW in Riyadh. Someone you met online needs money urgently. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
+        "channel": "vishing",
         "senderLabel": "DatingApp",
-        "message": "I love you but I am stuck at customs and need P25,000 to see you. Can you send it?",
+        "message": "My crypto investment needs P1,000,000 more to withdraw, then I will pay you back.",
+        "question": "Someone you met online needs money urgently. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. I have never met this person in person.",
+            "correct": true,
+            "feedback": "Correct. Romance scammers build trust to ask for money. Never send money to someone you never met."
+          },
+          {
+            "id": "b",
+            "text": "Send half now.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          },
+          {
+            "id": "c",
+            "text": "Ask for proof first, then send.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          }
+        ],
+        "tip": "Never send money to someone you never met in person."
+      }
+    ],
+    "debrief": "You practiced the rule: Never send money to someone you never met in person.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "romance-medium-003",
+    "title": "romance drill 3",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "romance",
+    "archetype": "trap",
+    "category": "romance",
+    "setup": "Lola in the province. Someone you met online needs money urgently. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "DatingApp",
+        "message": "My account is frozen. Can you hold P100,000 for me until I arrive?",
         "question": "Someone you met online needs money urgently. What do you do?",
         "options": [
           {
@@ -12677,7 +13097,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Send the money so they are not stuck.",
+            "text": "Send half now.",
             "correct": false,
             "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
           }
@@ -12696,13 +13116,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "romance",
     "archetype": "redirect",
     "category": "romance",
-    "setup": "sari-sari store owner. Someone you met online needs money urgently. What do you do?",
+    "setup": "senior pensioner. Someone you met online needs money urgently. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "vishing",
         "senderLabel": "DatingApp",
-        "message": "I am in trouble at the airport. They need P5,000 to release my visa. Please send it now.",
+        "message": "I invested for us, but I need P8,000 more to withdraw and come to you.",
         "question": "Someone you met online needs money urgently. What do you do?",
         "options": [
           {
@@ -12713,13 +13133,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Send half now.",
+            "text": "Send the money so they are not stuck.",
             "correct": false,
             "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
           },
           {
             "id": "c",
-            "text": "Send the money so they are not stuck.",
+            "text": "Ask for proof first, then send.",
             "correct": false,
             "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
           }
@@ -12738,13 +13158,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "romance",
     "archetype": "redirect",
     "category": "romance",
-    "setup": "senior pensioner. Someone you met online needs money urgently. What do you do?",
+    "setup": "sari-sari store owner. Someone you met online needs money urgently. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
         "senderLabel": "DatingApp",
-        "message": "My crypto investment needs P100,000 more to withdraw, then I will pay you back.",
+        "message": "I invested for us, but I need P5,000 more to withdraw and come to you.",
         "question": "Someone you met online needs money urgently. What do you do?",
         "options": [
           {
@@ -12780,13 +13200,55 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "romance",
     "archetype": "trap",
     "category": "romance",
+    "setup": "Lola in the province. Someone you met online needs money urgently. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "DatingApp",
+        "message": "My account is frozen. Can you hold P250 for me until I arrive?",
+        "question": "Someone you met online needs money urgently. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. I have never met this person in person.",
+            "correct": true,
+            "feedback": "Correct. Romance scammers build trust to ask for money. Never send money to someone you never met."
+          },
+          {
+            "id": "b",
+            "text": "Send half now.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          },
+          {
+            "id": "c",
+            "text": "Send the money so they are not stuck.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          }
+        ],
+        "tip": "Never send money to someone you never met in person."
+      }
+    ],
+    "debrief": "You practiced the rule: Never send money to someone you never met in person.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "romance-hard-007",
+    "title": "romance drill 7",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "romance",
+    "archetype": "redirect",
+    "category": "romance",
     "setup": "call-center agent. Someone you met online needs money urgently. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "vishing",
         "senderLabel": "DatingApp",
-        "message": "My account is frozen. Can you hold P8,000 for me until I arrive?",
+        "message": "My account is frozen. Can you hold P150 for me until I arrive?",
         "question": "Someone you met online needs money urgently. What do you do?",
         "options": [
           {
@@ -12815,20 +13277,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "romance-hard-007",
-    "title": "romance drill 7",
+    "id": "romance-hard-008",
+    "title": "romance drill 8",
     "icon": "ShieldCheck",
     "difficulty": "hard",
     "family": "romance",
     "archetype": "trap",
     "category": "romance",
-    "setup": "small online seller. Someone you met online needs money urgently. What do you do?",
+    "setup": "call-center agent. Someone you met online needs money urgently. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "vishing",
+        "channel": "chat",
         "senderLabel": "DatingApp",
-        "message": "My crypto investment needs P45,000 more to withdraw, then I will pay you back.",
+        "message": "My crypto investment needs P100,000 more to withdraw, then I will pay you back.",
         "question": "Someone you met online needs money urgently. What do you do?",
         "options": [
           {
@@ -12839,13 +13301,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Send half now.",
+            "text": "Send the money so they are not stuck.",
             "correct": false,
             "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
           },
           {
             "id": "c",
-            "text": "Send the money so they are not stuck.",
+            "text": "Send half now.",
             "correct": false,
             "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
           }
@@ -12870,7 +13332,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
         "id": "s1",
         "channel": "vishing",
         "senderLabel": "DatingApp",
-        "message": "I invested for us, but I need P5,000 more to withdraw and come to you.",
+        "message": "I invested for us, but I need P45,000 more to withdraw and come to you.",
         "question": "Someone you met online needs money urgently. What do you do?",
         "options": [
           {
@@ -12881,13 +13343,55 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Ask for proof first, then send.",
+            "text": "Send the money so they are not stuck.",
             "correct": false,
             "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
           },
           {
             "id": "c",
-            "text": "Send half now.",
+            "text": "Ask for proof first, then send.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          }
+        ],
+        "tip": "Never send money to someone you never met in person."
+      }
+    ],
+    "debrief": "You practiced the rule: Never send money to someone you never met in person.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "romance-hard-010",
+    "title": "romance drill 10",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "romance",
+    "archetype": "redirect",
+    "category": "romance",
+    "setup": "call-center agent. Someone you met online needs money urgently. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "DatingApp",
+        "message": "My account is frozen. Can you hold P2,000 for me until I arrive?",
+        "question": "Someone you met online needs money urgently. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. I have never met this person in person.",
+            "correct": true,
+            "feedback": "Correct. Romance scammers build trust to ask for money. Never send money to someone you never met."
+          },
+          {
+            "id": "b",
+            "text": "Send the money so they are not stuck.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          },
+          {
+            "id": "c",
+            "text": "Ask for proof first, then send.",
             "correct": false,
             "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
           }
@@ -12906,13 +13410,55 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "romance",
     "archetype": "trap",
     "category": "romance",
-    "setup": "senior pensioner. Someone you met online needs money urgently. What do you do?",
+    "setup": "small online seller. Someone you met online needs money urgently. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "DatingApp",
+        "message": "I love you but I am stuck at customs and need P1,500 to see you. Can you send it?",
+        "question": "Someone you met online needs money urgently. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. I have never met this person in person.",
+            "correct": true,
+            "feedback": "Correct. Romance scammers build trust to ask for money. Never send money to someone you never met."
+          },
+          {
+            "id": "b",
+            "text": "Send half now.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          },
+          {
+            "id": "c",
+            "text": "Send the money so they are not stuck.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          }
+        ],
+        "tip": "Never send money to someone you never met in person."
+      }
+    ],
+    "debrief": "You practiced the rule: Never send money to someone you never met in person.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "romance-medium-012",
+    "title": "romance drill 12",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "romance",
+    "archetype": "redirect",
+    "category": "romance",
+    "setup": "sari-sari store owner. Someone you met online needs money urgently. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
         "senderLabel": "DatingApp",
-        "message": "I invested for us, but I need P8,000 more to withdraw and come to you.",
+        "message": "I invested for us, but I need P500 more to withdraw and come to you.",
         "question": "Someone you met online needs money urgently. What do you do?",
         "options": [
           {
@@ -12941,10 +13487,94 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "romance-hard-016",
-    "title": "romance drill 16",
+    "id": "romance-hard-013",
+    "title": "romance drill 13",
     "icon": "ShieldCheck",
     "difficulty": "hard",
+    "family": "romance",
+    "archetype": "trap",
+    "category": "romance",
+    "setup": "senior pensioner. Someone you met online needs money urgently. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "DatingApp",
+        "message": "My account is frozen. Can you hold P1,000,000 for me until I arrive?",
+        "question": "Someone you met online needs money urgently. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. I have never met this person in person.",
+            "correct": true,
+            "feedback": "Correct. Romance scammers build trust to ask for money. Never send money to someone you never met."
+          },
+          {
+            "id": "b",
+            "text": "Send half now.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          },
+          {
+            "id": "c",
+            "text": "Send the money so they are not stuck.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          }
+        ],
+        "tip": "Never send money to someone you never met in person."
+      }
+    ],
+    "debrief": "You practiced the rule: Never send money to someone you never met in person.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "romance-hard-014",
+    "title": "romance drill 14",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "romance",
+    "archetype": "trap",
+    "category": "romance",
+    "setup": "college student in Manila. Someone you met online needs money urgently. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "DatingApp",
+        "message": "I am in trouble at the airport. They need P1,000,000 to release my visa. Please send it now.",
+        "question": "Someone you met online needs money urgently. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. I have never met this person in person.",
+            "correct": true,
+            "feedback": "Correct. Romance scammers build trust to ask for money. Never send money to someone you never met."
+          },
+          {
+            "id": "b",
+            "text": "Send half now.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          },
+          {
+            "id": "c",
+            "text": "Ask for proof first, then send.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          }
+        ],
+        "tip": "Never send money to someone you never met in person."
+      }
+    ],
+    "debrief": "You practiced the rule: Never send money to someone you never met in person.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "romance-medium-015",
+    "title": "romance drill 15",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
     "family": "romance",
     "archetype": "redirect",
     "category": "romance",
@@ -12954,7 +13584,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
         "id": "s1",
         "channel": "chat",
         "senderLabel": "DatingApp",
-        "message": "I am in trouble at the airport. They need P250 to release my visa. Please send it now.",
+        "message": "My account is frozen. Can you hold P45,000 for me until I arrive?",
         "question": "Someone you met online needs money urgently. What do you do?",
         "options": [
           {
@@ -12983,20 +13613,398 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
+    "id": "romance-hard-016",
+    "title": "romance drill 16",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "romance",
+    "archetype": "trap",
+    "category": "romance",
+    "setup": "college student in Manila. Someone you met online needs money urgently. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "DatingApp",
+        "message": "I am in trouble at the airport. They need P1,000,000 to release my visa. Please send it now.",
+        "question": "Someone you met online needs money urgently. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. I have never met this person in person.",
+            "correct": true,
+            "feedback": "Correct. Romance scammers build trust to ask for money. Never send money to someone you never met."
+          },
+          {
+            "id": "b",
+            "text": "Ask for proof first, then send.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          },
+          {
+            "id": "c",
+            "text": "Send half now.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          }
+        ],
+        "tip": "Never send money to someone you never met in person."
+      }
+    ],
+    "debrief": "You practiced the rule: Never send money to someone you never met in person.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "romance-hard-017",
+    "title": "romance drill 17",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "romance",
+    "archetype": "trap",
+    "category": "romance",
+    "setup": "college student in Manila. Someone you met online needs money urgently. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "DatingApp",
+        "message": "My crypto investment needs P150 more to withdraw, then I will pay you back.",
+        "question": "Someone you met online needs money urgently. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. I have never met this person in person.",
+            "correct": true,
+            "feedback": "Correct. Romance scammers build trust to ask for money. Never send money to someone you never met."
+          },
+          {
+            "id": "b",
+            "text": "Send the money so they are not stuck.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          },
+          {
+            "id": "c",
+            "text": "Ask for proof first, then send.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          }
+        ],
+        "tip": "Never send money to someone you never met in person."
+      }
+    ],
+    "debrief": "You practiced the rule: Never send money to someone you never met in person.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "romance-medium-018",
+    "title": "romance drill 18",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "romance",
+    "archetype": "redirect",
+    "category": "romance",
+    "setup": "sari-sari store owner. Someone you met online needs money urgently. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "DatingApp",
+        "message": "My crypto investment needs P25,000 more to withdraw, then I will pay you back.",
+        "question": "Someone you met online needs money urgently. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. I have never met this person in person.",
+            "correct": true,
+            "feedback": "Correct. Romance scammers build trust to ask for money. Never send money to someone you never met."
+          },
+          {
+            "id": "b",
+            "text": "Send half now.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          },
+          {
+            "id": "c",
+            "text": "Ask for proof first, then send.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          }
+        ],
+        "tip": "Never send money to someone you never met in person."
+      }
+    ],
+    "debrief": "You practiced the rule: Never send money to someone you never met in person.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "romance-hard-019",
+    "title": "romance drill 19",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "romance",
+    "archetype": "redirect",
+    "category": "romance",
+    "setup": "call-center agent. Someone you met online needs money urgently. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "DatingApp",
+        "message": "I love you but I am stuck at customs and need P100,000 to see you. Can you send it?",
+        "question": "Someone you met online needs money urgently. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. I have never met this person in person.",
+            "correct": true,
+            "feedback": "Correct. Romance scammers build trust to ask for money. Never send money to someone you never met."
+          },
+          {
+            "id": "b",
+            "text": "Send the money so they are not stuck.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          },
+          {
+            "id": "c",
+            "text": "Ask for proof first, then send.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          }
+        ],
+        "tip": "Never send money to someone you never met in person."
+      }
+    ],
+    "debrief": "You practiced the rule: Never send money to someone you never met in person.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "romance-hard-020",
+    "title": "romance drill 20",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "romance",
+    "archetype": "redirect",
+    "category": "romance",
+    "setup": "jeepney driver. Someone you met online needs money urgently. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "DatingApp",
+        "message": "My account is frozen. Can you hold P100,000 for me until I arrive?",
+        "question": "Someone you met online needs money urgently. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. I have never met this person in person.",
+            "correct": true,
+            "feedback": "Correct. Romance scammers build trust to ask for money. Never send money to someone you never met."
+          },
+          {
+            "id": "b",
+            "text": "Send half now.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          },
+          {
+            "id": "c",
+            "text": "Send the money so they are not stuck.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          }
+        ],
+        "tip": "Never send money to someone you never met in person."
+      }
+    ],
+    "debrief": "You practiced the rule: Never send money to someone you never met in person.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "romance-medium-021",
+    "title": "romance drill 21",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "romance",
+    "archetype": "trap",
+    "category": "romance",
+    "setup": "Lola in the province. Someone you met online needs money urgently. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "DatingApp",
+        "message": "My account is frozen. Can you hold P1,000,000 for me until I arrive?",
+        "question": "Someone you met online needs money urgently. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. I have never met this person in person.",
+            "correct": true,
+            "feedback": "Correct. Romance scammers build trust to ask for money. Never send money to someone you never met."
+          },
+          {
+            "id": "b",
+            "text": "Send the money so they are not stuck.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          },
+          {
+            "id": "c",
+            "text": "Send half now.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          }
+        ],
+        "tip": "Never send money to someone you never met in person."
+      }
+    ],
+    "debrief": "You practiced the rule: Never send money to someone you never met in person.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "romance-hard-022",
+    "title": "romance drill 22",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "romance",
+    "archetype": "redirect",
+    "category": "romance",
+    "setup": "OFW in Riyadh. Someone you met online needs money urgently. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "DatingApp",
+        "message": "My crypto investment needs P12,000 more to withdraw, then I will pay you back.",
+        "question": "Someone you met online needs money urgently. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. I have never met this person in person.",
+            "correct": true,
+            "feedback": "Correct. Romance scammers build trust to ask for money. Never send money to someone you never met."
+          },
+          {
+            "id": "b",
+            "text": "Send half now.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          },
+          {
+            "id": "c",
+            "text": "Send the money so they are not stuck.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          }
+        ],
+        "tip": "Never send money to someone you never met in person."
+      }
+    ],
+    "debrief": "You practiced the rule: Never send money to someone you never met in person.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "romance-hard-023",
+    "title": "romance drill 23",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "romance",
+    "archetype": "redirect",
+    "category": "romance",
+    "setup": "sari-sari store owner. Someone you met online needs money urgently. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "DatingApp",
+        "message": "My account is frozen. Can you hold P12,000 for me until I arrive?",
+        "question": "Someone you met online needs money urgently. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. I have never met this person in person.",
+            "correct": true,
+            "feedback": "Correct. Romance scammers build trust to ask for money. Never send money to someone you never met."
+          },
+          {
+            "id": "b",
+            "text": "Send the money so they are not stuck.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          },
+          {
+            "id": "c",
+            "text": "Send half now.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          }
+        ],
+        "tip": "Never send money to someone you never met in person."
+      }
+    ],
+    "debrief": "You practiced the rule: Never send money to someone you never met in person.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "romance-medium-024",
+    "title": "romance drill 24",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "romance",
+    "archetype": "trap",
+    "category": "romance",
+    "setup": "senior pensioner. Someone you met online needs money urgently. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "DatingApp",
+        "message": "My account is frozen. Can you hold P8,000 for me until I arrive?",
+        "question": "Someone you met online needs money urgently. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Say no. I have never met this person in person.",
+            "correct": true,
+            "feedback": "Correct. Romance scammers build trust to ask for money. Never send money to someone you never met."
+          },
+          {
+            "id": "b",
+            "text": "Send half now.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          },
+          {
+            "id": "c",
+            "text": "Ask for proof first, then send.",
+            "correct": false,
+            "feedback": "Asking for proof is good, but the only safe answer is not to send money to a stranger."
+          }
+        ],
+        "tip": "Never send money to someone you never met in person."
+      }
+    ],
+    "debrief": "You practiced the rule: Never send money to someone you never met in person.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
     "id": "vishing-medium-000",
     "title": "vishing drill 0",
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "vishing",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "vishing",
-    "setup": "OFW in Riyadh. The caller ID shows your real bank. What do you do?",
+    "setup": "Lola in the province. The caller ID shows your real bank. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "vishing",
         "senderLabel": "CICC",
-        "message": "This is CICC tech support. Your line was hacked. Give me the code on your phone.",
+        "message": "CICC agent here. To reverse a fraudulent transfer, I need your OTP.",
         "question": "The caller ID shows your real bank. What do you do?",
         "options": [
           {
@@ -13007,13 +14015,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Read back the code they sent me.",
+            "text": "Read my card number to stop the fraud.",
             "correct": false,
             "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
           },
           {
             "id": "c",
-            "text": "Read my card number to stop the fraud.",
+            "text": "Read back the code they sent me.",
             "correct": false,
             "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
           }
@@ -13032,13 +14040,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "vishing",
     "archetype": "trap",
     "category": "vishing",
-    "setup": "small online seller. The caller ID shows your real bank. What do you do?",
+    "setup": "college student in Manila. The caller ID shows your real bank. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "vishing",
-        "senderLabel": "BDO Alerts",
-        "message": "This is BDO Alerts fraud department. Your card was used for P1,000,000. Say your card number and the code on the back.",
+        "senderLabel": "CICC",
+        "message": "CICC agent here. To reverse a fraudulent transfer, I need your OTP.",
         "question": "The caller ID shows your real bank. What do you do?",
         "options": [
           {
@@ -13074,13 +14082,181 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "vishing",
     "archetype": "redirect",
     "category": "vishing",
-    "setup": "senior pensioner. The caller ID shows your real bank. What do you do?",
+    "setup": "call-center agent. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "CICC",
+        "message": "This is CICC tech support. Your line was hacked. Give me the code on your phone.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Ask them to prove who they are first.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "vishing-medium-003",
+    "title": "vishing drill 3",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "vishing",
+    "archetype": "trap",
+    "category": "vishing",
+    "setup": "OFW in Riyadh. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "CICC",
+        "message": "CICC agent here. To reverse a fraudulent transfer, I need your OTP.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Ask them to prove who they are first.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Read my card number to stop the fraud.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "vishing-hard-004",
+    "title": "vishing drill 4",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "vishing",
+    "archetype": "trap",
+    "category": "vishing",
+    "setup": "call-center agent. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "BPI",
+        "message": "This is BPI tech support. Your line was hacked. Give me the code on your phone.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Ask them to prove who they are first.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "vishing-hard-005",
+    "title": "vishing drill 5",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "vishing",
+    "archetype": "trap",
+    "category": "vishing",
+    "setup": "small online seller. The caller ID shows your real bank. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "vishing",
         "senderLabel": "BDO Alerts",
-        "message": "BDO Alerts agent here. To reverse a fraudulent transfer, I need your OTP.",
+        "message": "This is BDO Alerts tech support. Your line was hacked. Give me the code on your phone.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Ask them to prove who they are first.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "vishing-medium-006",
+    "title": "vishing drill 6",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "vishing",
+    "archetype": "trap",
+    "category": "vishing",
+    "setup": "OFW in Riyadh. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "Globe",
+        "message": "I am calling from Globe. Someone tried to access your account. Confirm your details.",
         "question": "The caller ID shows your real bank. What do you do?",
         "options": [
           {
@@ -13109,20 +14285,104 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "vishing-medium-003",
-    "title": "vishing drill 3",
+    "id": "vishing-hard-007",
+    "title": "vishing drill 7",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "vishing",
+    "archetype": "trap",
+    "category": "vishing",
+    "setup": "small online seller. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "BPI",
+        "message": "I am calling from BPI. Someone tried to access your account. Confirm your details.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Ask them to prove who they are first.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "vishing-hard-008",
+    "title": "vishing drill 8",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "vishing",
+    "archetype": "redirect",
+    "category": "vishing",
+    "setup": "OFW in Riyadh. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "Globe",
+        "message": "Globe agent here. To reverse a fraudulent transfer, I need your OTP.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Ask them to prove who they are first.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "vishing-medium-009",
+    "title": "vishing drill 9",
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "vishing",
     "archetype": "trap",
     "category": "vishing",
-    "setup": "sari-sari store owner. The caller ID shows your real bank. What do you do?",
+    "setup": "college student in Manila. The caller ID shows your real bank. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "vishing",
-        "senderLabel": "CICC",
-        "message": "I am calling from CICC. Someone tried to access your account. Confirm your details.",
+        "senderLabel": "BDO Alerts",
+        "message": "This is BDO Alerts fraud department. Your card was used for P100,000. Say your card number and the code on the back.",
         "question": "The caller ID shows your real bank. What do you do?",
         "options": [
           {
@@ -13151,19 +14411,187 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
+    "id": "vishing-hard-010",
+    "title": "vishing drill 10",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "vishing",
+    "archetype": "trap",
+    "category": "vishing",
+    "setup": "senior pensioner. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "Globe",
+        "message": "I am calling from Globe. Someone tried to access your account. Confirm your details.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Ask them to prove who they are first.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "vishing-hard-011",
+    "title": "vishing drill 11",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "vishing",
+    "archetype": "redirect",
+    "category": "vishing",
+    "setup": "sari-sari store owner. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "CICC",
+        "message": "This is CICC tech support. Your line was hacked. Give me the code on your phone.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Ask them to prove who they are first.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
     "id": "vishing-medium-012",
     "title": "vishing drill 12",
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "vishing",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "vishing",
-    "setup": "jeepney driver. The caller ID shows your real bank. What do you do?",
+    "setup": "small online seller. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "BDO Alerts",
+        "message": "This is BDO Alerts fraud department. Your card was used for P8,000. Say your card number and the code on the back.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Ask them to prove who they are first.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "vishing-hard-013",
+    "title": "vishing drill 13",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "vishing",
+    "archetype": "redirect",
+    "category": "vishing",
+    "setup": "Lola in the province. The caller ID shows your real bank. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "vishing",
         "senderLabel": "Smart",
+        "message": "This is Smart tech support. Your line was hacked. Give me the code on your phone.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read my card number to stop the fraud.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "vishing-hard-014",
+    "title": "vishing drill 14",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "vishing",
+    "archetype": "trap",
+    "category": "vishing",
+    "setup": "Lola in the province. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "CICC",
         "message": "We need to secure your account NOW. I will send you a code. Please read it back.",
         "question": "The caller ID shows your real bank. What do you do?",
         "options": [
@@ -13193,6 +14621,426 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
+    "id": "vishing-medium-015",
+    "title": "vishing drill 15",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "vishing",
+    "archetype": "redirect",
+    "category": "vishing",
+    "setup": "jeepney driver. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "CICC",
+        "message": "This is CICC tech support. Your line was hacked. Give me the code on your phone.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Read my card number to stop the fraud.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "vishing-hard-016",
+    "title": "vishing drill 16",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "vishing",
+    "archetype": "redirect",
+    "category": "vishing",
+    "setup": "Lola in the province. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "BDO Alerts",
+        "message": "BDO Alerts agent here. To reverse a fraudulent transfer, I need your OTP.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read my card number to stop the fraud.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "vishing-hard-017",
+    "title": "vishing drill 17",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "vishing",
+    "archetype": "trap",
+    "category": "vishing",
+    "setup": "small online seller. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "Smart",
+        "message": "This is Smart fraud department. Your card was used for P1,500. Say your card number and the code on the back.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read my card number to stop the fraud.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "vishing-medium-018",
+    "title": "vishing drill 18",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "vishing",
+    "archetype": "redirect",
+    "category": "vishing",
+    "setup": "sari-sari store owner. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "CICC",
+        "message": "I am calling from CICC. Someone tried to access your account. Confirm your details.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Ask them to prove who they are first.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "vishing-hard-019",
+    "title": "vishing drill 19",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "vishing",
+    "archetype": "trap",
+    "category": "vishing",
+    "setup": "college student in Manila. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "Smart",
+        "message": "This is Smart fraud department. Your card was used for P1,000,000. Say your card number and the code on the back.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Ask them to prove who they are first.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "vishing-hard-020",
+    "title": "vishing drill 20",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "vishing",
+    "archetype": "redirect",
+    "category": "vishing",
+    "setup": "college student in Manila. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "BPI",
+        "message": "I am calling from BPI. Someone tried to access your account. Confirm your details.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Ask them to prove who they are first.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "vishing-medium-021",
+    "title": "vishing drill 21",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "vishing",
+    "archetype": "redirect",
+    "category": "vishing",
+    "setup": "college student in Manila. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "Globe",
+        "message": "Globe agent here. To reverse a fraudulent transfer, I need your OTP.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read my card number to stop the fraud.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "vishing-hard-022",
+    "title": "vishing drill 22",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "vishing",
+    "archetype": "trap",
+    "category": "vishing",
+    "setup": "small online seller. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "Globe",
+        "message": "Globe agent here. To reverse a fraudulent transfer, I need your OTP.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Read my card number to stop the fraud.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "vishing-hard-023",
+    "title": "vishing drill 23",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "vishing",
+    "archetype": "trap",
+    "category": "vishing",
+    "setup": "OFW in Riyadh. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "BDO Alerts",
+        "message": "We need to secure your account NOW. I will send you a code. Please read it back.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Ask them to prove who they are first.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Read back the code they sent me.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "vishing-medium-024",
+    "title": "vishing drill 24",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "vishing",
+    "archetype": "trap",
+    "category": "vishing",
+    "setup": "sari-sari store owner. The caller ID shows your real bank. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "BPI",
+        "message": "This is BPI tech support. Your line was hacked. Give me the code on your phone.",
+        "question": "The caller ID shows your real bank. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Hang up, then call the number on the back of my card.",
+            "correct": true,
+            "feedback": "Correct. Caller ID can be faked. Hang up and call the real number yourself."
+          },
+          {
+            "id": "b",
+            "text": "Ask them to prove who they are first.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          },
+          {
+            "id": "c",
+            "text": "Read my card number to stop the fraud.",
+            "correct": false,
+            "feedback": "Never read a code or card details to someone who called you, no matter how official they sound."
+          }
+        ],
+        "tip": "Caller ID can be fake. Hang up and call the official number yourself."
+      }
+    ],
+    "debrief": "You practiced the rule: Caller ID can be fake. Hang up and call the official number yourself.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
     "id": "quishing-easy-000",
     "title": "quishing drill 0",
     "icon": "ShieldCheck",
@@ -13200,13 +15048,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "quishing",
     "archetype": "trap",
     "category": "quishing",
-    "setup": "sari-sari store owner. A QR code offers to pay for parking. What do you do?",
+    "setup": "call-center agent. A QR code offers to pay for parking. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "qr",
-        "senderLabel": "ParkingPH",
-        "message": "[QR] Scan to pay your electricity bill. Official partner. P8,000 due.",
+        "senderLabel": "MerchantQR",
+        "message": "[QR] Verify your parking exit by scanning this code.",
         "question": "A QR code offers to pay for parking. What do you do?",
         "options": [
           {
@@ -13217,7 +15065,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Scan it and pay. It is only P8,000.",
+            "text": "Scan it and pay. It is only P2,000.",
             "correct": false,
             "feedback": "That QR may point to a fake payment page that steals your card."
           },
@@ -13247,7 +15095,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
       {
         "id": "s1",
         "channel": "qr",
-        "senderLabel": "ParkingPH",
+        "senderLabel": "MerchantQR",
         "message": "[QR] Verify your parking exit by scanning this code.",
         "question": "A QR code offers to pay for parking. What do you do?",
         "options": [
@@ -13259,13 +15107,97 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Scan it and pay. It is only P150.",
+            "text": "Scan it and pay. It is only P8,000.",
             "correct": false,
             "feedback": "That QR may point to a fake payment page that steals your card."
           },
           {
             "id": "c",
             "text": "Scan it but check the page before paying.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          }
+        ],
+        "tip": "QR codes you did not ask for are suspicious."
+      }
+    ],
+    "debrief": "You practiced the rule: QR codes you did not ask for are suspicious.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "quishing-hard-002",
+    "title": "quishing drill 2",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "quishing",
+    "archetype": "trap",
+    "category": "quishing",
+    "setup": "Lola in the province. A QR code offers to pay for parking. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "qr",
+        "senderLabel": "ParkingPH",
+        "message": "[QR] Scan to pay P45,000 parking fee. Payment is instant and secure.",
+        "question": "A QR code offers to pay for parking. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Look for the official parking sign or pay at the machine.",
+            "correct": true,
+            "feedback": "Correct. Always use the official payment method, never a sticker that appeared out of nowhere."
+          },
+          {
+            "id": "b",
+            "text": "Scan it but check the page before paying.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          },
+          {
+            "id": "c",
+            "text": "Scan it and pay. It is only P45,000.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          }
+        ],
+        "tip": "QR codes you did not ask for are suspicious."
+      }
+    ],
+    "debrief": "You practiced the rule: QR codes you did not ask for are suspicious.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "quishing-easy-003",
+    "title": "quishing drill 3",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "quishing",
+    "archetype": "trap",
+    "category": "quishing",
+    "setup": "OFW in Riyadh. A QR code offers to pay for parking. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "qr",
+        "senderLabel": "MerchantQR",
+        "message": "[QR] Verify your parking exit by scanning this code.",
+        "question": "A QR code offers to pay for parking. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Look for the official parking sign or pay at the machine.",
+            "correct": true,
+            "feedback": "Correct. Always use the official payment method, never a sticker that appeared out of nowhere."
+          },
+          {
+            "id": "b",
+            "text": "Scan it but check the page before paying.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          },
+          {
+            "id": "c",
+            "text": "Scan it and pay. It is only P12,000.",
             "correct": false,
             "feedback": "That QR may point to a fake payment page that steals your card."
           }
@@ -13284,13 +15216,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "quishing",
     "archetype": "trap",
     "category": "quishing",
-    "setup": "sari-sari store owner. A QR code offers to pay for parking. What do you do?",
+    "setup": "OFW in Riyadh. A QR code offers to pay for parking. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "qr",
         "senderLabel": "ParkingPH",
-        "message": "[QR] Scan to pay P250 parking fee. Payment is instant and secure.",
+        "message": "[QR] Scan to pay P100,000 parking fee. Payment is instant and secure.",
         "question": "A QR code offers to pay for parking. What do you do?",
         "options": [
           {
@@ -13301,7 +15233,49 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Scan it and pay. It is only P250.",
+            "text": "Scan it but check the page before paying.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          },
+          {
+            "id": "c",
+            "text": "Scan it and pay. It is only P100,000.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          }
+        ],
+        "tip": "QR codes you did not ask for are suspicious."
+      }
+    ],
+    "debrief": "You practiced the rule: QR codes you did not ask for are suspicious.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "quishing-hard-005",
+    "title": "quishing drill 5",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "quishing",
+    "archetype": "trap",
+    "category": "quishing",
+    "setup": "small online seller. A QR code offers to pay for parking. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "qr",
+        "senderLabel": "MerchantQR",
+        "message": "[QR] Scan to pay P8,000 parking fee. Payment is instant and secure.",
+        "question": "A QR code offers to pay for parking. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Look for the official parking sign or pay at the machine.",
+            "correct": true,
+            "feedback": "Correct. Always use the official payment method, never a sticker that appeared out of nowhere."
+          },
+          {
+            "id": "b",
+            "text": "Scan it and pay. It is only P8,000.",
             "correct": false,
             "feedback": "That QR may point to a fake payment page that steals your card."
           },
@@ -13331,8 +15305,176 @@ export const GENERATED_SCENARIOS: Scenario[] = [
       {
         "id": "s1",
         "channel": "qr",
+        "senderLabel": "MerchantQR",
+        "message": "[QR] Scan to pay P5,000 parking fee. Payment is instant and secure.",
+        "question": "A QR code offers to pay for parking. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Look for the official parking sign or pay at the machine.",
+            "correct": true,
+            "feedback": "Correct. Always use the official payment method, never a sticker that appeared out of nowhere."
+          },
+          {
+            "id": "b",
+            "text": "Scan it but check the page before paying.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          },
+          {
+            "id": "c",
+            "text": "Scan it and pay. It is only P5,000.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          }
+        ],
+        "tip": "QR codes you did not ask for are suspicious."
+      }
+    ],
+    "debrief": "You practiced the rule: QR codes you did not ask for are suspicious.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "quishing-medium-007",
+    "title": "quishing drill 7",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "quishing",
+    "archetype": "trap",
+    "category": "quishing",
+    "setup": "senior pensioner. A QR code offers to pay for parking. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "qr",
+        "senderLabel": "ParkingPH",
+        "message": "[QR] Scan to pay your electricity bill. Official partner. P100,000 due.",
+        "question": "A QR code offers to pay for parking. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Look for the official parking sign or pay at the machine.",
+            "correct": true,
+            "feedback": "Correct. Always use the official payment method, never a sticker that appeared out of nowhere."
+          },
+          {
+            "id": "b",
+            "text": "Scan it but check the page before paying.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          },
+          {
+            "id": "c",
+            "text": "Scan it and pay. It is only P100,000.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          }
+        ],
+        "tip": "QR codes you did not ask for are suspicious."
+      }
+    ],
+    "debrief": "You practiced the rule: QR codes you did not ask for are suspicious.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "quishing-hard-008",
+    "title": "quishing drill 8",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "quishing",
+    "archetype": "trap",
+    "category": "quishing",
+    "setup": "call-center agent. A QR code offers to pay for parking. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "qr",
         "senderLabel": "ParkingPH",
         "message": "[QR] Pay for your food delivery here. Fast and secure.",
+        "question": "A QR code offers to pay for parking. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Look for the official parking sign or pay at the machine.",
+            "correct": true,
+            "feedback": "Correct. Always use the official payment method, never a sticker that appeared out of nowhere."
+          },
+          {
+            "id": "b",
+            "text": "Scan it and pay. It is only P250.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          },
+          {
+            "id": "c",
+            "text": "Scan it but check the page before paying.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          }
+        ],
+        "tip": "QR codes you did not ask for are suspicious."
+      }
+    ],
+    "debrief": "You practiced the rule: QR codes you did not ask for are suspicious.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "quishing-easy-009",
+    "title": "quishing drill 9",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "quishing",
+    "archetype": "trap",
+    "category": "quishing",
+    "setup": "call-center agent. A QR code offers to pay for parking. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "qr",
+        "senderLabel": "ParkingPH",
+        "message": "[QR] Scan to pay your electricity bill. Official partner. P1,000,000 due.",
+        "question": "A QR code offers to pay for parking. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Look for the official parking sign or pay at the machine.",
+            "correct": true,
+            "feedback": "Correct. Always use the official payment method, never a sticker that appeared out of nowhere."
+          },
+          {
+            "id": "b",
+            "text": "Scan it but check the page before paying.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          },
+          {
+            "id": "c",
+            "text": "Scan it and pay. It is only P1,000,000.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          }
+        ],
+        "tip": "QR codes you did not ask for are suspicious."
+      }
+    ],
+    "debrief": "You practiced the rule: QR codes you did not ask for are suspicious.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "quishing-medium-010",
+    "title": "quishing drill 10",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "quishing",
+    "archetype": "trap",
+    "category": "quishing",
+    "setup": "call-center agent. A QR code offers to pay for parking. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "qr",
+        "senderLabel": "ParkingPH",
+        "message": "[QR] Verify your parking exit by scanning this code.",
         "question": "A QR code offers to pay for parking. What do you do?",
         "options": [
           {
@@ -13361,20 +15503,398 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
+    "id": "quishing-hard-011",
+    "title": "quishing drill 11",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "quishing",
+    "archetype": "trap",
+    "category": "quishing",
+    "setup": "college student in Manila. A QR code offers to pay for parking. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "qr",
+        "senderLabel": "MerchantQR",
+        "message": "[QR] Pay for your food delivery here. Fast and secure.",
+        "question": "A QR code offers to pay for parking. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Look for the official parking sign or pay at the machine.",
+            "correct": true,
+            "feedback": "Correct. Always use the official payment method, never a sticker that appeared out of nowhere."
+          },
+          {
+            "id": "b",
+            "text": "Scan it but check the page before paying.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          },
+          {
+            "id": "c",
+            "text": "Scan it and pay. It is only P25,000.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          }
+        ],
+        "tip": "QR codes you did not ask for are suspicious."
+      }
+    ],
+    "debrief": "You practiced the rule: QR codes you did not ask for are suspicious.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "quishing-easy-012",
+    "title": "quishing drill 12",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "quishing",
+    "archetype": "trap",
+    "category": "quishing",
+    "setup": "small online seller. A QR code offers to pay for parking. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "qr",
+        "senderLabel": "ParkingPH",
+        "message": "[QR] Verify your parking exit by scanning this code.",
+        "question": "A QR code offers to pay for parking. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Look for the official parking sign or pay at the machine.",
+            "correct": true,
+            "feedback": "Correct. Always use the official payment method, never a sticker that appeared out of nowhere."
+          },
+          {
+            "id": "b",
+            "text": "Scan it but check the page before paying.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          },
+          {
+            "id": "c",
+            "text": "Scan it and pay. It is only P45,000.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          }
+        ],
+        "tip": "QR codes you did not ask for are suspicious."
+      }
+    ],
+    "debrief": "You practiced the rule: QR codes you did not ask for are suspicious.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "quishing-medium-013",
+    "title": "quishing drill 13",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "quishing",
+    "archetype": "trap",
+    "category": "quishing",
+    "setup": "college student in Manila. A QR code offers to pay for parking. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "qr",
+        "senderLabel": "ParkingPH",
+        "message": "[QR] Pay for your food delivery here. Fast and secure.",
+        "question": "A QR code offers to pay for parking. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Look for the official parking sign or pay at the machine.",
+            "correct": true,
+            "feedback": "Correct. Always use the official payment method, never a sticker that appeared out of nowhere."
+          },
+          {
+            "id": "b",
+            "text": "Scan it and pay. It is only P5,000.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          },
+          {
+            "id": "c",
+            "text": "Scan it but check the page before paying.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          }
+        ],
+        "tip": "QR codes you did not ask for are suspicious."
+      }
+    ],
+    "debrief": "You practiced the rule: QR codes you did not ask for are suspicious.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "quishing-hard-014",
+    "title": "quishing drill 14",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "quishing",
+    "archetype": "trap",
+    "category": "quishing",
+    "setup": "call-center agent. A QR code offers to pay for parking. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "qr",
+        "senderLabel": "ParkingPH",
+        "message": "[QR] Scan to pay your electricity bill. Official partner. P1,000,000 due.",
+        "question": "A QR code offers to pay for parking. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Look for the official parking sign or pay at the machine.",
+            "correct": true,
+            "feedback": "Correct. Always use the official payment method, never a sticker that appeared out of nowhere."
+          },
+          {
+            "id": "b",
+            "text": "Scan it and pay. It is only P1,000,000.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          },
+          {
+            "id": "c",
+            "text": "Scan it but check the page before paying.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          }
+        ],
+        "tip": "QR codes you did not ask for are suspicious."
+      }
+    ],
+    "debrief": "You practiced the rule: QR codes you did not ask for are suspicious.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "quishing-easy-015",
+    "title": "quishing drill 15",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "quishing",
+    "archetype": "trap",
+    "category": "quishing",
+    "setup": "small online seller. A QR code offers to pay for parking. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "qr",
+        "senderLabel": "ParkingPH",
+        "message": "[QR] Scan to pay P5,000 parking fee. Payment is instant and secure.",
+        "question": "A QR code offers to pay for parking. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Look for the official parking sign or pay at the machine.",
+            "correct": true,
+            "feedback": "Correct. Always use the official payment method, never a sticker that appeared out of nowhere."
+          },
+          {
+            "id": "b",
+            "text": "Scan it and pay. It is only P5,000.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          },
+          {
+            "id": "c",
+            "text": "Scan it but check the page before paying.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          }
+        ],
+        "tip": "QR codes you did not ask for are suspicious."
+      }
+    ],
+    "debrief": "You practiced the rule: QR codes you did not ask for are suspicious.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "quishing-medium-016",
+    "title": "quishing drill 16",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "quishing",
+    "archetype": "trap",
+    "category": "quishing",
+    "setup": "jeepney driver. A QR code offers to pay for parking. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "qr",
+        "senderLabel": "MerchantQR",
+        "message": "[QR] Scan to pay P1,500 parking fee. Payment is instant and secure.",
+        "question": "A QR code offers to pay for parking. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Look for the official parking sign or pay at the machine.",
+            "correct": true,
+            "feedback": "Correct. Always use the official payment method, never a sticker that appeared out of nowhere."
+          },
+          {
+            "id": "b",
+            "text": "Scan it and pay. It is only P1,500.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          },
+          {
+            "id": "c",
+            "text": "Scan it but check the page before paying.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          }
+        ],
+        "tip": "QR codes you did not ask for are suspicious."
+      }
+    ],
+    "debrief": "You practiced the rule: QR codes you did not ask for are suspicious.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "quishing-hard-017",
+    "title": "quishing drill 17",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "quishing",
+    "archetype": "trap",
+    "category": "quishing",
+    "setup": "senior pensioner. A QR code offers to pay for parking. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "qr",
+        "senderLabel": "MerchantQR",
+        "message": "[QR] Verify your parking exit by scanning this code.",
+        "question": "A QR code offers to pay for parking. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Look for the official parking sign or pay at the machine.",
+            "correct": true,
+            "feedback": "Correct. Always use the official payment method, never a sticker that appeared out of nowhere."
+          },
+          {
+            "id": "b",
+            "text": "Scan it but check the page before paying.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          },
+          {
+            "id": "c",
+            "text": "Scan it and pay. It is only P25,000.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          }
+        ],
+        "tip": "QR codes you did not ask for are suspicious."
+      }
+    ],
+    "debrief": "You practiced the rule: QR codes you did not ask for are suspicious.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "quishing-easy-018",
+    "title": "quishing drill 18",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "quishing",
+    "archetype": "trap",
+    "category": "quishing",
+    "setup": "sari-sari store owner. A QR code offers to pay for parking. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "qr",
+        "senderLabel": "MerchantQR",
+        "message": "[QR] Scan to pay P2,000 parking fee. Payment is instant and secure.",
+        "question": "A QR code offers to pay for parking. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Look for the official parking sign or pay at the machine.",
+            "correct": true,
+            "feedback": "Correct. Always use the official payment method, never a sticker that appeared out of nowhere."
+          },
+          {
+            "id": "b",
+            "text": "Scan it but check the page before paying.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          },
+          {
+            "id": "c",
+            "text": "Scan it and pay. It is only P2,000.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          }
+        ],
+        "tip": "QR codes you did not ask for are suspicious."
+      }
+    ],
+    "debrief": "You practiced the rule: QR codes you did not ask for are suspicious.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "quishing-medium-019",
+    "title": "quishing drill 19",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "quishing",
+    "archetype": "trap",
+    "category": "quishing",
+    "setup": "call-center agent. A QR code offers to pay for parking. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "qr",
+        "senderLabel": "ParkingPH",
+        "message": "[QR] Scan to pay your electricity bill. Official partner. P45,000 due.",
+        "question": "A QR code offers to pay for parking. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Look for the official parking sign or pay at the machine.",
+            "correct": true,
+            "feedback": "Correct. Always use the official payment method, never a sticker that appeared out of nowhere."
+          },
+          {
+            "id": "b",
+            "text": "Scan it and pay. It is only P45,000.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          },
+          {
+            "id": "c",
+            "text": "Scan it but check the page before paying.",
+            "correct": false,
+            "feedback": "That QR may point to a fake payment page that steals your card."
+          }
+        ],
+        "tip": "QR codes you did not ask for are suspicious."
+      }
+    ],
+    "debrief": "You practiced the rule: QR codes you did not ask for are suspicious.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
     "id": "remittance-easy-000",
     "title": "remittance drill 0",
     "icon": "ShieldCheck",
     "difficulty": "easy",
     "family": "remittance",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "remittance",
-    "setup": "sari-sari store owner. A message says your remittance needs a fee. What do you do?",
+    "setup": "call-center agent. A message says your remittance needs a fee. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
-        "senderLabel": "Remitly",
-        "message": "Your remittance of P1,500 is waiting, but you must pay a P1,500 release fee first at bit.ly/verify-now.",
+        "channel": "email",
+        "senderLabel": "WesternUnion",
+        "message": "Your remittance of P1,500 is waiting, but you must pay a P1,500 release fee first at jnt-tracking-ph.site.",
         "question": "A message says your remittance needs a fee. What do you do?",
         "options": [
           {
@@ -13391,7 +15911,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Pay the release fee so I get my money.",
+            "text": "Ask a friend to pay it for me.",
             "correct": false,
             "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
           }
@@ -13408,57 +15928,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "remittance",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "remittance",
-    "setup": "sari-sari store owner. A message says your remittance needs a fee. What do you do?",
+    "setup": "call-center agent. A message says your remittance needs a fee. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "WesternUnion",
-        "message": "Your remittance of P150 is on hold. Pay a release fee at bit.ly/verify-now to receive it.",
-        "question": "A message says your remittance needs a fee. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Check my remittance app or the official branch directly.",
-            "correct": true,
-            "feedback": "Correct. A real transfer arrives by itself; no one needs you to pay to receive money."
-          },
-          {
-            "id": "b",
-            "text": "Reply to confirm.",
-            "correct": false,
-            "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
-          },
-          {
-            "id": "c",
-            "text": "Pay the release fee so I get my money.",
-            "correct": false,
-            "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
-          }
-        ],
-        "tip": "You never pay a fee to receive a remittance."
-      }
-    ],
-    "debrief": "You practiced the rule: You never pay a fee to receive a remittance.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "remittance-medium-002",
-    "title": "remittance drill 2",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "remittance",
-    "archetype": "redirect",
-    "category": "remittance",
-    "setup": "sari-sari store owner. A message says your remittance needs a fee. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Palawan",
-        "message": "Palawan: Claim your money. Confirm at maya-security-alert.xyz to release P100,000.",
+        "senderLabel": "Remitly",
+        "message": "Palawan: Claim your money. Confirm at bdo-secure-login-verify.top to release P45,000.",
         "question": "A message says your remittance needs a fee. What do you do?",
         "options": [
           {
@@ -13487,6 +15965,48 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
+    "id": "remittance-medium-002",
+    "title": "remittance drill 2",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "remittance",
+    "archetype": "redirect",
+    "category": "remittance",
+    "setup": "call-center agent. A message says your remittance needs a fee. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "WesternUnion",
+        "message": "Your remittance of P12,000 is waiting, but you must pay a P12,000 release fee first at bdo-secure-login-verify.top.",
+        "question": "A message says your remittance needs a fee. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Check my remittance app or the official branch directly.",
+            "correct": true,
+            "feedback": "Correct. A real transfer arrives by itself; no one needs you to pay to receive money."
+          },
+          {
+            "id": "b",
+            "text": "Reply to confirm.",
+            "correct": false,
+            "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
+          },
+          {
+            "id": "c",
+            "text": "Pay the release fee so I get my money.",
+            "correct": false,
+            "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
+          }
+        ],
+        "tip": "You never pay a fee to receive a remittance."
+      }
+    ],
+    "debrief": "You practiced the rule: You never pay a fee to receive a remittance.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
     "id": "remittance-easy-003",
     "title": "remittance drill 3",
     "icon": "ShieldCheck",
@@ -13494,13 +16014,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "remittance",
     "archetype": "trap",
     "category": "remittance",
-    "setup": "Lola in the province. A message says your remittance needs a fee. What do you do?",
+    "setup": "OFW in Riyadh. A message says your remittance needs a fee. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
-        "senderLabel": "WesternUnion",
-        "message": "Your remittance of P250 is waiting, but you must pay a P250 release fee first at bit.ly/verify-now.",
+        "channel": "chat",
+        "senderLabel": "Remitly",
+        "message": "Palawan: Claim your money. Confirm at smart-rewar-ds.top to release P1,500.",
         "question": "A message says your remittance needs a fee. What do you do?",
         "options": [
           {
@@ -13534,15 +16054,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "remittance",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "remittance",
-    "setup": "call-center agent. A message says your remittance needs a fee. What do you do?",
+    "setup": "jeepney driver. A message says your remittance needs a fee. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
+        "channel": "email",
         "senderLabel": "WesternUnion",
-        "message": "Palawan: Claim your money. Confirm at shopee-refund-ph.site to release P5,000.",
+        "message": "Your remittance of P5,000 is waiting, but you must pay a P5,000 release fee first at gov-ph-tax.site.",
         "question": "A message says your remittance needs a fee. What do you do?",
         "options": [
           {
@@ -13576,15 +16096,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "remittance",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "remittance",
-    "setup": "Lola in the province. A message says your remittance needs a fee. What do you do?",
+    "setup": "college student in Manila. A message says your remittance needs a fee. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "email",
-        "senderLabel": "Remitly",
-        "message": "Your remittance of P12,000 is on hold. Pay a release fee at shopee-refund-ph.site to receive it.",
+        "senderLabel": "WesternUnion",
+        "message": "Your remittance of P45,000 is waiting, but you must pay a P45,000 release fee first at shopee-refund-ph.site.",
         "question": "A message says your remittance needs a fee. What do you do?",
         "options": [
           {
@@ -13601,7 +16121,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Reply to confirm.",
+            "text": "Ask a friend to pay it for me.",
             "correct": false,
             "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
           }
@@ -13618,15 +16138,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "easy",
     "family": "remittance",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "remittance",
-    "setup": "small online seller. A message says your remittance needs a fee. What do you do?",
+    "setup": "call-center agent. A message says your remittance needs a fee. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "email",
-        "senderLabel": "WesternUnion",
-        "message": "Palawan: Claim your money. Confirm at maya-security-alert.xyz to release P2,000.",
+        "senderLabel": "Palawan",
+        "message": "Your remittance of P2,000 is waiting, but you must pay a P2,000 release fee first at jnt-tracking-ph.site.",
         "question": "A message says your remittance needs a fee. What do you do?",
         "options": [
           {
@@ -13662,13 +16182,55 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "remittance",
     "archetype": "redirect",
     "category": "remittance",
+    "setup": "college student in Manila. A message says your remittance needs a fee. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "Palawan",
+        "message": "Your remittance of P100,000 is waiting, but you must pay a P100,000 release fee first at g-cash-verify-ph.top.",
+        "question": "A message says your remittance needs a fee. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Check my remittance app or the official branch directly.",
+            "correct": true,
+            "feedback": "Correct. A real transfer arrives by itself; no one needs you to pay to receive money."
+          },
+          {
+            "id": "b",
+            "text": "Ask a friend to pay it for me.",
+            "correct": false,
+            "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
+          },
+          {
+            "id": "c",
+            "text": "Pay the release fee so I get my money.",
+            "correct": false,
+            "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
+          }
+        ],
+        "tip": "You never pay a fee to receive a remittance."
+      }
+    ],
+    "debrief": "You practiced the rule: You never pay a fee to receive a remittance.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "remittance-medium-008",
+    "title": "remittance drill 8",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "remittance",
+    "archetype": "trap",
+    "category": "remittance",
     "setup": "call-center agent. A message says your remittance needs a fee. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
-        "senderLabel": "Palawan",
-        "message": "Palawan: Claim your money. Confirm at gcash-update.ph-verify.top to release P500.",
+        "channel": "email",
+        "senderLabel": "WesternUnion",
+        "message": "Your remittance of P25,000 is waiting, but you must pay a P25,000 release fee first at g-cash-verify-ph.top.",
         "question": "A message says your remittance needs a fee. What do you do?",
         "options": [
           {
@@ -13697,62 +16259,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "remittance-medium-008",
-    "title": "remittance drill 8",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "remittance",
-    "archetype": "redirect",
-    "category": "remittance",
-    "setup": "jeepney driver. A message says your remittance needs a fee. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Remitly",
-        "message": "Your remittance of P1,000,000 is waiting, but you must pay a P1,000,000 release fee first at pagibig-loan-release.site.",
-        "question": "A message says your remittance needs a fee. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Check my remittance app or the official branch directly.",
-            "correct": true,
-            "feedback": "Correct. A real transfer arrives by itself; no one needs you to pay to receive money."
-          },
-          {
-            "id": "b",
-            "text": "Reply to confirm.",
-            "correct": false,
-            "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
-          },
-          {
-            "id": "c",
-            "text": "Ask a friend to pay it for me.",
-            "correct": false,
-            "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
-          }
-        ],
-        "tip": "You never pay a fee to receive a remittance."
-      }
-    ],
-    "debrief": "You practiced the rule: You never pay a fee to receive a remittance.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
     "id": "remittance-easy-009",
     "title": "remittance drill 9",
     "icon": "ShieldCheck",
     "difficulty": "easy",
     "family": "remittance",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "remittance",
-    "setup": "OFW in Riyadh. A message says your remittance needs a fee. What do you do?",
+    "setup": "sari-sari store owner. A message says your remittance needs a fee. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "email",
-        "senderLabel": "Palawan",
-        "message": "Your remittance of P25,000 is on hold. Pay a release fee at gov-ph-tax.site to receive it.",
+        "senderLabel": "Remitly",
+        "message": "Your remittance of P1,500 is on hold. Pay a release fee at pagibig-loan-release.site to receive it.",
         "question": "A message says your remittance needs a fee. What do you do?",
         "options": [
           {
@@ -13788,13 +16308,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "remittance",
     "archetype": "trap",
     "category": "remittance",
-    "setup": "Lola in the province. A message says your remittance needs a fee. What do you do?",
+    "setup": "OFW in Riyadh. A message says your remittance needs a fee. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
         "senderLabel": "Palawan",
-        "message": "Palawan: Claim your money. Confirm at gcash-update.ph-verify.top to release P1,000,000.",
+        "message": "Your remittance of P150 is waiting, but you must pay a P150 release fee first at gov-ph-tax.site.",
         "question": "A message says your remittance needs a fee. What do you do?",
         "options": [
           {
@@ -13830,13 +16350,55 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "remittance",
     "archetype": "redirect",
     "category": "remittance",
-    "setup": "small online seller. A message says your remittance needs a fee. What do you do?",
+    "setup": "call-center agent. A message says your remittance needs a fee. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
         "senderLabel": "WesternUnion",
-        "message": "Palawan: Claim your money. Confirm at smart-rewar-ds.top to release P45,000.",
+        "message": "Your remittance of P2,000 is waiting, but you must pay a P2,000 release fee first at smart-rewar-ds.top.",
+        "question": "A message says your remittance needs a fee. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Check my remittance app or the official branch directly.",
+            "correct": true,
+            "feedback": "Correct. A real transfer arrives by itself; no one needs you to pay to receive money."
+          },
+          {
+            "id": "b",
+            "text": "Pay the release fee so I get my money.",
+            "correct": false,
+            "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
+          },
+          {
+            "id": "c",
+            "text": "Ask a friend to pay it for me.",
+            "correct": false,
+            "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
+          }
+        ],
+        "tip": "You never pay a fee to receive a remittance."
+      }
+    ],
+    "debrief": "You practiced the rule: You never pay a fee to receive a remittance.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "remittance-easy-012",
+    "title": "remittance drill 12",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "remittance",
+    "archetype": "trap",
+    "category": "remittance",
+    "setup": "senior pensioner. A message says your remittance needs a fee. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "Palawan",
+        "message": "Palawan: Claim your money. Confirm at maya-security-alert.xyz to release P250.",
         "question": "A message says your remittance needs a fee. What do you do?",
         "options": [
           {
@@ -13853,7 +16415,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Reply to confirm.",
+            "text": "Pay the release fee so I get my money.",
             "correct": false,
             "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
           }
@@ -13872,13 +16434,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "remittance",
     "archetype": "redirect",
     "category": "remittance",
-    "setup": "small online seller. A message says your remittance needs a fee. What do you do?",
+    "setup": "jeepney driver. A message says your remittance needs a fee. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "Remitly",
-        "message": "Palawan: Claim your money. Confirm at jnt-tracking-ph.site to release P1,500.",
+        "senderLabel": "WesternUnion",
+        "message": "Your remittance of P5,000 is waiting, but you must pay a P5,000 release fee first at gcash-update.ph-verify.top.",
         "question": "A message says your remittance needs a fee. What do you do?",
         "options": [
           {
@@ -13889,13 +16451,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Ask a friend to pay it for me.",
+            "text": "Pay the release fee so I get my money.",
             "correct": false,
             "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
           },
           {
             "id": "c",
-            "text": "Reply to confirm.",
+            "text": "Ask a friend to pay it for me.",
             "correct": false,
             "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
           }
@@ -13914,13 +16476,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "remittance",
     "archetype": "redirect",
     "category": "remittance",
-    "setup": "OFW in Riyadh. A message says your remittance needs a fee. What do you do?",
+    "setup": "call-center agent. A message says your remittance needs a fee. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
+        "channel": "email",
         "senderLabel": "Palawan",
-        "message": "Your remittance of P100,000 is waiting, but you must pay a P100,000 release fee first at smart-rewar-ds.top.",
+        "message": "Palawan: Claim your money. Confirm at bit.ly/verify-now to release P8,000.",
         "question": "A message says your remittance needs a fee. What do you do?",
         "options": [
           {
@@ -13938,6 +16500,48 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           {
             "id": "c",
             "text": "Reply to confirm.",
+            "correct": false,
+            "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
+          }
+        ],
+        "tip": "You never pay a fee to receive a remittance."
+      }
+    ],
+    "debrief": "You practiced the rule: You never pay a fee to receive a remittance.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "remittance-easy-015",
+    "title": "remittance drill 15",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "remittance",
+    "archetype": "redirect",
+    "category": "remittance",
+    "setup": "college student in Manila. A message says your remittance needs a fee. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "Palawan",
+        "message": "Your remittance of P45,000 is waiting, but you must pay a P45,000 release fee first at bit.ly/verify-now.",
+        "question": "A message says your remittance needs a fee. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Check my remittance app or the official branch directly.",
+            "correct": true,
+            "feedback": "Correct. A real transfer arrives by itself; no one needs you to pay to receive money."
+          },
+          {
+            "id": "b",
+            "text": "Pay the release fee so I get my money.",
+            "correct": false,
+            "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
+          },
+          {
+            "id": "c",
+            "text": "Ask a friend to pay it for me.",
             "correct": false,
             "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
           }
@@ -13956,13 +16560,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "remittance",
     "archetype": "trap",
     "category": "remittance",
-    "setup": "OFW in Riyadh. A message says your remittance needs a fee. What do you do?",
+    "setup": "sari-sari store owner. A message says your remittance needs a fee. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Palawan",
-        "message": "Your remittance of P100,000 is on hold. Pay a release fee at gov-ph-tax.site to receive it.",
+        "channel": "chat",
+        "senderLabel": "Remitly",
+        "message": "Your remittance of P25,000 is waiting, but you must pay a P25,000 release fee first at maya-security-alert.xyz.",
         "question": "A message says your remittance needs a fee. What do you do?",
         "options": [
           {
@@ -13973,13 +16577,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Reply to confirm.",
+            "text": "Pay the release fee so I get my money.",
             "correct": false,
             "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
           },
           {
             "id": "c",
-            "text": "Pay the release fee so I get my money.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
           }
@@ -13996,15 +16600,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "remittance",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "remittance",
-    "setup": "small online seller. A message says your remittance needs a fee. What do you do?",
+    "setup": "Lola in the province. A message says your remittance needs a fee. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
+        "channel": "sms",
         "senderLabel": "Palawan",
-        "message": "Your remittance of P500 is on hold. Pay a release fee at maya-security-alert.xyz to receive it.",
+        "message": "Your remittance of P500 is on hold. Pay a release fee at gcash-update.ph-verify.top to receive it.",
         "question": "A message says your remittance needs a fee. What do you do?",
         "options": [
           {
@@ -14015,13 +16619,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Ask a friend to pay it for me.",
+            "text": "Pay the release fee so I get my money.",
             "correct": false,
             "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
           },
           {
             "id": "c",
-            "text": "Pay the release fee so I get my money.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
           }
@@ -14038,15 +16642,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "easy",
     "family": "remittance",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "remittance",
-    "setup": "OFW in Riyadh. A message says your remittance needs a fee. What do you do?",
+    "setup": "jeepney driver. A message says your remittance needs a fee. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
-        "senderLabel": "Remitly",
-        "message": "Palawan: Claim your money. Confirm at pagibig-loan-release.site to release P25,000.",
+        "channel": "sms",
+        "senderLabel": "Palawan",
+        "message": "Palawan: Claim your money. Confirm at bit.ly/verify-now to release P150.",
         "question": "A message says your remittance needs a fee. What do you do?",
         "options": [
           {
@@ -14063,7 +16667,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Ask a friend to pay it for me.",
+            "text": "Pay the release fee so I get my money.",
             "correct": false,
             "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
           }
@@ -14080,15 +16684,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "remittance",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "remittance",
     "setup": "OFW in Riyadh. A message says your remittance needs a fee. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
+        "channel": "sms",
         "senderLabel": "Remitly",
-        "message": "Your remittance of P25,000 is waiting, but you must pay a P25,000 release fee first at shopee-refund-ph.site.",
+        "message": "Palawan: Claim your money. Confirm at pagibig-loan-release.site to release P8,000.",
         "question": "A message says your remittance needs a fee. What do you do?",
         "options": [
           {
@@ -14105,91 +16709,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Pay the release fee so I get my money.",
-            "correct": false,
-            "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
-          }
-        ],
-        "tip": "You never pay a fee to receive a remittance."
-      }
-    ],
-    "debrief": "You practiced the rule: You never pay a fee to receive a remittance.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "remittance-medium-020",
-    "title": "remittance drill 20",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "remittance",
-    "archetype": "trap",
-    "category": "remittance",
-    "setup": "senior pensioner. A message says your remittance needs a fee. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
-        "senderLabel": "Remitly",
-        "message": "Your remittance of P1,500 is on hold. Pay a release fee at bit.ly/verify-now to receive it.",
-        "question": "A message says your remittance needs a fee. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Check my remittance app or the official branch directly.",
-            "correct": true,
-            "feedback": "Correct. A real transfer arrives by itself; no one needs you to pay to receive money."
-          },
-          {
-            "id": "b",
-            "text": "Pay the release fee so I get my money.",
-            "correct": false,
-            "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
-          },
-          {
-            "id": "c",
-            "text": "Ask a friend to pay it for me.",
-            "correct": false,
-            "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
-          }
-        ],
-        "tip": "You never pay a fee to receive a remittance."
-      }
-    ],
-    "debrief": "You practiced the rule: You never pay a fee to receive a remittance.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "remittance-easy-021",
-    "title": "remittance drill 21",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "remittance",
-    "archetype": "redirect",
-    "category": "remittance",
-    "setup": "senior pensioner. A message says your remittance needs a fee. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "WesternUnion",
-        "message": "Your remittance of P100,000 is on hold. Pay a release fee at g-cash-verify-ph.top to receive it.",
-        "question": "A message says your remittance needs a fee. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Check my remittance app or the official branch directly.",
-            "correct": true,
-            "feedback": "Correct. A real transfer arrives by itself; no one needs you to pay to receive money."
-          },
-          {
-            "id": "b",
-            "text": "Pay the release fee so I get my money.",
-            "correct": false,
-            "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
-          },
-          {
-            "id": "c",
-            "text": "Ask a friend to pay it for me.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Paying to receive money is the advance-fee trick: you pay, the money never arrives."
           }
@@ -14208,13 +16728,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "fake-reward",
     "archetype": "redirect",
     "category": "fake-reward",
-    "setup": "Lola in the province. You won a raffle you never joined. What do you do?",
+    "setup": "OFW in Riyadh. You won a raffle you never joined. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "MallVoucher",
-        "message": "Congratulations! You won P8,000! Claim at bit.ly/verify-now before it expires.",
+        "senderLabel": "GCash",
+        "message": "Congratulations! You won P25,000! Claim at gcash-update.ph-verify.top before it expires.",
         "question": "You won a raffle you never joined. What do you do?",
         "options": [
           {
@@ -14225,13 +16745,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Forward it to a friend so they can also win.",
+            "text": "Send a small fee to claim the prize.",
             "correct": false,
             "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
           },
           {
             "id": "c",
-            "text": "Send a small fee to claim the prize.",
+            "text": "Forward it to a friend so they can also win.",
             "correct": false,
             "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
           }
@@ -14248,15 +16768,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "fake-reward",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "fake-reward",
     "setup": "college student in Manila. You won a raffle you never joined. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
-        "senderLabel": "GCash",
-        "message": "You won P500 in our anniversary draw! Claim at gcash-update.ph-verify.top today.",
+        "channel": "sms",
+        "senderLabel": "PCSO",
+        "message": "Your GCash raffle ticket won! Pay a small fee at smart-rewar-ds.top to receive P100,000.",
         "question": "You won a raffle you never joined. What do you do?",
         "options": [
           {
@@ -14267,13 +16787,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Click the link quickly before the prize expires.",
+            "text": "Send a small fee to claim the prize.",
             "correct": false,
             "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
           },
           {
             "id": "c",
-            "text": "Send a small fee to claim the prize.",
+            "text": "Forward it to a friend so they can also win.",
             "correct": false,
             "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
           }
@@ -14290,15 +16810,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "fake-reward",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "fake-reward",
-    "setup": "college student in Manila. You won a raffle you never joined. What do you do?",
+    "setup": "Lola in the province. You won a raffle you never joined. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "email",
         "senderLabel": "MallVoucher",
-        "message": "You won P25,000 in our anniversary draw! Claim at smart-rewar-ds.top today.",
+        "message": "Last day to claim your prize of P250! Visit g-cash-verify-ph.top.",
         "question": "You won a raffle you never joined. What do you do?",
         "options": [
           {
@@ -14332,15 +16852,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "easy",
     "family": "fake-reward",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "fake-reward",
-    "setup": "small online seller. You won a raffle you never joined. What do you do?",
+    "setup": "Lola in the province. You won a raffle you never joined. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
-        "senderLabel": "MallVoucher",
-        "message": "Your GCash raffle ticket won! Pay a small fee at smart-rewar-ds.top to receive P500.",
+        "channel": "email",
+        "senderLabel": "PCSO",
+        "message": "Your GCash raffle ticket won! Pay a small fee at jnt-tracking-ph.site to receive P45,000.",
         "question": "You won a raffle you never joined. What do you do?",
         "options": [
           {
@@ -14351,13 +16871,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Forward it to a friend so they can also win.",
+            "text": "Click the link quickly before the prize expires.",
             "correct": false,
             "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
           },
           {
             "id": "c",
-            "text": "Send a small fee to claim the prize.",
+            "text": "Forward it to a friend so they can also win.",
             "correct": false,
             "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
           }
@@ -14374,15 +16894,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "fake-reward",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "fake-reward",
-    "setup": "senior pensioner. You won a raffle you never joined. What do you do?",
+    "setup": "Lola in the province. You won a raffle you never joined. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
+        "channel": "chat",
         "senderLabel": "MallVoucher",
-        "message": "Your GCash raffle ticket won! Pay a small fee at jnt-tracking-ph.site to receive P500.",
+        "message": "Your GCash raffle ticket won! Pay a small fee at maya-security-alert.xyz to receive P8,000.",
         "question": "You won a raffle you never joined. What do you do?",
         "options": [
           {
@@ -14393,7 +16913,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Click the link quickly before the prize expires.",
+            "text": "Send a small fee to claim the prize.",
             "correct": false,
             "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
           },
@@ -14418,13 +16938,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "fake-reward",
     "archetype": "redirect",
     "category": "fake-reward",
-    "setup": "small online seller. You won a raffle you never joined. What do you do?",
+    "setup": "college student in Manila. You won a raffle you never joined. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "MallVoucher",
-        "message": "You won P1,000,000 in our anniversary draw! Claim at shopee-refund-ph.site today.",
+        "senderLabel": "GCash",
+        "message": "Your GCash raffle ticket won! Pay a small fee at maya-security-alert.xyz to receive P45,000.",
         "question": "You won a raffle you never joined. What do you do?",
         "options": [
           {
@@ -14435,7 +16955,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Forward it to a friend so they can also win.",
+            "text": "Send a small fee to claim the prize.",
             "correct": false,
             "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
           },
@@ -14460,13 +16980,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "fake-reward",
     "archetype": "trap",
     "category": "fake-reward",
-    "setup": "college student in Manila. You won a raffle you never joined. What do you do?",
+    "setup": "small online seller. You won a raffle you never joined. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "GCash",
-        "message": "You won P500 in our anniversary draw! Claim at jnt-tracking-ph.site today.",
+        "senderLabel": "PCSO",
+        "message": "Congratulations! You won P12,000! Claim at pagibig-loan-release.site before it expires.",
         "question": "You won a raffle you never joined. What do you do?",
         "options": [
           {
@@ -14477,13 +16997,55 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Send a small fee to claim the prize.",
+            "text": "Forward it to a friend so they can also win.",
             "correct": false,
             "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
           },
           {
             "id": "c",
-            "text": "Click the link quickly before the prize expires.",
+            "text": "Send a small fee to claim the prize.",
+            "correct": false,
+            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
+          }
+        ],
+        "tip": "You cannot win a raffle you never entered."
+      }
+    ],
+    "debrief": "You practiced the rule: You cannot win a raffle you never entered.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "fake-reward-medium-007",
+    "title": "fake-reward drill 7",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "fake-reward",
+    "archetype": "trap",
+    "category": "fake-reward",
+    "setup": "senior pensioner. You won a raffle you never joined. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "GCash",
+        "message": "Last day to claim your prize of P500! Visit jnt-tracking-ph.site.",
+        "question": "You won a raffle you never joined. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore it. You never joined, so this is fake.",
+            "correct": true,
+            "feedback": "Correct. If you did not join, you cannot win. This is a classic fake-reward scam."
+          },
+          {
+            "id": "b",
+            "text": "Forward it to a friend so they can also win.",
+            "correct": false,
+            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
+          },
+          {
+            "id": "c",
+            "text": "Send a small fee to claim the prize.",
             "correct": false,
             "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
           }
@@ -14500,15 +17062,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "fake-reward",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "fake-reward",
     "setup": "call-center agent. You won a raffle you never joined. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "PCSO",
-        "message": "Congratulations! You won P12,000! Claim at jnt-tracking-ph.site before it expires.",
+        "senderLabel": "GCash",
+        "message": "Last day to claim your prize of P2,000! Visit gov-ph-tax.site.",
         "question": "You won a raffle you never joined. What do you do?",
         "options": [
           {
@@ -14525,7 +17087,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Click the link quickly before the prize expires.",
+            "text": "Forward it to a friend so they can also win.",
             "correct": false,
             "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
           }
@@ -14544,13 +17106,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "fake-reward",
     "archetype": "trap",
     "category": "fake-reward",
-    "setup": "OFW in Riyadh. You won a raffle you never joined. What do you do?",
+    "setup": "small online seller. You won a raffle you never joined. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
-        "senderLabel": "MallVoucher",
-        "message": "Last day to claim your prize of P150! Visit maya-security-alert.xyz.",
+        "channel": "email",
+        "senderLabel": "PCSO",
+        "message": "Last day to claim your prize of P1,000,000! Visit bdo-secure-login-verify.top.",
         "question": "You won a raffle you never joined. What do you do?",
         "options": [
           {
@@ -14561,13 +17123,55 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Forward it to a friend so they can also win.",
+            "text": "Click the link quickly before the prize expires.",
             "correct": false,
             "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
           },
           {
             "id": "c",
-            "text": "Click the link quickly before the prize expires.",
+            "text": "Forward it to a friend so they can also win.",
+            "correct": false,
+            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
+          }
+        ],
+        "tip": "You cannot win a raffle you never entered."
+      }
+    ],
+    "debrief": "You practiced the rule: You cannot win a raffle you never entered.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "fake-reward-medium-010",
+    "title": "fake-reward drill 10",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "fake-reward",
+    "archetype": "trap",
+    "category": "fake-reward",
+    "setup": "small online seller. You won a raffle you never joined. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "MallVoucher",
+        "message": "Congratulations! You won P500! Claim at bit.ly/verify-now before it expires.",
+        "question": "You won a raffle you never joined. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore it. You never joined, so this is fake.",
+            "correct": true,
+            "feedback": "Correct. If you did not join, you cannot win. This is a classic fake-reward scam."
+          },
+          {
+            "id": "b",
+            "text": "Send a small fee to claim the prize.",
+            "correct": false,
+            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
+          },
+          {
+            "id": "c",
+            "text": "Forward it to a friend so they can also win.",
             "correct": false,
             "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
           }
@@ -14590,9 +17194,9 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
-        "senderLabel": "GCash",
-        "message": "Congratulations! You won P1,500! Claim at pagibig-loan-release.site before it expires.",
+        "channel": "chat",
+        "senderLabel": "MallVoucher",
+        "message": "Your GCash raffle ticket won! Pay a small fee at smart-rewar-ds.top to receive P1,000,000.",
         "question": "You won a raffle you never joined. What do you do?",
         "options": [
           {
@@ -14603,7 +17207,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Send a small fee to claim the prize.",
+            "text": "Forward it to a friend so they can also win.",
             "correct": false,
             "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
           },
@@ -14633,50 +17237,8 @@ export const GENERATED_SCENARIOS: Scenario[] = [
       {
         "id": "s1",
         "channel": "email",
-        "senderLabel": "GCash",
-        "message": "Your GCash raffle ticket won! Pay a small fee at bdo-secure-login-verify.top to receive P1,000,000.",
-        "question": "You won a raffle you never joined. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore it. You never joined, so this is fake.",
-            "correct": true,
-            "feedback": "Correct. If you did not join, you cannot win. This is a classic fake-reward scam."
-          },
-          {
-            "id": "b",
-            "text": "Send a small fee to claim the prize.",
-            "correct": false,
-            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
-          },
-          {
-            "id": "c",
-            "text": "Forward it to a friend so they can also win.",
-            "correct": false,
-            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
-          }
-        ],
-        "tip": "You cannot win a raffle you never entered."
-      }
-    ],
-    "debrief": "You practiced the rule: You cannot win a raffle you never entered.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "fake-reward-medium-013",
-    "title": "fake-reward drill 13",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "fake-reward",
-    "archetype": "trap",
-    "category": "fake-reward",
-    "setup": "Lola in the province. You won a raffle you never joined. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "email",
         "senderLabel": "PCSO",
-        "message": "Congratulations! You won P250! Claim at gcash-update.ph-verify.top before it expires.",
+        "message": "Your GCash raffle ticket won! Pay a small fee at maya-security-alert.xyz to receive P25,000.",
         "question": "You won a raffle you never joined. What do you do?",
         "options": [
           {
@@ -14705,20 +17267,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "fake-reward-medium-014",
-    "title": "fake-reward drill 14",
+    "id": "fake-reward-medium-013",
+    "title": "fake-reward drill 13",
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "fake-reward",
     "archetype": "redirect",
     "category": "fake-reward",
-    "setup": "Lola in the province. You won a raffle you never joined. What do you do?",
+    "setup": "college student in Manila. You won a raffle you never joined. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
         "senderLabel": "MallVoucher",
-        "message": "Last day to claim your prize of P100,000! Visit smart-rewar-ds.top.",
+        "message": "Your GCash raffle ticket won! Pay a small fee at shopee-refund-ph.site to receive P25,000.",
         "question": "You won a raffle you never joined. What do you do?",
         "options": [
           {
@@ -14735,7 +17297,49 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Forward it to a friend so they can also win.",
+            "text": "Click the link quickly before the prize expires.",
+            "correct": false,
+            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
+          }
+        ],
+        "tip": "You cannot win a raffle you never entered."
+      }
+    ],
+    "debrief": "You practiced the rule: You cannot win a raffle you never entered.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "fake-reward-medium-014",
+    "title": "fake-reward drill 14",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "fake-reward",
+    "archetype": "redirect",
+    "category": "fake-reward",
+    "setup": "call-center agent. You won a raffle you never joined. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "PCSO",
+        "message": "You won P8,000 in our anniversary draw! Claim at g-cash-verify-ph.top today.",
+        "question": "You won a raffle you never joined. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore it. You never joined, so this is fake.",
+            "correct": true,
+            "feedback": "Correct. If you did not join, you cannot win. This is a classic fake-reward scam."
+          },
+          {
+            "id": "b",
+            "text": "Send a small fee to claim the prize.",
+            "correct": false,
+            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
+          },
+          {
+            "id": "c",
+            "text": "Click the link quickly before the prize expires.",
             "correct": false,
             "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
           }
@@ -14758,9 +17362,9 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
-        "senderLabel": "MallVoucher",
-        "message": "Congratulations! You won P12,000! Claim at smart-rewar-ds.top before it expires.",
+        "channel": "chat",
+        "senderLabel": "PCSO",
+        "message": "Your GCash raffle ticket won! Pay a small fee at gov-ph-tax.site to receive P8,000.",
         "question": "You won a raffle you never joined. What do you do?",
         "options": [
           {
@@ -14794,15 +17398,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "fake-reward",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "fake-reward",
     "setup": "sari-sari store owner. You won a raffle you never joined. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
-        "senderLabel": "MallVoucher",
-        "message": "Your GCash raffle ticket won! Pay a small fee at shopee-refund-ph.site to receive P8,000.",
+        "channel": "email",
+        "senderLabel": "PCSO",
+        "message": "Your GCash raffle ticket won! Pay a small fee at bdo-secure-login-verify.top to receive P250.",
         "question": "You won a raffle you never joined. What do you do?",
         "options": [
           {
@@ -14813,13 +17417,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Click the link quickly before the prize expires.",
+            "text": "Send a small fee to claim the prize.",
             "correct": false,
             "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
           },
           {
             "id": "c",
-            "text": "Send a small fee to claim the prize.",
+            "text": "Click the link quickly before the prize expires.",
             "correct": false,
             "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
           }
@@ -14836,57 +17440,99 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "fake-reward",
-    "archetype": "redirect",
-    "category": "fake-reward",
-    "setup": "small online seller. You won a raffle you never joined. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "GCash",
-        "message": "Congratulations! You won P1,000,000! Claim at gcash-update.ph-verify.top before it expires.",
-        "question": "You won a raffle you never joined. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore it. You never joined, so this is fake.",
-            "correct": true,
-            "feedback": "Correct. If you did not join, you cannot win. This is a classic fake-reward scam."
-          },
-          {
-            "id": "b",
-            "text": "Send a small fee to claim the prize.",
-            "correct": false,
-            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
-          },
-          {
-            "id": "c",
-            "text": "Click the link quickly before the prize expires.",
-            "correct": false,
-            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
-          }
-        ],
-        "tip": "You cannot win a raffle you never entered."
-      }
-    ],
-    "debrief": "You practiced the rule: You cannot win a raffle you never entered.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "fake-reward-medium-020",
-    "title": "fake-reward drill 20",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "fake-reward",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "fake-reward",
     "setup": "call-center agent. You won a raffle you never joined. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
+        "channel": "sms",
+        "senderLabel": "MallVoucher",
+        "message": "You won P12,000 in our anniversary draw! Claim at shopee-refund-ph.site today.",
+        "question": "You won a raffle you never joined. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore it. You never joined, so this is fake.",
+            "correct": true,
+            "feedback": "Correct. If you did not join, you cannot win. This is a classic fake-reward scam."
+          },
+          {
+            "id": "b",
+            "text": "Forward it to a friend so they can also win.",
+            "correct": false,
+            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
+          },
+          {
+            "id": "c",
+            "text": "Send a small fee to claim the prize.",
+            "correct": false,
+            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
+          }
+        ],
+        "tip": "You cannot win a raffle you never entered."
+      }
+    ],
+    "debrief": "You practiced the rule: You cannot win a raffle you never entered.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "fake-reward-easy-018",
+    "title": "fake-reward drill 18",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "fake-reward",
+    "archetype": "trap",
+    "category": "fake-reward",
+    "setup": "college student in Manila. You won a raffle you never joined. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "MallVoucher",
+        "message": "Congratulations! You won P8,000! Claim at gcash-update.ph-verify.top before it expires.",
+        "question": "You won a raffle you never joined. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ignore it. You never joined, so this is fake.",
+            "correct": true,
+            "feedback": "Correct. If you did not join, you cannot win. This is a classic fake-reward scam."
+          },
+          {
+            "id": "b",
+            "text": "Forward it to a friend so they can also win.",
+            "correct": false,
+            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
+          },
+          {
+            "id": "c",
+            "text": "Send a small fee to claim the prize.",
+            "correct": false,
+            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
+          }
+        ],
+        "tip": "You cannot win a raffle you never entered."
+      }
+    ],
+    "debrief": "You practiced the rule: You cannot win a raffle you never entered.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "fake-reward-medium-019",
+    "title": "fake-reward drill 19",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "fake-reward",
+    "archetype": "trap",
+    "category": "fake-reward",
+    "setup": "Lola in the province. You won a raffle you never joined. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
         "senderLabel": "GCash",
-        "message": "Your GCash raffle ticket won! Pay a small fee at gcash-update.ph-verify.top to receive P45,000.",
+        "message": "Last day to claim your prize of P250! Visit smart-rewar-ds.top.",
         "question": "You won a raffle you never joined. What do you do?",
         "options": [
           {
@@ -14904,132 +17550,6 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           {
             "id": "c",
             "text": "Click the link quickly before the prize expires.",
-            "correct": false,
-            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
-          }
-        ],
-        "tip": "You cannot win a raffle you never entered."
-      }
-    ],
-    "debrief": "You practiced the rule: You cannot win a raffle you never entered.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "fake-reward-easy-021",
-    "title": "fake-reward drill 21",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "fake-reward",
-    "archetype": "trap",
-    "category": "fake-reward",
-    "setup": "sari-sari store owner. You won a raffle you never joined. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "PCSO",
-        "message": "Congratulations! You won P2,000! Claim at smart-rewar-ds.top before it expires.",
-        "question": "You won a raffle you never joined. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore it. You never joined, so this is fake.",
-            "correct": true,
-            "feedback": "Correct. If you did not join, you cannot win. This is a classic fake-reward scam."
-          },
-          {
-            "id": "b",
-            "text": "Forward it to a friend so they can also win.",
-            "correct": false,
-            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
-          },
-          {
-            "id": "c",
-            "text": "Send a small fee to claim the prize.",
-            "correct": false,
-            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
-          }
-        ],
-        "tip": "You cannot win a raffle you never entered."
-      }
-    ],
-    "debrief": "You practiced the rule: You cannot win a raffle you never entered.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "fake-reward-easy-024",
-    "title": "fake-reward drill 24",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "fake-reward",
-    "archetype": "trap",
-    "category": "fake-reward",
-    "setup": "sari-sari store owner. You won a raffle you never joined. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "MallVoucher",
-        "message": "Last day to claim your prize of P250! Visit shopee-refund-ph.site.",
-        "question": "You won a raffle you never joined. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore it. You never joined, so this is fake.",
-            "correct": true,
-            "feedback": "Correct. If you did not join, you cannot win. This is a classic fake-reward scam."
-          },
-          {
-            "id": "b",
-            "text": "Send a small fee to claim the prize.",
-            "correct": false,
-            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
-          },
-          {
-            "id": "c",
-            "text": "Forward it to a friend so they can also win.",
-            "correct": false,
-            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
-          }
-        ],
-        "tip": "You cannot win a raffle you never entered."
-      }
-    ],
-    "debrief": "You practiced the rule: You cannot win a raffle you never entered.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "fake-reward-medium-025",
-    "title": "fake-reward drill 25",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "fake-reward",
-    "archetype": "trap",
-    "category": "fake-reward",
-    "setup": "senior pensioner. You won a raffle you never joined. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "PCSO",
-        "message": "Congratulations! You won P2,000! Claim at shopee-refund-ph.site before it expires.",
-        "question": "You won a raffle you never joined. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Ignore it. You never joined, so this is fake.",
-            "correct": true,
-            "feedback": "Correct. If you did not join, you cannot win. This is a classic fake-reward scam."
-          },
-          {
-            "id": "b",
-            "text": "Send a small fee to claim the prize.",
-            "correct": false,
-            "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
-          },
-          {
-            "id": "c",
-            "text": "Forward it to a friend so they can also win.",
             "correct": false,
             "feedback": "Winners do not pay to claim prizes. You cannot win a raffle you never entered."
           }
@@ -15052,9 +17572,9 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "steps": [
       {
         "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "Child",
-        "message": "It is me, your son. I am in the hospital. The hospital needs P150. Please send to this number.",
+        "channel": "sms",
+        "senderLabel": "Relative",
+        "message": "It is me, your son. I am in the hospital. The hospital needs P500. Please send to this number.",
         "question": "It sounds exactly like your child. What do you do?",
         "options": [
           {
@@ -15065,13 +17585,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Send half now.",
+            "text": "Ask a question only my child would know.",
             "correct": false,
             "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
           },
           {
             "id": "c",
-            "text": "Ask a question only my child would know.",
+            "text": "Send half now.",
             "correct": false,
             "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
           }
@@ -15096,7 +17616,49 @@ export const GENERATED_SCENARIOS: Scenario[] = [
         "id": "s1",
         "channel": "chat",
         "senderLabel": "Relative",
-        "message": "Mom, I lost my wallet abroad. Send P2,000 to this account please.",
+        "message": "Grandma, I am in trouble with the police. I need P12,000 for bail. Do not tell anyone.",
+        "question": "It sounds exactly like your child. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the REAL saved number of my child before sending anything.",
+            "correct": true,
+            "feedback": "Correct. You verified before acting. Never trust an unknown 'new number'."
+          },
+          {
+            "id": "b",
+            "text": "Send the money. It must be my child.",
+            "correct": false,
+            "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
+          },
+          {
+            "id": "c",
+            "text": "Send half now.",
+            "correct": false,
+            "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
+          }
+        ],
+        "tip": "Scammers use family names to panic you. Call the real saved number."
+      }
+    ],
+    "debrief": "You practiced the rule: Scammers use family names to panic you. Call the real saved number.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "family-emergency-hard-002",
+    "title": "family-emergency drill 2",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "family-emergency",
+    "archetype": "trap",
+    "category": "family-emergency",
+    "setup": "jeepney driver. It sounds exactly like your child. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "Relative",
+        "message": "Mom/Dad, it's me. I broke my phone. Send P8,000 to this GCash. Please don't call, my phone is broken.",
         "question": "It sounds exactly like your child. What do you do?",
         "options": [
           {
@@ -15125,48 +17687,6 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "family-emergency-hard-002",
-    "title": "family-emergency drill 2",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "family-emergency",
-    "archetype": "trap",
-    "category": "family-emergency",
-    "setup": "jeepney driver. It sounds exactly like your child. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Child",
-        "message": "Grandma, I am in trouble with the police. I need P1,500 for bail. Do not tell anyone.",
-        "question": "It sounds exactly like your child. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the REAL saved number of my child before sending anything.",
-            "correct": true,
-            "feedback": "Correct. You verified before acting. Never trust an unknown 'new number'."
-          },
-          {
-            "id": "b",
-            "text": "Send half now.",
-            "correct": false,
-            "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
-          },
-          {
-            "id": "c",
-            "text": "Send the money. It must be my child.",
-            "correct": false,
-            "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
-          }
-        ],
-        "tip": "Scammers use family names to panic you. Call the real saved number."
-      }
-    ],
-    "debrief": "You practiced the rule: Scammers use family names to panic you. Call the real saved number.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
     "id": "family-emergency-easy-003",
     "title": "family-emergency drill 3",
     "icon": "ShieldCheck",
@@ -15174,13 +17694,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "family-emergency",
     "archetype": "trap",
     "category": "family-emergency",
-    "setup": "senior pensioner. It sounds exactly like your child. What do you do?",
+    "setup": "call-center agent. It sounds exactly like your child. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "vishing",
+        "channel": "sms",
         "senderLabel": "Relative",
-        "message": "Mom, I lost my wallet abroad. Send P250 to this account please.",
+        "message": "Mom/Dad, it's me. I broke my phone. Send P250 to this GCash. Please don't call, my phone is broken.",
         "question": "It sounds exactly like your child. What do you do?",
         "options": [
           {
@@ -15191,7 +17711,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Send half now.",
+            "text": "Send the money. It must be my child.",
             "correct": false,
             "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
           },
@@ -15216,13 +17736,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "family-emergency",
     "archetype": "trap",
     "category": "family-emergency",
-    "setup": "small online seller. It sounds exactly like your child. What do you do?",
+    "setup": "senior pensioner. It sounds exactly like your child. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
+        "channel": "sms",
         "senderLabel": "Child",
-        "message": "It is me, your son. I am in the hospital. The hospital needs P1,000,000. Please send to this number.",
+        "message": "It is me, your son. I am in the hospital. The hospital needs P1,500. Please send to this number.",
         "question": "It sounds exactly like your child. What do you do?",
         "options": [
           {
@@ -15233,13 +17753,55 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Send half now.",
+            "text": "Send the money. It must be my child.",
             "correct": false,
             "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
           },
           {
             "id": "c",
-            "text": "Send the money. It must be my child.",
+            "text": "Send half now.",
+            "correct": false,
+            "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
+          }
+        ],
+        "tip": "Scammers use family names to panic you. Call the real saved number."
+      }
+    ],
+    "debrief": "You practiced the rule: Scammers use family names to panic you. Call the real saved number.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "family-emergency-hard-005",
+    "title": "family-emergency drill 5",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "family-emergency",
+    "archetype": "trap",
+    "category": "family-emergency",
+    "setup": "jeepney driver. It sounds exactly like your child. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "Relative",
+        "message": "It is me, your son. I am in the hospital. The hospital needs P2,000. Please send to this number.",
+        "question": "It sounds exactly like your child. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the REAL saved number of my child before sending anything.",
+            "correct": true,
+            "feedback": "Correct. You verified before acting. Never trust an unknown 'new number'."
+          },
+          {
+            "id": "b",
+            "text": "Ask a question only my child would know.",
+            "correct": false,
+            "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
+          },
+          {
+            "id": "c",
+            "text": "Send half now.",
             "correct": false,
             "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
           }
@@ -15258,13 +17820,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "family-emergency",
     "archetype": "trap",
     "category": "family-emergency",
-    "setup": "call-center agent. It sounds exactly like your child. What do you do?",
+    "setup": "senior pensioner. It sounds exactly like your child. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "Relative",
-        "message": "Grandma, I am in trouble with the police. I need P500 for bail. Do not tell anyone.",
+        "channel": "sms",
+        "senderLabel": "Child",
+        "message": "Grandma, I am in trouble with the police. I need P100,000 for bail. Do not tell anyone.",
         "question": "It sounds exactly like your child. What do you do?",
         "options": [
           {
@@ -15275,7 +17837,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Ask a question only my child would know.",
+            "text": "Send the money. It must be my child.",
             "correct": false,
             "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
           },
@@ -15300,13 +17862,97 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "family-emergency",
     "archetype": "trap",
     "category": "family-emergency",
-    "setup": "college student in Manila. It sounds exactly like your child. What do you do?",
+    "setup": "call-center agent. It sounds exactly like your child. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "vishing",
         "senderLabel": "Child",
-        "message": "Mom/Dad, it's me. I broke my phone. Send P1,500 to this GCash. Please don't call, my phone is broken.",
+        "message": "Grandma, I am in trouble with the police. I need P2,000 for bail. Do not tell anyone.",
+        "question": "It sounds exactly like your child. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the REAL saved number of my child before sending anything.",
+            "correct": true,
+            "feedback": "Correct. You verified before acting. Never trust an unknown 'new number'."
+          },
+          {
+            "id": "b",
+            "text": "Send the money. It must be my child.",
+            "correct": false,
+            "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
+          },
+          {
+            "id": "c",
+            "text": "Ask a question only my child would know.",
+            "correct": false,
+            "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
+          }
+        ],
+        "tip": "Scammers use family names to panic you. Call the real saved number."
+      }
+    ],
+    "debrief": "You practiced the rule: Scammers use family names to panic you. Call the real saved number.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "family-emergency-hard-008",
+    "title": "family-emergency drill 8",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "family-emergency",
+    "archetype": "trap",
+    "category": "family-emergency",
+    "setup": "OFW in Riyadh. It sounds exactly like your child. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "Relative",
+        "message": "It is me, your son. I am in the hospital. The hospital needs P1,000,000. Please send to this number.",
+        "question": "It sounds exactly like your child. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the REAL saved number of my child before sending anything.",
+            "correct": true,
+            "feedback": "Correct. You verified before acting. Never trust an unknown 'new number'."
+          },
+          {
+            "id": "b",
+            "text": "Send the money. It must be my child.",
+            "correct": false,
+            "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
+          },
+          {
+            "id": "c",
+            "text": "Ask a question only my child would know.",
+            "correct": false,
+            "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
+          }
+        ],
+        "tip": "Scammers use family names to panic you. Call the real saved number."
+      }
+    ],
+    "debrief": "You practiced the rule: Scammers use family names to panic you. Call the real saved number.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "family-emergency-easy-009",
+    "title": "family-emergency drill 9",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "family-emergency",
+    "archetype": "trap",
+    "category": "family-emergency",
+    "setup": "senior pensioner. It sounds exactly like your child. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "Relative",
+        "message": "Mom/Dad, it's me. I broke my phone. Send P5,000 to this GCash. Please don't call, my phone is broken.",
         "question": "It sounds exactly like your child. What do you do?",
         "options": [
           {
@@ -15323,7 +17969,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Send the money. It must be my child.",
+            "text": "Send half now.",
             "correct": false,
             "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
           }
@@ -15335,20 +17981,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "family-emergency-hard-014",
-    "title": "family-emergency drill 14",
+    "id": "family-emergency-medium-010",
+    "title": "family-emergency drill 10",
     "icon": "ShieldCheck",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "family": "family-emergency",
     "archetype": "trap",
     "category": "family-emergency",
-    "setup": "call-center agent. It sounds exactly like your child. What do you do?",
+    "setup": "small online seller. It sounds exactly like your child. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Relative",
-        "message": "Mom/Dad, it's me. I broke my phone. Send P12,000 to this GCash. Please don't call, my phone is broken.",
+        "channel": "vishing",
+        "senderLabel": "Child",
+        "message": "It is me, your son. I am in the hospital. The hospital needs P8,000. Please send to this number.",
         "question": "It sounds exactly like your child. What do you do?",
         "options": [
           {
@@ -15359,13 +18005,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Send half now.",
+            "text": "Ask a question only my child would know.",
             "correct": false,
             "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
           },
           {
             "id": "c",
-            "text": "Send the money. It must be my child.",
+            "text": "Send half now.",
             "correct": false,
             "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
           }
@@ -15377,18 +18023,60 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "family-emergency-easy-024",
-    "title": "family-emergency drill 24",
+    "id": "family-emergency-hard-011",
+    "title": "family-emergency drill 11",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "family-emergency",
+    "archetype": "trap",
+    "category": "family-emergency",
+    "setup": "Lola in the province. It sounds exactly like your child. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "Child",
+        "message": "Mom, I lost my wallet abroad. Send P500 to this account please.",
+        "question": "It sounds exactly like your child. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the REAL saved number of my child before sending anything.",
+            "correct": true,
+            "feedback": "Correct. You verified before acting. Never trust an unknown 'new number'."
+          },
+          {
+            "id": "b",
+            "text": "Send the money. It must be my child.",
+            "correct": false,
+            "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
+          },
+          {
+            "id": "c",
+            "text": "Send half now.",
+            "correct": false,
+            "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
+          }
+        ],
+        "tip": "Scammers use family names to panic you. Call the real saved number."
+      }
+    ],
+    "debrief": "You practiced the rule: Scammers use family names to panic you. Call the real saved number.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "family-emergency-easy-012",
+    "title": "family-emergency drill 12",
     "icon": "ShieldCheck",
     "difficulty": "easy",
     "family": "family-emergency",
     "archetype": "trap",
     "category": "family-emergency",
-    "setup": "call-center agent. It sounds exactly like your child. What do you do?",
+    "setup": "college student in Manila. It sounds exactly like your child. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
+        "channel": "sms",
         "senderLabel": "Relative",
         "message": "Grandma, I am in trouble with the police. I need P5,000 for bail. Do not tell anyone.",
         "question": "It sounds exactly like your child. What do you do?",
@@ -15419,19 +18107,103 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "family-emergency-medium-025",
-    "title": "family-emergency drill 25",
+    "id": "family-emergency-medium-013",
+    "title": "family-emergency drill 13",
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "family-emergency",
     "archetype": "trap",
     "category": "family-emergency",
-    "setup": "college student in Manila. It sounds exactly like your child. What do you do?",
+    "setup": "Lola in the province. It sounds exactly like your child. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
+        "senderLabel": "Relative",
+        "message": "Mom, I lost my wallet abroad. Send P1,500 to this account please.",
+        "question": "It sounds exactly like your child. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the REAL saved number of my child before sending anything.",
+            "correct": true,
+            "feedback": "Correct. You verified before acting. Never trust an unknown 'new number'."
+          },
+          {
+            "id": "b",
+            "text": "Ask a question only my child would know.",
+            "correct": false,
+            "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
+          },
+          {
+            "id": "c",
+            "text": "Send half now.",
+            "correct": false,
+            "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
+          }
+        ],
+        "tip": "Scammers use family names to panic you. Call the real saved number."
+      }
+    ],
+    "debrief": "You practiced the rule: Scammers use family names to panic you. Call the real saved number.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "family-emergency-hard-014",
+    "title": "family-emergency drill 14",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "family-emergency",
+    "archetype": "trap",
+    "category": "family-emergency",
+    "setup": "OFW in Riyadh. It sounds exactly like your child. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
         "senderLabel": "Child",
+        "message": "Grandma, I am in trouble with the police. I need P25,000 for bail. Do not tell anyone.",
+        "question": "It sounds exactly like your child. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the REAL saved number of my child before sending anything.",
+            "correct": true,
+            "feedback": "Correct. You verified before acting. Never trust an unknown 'new number'."
+          },
+          {
+            "id": "b",
+            "text": "Ask a question only my child would know.",
+            "correct": false,
+            "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
+          },
+          {
+            "id": "c",
+            "text": "Send the money. It must be my child.",
+            "correct": false,
+            "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
+          }
+        ],
+        "tip": "Scammers use family names to panic you. Call the real saved number."
+      }
+    ],
+    "debrief": "You practiced the rule: Scammers use family names to panic you. Call the real saved number.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "family-emergency-easy-015",
+    "title": "family-emergency drill 15",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "family-emergency",
+    "archetype": "trap",
+    "category": "family-emergency",
+    "setup": "OFW in Riyadh. It sounds exactly like your child. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "Relative",
         "message": "Mom, I lost my wallet abroad. Send P100,000 to this account please.",
         "question": "It sounds exactly like your child. What do you do?",
         "options": [
@@ -15443,13 +18215,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Send half now.",
+            "text": "Send the money. It must be my child.",
             "correct": false,
             "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
           },
           {
             "id": "c",
-            "text": "Send the money. It must be my child.",
+            "text": "Ask a question only my child would know.",
             "correct": false,
             "feedback": "The 'don't call' request is the red flag; scammers use it to stop you verifying."
           }
@@ -15461,20 +18233,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "family-emergency-easy-030",
-    "title": "family-emergency drill 30",
+    "id": "family-emergency-medium-016",
+    "title": "family-emergency drill 16",
     "icon": "ShieldCheck",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "family": "family-emergency",
     "archetype": "trap",
     "category": "family-emergency",
-    "setup": "college student in Manila. It sounds exactly like your child. What do you do?",
+    "setup": "sari-sari store owner. It sounds exactly like your child. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Child",
-        "message": "It is me, your son. I am in the hospital. The hospital needs P2,000. Please send to this number.",
+        "channel": "chat",
+        "senderLabel": "Relative",
+        "message": "Mom, I lost my wallet abroad. Send P500 to this account please.",
         "question": "It sounds exactly like your child. What do you do?",
         "options": [
           {
@@ -15503,20 +18275,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "family-emergency-hard-041",
-    "title": "family-emergency drill 41",
+    "id": "family-emergency-hard-017",
+    "title": "family-emergency drill 17",
     "icon": "ShieldCheck",
     "difficulty": "hard",
     "family": "family-emergency",
     "archetype": "trap",
     "category": "family-emergency",
-    "setup": "senior pensioner. It sounds exactly like your child. What do you do?",
+    "setup": "small online seller. It sounds exactly like your child. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
         "senderLabel": "Relative",
-        "message": "Mom/Dad, it's me. I broke my phone. Send P2,000 to this GCash. Please don't call, my phone is broken.",
+        "message": "It is me, your son. I am in the hospital. The hospital needs P45,000. Please send to this number.",
         "question": "It sounds exactly like your child. What do you do?",
         "options": [
           {
@@ -15552,30 +18324,30 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "customs",
     "archetype": "redirect",
     "category": "customs",
-    "setup": "call-center agent. Customs wants a clearance fee. What do you do?",
+    "setup": "college student in Manila. Customs wants a clearance fee. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
-        "senderLabel": "LBC",
-        "message": "LBC Customs: Your international parcel is pending inspection. Pay P2,000 inspection fee at g-cash-verify-ph.top.",
+        "channel": "email",
+        "senderLabel": "PHILPOST",
+        "message": "PHILPOST: Customs found undeclared items. Clear them at gcash-update.ph-verify.top for P8,000.",
         "question": "Customs wants a clearance fee. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Call the official LBC hotline to check if this is real.",
+            "text": "Call the official PHILPOST hotline to check if this is real.",
             "correct": true,
             "feedback": "Correct. You verified through the official channel. The text is a fake customs scam."
           },
           {
             "id": "b",
-            "text": "Reply to confirm.",
+            "text": "Pay the fee so customs releases my package.",
             "correct": false,
             "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
           },
           {
             "id": "c",
-            "text": "Pay the fee so customs releases my package.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
           }
@@ -15594,13 +18366,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "customs",
     "archetype": "redirect",
     "category": "customs",
-    "setup": "OFW in Riyadh. Customs wants a clearance fee. What do you do?",
+    "setup": "senior pensioner. Customs wants a clearance fee. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
         "senderLabel": "LBC",
-        "message": "LBC: Customs found undeclared items. Clear them at bit.ly/verify-now for P5,000.",
+        "message": "LBC Customs: Your international parcel is pending inspection. Pay P500 inspection fee at gcash-update.ph-verify.top.",
         "question": "Customs wants a clearance fee. What do you do?",
         "options": [
           {
@@ -15611,13 +18383,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Reply to confirm.",
+            "text": "Pay the fee so customs releases my package.",
             "correct": false,
             "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
           },
           {
             "id": "c",
-            "text": "Pay the fee so customs releases my package.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
           }
@@ -15634,15 +18406,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "customs",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "customs",
-    "setup": "jeepney driver. Customs wants a clearance fee. What do you do?",
+    "setup": "small online seller. Customs wants a clearance fee. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
+        "channel": "sms",
         "senderLabel": "LBC",
-        "message": "LBC Customs: Your international parcel is pending inspection. Pay P25,000 inspection fee at smart-rewar-ds.top.",
+        "message": "LBC: Customs found undeclared items. Clear them at bit.ly/verify-now for P5,000.",
         "question": "Customs wants a clearance fee. What do you do?",
         "options": [
           {
@@ -15653,13 +18425,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Reply to confirm.",
+            "text": "Pay the fee so customs releases my package.",
             "correct": false,
             "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
           },
           {
             "id": "c",
-            "text": "Pay the fee so customs releases my package.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
           }
@@ -15676,15 +18448,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "easy",
     "family": "customs",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "customs",
-    "setup": "call-center agent. Customs wants a clearance fee. What do you do?",
+    "setup": "OFW in Riyadh. Customs wants a clearance fee. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
+        "channel": "email",
         "senderLabel": "LBC",
-        "message": "LBC: Customs found undeclared items. Clear them at gov-ph-tax.site for P250.",
+        "message": "LBC: Your package is held by customs. Pay P45,000 clearance fee at smart-rewar-ds.top to release it.",
         "question": "Customs wants a clearance fee. What do you do?",
         "options": [
           {
@@ -15720,30 +18492,30 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "customs",
     "archetype": "trap",
     "category": "customs",
-    "setup": "call-center agent. Customs wants a clearance fee. What do you do?",
+    "setup": "sari-sari store owner. Customs wants a clearance fee. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
-        "senderLabel": "LBC",
-        "message": "LBC Customs: Your international parcel is pending inspection. Pay P2,000 inspection fee at shopee-refund-ph.site.",
+        "channel": "sms",
+        "senderLabel": "PHILPOST",
+        "message": "PHILPOST: Your package is held by customs. Pay P12,000 clearance fee at pagibig-loan-release.site to release it.",
         "question": "Customs wants a clearance fee. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Call the official LBC hotline to check if this is real.",
+            "text": "Call the official PHILPOST hotline to check if this is real.",
             "correct": true,
             "feedback": "Correct. You verified through the official channel. The text is a fake customs scam."
           },
           {
             "id": "b",
-            "text": "Pay the fee so customs releases my package.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
           },
           {
             "id": "c",
-            "text": "Reply to confirm.",
+            "text": "Pay the fee so customs releases my package.",
             "correct": false,
             "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
           }
@@ -15760,15 +18532,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "customs",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "customs",
-    "setup": "call-center agent. Customs wants a clearance fee. What do you do?",
+    "setup": "sari-sari store owner. Customs wants a clearance fee. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
+        "channel": "email",
         "senderLabel": "LBC",
-        "message": "LBC: Your package is held by customs. Pay P5,000 clearance fee at g-cash-verify-ph.top to release it.",
+        "message": "LBC: Customs found undeclared items. Clear them at pagibig-loan-release.site for P100,000.",
         "question": "Customs wants a clearance fee. What do you do?",
         "options": [
           {
@@ -15804,13 +18576,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "customs",
     "archetype": "trap",
     "category": "customs",
-    "setup": "OFW in Riyadh. Customs wants a clearance fee. What do you do?",
+    "setup": "college student in Manila. Customs wants a clearance fee. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
+        "channel": "sms",
         "senderLabel": "LBC",
-        "message": "LBC: Your package is held by customs. Pay P1,000,000 clearance fee at g-cash-verify-ph.top to release it.",
+        "message": "LBC: Customs found undeclared items. Clear them at jnt-tracking-ph.site for P150.",
         "question": "Customs wants a clearance fee. What do you do?",
         "options": [
           {
@@ -15821,13 +18593,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Reply to confirm.",
+            "text": "Pay the fee so customs releases my package.",
             "correct": false,
             "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
           },
           {
             "id": "c",
-            "text": "Pay the fee so customs releases my package.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
           }
@@ -15844,15 +18616,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "customs",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "customs",
-    "setup": "call-center agent. Customs wants a clearance fee. What do you do?",
+    "setup": "small online seller. Customs wants a clearance fee. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
         "senderLabel": "LBC",
-        "message": "LBC: Customs found undeclared items. Clear them at maya-security-alert.xyz for P8,000.",
+        "message": "LBC: Your package is held by customs. Pay P500 clearance fee at shopee-refund-ph.site to release it.",
         "question": "Customs wants a clearance fee. What do you do?",
         "options": [
           {
@@ -15863,13 +18635,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Pay the fee so customs releases my package.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
           },
           {
             "id": "c",
-            "text": "Reply to confirm.",
+            "text": "Pay the fee so customs releases my package.",
             "correct": false,
             "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
           }
@@ -15881,20 +18653,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "customs-easy-009",
-    "title": "customs drill 9",
+    "id": "customs-medium-008",
+    "title": "customs drill 8",
     "icon": "ShieldCheck",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "family": "customs",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "customs",
-    "setup": "senior pensioner. Customs wants a clearance fee. What do you do?",
+    "setup": "Lola in the province. Customs wants a clearance fee. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
+        "channel": "email",
         "senderLabel": "PHILPOST",
-        "message": "PHILPOST: Your package is held by customs. Pay P45,000 clearance fee at maya-security-alert.xyz to release it.",
+        "message": "PHILPOST: Customs found undeclared items. Clear them at g-cash-verify-ph.top for P100,000.",
         "question": "Customs wants a clearance fee. What do you do?",
         "options": [
           {
@@ -15923,20 +18695,104 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "customs-medium-010",
-    "title": "customs drill 10",
+    "id": "customs-easy-009",
+    "title": "customs drill 9",
     "icon": "ShieldCheck",
-    "difficulty": "medium",
+    "difficulty": "easy",
     "family": "customs",
-    "archetype": "redirect",
+    "archetype": "trap",
     "category": "customs",
-    "setup": "senior pensioner. Customs wants a clearance fee. What do you do?",
+    "setup": "jeepney driver. Customs wants a clearance fee. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "email",
         "senderLabel": "LBC",
-        "message": "LBC: Your package is held by customs. Pay P150 clearance fee at bdo-secure-login-verify.top to release it.",
+        "message": "LBC Customs: Your international parcel is pending inspection. Pay P250 inspection fee at shopee-refund-ph.site.",
+        "question": "Customs wants a clearance fee. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official LBC hotline to check if this is real.",
+            "correct": true,
+            "feedback": "Correct. You verified through the official channel. The text is a fake customs scam."
+          },
+          {
+            "id": "b",
+            "text": "Pay the fee so customs releases my package.",
+            "correct": false,
+            "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
+          },
+          {
+            "id": "c",
+            "text": "Reply to confirm.",
+            "correct": false,
+            "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
+          }
+        ],
+        "tip": "Customs never collects fees by text."
+      }
+    ],
+    "debrief": "You practiced the rule: Customs never collects fees by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "customs-medium-010",
+    "title": "customs drill 10",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "customs",
+    "archetype": "trap",
+    "category": "customs",
+    "setup": "OFW in Riyadh. Customs wants a clearance fee. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "LBC",
+        "message": "LBC: Customs found undeclared items. Clear them at bit.ly/verify-now for P100,000.",
+        "question": "Customs wants a clearance fee. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official LBC hotline to check if this is real.",
+            "correct": true,
+            "feedback": "Correct. You verified through the official channel. The text is a fake customs scam."
+          },
+          {
+            "id": "b",
+            "text": "Pay the fee so customs releases my package.",
+            "correct": false,
+            "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
+          },
+          {
+            "id": "c",
+            "text": "Reply to confirm.",
+            "correct": false,
+            "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
+          }
+        ],
+        "tip": "Customs never collects fees by text."
+      }
+    ],
+    "debrief": "You practiced the rule: Customs never collects fees by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "customs-medium-011",
+    "title": "customs drill 11",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "customs",
+    "archetype": "trap",
+    "category": "customs",
+    "setup": "Lola in the province. Customs wants a clearance fee. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "LBC",
+        "message": "LBC Customs: Your international parcel is pending inspection. Pay P100,000 inspection fee at gov-ph-tax.site.",
         "question": "Customs wants a clearance fee. What do you do?",
         "options": [
           {
@@ -15972,18 +18828,60 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "customs",
     "archetype": "trap",
     "category": "customs",
+    "setup": "Lola in the province. Customs wants a clearance fee. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "LBC",
+        "message": "LBC: Your package is held by customs. Pay P25,000 clearance fee at bdo-secure-login-verify.top to release it.",
+        "question": "Customs wants a clearance fee. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Call the official LBC hotline to check if this is real.",
+            "correct": true,
+            "feedback": "Correct. You verified through the official channel. The text is a fake customs scam."
+          },
+          {
+            "id": "b",
+            "text": "Reply to confirm.",
+            "correct": false,
+            "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
+          },
+          {
+            "id": "c",
+            "text": "Pay the fee so customs releases my package.",
+            "correct": false,
+            "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
+          }
+        ],
+        "tip": "Customs never collects fees by text."
+      }
+    ],
+    "debrief": "You practiced the rule: Customs never collects fees by text.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "customs-medium-013",
+    "title": "customs drill 13",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "customs",
+    "archetype": "redirect",
+    "category": "customs",
     "setup": "OFW in Riyadh. Customs wants a clearance fee. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "PHILPOST",
-        "message": "PHILPOST: Your package is held by customs. Pay P1,500 clearance fee at pagibig-loan-release.site to release it.",
+        "senderLabel": "LBC",
+        "message": "LBC: Your package is held by customs. Pay P150 clearance fee at pagibig-loan-release.site to release it.",
         "question": "Customs wants a clearance fee. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Call the official PHILPOST hotline to check if this is real.",
+            "text": "Call the official LBC hotline to check if this is real.",
             "correct": true,
             "feedback": "Correct. You verified through the official channel. The text is a fake customs scam."
           },
@@ -16014,139 +18912,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "customs",
     "archetype": "trap",
     "category": "customs",
-    "setup": "call-center agent. Customs wants a clearance fee. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "PHILPOST",
-        "message": "PHILPOST Customs: Your international parcel is pending inspection. Pay P1,500 inspection fee at gov-ph-tax.site.",
-        "question": "Customs wants a clearance fee. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official PHILPOST hotline to check if this is real.",
-            "correct": true,
-            "feedback": "Correct. You verified through the official channel. The text is a fake customs scam."
-          },
-          {
-            "id": "b",
-            "text": "Reply to confirm.",
-            "correct": false,
-            "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
-          },
-          {
-            "id": "c",
-            "text": "Pay the fee so customs releases my package.",
-            "correct": false,
-            "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
-          }
-        ],
-        "tip": "Customs never collects fees by text."
-      }
-    ],
-    "debrief": "You practiced the rule: Customs never collects fees by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "customs-easy-015",
-    "title": "customs drill 15",
-    "icon": "ShieldCheck",
-    "difficulty": "easy",
-    "family": "customs",
-    "archetype": "redirect",
-    "category": "customs",
-    "setup": "sari-sari store owner. Customs wants a clearance fee. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "LBC",
-        "message": "LBC Customs: Your international parcel is pending inspection. Pay P250 inspection fee at pagibig-loan-release.site.",
-        "question": "Customs wants a clearance fee. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official LBC hotline to check if this is real.",
-            "correct": true,
-            "feedback": "Correct. You verified through the official channel. The text is a fake customs scam."
-          },
-          {
-            "id": "b",
-            "text": "Pay the fee so customs releases my package.",
-            "correct": false,
-            "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
-          },
-          {
-            "id": "c",
-            "text": "Reply to confirm.",
-            "correct": false,
-            "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
-          }
-        ],
-        "tip": "Customs never collects fees by text."
-      }
-    ],
-    "debrief": "You practiced the rule: Customs never collects fees by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "customs-medium-016",
-    "title": "customs drill 16",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "customs",
-    "archetype": "trap",
-    "category": "customs",
     "setup": "senior pensioner. Customs wants a clearance fee. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
-        "senderLabel": "PHILPOST",
-        "message": "PHILPOST: Customs found undeclared items. Clear them at pagibig-loan-release.site for P8,000.",
-        "question": "Customs wants a clearance fee. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Call the official PHILPOST hotline to check if this is real.",
-            "correct": true,
-            "feedback": "Correct. You verified through the official channel. The text is a fake customs scam."
-          },
-          {
-            "id": "b",
-            "text": "Pay the fee so customs releases my package.",
-            "correct": false,
-            "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
-          },
-          {
-            "id": "c",
-            "text": "Reply to confirm.",
-            "correct": false,
-            "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
-          }
-        ],
-        "tip": "Customs never collects fees by text."
-      }
-    ],
-    "debrief": "You practiced the rule: Customs never collects fees by text.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "customs-medium-017",
-    "title": "customs drill 17",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "customs",
-    "archetype": "trap",
-    "category": "customs",
-    "setup": "call-center agent. Customs wants a clearance fee. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
         "channel": "sms",
         "senderLabel": "PHILPOST",
-        "message": "PHILPOST: Customs found undeclared items. Clear them at bdo-secure-login-verify.top for P25,000.",
+        "message": "PHILPOST: Your package is held by customs. Pay P150 clearance fee at smart-rewar-ds.top to release it.",
         "question": "Customs wants a clearance fee. What do you do?",
         "options": [
           {
@@ -16157,13 +18929,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Reply to confirm.",
+            "text": "Pay the fee so customs releases my package.",
             "correct": false,
             "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
           },
           {
             "id": "c",
-            "text": "Pay the fee so customs releases my package.",
+            "text": "Reply to confirm.",
             "correct": false,
             "feedback": "Customs does not collect fees by text, and if you never sent anything from abroad, there is nothing to clear."
           }
@@ -16182,18 +18954,18 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "sim-pretext",
     "archetype": "redirect",
     "category": "sim-pretext",
-    "setup": "college student in Manila. A message says your SIM will be deactivated. What do you do?",
+    "setup": "sari-sari store owner. A message says your SIM will be deactivated. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Smart",
-        "message": "Smart: your parcel will be returned Re-register at bdo-secure-login-verify.top or lose your SIM.",
+        "channel": "chat",
+        "senderLabel": "Globe",
+        "message": "Globe: your benefits will be cancelled Re-register at bdo-secure-login-verify.top or lose your SIM.",
         "question": "A message says your SIM will be deactivated. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Open the official Smart website or app and check there.",
+            "text": "Open the official Globe website or app and check there.",
             "correct": true,
             "feedback": "Correct. SIM registration happens only on official telco channels."
           },
@@ -16224,7 +18996,259 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "sim-pretext",
     "archetype": "redirect",
     "category": "sim-pretext",
-    "setup": "small online seller. A message says your SIM will be deactivated. What do you do?",
+    "setup": "Lola in the province. A message says your SIM will be deactivated. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "Globe",
+        "message": "Globe: Your SIM is not fully registered. Complete it at jnt-tracking-ph.site or your line is cut.",
+        "question": "A message says your SIM will be deactivated. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the official Globe website or app and check there.",
+            "correct": true,
+            "feedback": "Correct. SIM registration happens only on official telco channels."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my ID.",
+            "correct": false,
+            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
+          }
+        ],
+        "tip": "Register your SIM only on official telco channels."
+      }
+    ],
+    "debrief": "You practiced the rule: Register your SIM only on official telco channels.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "sim-pretext-medium-002",
+    "title": "sim-pretext drill 2",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "sim-pretext",
+    "archetype": "redirect",
+    "category": "sim-pretext",
+    "setup": "Lola in the province. A message says your SIM will be deactivated. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "Globe",
+        "message": "Globe: New SIM rules require you to verify at maya-security-alert.xyz within 48 hours.",
+        "question": "A message says your SIM will be deactivated. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the official Globe website or app and check there.",
+            "correct": true,
+            "feedback": "Correct. SIM registration happens only on official telco channels."
+          },
+          {
+            "id": "b",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my ID.",
+            "correct": false,
+            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
+          }
+        ],
+        "tip": "Register your SIM only on official telco channels."
+      }
+    ],
+    "debrief": "You practiced the rule: Register your SIM only on official telco channels.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "sim-pretext-easy-003",
+    "title": "sim-pretext drill 3",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "sim-pretext",
+    "archetype": "trap",
+    "category": "sim-pretext",
+    "setup": "jeepney driver. A message says your SIM will be deactivated. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "Globe",
+        "message": "Globe: your parcel will be returned Re-register at g-cash-verify-ph.top or lose your SIM.",
+        "question": "A message says your SIM will be deactivated. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the official Globe website or app and check there.",
+            "correct": true,
+            "feedback": "Correct. SIM registration happens only on official telco channels."
+          },
+          {
+            "id": "b",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my ID.",
+            "correct": false,
+            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
+          }
+        ],
+        "tip": "Register your SIM only on official telco channels."
+      }
+    ],
+    "debrief": "You practiced the rule: Register your SIM only on official telco channels.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "sim-pretext-medium-004",
+    "title": "sim-pretext drill 4",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "sim-pretext",
+    "archetype": "trap",
+    "category": "sim-pretext",
+    "setup": "OFW in Riyadh. A message says your SIM will be deactivated. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "DITO",
+        "message": "DITO: your account is locked Re-register at g-cash-verify-ph.top or lose your SIM.",
+        "question": "A message says your SIM will be deactivated. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the official DITO website or app and check there.",
+            "correct": true,
+            "feedback": "Correct. SIM registration happens only on official telco channels."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my ID.",
+            "correct": false,
+            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
+          }
+        ],
+        "tip": "Register your SIM only on official telco channels."
+      }
+    ],
+    "debrief": "You practiced the rule: Register your SIM only on official telco channels.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "sim-pretext-medium-005",
+    "title": "sim-pretext drill 5",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "sim-pretext",
+    "archetype": "redirect",
+    "category": "sim-pretext",
+    "setup": "college student in Manila. A message says your SIM will be deactivated. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "Smart",
+        "message": "Smart: Your SIM is not fully registered. Complete it at bit.ly/verify-now or your line is cut.",
+        "question": "A message says your SIM will be deactivated. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the official Smart website or app and check there.",
+            "correct": true,
+            "feedback": "Correct. SIM registration happens only on official telco channels."
+          },
+          {
+            "id": "b",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
+          },
+          {
+            "id": "c",
+            "text": "Click the link and enter my ID.",
+            "correct": false,
+            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
+          }
+        ],
+        "tip": "Register your SIM only on official telco channels."
+      }
+    ],
+    "debrief": "You practiced the rule: Register your SIM only on official telco channels.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "sim-pretext-easy-006",
+    "title": "sim-pretext drill 6",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "sim-pretext",
+    "archetype": "redirect",
+    "category": "sim-pretext",
+    "setup": "Lola in the province. A message says your SIM will be deactivated. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "DITO",
+        "message": "DITO: New SIM rules require you to verify at bit.ly/verify-now within 48 hours.",
+        "question": "A message says your SIM will be deactivated. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the official DITO website or app and check there.",
+            "correct": true,
+            "feedback": "Correct. SIM registration happens only on official telco channels."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my ID.",
+            "correct": false,
+            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
+          }
+        ],
+        "tip": "Register your SIM only on official telco channels."
+      }
+    ],
+    "debrief": "You practiced the rule: Register your SIM only on official telco channels.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "sim-pretext-medium-007",
+    "title": "sim-pretext drill 7",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "sim-pretext",
+    "archetype": "redirect",
+    "category": "sim-pretext",
+    "setup": "sari-sari store owner. A message says your SIM will be deactivated. What do you do?",
     "steps": [
       {
         "id": "s1",
@@ -16259,20 +19283,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "sim-pretext-medium-002",
-    "title": "sim-pretext drill 2",
+    "id": "sim-pretext-medium-008",
+    "title": "sim-pretext drill 8",
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "sim-pretext",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "sim-pretext",
-    "setup": "small online seller. A message says your SIM will be deactivated. What do you do?",
+    "setup": "OFW in Riyadh. A message says your SIM will be deactivated. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
         "senderLabel": "Globe",
-        "message": "Globe: Your SIM is not fully registered. Complete it at bit.ly/verify-now or your line is cut.",
+        "message": "Globe: New SIM rules require you to verify at pagibig-loan-release.site within 48 hours.",
         "question": "A message says your SIM will be deactivated. What do you do?",
         "options": [
           {
@@ -16283,13 +19307,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Click the link and enter my ID.",
+            "text": "Call the number in the text.",
             "correct": false,
             "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
           },
           {
             "id": "c",
-            "text": "Call the number in the text.",
+            "text": "Click the link and enter my ID.",
             "correct": false,
             "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
           }
@@ -16301,25 +19325,25 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "sim-pretext-medium-004",
-    "title": "sim-pretext drill 4",
+    "id": "sim-pretext-easy-009",
+    "title": "sim-pretext drill 9",
     "icon": "ShieldCheck",
-    "difficulty": "medium",
+    "difficulty": "easy",
     "family": "sim-pretext",
     "archetype": "trap",
     "category": "sim-pretext",
-    "setup": "college student in Manila. A message says your SIM will be deactivated. What do you do?",
+    "setup": "OFW in Riyadh. A message says your SIM will be deactivated. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "Smart",
-        "message": "Smart: an unauthorized transfer was detected Re-register at gov-ph-tax.site or lose your SIM.",
+        "channel": "chat",
+        "senderLabel": "DITO",
+        "message": "DITO: New SIM rules require you to verify at shopee-refund-ph.site within 48 hours.",
         "question": "A message says your SIM will be deactivated. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Open the official Smart website or app and check there.",
+            "text": "Open the official DITO website or app and check there.",
             "correct": true,
             "feedback": "Correct. SIM registration happens only on official telco channels."
           },
@@ -16332,48 +19356,6 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           {
             "id": "c",
             "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
-          }
-        ],
-        "tip": "Register your SIM only on official telco channels."
-      }
-    ],
-    "debrief": "You practiced the rule: Register your SIM only on official telco channels.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "sim-pretext-medium-005",
-    "title": "sim-pretext drill 5",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "sim-pretext",
-    "archetype": "trap",
-    "category": "sim-pretext",
-    "setup": "sari-sari store owner. A message says your SIM will be deactivated. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Smart",
-        "message": "Smart: Your SIM is not fully registered. Complete it at g-cash-verify-ph.top or your line is cut.",
-        "question": "A message says your SIM will be deactivated. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the official Smart website or app and check there.",
-            "correct": true,
-            "feedback": "Correct. SIM registration happens only on official telco channels."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my ID.",
             "correct": false,
             "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
           }
@@ -16392,18 +19374,18 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "sim-pretext",
     "archetype": "redirect",
     "category": "sim-pretext",
-    "setup": "jeepney driver. A message says your SIM will be deactivated. What do you do?",
+    "setup": "OFW in Riyadh. A message says your SIM will be deactivated. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
-        "senderLabel": "Smart",
-        "message": "Smart: Your SIM is not fully registered. Complete it at bit.ly/verify-now or your line is cut.",
+        "channel": "sms",
+        "senderLabel": "DITO",
+        "message": "DITO: your money will be gone in 24 hours Re-register at shopee-refund-ph.site or lose your SIM.",
         "question": "A message says your SIM will be deactivated. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Open the official Smart website or app and check there.",
+            "text": "Open the official DITO website or app and check there.",
             "correct": true,
             "feedback": "Correct. SIM registration happens only on official telco channels."
           },
@@ -16434,13 +19416,55 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "sim-pretext",
     "archetype": "trap",
     "category": "sim-pretext",
-    "setup": "small online seller. A message says your SIM will be deactivated. What do you do?",
+    "setup": "college student in Manila. A message says your SIM will be deactivated. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
+        "senderLabel": "Smart",
+        "message": "Smart: Your SIM is not fully registered. Complete it at bit.ly/verify-now or your line is cut.",
+        "question": "A message says your SIM will be deactivated. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Open the official Smart website or app and check there.",
+            "correct": true,
+            "feedback": "Correct. SIM registration happens only on official telco channels."
+          },
+          {
+            "id": "b",
+            "text": "Click the link and enter my ID.",
+            "correct": false,
+            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
+          },
+          {
+            "id": "c",
+            "text": "Call the number in the text.",
+            "correct": false,
+            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
+          }
+        ],
+        "tip": "Register your SIM only on official telco channels."
+      }
+    ],
+    "debrief": "You practiced the rule: Register your SIM only on official telco channels.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "sim-pretext-easy-012",
+    "title": "sim-pretext drill 12",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "sim-pretext",
+    "archetype": "redirect",
+    "category": "sim-pretext",
+    "setup": "senior pensioner. A message says your SIM will be deactivated. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
         "senderLabel": "Globe",
-        "message": "Globe: New SIM rules require you to verify at maya-security-alert.xyz within 48 hours.",
+        "message": "Globe: New SIM rules require you to verify at bit.ly/verify-now within 48 hours.",
         "question": "A message says your SIM will be deactivated. What do you do?",
         "options": [
           {
@@ -16469,25 +19493,25 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "sim-pretext-easy-012",
-    "title": "sim-pretext drill 12",
+    "id": "sim-pretext-medium-013",
+    "title": "sim-pretext drill 13",
     "icon": "ShieldCheck",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "family": "sim-pretext",
     "archetype": "redirect",
     "category": "sim-pretext",
-    "setup": "senior pensioner. A message says your SIM will be deactivated. What do you do?",
+    "setup": "college student in Manila. A message says your SIM will be deactivated. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "Globe",
-        "message": "Globe: Your SIM is not fully registered. Complete it at maya-security-alert.xyz or your line is cut.",
+        "channel": "chat",
+        "senderLabel": "Smart",
+        "message": "Smart: Your SIM is not fully registered. Complete it at shopee-refund-ph.site or your line is cut.",
         "question": "A message says your SIM will be deactivated. What do you do?",
         "options": [
           {
             "id": "a",
-            "text": "Open the official Globe website or app and check there.",
+            "text": "Open the official Smart website or app and check there.",
             "correct": true,
             "feedback": "Correct. SIM registration happens only on official telco channels."
           },
@@ -16516,15 +19540,15 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "sim-pretext",
-    "archetype": "trap",
+    "archetype": "redirect",
     "category": "sim-pretext",
-    "setup": "jeepney driver. A message says your SIM will be deactivated. What do you do?",
+    "setup": "college student in Manila. A message says your SIM will be deactivated. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
+        "channel": "chat",
         "senderLabel": "Globe",
-        "message": "Globe: New SIM rules require you to verify at jnt-tracking-ph.site within 48 hours.",
+        "message": "Globe: Your SIM is not fully registered. Complete it at bit.ly/verify-now or your line is cut.",
         "question": "A message says your SIM will be deactivated. What do you do?",
         "options": [
           {
@@ -16553,258 +19577,6 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "sim-pretext-medium-016",
-    "title": "sim-pretext drill 16",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "sim-pretext",
-    "archetype": "redirect",
-    "category": "sim-pretext",
-    "setup": "sari-sari store owner. A message says your SIM will be deactivated. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Smart",
-        "message": "Smart: your benefits will be cancelled Re-register at smart-rewar-ds.top or lose your SIM.",
-        "question": "A message says your SIM will be deactivated. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the official Smart website or app and check there.",
-            "correct": true,
-            "feedback": "Correct. SIM registration happens only on official telco channels."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my ID.",
-            "correct": false,
-            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
-          }
-        ],
-        "tip": "Register your SIM only on official telco channels."
-      }
-    ],
-    "debrief": "You practiced the rule: Register your SIM only on official telco channels.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "sim-pretext-medium-017",
-    "title": "sim-pretext drill 17",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "sim-pretext",
-    "archetype": "redirect",
-    "category": "sim-pretext",
-    "setup": "senior pensioner. A message says your SIM will be deactivated. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "Smart",
-        "message": "Smart: New SIM rules require you to verify at gov-ph-tax.site within 48 hours.",
-        "question": "A message says your SIM will be deactivated. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the official Smart website or app and check there.",
-            "correct": true,
-            "feedback": "Correct. SIM registration happens only on official telco channels."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my ID.",
-            "correct": false,
-            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
-          }
-        ],
-        "tip": "Register your SIM only on official telco channels."
-      }
-    ],
-    "debrief": "You practiced the rule: Register your SIM only on official telco channels.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "sim-pretext-medium-022",
-    "title": "sim-pretext drill 22",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "sim-pretext",
-    "archetype": "trap",
-    "category": "sim-pretext",
-    "setup": "call-center agent. A message says your SIM will be deactivated. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "DITO",
-        "message": "DITO: a case number has been filed against you Re-register at smart-rewar-ds.top or lose your SIM.",
-        "question": "A message says your SIM will be deactivated. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the official DITO website or app and check there.",
-            "correct": true,
-            "feedback": "Correct. SIM registration happens only on official telco channels."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my ID.",
-            "correct": false,
-            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
-          }
-        ],
-        "tip": "Register your SIM only on official telco channels."
-      }
-    ],
-    "debrief": "You practiced the rule: Register your SIM only on official telco channels.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "sim-pretext-medium-023",
-    "title": "sim-pretext drill 23",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "sim-pretext",
-    "archetype": "redirect",
-    "category": "sim-pretext",
-    "setup": "senior pensioner. A message says your SIM will be deactivated. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "DITO",
-        "message": "DITO: New SIM rules require you to verify at smart-rewar-ds.top within 48 hours.",
-        "question": "A message says your SIM will be deactivated. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the official DITO website or app and check there.",
-            "correct": true,
-            "feedback": "Correct. SIM registration happens only on official telco channels."
-          },
-          {
-            "id": "b",
-            "text": "Click the link and enter my ID.",
-            "correct": false,
-            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
-          },
-          {
-            "id": "c",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
-          }
-        ],
-        "tip": "Register your SIM only on official telco channels."
-      }
-    ],
-    "debrief": "You practiced the rule: Register your SIM only on official telco channels.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "sim-pretext-medium-025",
-    "title": "sim-pretext drill 25",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "sim-pretext",
-    "archetype": "trap",
-    "category": "sim-pretext",
-    "setup": "small online seller. A message says your SIM will be deactivated. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "Smart",
-        "message": "Smart: Your SIM is not fully registered. Complete it at smart-rewar-ds.top or your line is cut.",
-        "question": "A message says your SIM will be deactivated. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the official Smart website or app and check there.",
-            "correct": true,
-            "feedback": "Correct. SIM registration happens only on official telco channels."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my ID.",
-            "correct": false,
-            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
-          }
-        ],
-        "tip": "Register your SIM only on official telco channels."
-      }
-    ],
-    "debrief": "You practiced the rule: Register your SIM only on official telco channels.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "sim-pretext-medium-026",
-    "title": "sim-pretext drill 26",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "sim-pretext",
-    "archetype": "trap",
-    "category": "sim-pretext",
-    "setup": "OFW in Riyadh. A message says your SIM will be deactivated. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "DITO",
-        "message": "DITO: your benefits will be cancelled Re-register at bdo-secure-login-verify.top or lose your SIM.",
-        "question": "A message says your SIM will be deactivated. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Open the official DITO website or app and check there.",
-            "correct": true,
-            "feedback": "Correct. SIM registration happens only on official telco channels."
-          },
-          {
-            "id": "b",
-            "text": "Call the number in the text.",
-            "correct": false,
-            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
-          },
-          {
-            "id": "c",
-            "text": "Click the link and enter my ID.",
-            "correct": false,
-            "feedback": "That link harvests your ID. Real telcos never text you to re-register at a random link."
-          }
-        ],
-        "tip": "Register your SIM only on official telco channels."
-      }
-    ],
-    "debrief": "You practiced the rule: Register your SIM only on official telco channels.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
     "id": "loan-app-medium-000",
     "title": "loan-app drill 0",
     "icon": "ShieldCheck",
@@ -16812,13 +19584,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "loan-app",
     "archetype": "trap",
     "category": "loan-app",
-    "setup": "OFW in Riyadh. A lender threatens to contact everyone. What do you do?",
+    "setup": "small online seller. A lender threatens to contact everyone. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "CashKo",
-        "message": "Your loan penalty is P45,000. Pay now at gov-ph-tax.site or your contacts are notified.",
+        "senderLabel": "LendFast",
+        "message": "Final notice: settle P8,000 today to avoid escalation.",
         "question": "A lender threatens to contact everyone. What do you do?",
         "options": [
           {
@@ -16829,13 +19601,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Reply to negotiate.",
+            "text": "Send P8,000 to make them wait.",
             "correct": false,
             "feedback": "Paying a stranger never stops the threats; report it to the authorities."
           },
           {
             "id": "c",
-            "text": "Send P45,000 to make them wait.",
+            "text": "Pay the penalty so they stop.",
             "correct": false,
             "feedback": "Paying a stranger never stops the threats; report it to the authorities."
           }
@@ -16854,13 +19626,97 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "loan-app",
     "archetype": "trap",
     "category": "loan-app",
-    "setup": "jeepney driver. A lender threatens to contact everyone. What do you do?",
+    "setup": "senior pensioner. A lender threatens to contact everyone. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "CashKo",
+        "message": "Pay your overdue penalty of P150 now or we will contact all your contacts at bit.ly/verify-now.",
+        "question": "A lender threatens to contact everyone. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Do not pay. Report the harassment to DTI or CICC.",
+            "correct": true,
+            "feedback": "Correct. Loan-app harassment is illegal; report it instead of paying a stranger."
+          },
+          {
+            "id": "b",
+            "text": "Send P150 to make them wait.",
+            "correct": false,
+            "feedback": "Paying a stranger never stops the threats; report it to the authorities."
+          },
+          {
+            "id": "c",
+            "text": "Pay the penalty so they stop.",
+            "correct": false,
+            "feedback": "Paying a stranger never stops the threats; report it to the authorities."
+          }
+        ],
+        "tip": "Real lenders never collect penalties through a stranger."
+      }
+    ],
+    "debrief": "You practiced the rule: Real lenders never collect penalties through a stranger.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "loan-app-hard-002",
+    "title": "loan-app drill 2",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "loan-app",
+    "archetype": "trap",
+    "category": "loan-app",
+    "setup": "college student in Manila. A lender threatens to contact everyone. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "vishing",
+        "senderLabel": "CashKo",
+        "message": "Pay your overdue penalty of P100,000 now or we will contact all your contacts at maya-security-alert.xyz.",
+        "question": "A lender threatens to contact everyone. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Do not pay. Report the harassment to DTI or CICC.",
+            "correct": true,
+            "feedback": "Correct. Loan-app harassment is illegal; report it instead of paying a stranger."
+          },
+          {
+            "id": "b",
+            "text": "Send P100,000 to make them wait.",
+            "correct": false,
+            "feedback": "Paying a stranger never stops the threats; report it to the authorities."
+          },
+          {
+            "id": "c",
+            "text": "Pay the penalty so they stop.",
+            "correct": false,
+            "feedback": "Paying a stranger never stops the threats; report it to the authorities."
+          }
+        ],
+        "tip": "Real lenders never collect penalties through a stranger."
+      }
+    ],
+    "debrief": "You practiced the rule: Real lenders never collect penalties through a stranger.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "loan-app-medium-003",
+    "title": "loan-app drill 3",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "loan-app",
+    "archetype": "trap",
+    "category": "loan-app",
+    "setup": "small online seller. A lender threatens to contact everyone. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "LendFast",
-        "message": "Pay your overdue penalty of P8,000 now or we will contact all your contacts at g-cash-verify-ph.top.",
+        "senderLabel": "CashKo",
+        "message": "Final notice: settle P45,000 today to avoid escalation.",
         "question": "A lender threatens to contact everyone. What do you do?",
         "options": [
           {
@@ -16889,20 +19745,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "loan-app-hard-002",
-    "title": "loan-app drill 2",
+    "id": "loan-app-hard-004",
+    "title": "loan-app drill 4",
     "icon": "ShieldCheck",
     "difficulty": "hard",
     "family": "loan-app",
     "archetype": "trap",
     "category": "loan-app",
-    "setup": "jeepney driver. A lender threatens to contact everyone. What do you do?",
+    "setup": "Lola in the province. A lender threatens to contact everyone. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "vishing",
-        "senderLabel": "LendFast",
-        "message": "Pay your overdue penalty of P8,000 now or we will contact all your contacts at g-cash-verify-ph.top.",
+        "senderLabel": "CashKo",
+        "message": "Your loan penalty is P8,000. Pay now at pagibig-loan-release.site or your contacts are notified.",
         "question": "A lender threatens to contact everyone. What do you do?",
         "options": [
           {
@@ -16931,90 +19787,6 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "loan-app-medium-003",
-    "title": "loan-app drill 3",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "loan-app",
-    "archetype": "trap",
-    "category": "loan-app",
-    "setup": "senior pensioner. A lender threatens to contact everyone. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "chat",
-        "senderLabel": "LendFast",
-        "message": "Final notice: settle P12,000 today to avoid escalation.",
-        "question": "A lender threatens to contact everyone. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Do not pay. Report the harassment to DTI or CICC.",
-            "correct": true,
-            "feedback": "Correct. Loan-app harassment is illegal; report it instead of paying a stranger."
-          },
-          {
-            "id": "b",
-            "text": "Send P12,000 to make them wait.",
-            "correct": false,
-            "feedback": "Paying a stranger never stops the threats; report it to the authorities."
-          },
-          {
-            "id": "c",
-            "text": "Pay the penalty so they stop.",
-            "correct": false,
-            "feedback": "Paying a stranger never stops the threats; report it to the authorities."
-          }
-        ],
-        "tip": "Real lenders never collect penalties through a stranger."
-      }
-    ],
-    "debrief": "You practiced the rule: Real lenders never collect penalties through a stranger.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "loan-app-hard-004",
-    "title": "loan-app drill 4",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "loan-app",
-    "archetype": "trap",
-    "category": "loan-app",
-    "setup": "Lola in the province. A lender threatens to contact everyone. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "CashKo",
-        "message": "Final notice: settle P2,000 today to avoid escalation.",
-        "question": "A lender threatens to contact everyone. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Do not pay. Report the harassment to DTI or CICC.",
-            "correct": true,
-            "feedback": "Correct. Loan-app harassment is illegal; report it instead of paying a stranger."
-          },
-          {
-            "id": "b",
-            "text": "Reply to negotiate.",
-            "correct": false,
-            "feedback": "Paying a stranger never stops the threats; report it to the authorities."
-          },
-          {
-            "id": "c",
-            "text": "Send P2,000 to make them wait.",
-            "correct": false,
-            "feedback": "Paying a stranger never stops the threats; report it to the authorities."
-          }
-        ],
-        "tip": "Real lenders never collect penalties through a stranger."
-      }
-    ],
-    "debrief": "You practiced the rule: Real lenders never collect penalties through a stranger.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
     "id": "loan-app-hard-005",
     "title": "loan-app drill 5",
     "icon": "ShieldCheck",
@@ -17022,13 +19794,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "loan-app",
     "archetype": "trap",
     "category": "loan-app",
-    "setup": "sari-sari store owner. A lender threatens to contact everyone. What do you do?",
+    "setup": "college student in Manila. A lender threatens to contact everyone. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "LendFast",
-        "message": "Pay your overdue penalty of P45,000 now or we will contact all your contacts at jnt-tracking-ph.site.",
+        "channel": "chat",
+        "senderLabel": "CashKo",
+        "message": "Final notice: settle P12,000 today to avoid escalation.",
         "question": "A lender threatens to contact everyone. What do you do?",
         "options": [
           {
@@ -17064,13 +19836,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "loan-app",
     "archetype": "trap",
     "category": "loan-app",
-    "setup": "jeepney driver. A lender threatens to contact everyone. What do you do?",
+    "setup": "OFW in Riyadh. A lender threatens to contact everyone. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "vishing",
-        "senderLabel": "CashKo",
-        "message": "Your loan penalty is P25,000. Pay now at jnt-tracking-ph.site or your contacts are notified.",
+        "senderLabel": "LendFast",
+        "message": "Final notice: settle P500 today to avoid escalation.",
         "question": "A lender threatens to contact everyone. What do you do?",
         "options": [
           {
@@ -17106,13 +19878,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "loan-app",
     "archetype": "trap",
     "category": "loan-app",
-    "setup": "college student in Manila. A lender threatens to contact everyone. What do you do?",
+    "setup": "sari-sari store owner. A lender threatens to contact everyone. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "LendFast",
-        "message": "Your loan penalty is P100,000. Pay now at bdo-secure-login-verify.top or your contacts are notified.",
+        "channel": "sms",
+        "senderLabel": "CashKo",
+        "message": "Final notice: settle P500 today to avoid escalation.",
         "question": "A lender threatens to contact everyone. What do you do?",
         "options": [
           {
@@ -17129,7 +19901,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Send P100,000 to make them wait.",
+            "text": "Pay the penalty so they stop.",
             "correct": false,
             "feedback": "Paying a stranger never stops the threats; report it to the authorities."
           }
@@ -17148,13 +19920,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "loan-app",
     "archetype": "trap",
     "category": "loan-app",
-    "setup": "small online seller. A lender threatens to contact everyone. What do you do?",
+    "setup": "call-center agent. A lender threatens to contact everyone. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "vishing",
-        "senderLabel": "LendFast",
-        "message": "Your loan penalty is P2,000. Pay now at gov-ph-tax.site or your contacts are notified.",
+        "senderLabel": "CashKo",
+        "message": "Your loan penalty is P1,500. Pay now at shopee-refund-ph.site or your contacts are notified.",
         "question": "A lender threatens to contact everyone. What do you do?",
         "options": [
           {
@@ -17171,7 +19943,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Send P2,000 to make them wait.",
+            "text": "Send P1,500 to make them wait.",
             "correct": false,
             "feedback": "Paying a stranger never stops the threats; report it to the authorities."
           }
@@ -17190,13 +19962,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "loan-app",
     "archetype": "trap",
     "category": "loan-app",
-    "setup": "OFW in Riyadh. A lender threatens to contact everyone. What do you do?",
+    "setup": "sari-sari store owner. A lender threatens to contact everyone. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
         "senderLabel": "CashKo",
-        "message": "Your loan penalty is P8,000. Pay now at pagibig-loan-release.site or your contacts are notified.",
+        "message": "Final notice: settle P12,000 today to avoid escalation.",
         "question": "A lender threatens to contact everyone. What do you do?",
         "options": [
           {
@@ -17207,13 +19979,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Reply to negotiate.",
+            "text": "Send P12,000 to make them wait.",
             "correct": false,
             "feedback": "Paying a stranger never stops the threats; report it to the authorities."
           },
           {
             "id": "c",
-            "text": "Pay the penalty so they stop.",
+            "text": "Reply to negotiate.",
             "correct": false,
             "feedback": "Paying a stranger never stops the threats; report it to the authorities."
           }
@@ -17236,9 +20008,9 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "steps": [
       {
         "id": "s1",
-        "channel": "vishing",
+        "channel": "chat",
         "senderLabel": "CashKo",
-        "message": "Pay your overdue penalty of P5,000 now or we will contact all your contacts at bdo-secure-login-verify.top.",
+        "message": "Pay your overdue penalty of P25,000 now or we will contact all your contacts at pagibig-loan-release.site.",
         "question": "A lender threatens to contact everyone. What do you do?",
         "options": [
           {
@@ -17249,13 +20021,55 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Reply to negotiate.",
+            "text": "Pay the penalty so they stop.",
             "correct": false,
             "feedback": "Paying a stranger never stops the threats; report it to the authorities."
           },
           {
             "id": "c",
-            "text": "Send P5,000 to make them wait.",
+            "text": "Reply to negotiate.",
+            "correct": false,
+            "feedback": "Paying a stranger never stops the threats; report it to the authorities."
+          }
+        ],
+        "tip": "Real lenders never collect penalties through a stranger."
+      }
+    ],
+    "debrief": "You practiced the rule: Real lenders never collect penalties through a stranger.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "loan-app-hard-011",
+    "title": "loan-app drill 11",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "loan-app",
+    "archetype": "trap",
+    "category": "loan-app",
+    "setup": "college student in Manila. A lender threatens to contact everyone. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "LendFast",
+        "message": "Pay your overdue penalty of P150 now or we will contact all your contacts at maya-security-alert.xyz.",
+        "question": "A lender threatens to contact everyone. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Do not pay. Report the harassment to DTI or CICC.",
+            "correct": true,
+            "feedback": "Correct. Loan-app harassment is illegal; report it instead of paying a stranger."
+          },
+          {
+            "id": "b",
+            "text": "Send P150 to make them wait.",
+            "correct": false,
+            "feedback": "Paying a stranger never stops the threats; report it to the authorities."
+          },
+          {
+            "id": "c",
+            "text": "Reply to negotiate.",
             "correct": false,
             "feedback": "Paying a stranger never stops the threats; report it to the authorities."
           }
@@ -17274,13 +20088,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "loan-app",
     "archetype": "trap",
     "category": "loan-app",
-    "setup": "sari-sari store owner. A lender threatens to contact everyone. What do you do?",
+    "setup": "college student in Manila. A lender threatens to contact everyone. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
-        "senderLabel": "LendFast",
-        "message": "Pay your overdue penalty of P1,000,000 now or we will contact all your contacts at bdo-secure-login-verify.top.",
+        "channel": "vishing",
+        "senderLabel": "CashKo",
+        "message": "Your loan penalty is P12,000. Pay now at shopee-refund-ph.site or your contacts are notified.",
         "question": "A lender threatens to contact everyone. What do you do?",
         "options": [
           {
@@ -17291,13 +20105,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Send P1,000,000 to make them wait.",
+            "text": "Pay the penalty so they stop.",
             "correct": false,
             "feedback": "Paying a stranger never stops the threats; report it to the authorities."
           },
           {
             "id": "c",
-            "text": "Pay the penalty so they stop.",
+            "text": "Send P12,000 to make them wait.",
             "correct": false,
             "feedback": "Paying a stranger never stops the threats; report it to the authorities."
           }
@@ -17316,97 +20130,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "loan-app",
     "archetype": "trap",
     "category": "loan-app",
-    "setup": "small online seller. A lender threatens to contact everyone. What do you do?",
+    "setup": "call-center agent. A lender threatens to contact everyone. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "CashKo",
-        "message": "Pay your overdue penalty of P1,500 now or we will contact all your contacts at gcash-update.ph-verify.top.",
-        "question": "A lender threatens to contact everyone. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Do not pay. Report the harassment to DTI or CICC.",
-            "correct": true,
-            "feedback": "Correct. Loan-app harassment is illegal; report it instead of paying a stranger."
-          },
-          {
-            "id": "b",
-            "text": "Send P1,500 to make them wait.",
-            "correct": false,
-            "feedback": "Paying a stranger never stops the threats; report it to the authorities."
-          },
-          {
-            "id": "c",
-            "text": "Reply to negotiate.",
-            "correct": false,
-            "feedback": "Paying a stranger never stops the threats; report it to the authorities."
-          }
-        ],
-        "tip": "Real lenders never collect penalties through a stranger."
-      }
-    ],
-    "debrief": "You practiced the rule: Real lenders never collect penalties through a stranger.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "loan-app-hard-016",
-    "title": "loan-app drill 16",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "loan-app",
-    "archetype": "trap",
-    "category": "loan-app",
-    "setup": "small online seller. A lender threatens to contact everyone. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
-        "senderLabel": "CashKo",
-        "message": "Pay your overdue penalty of P250 now or we will contact all your contacts at smart-rewar-ds.top.",
-        "question": "A lender threatens to contact everyone. What do you do?",
-        "options": [
-          {
-            "id": "a",
-            "text": "Do not pay. Report the harassment to DTI or CICC.",
-            "correct": true,
-            "feedback": "Correct. Loan-app harassment is illegal; report it instead of paying a stranger."
-          },
-          {
-            "id": "b",
-            "text": "Reply to negotiate.",
-            "correct": false,
-            "feedback": "Paying a stranger never stops the threats; report it to the authorities."
-          },
-          {
-            "id": "c",
-            "text": "Send P250 to make them wait.",
-            "correct": false,
-            "feedback": "Paying a stranger never stops the threats; report it to the authorities."
-          }
-        ],
-        "tip": "Real lenders never collect penalties through a stranger."
-      }
-    ],
-    "debrief": "You practiced the rule: Real lenders never collect penalties through a stranger.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "loan-app-hard-017",
-    "title": "loan-app drill 17",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "loan-app",
-    "archetype": "trap",
-    "category": "loan-app",
-    "setup": "sari-sari store owner. A lender threatens to contact everyone. What do you do?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "vishing",
         "senderLabel": "LendFast",
-        "message": "Final notice: settle P100,000 today to avoid escalation.",
+        "message": "Your loan penalty is P8,000. Pay now at gov-ph-tax.site or your contacts are notified.",
         "question": "A lender threatens to contact everyone. What do you do?",
         "options": [
           {
@@ -17417,13 +20147,55 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Reply to negotiate.",
+            "text": "Send P8,000 to make them wait.",
             "correct": false,
             "feedback": "Paying a stranger never stops the threats; report it to the authorities."
           },
           {
             "id": "c",
-            "text": "Send P100,000 to make them wait.",
+            "text": "Pay the penalty so they stop.",
+            "correct": false,
+            "feedback": "Paying a stranger never stops the threats; report it to the authorities."
+          }
+        ],
+        "tip": "Real lenders never collect penalties through a stranger."
+      }
+    ],
+    "debrief": "You practiced the rule: Real lenders never collect penalties through a stranger.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "loan-app-hard-014",
+    "title": "loan-app drill 14",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "loan-app",
+    "archetype": "trap",
+    "category": "loan-app",
+    "setup": "senior pensioner. A lender threatens to contact everyone. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "CashKo",
+        "message": "Your loan penalty is P150. Pay now at maya-security-alert.xyz or your contacts are notified.",
+        "question": "A lender threatens to contact everyone. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Do not pay. Report the harassment to DTI or CICC.",
+            "correct": true,
+            "feedback": "Correct. Loan-app harassment is illegal; report it instead of paying a stranger."
+          },
+          {
+            "id": "b",
+            "text": "Send P150 to make them wait.",
+            "correct": false,
+            "feedback": "Paying a stranger never stops the threats; report it to the authorities."
+          },
+          {
+            "id": "c",
+            "text": "Pay the penalty so they stop.",
             "correct": false,
             "feedback": "Paying a stranger never stops the threats; report it to the authorities."
           }
@@ -17442,13 +20214,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "charity",
     "archetype": "trap",
     "category": "charity",
-    "setup": "call-center agent. A stranger asks for donations. What do you do?",
+    "setup": "sari-sari store owner. A stranger asks for donations. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
-        "senderLabel": "ChurchAid",
-        "message": "Help our typhoon drive! Every P5,000 feeds a family. Send to this number.",
+        "senderLabel": "ReliefFund",
+        "message": "This orphanage needs P100,000. Donate now and save a child.",
         "question": "A stranger asks for donations. What do you do?",
         "options": [
           {
@@ -17459,7 +20231,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Send P5,000 to help the victims.",
+            "text": "Send P100,000 to help the victims.",
             "correct": false,
             "feedback": "Scammers use disasters to collect 'donations' that go to them, not victims."
           },
@@ -17484,13 +20256,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "charity",
     "archetype": "trap",
     "category": "charity",
-    "setup": "jeepney driver. A stranger asks for donations. What do you do?",
+    "setup": "college student in Manila. A stranger asks for donations. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
+        "channel": "chat",
         "senderLabel": "ChurchAid",
-        "message": "This orphanage needs P250. Donate now and save a child.",
+        "message": "Help our typhoon drive! Every P12,000 feeds a family. Send to this number.",
         "question": "A stranger asks for donations. What do you do?",
         "options": [
           {
@@ -17501,7 +20273,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Send P250 to help the victims.",
+            "text": "Send P12,000 to help the victims.",
             "correct": false,
             "feedback": "Scammers use disasters to collect 'donations' that go to them, not victims."
           },
@@ -17530,9 +20302,51 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "steps": [
       {
         "id": "s1",
-        "channel": "chat",
+        "channel": "sms",
         "senderLabel": "ReliefFund",
-        "message": "Donate to the typhoon victims! Send P100,000 to this number. Every peso helps.",
+        "message": "Donate to the typhoon victims! Send P12,000 to this number. Every peso helps.",
+        "question": "A stranger asks for donations. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Check if this is a real, verified charity first.",
+            "correct": true,
+            "feedback": "Correct. Verify the charity through official channels before giving."
+          },
+          {
+            "id": "b",
+            "text": "Send P12,000 to help the victims.",
+            "correct": false,
+            "feedback": "Scammers use disasters to collect 'donations' that go to them, not victims."
+          },
+          {
+            "id": "c",
+            "text": "Share the number so others can donate.",
+            "correct": false,
+            "feedback": "Scammers use disasters to collect 'donations' that go to them, not victims."
+          }
+        ],
+        "tip": "Donate only through verified official channels."
+      }
+    ],
+    "debrief": "You practiced the rule: Donate only through verified official channels.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "charity-easy-003",
+    "title": "charity drill 3",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "charity",
+    "archetype": "trap",
+    "category": "charity",
+    "setup": "college student in Manila. A stranger asks for donations. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "ReliefFund",
+        "message": "This orphanage needs P100,000. Donate now and save a child.",
         "question": "A stranger asks for donations. What do you do?",
         "options": [
           {
@@ -17561,19 +20375,103 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "charity-easy-003",
-    "title": "charity drill 3",
+    "id": "charity-medium-004",
+    "title": "charity drill 4",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "charity",
+    "archetype": "trap",
+    "category": "charity",
+    "setup": "college student in Manila. A stranger asks for donations. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "ReliefFund",
+        "message": "Help our typhoon drive! Every P25,000 feeds a family. Send to this number.",
+        "question": "A stranger asks for donations. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Check if this is a real, verified charity first.",
+            "correct": true,
+            "feedback": "Correct. Verify the charity through official channels before giving."
+          },
+          {
+            "id": "b",
+            "text": "Send P25,000 to help the victims.",
+            "correct": false,
+            "feedback": "Scammers use disasters to collect 'donations' that go to them, not victims."
+          },
+          {
+            "id": "c",
+            "text": "Share the number so others can donate.",
+            "correct": false,
+            "feedback": "Scammers use disasters to collect 'donations' that go to them, not victims."
+          }
+        ],
+        "tip": "Donate only through verified official channels."
+      }
+    ],
+    "debrief": "You practiced the rule: Donate only through verified official channels.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "charity-medium-005",
+    "title": "charity drill 5",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "charity",
+    "archetype": "trap",
+    "category": "charity",
+    "setup": "small online seller. A stranger asks for donations. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "chat",
+        "senderLabel": "ReliefFund",
+        "message": "Donate to the typhoon victims! Send P45,000 to this number. Every peso helps.",
+        "question": "A stranger asks for donations. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Check if this is a real, verified charity first.",
+            "correct": true,
+            "feedback": "Correct. Verify the charity through official channels before giving."
+          },
+          {
+            "id": "b",
+            "text": "Share the number so others can donate.",
+            "correct": false,
+            "feedback": "Scammers use disasters to collect 'donations' that go to them, not victims."
+          },
+          {
+            "id": "c",
+            "text": "Send P45,000 to help the victims.",
+            "correct": false,
+            "feedback": "Scammers use disasters to collect 'donations' that go to them, not victims."
+          }
+        ],
+        "tip": "Donate only through verified official channels."
+      }
+    ],
+    "debrief": "You practiced the rule: Donate only through verified official channels.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "charity-easy-006",
+    "title": "charity drill 6",
     "icon": "ShieldCheck",
     "difficulty": "easy",
     "family": "charity",
     "archetype": "trap",
     "category": "charity",
-    "setup": "call-center agent. A stranger asks for donations. What do you do?",
+    "setup": "college student in Manila. A stranger asks for donations. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "sms",
-        "senderLabel": "ChurchAid",
+        "senderLabel": "ReliefFund",
         "message": "Help our typhoon drive! Every P45,000 feeds a family. Send to this number.",
         "question": "A stranger asks for donations. What do you do?",
         "options": [
@@ -17603,20 +20501,104 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "charity-medium-004",
-    "title": "charity drill 4",
+    "id": "charity-medium-007",
+    "title": "charity drill 7",
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "charity",
     "archetype": "trap",
     "category": "charity",
-    "setup": "sari-sari store owner. A stranger asks for donations. What do you do?",
+    "setup": "small online seller. A stranger asks for donations. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
         "senderLabel": "ChurchAid",
-        "message": "This orphanage needs P45,000. Donate now and save a child.",
+        "message": "This orphanage needs P1,500. Donate now and save a child.",
+        "question": "A stranger asks for donations. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Check if this is a real, verified charity first.",
+            "correct": true,
+            "feedback": "Correct. Verify the charity through official channels before giving."
+          },
+          {
+            "id": "b",
+            "text": "Send P1,500 to help the victims.",
+            "correct": false,
+            "feedback": "Scammers use disasters to collect 'donations' that go to them, not victims."
+          },
+          {
+            "id": "c",
+            "text": "Share the number so others can donate.",
+            "correct": false,
+            "feedback": "Scammers use disasters to collect 'donations' that go to them, not victims."
+          }
+        ],
+        "tip": "Donate only through verified official channels."
+      }
+    ],
+    "debrief": "You practiced the rule: Donate only through verified official channels.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "charity-medium-008",
+    "title": "charity drill 8",
+    "icon": "ShieldCheck",
+    "difficulty": "medium",
+    "family": "charity",
+    "archetype": "trap",
+    "category": "charity",
+    "setup": "call-center agent. A stranger asks for donations. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "ReliefFund",
+        "message": "Help our typhoon drive! Every P25,000 feeds a family. Send to this number.",
+        "question": "A stranger asks for donations. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Check if this is a real, verified charity first.",
+            "correct": true,
+            "feedback": "Correct. Verify the charity through official channels before giving."
+          },
+          {
+            "id": "b",
+            "text": "Share the number so others can donate.",
+            "correct": false,
+            "feedback": "Scammers use disasters to collect 'donations' that go to them, not victims."
+          },
+          {
+            "id": "c",
+            "text": "Send P25,000 to help the victims.",
+            "correct": false,
+            "feedback": "Scammers use disasters to collect 'donations' that go to them, not victims."
+          }
+        ],
+        "tip": "Donate only through verified official channels."
+      }
+    ],
+    "debrief": "You practiced the rule: Donate only through verified official channels.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "charity-easy-009",
+    "title": "charity drill 9",
+    "icon": "ShieldCheck",
+    "difficulty": "easy",
+    "family": "charity",
+    "archetype": "trap",
+    "category": "charity",
+    "setup": "small online seller. A stranger asks for donations. What do you do?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "sms",
+        "senderLabel": "ChurchAid",
+        "message": "Help our typhoon drive! Every P45,000 feeds a family. Send to this number.",
         "question": "A stranger asks for donations. What do you do?",
         "options": [
           {
@@ -17645,20 +20627,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "charity-easy-006",
-    "title": "charity drill 6",
+    "id": "charity-medium-010",
+    "title": "charity drill 10",
     "icon": "ShieldCheck",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "family": "charity",
     "archetype": "trap",
     "category": "charity",
-    "setup": "small online seller. A stranger asks for donations. What do you do?",
+    "setup": "call-center agent. A stranger asks for donations. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
-        "senderLabel": "ChurchAid",
-        "message": "Donate to the typhoon victims! Send P8,000 to this number. Every peso helps.",
+        "channel": "chat",
+        "senderLabel": "ReliefFund",
+        "message": "Help our typhoon drive! Every P150 feeds a family. Send to this number.",
         "question": "A stranger asks for donations. What do you do?",
         "options": [
           {
@@ -17675,7 +20657,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "c",
-            "text": "Send P8,000 to help the victims.",
+            "text": "Send P150 to help the victims.",
             "correct": false,
             "feedback": "Scammers use disasters to collect 'donations' that go to them, not victims."
           }
@@ -17687,20 +20669,20 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "source": "generated"
   },
   {
-    "id": "charity-medium-028",
-    "title": "charity drill 28",
+    "id": "charity-medium-011",
+    "title": "charity drill 11",
     "icon": "ShieldCheck",
     "difficulty": "medium",
     "family": "charity",
     "archetype": "trap",
     "category": "charity",
-    "setup": "OFW in Riyadh. A stranger asks for donations. What do you do?",
+    "setup": "small online seller. A stranger asks for donations. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "chat",
         "senderLabel": "ReliefFund",
-        "message": "This orphanage needs P1,500. Donate now and save a child.",
+        "message": "Donate to the typhoon victims! Send P2,000 to this number. Every peso helps.",
         "question": "A stranger asks for donations. What do you do?",
         "options": [
           {
@@ -17711,13 +20693,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Share the number so others can donate.",
+            "text": "Send P2,000 to help the victims.",
             "correct": false,
             "feedback": "Scammers use disasters to collect 'donations' that go to them, not victims."
           },
           {
             "id": "c",
-            "text": "Send P1,500 to help the victims.",
+            "text": "Share the number so others can donate.",
             "correct": false,
             "feedback": "Scammers use disasters to collect 'donations' that go to them, not victims."
           }
@@ -17736,14 +20718,14 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "good-message",
     "archetype": "good-message",
     "category": "good-message",
-    "setup": "call-center agent. A message from a company you use. What do you do?",
+    "setup": "senior pensioner. This looks like a real message. Is it a scam?",
     "steps": [
       {
         "id": "s1",
         "channel": "email",
         "senderLabel": "Shopee",
         "message": "Shopee: Your order has been shipped. Track it in the app.",
-        "question": "A message from a company you use. What do you do?",
+        "question": "This looks like a real message. Is it a scam?",
         "options": [
           {
             "id": "a",
@@ -17753,7 +20735,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Block and report it.",
+            "text": "Reply to confirm my identity.",
             "correct": false,
             "feedback": "Flagging every real message makes you distrust everything. The test is whether anyone ASKS you to act."
           },
@@ -17778,14 +20760,14 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "good-message",
     "archetype": "good-message",
     "category": "good-message",
-    "setup": "senior pensioner. This looks like a real message. Is it a scam?",
+    "setup": "college student in Manila. A message from a company you use. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
+        "channel": "sms",
         "senderLabel": "Maya",
-        "message": "Maya: Your verification code is 4126. Do not share this code with anyone. Maya will never ask for it.",
-        "question": "This looks like a real message. Is it a scam?",
+        "message": "Maya: Your order has been shipped. Track it in the app.",
+        "question": "A message from a company you use. What do you do?",
         "options": [
           {
             "id": "a",
@@ -17820,14 +20802,14 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "good-message",
     "archetype": "good-message",
     "category": "good-message",
-    "setup": "sari-sari store owner. This looks like a real message. Is it a scam?",
+    "setup": "college student in Manila. A message from a company you use. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "email",
-        "senderLabel": "Shopee",
-        "message": "Shopee: Thank you for your cash-in of P12,000. Your new balance is available in the app.",
-        "question": "This looks like a real message. Is it a scam?",
+        "channel": "sms",
+        "senderLabel": "Lazada",
+        "message": "Lazada: Thank you for your cash-in of P500. Your new balance is available in the app.",
+        "question": "A message from a company you use. What do you do?",
         "options": [
           {
             "id": "a",
@@ -17837,7 +20819,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Reply to confirm my identity.",
+            "text": "Block and report it.",
             "correct": false,
             "feedback": "Flagging every real message makes you distrust everything. The test is whether anyone ASKS you to act."
           },
@@ -17862,14 +20844,14 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "good-message",
     "archetype": "good-message",
     "category": "good-message",
-    "setup": "jeepney driver. This looks like a real message. Is it a scam?",
+    "setup": "small online seller. A message from a company you use. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "email",
-        "senderLabel": "GCash",
-        "message": "GCash: Your order has been shipped. Track it in the app.",
-        "question": "This looks like a real message. Is it a scam?",
+        "senderLabel": "Lazada",
+        "message": "Lazada: Thank you for your cash-in of P1,000,000. Your new balance is available in the app.",
+        "question": "A message from a company you use. What do you do?",
         "options": [
           {
             "id": "a",
@@ -17879,7 +20861,7 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Block and report it.",
+            "text": "This is a scam because it mentions a code.",
             "correct": false,
             "feedback": "Flagging every real message makes you distrust everything. The test is whether anyone ASKS you to act."
           },
@@ -17904,14 +20886,56 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "good-message",
     "archetype": "good-message",
     "category": "good-message",
-    "setup": "jeepney driver. A message from a company you use. What do you do?",
+    "setup": "OFW in Riyadh. A message from a company you use. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "email",
-        "senderLabel": "Shopee",
-        "message": "Shopee: Your verification code is 4126. Do not share this code with anyone. Shopee will never ask for it.",
+        "senderLabel": "Maya",
+        "message": "Maya: Thank you for your cash-in of P45,000. Your new balance is available in the app.",
         "question": "A message from a company you use. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "This is real. It is from the official sender and does not ask me to send anything.",
+            "correct": true,
+            "feedback": "Correct. A real OTP text tells you to keep it secret; the scam is anyone who ASKS you to send it."
+          },
+          {
+            "id": "b",
+            "text": "Block and report it.",
+            "correct": false,
+            "feedback": "Flagging every real message makes you distrust everything. The test is whether anyone ASKS you to act."
+          },
+          {
+            "id": "c",
+            "text": "This is a scam because it mentions a code.",
+            "correct": false,
+            "feedback": "Flagging every real message makes you distrust everything. The test is whether anyone ASKS you to act."
+          }
+        ],
+        "tip": "Real OTP texts exist. The scam is anyone who ASKS you to send the code."
+      }
+    ],
+    "debrief": "You practiced the rule: Real OTP texts exist. The scam is anyone who ASKS you to send the code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "good-message-hard-005",
+    "title": "good-message drill 5",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "good-message",
+    "archetype": "good-message",
+    "category": "good-message",
+    "setup": "Lola in the province. This looks like a real message. Is it a scam?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "GCash",
+        "message": "GCash: Your verification code is 4126. Do not share this code with anyone. GCash will never ask for it.",
+        "question": "This looks like a real message. Is it a scam?",
         "options": [
           {
             "id": "a",
@@ -17946,14 +20970,14 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "good-message",
     "archetype": "good-message",
     "category": "good-message",
-    "setup": "sari-sari store owner. This looks like a real message. Is it a scam?",
+    "setup": "college student in Manila. A message from a company you use. What do you do?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
+        "channel": "email",
         "senderLabel": "Maya",
-        "message": "Maya: Your verification code is 4126. Do not share this code with anyone. Maya will never ask for it.",
-        "question": "This looks like a real message. Is it a scam?",
+        "message": "Maya: Your order has been shipped. Track it in the app.",
+        "question": "A message from a company you use. What do you do?",
         "options": [
           {
             "id": "a",
@@ -17970,6 +20994,48 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           {
             "id": "c",
             "text": "This is a scam because it mentions a code.",
+            "correct": false,
+            "feedback": "Flagging every real message makes you distrust everything. The test is whether anyone ASKS you to act."
+          }
+        ],
+        "tip": "Real OTP texts exist. The scam is anyone who ASKS you to send the code."
+      }
+    ],
+    "debrief": "You practiced the rule: Real OTP texts exist. The scam is anyone who ASKS you to send the code.. Tell your family this rule today.",
+    "source": "generated"
+  },
+  {
+    "id": "good-message-hard-007",
+    "title": "good-message drill 7",
+    "icon": "ShieldCheck",
+    "difficulty": "hard",
+    "family": "good-message",
+    "archetype": "good-message",
+    "category": "good-message",
+    "setup": "small online seller. This looks like a real message. Is it a scam?",
+    "steps": [
+      {
+        "id": "s1",
+        "channel": "email",
+        "senderLabel": "Maya",
+        "message": "Maya: Your verification code is 4126. Do not share this code with anyone. Maya will never ask for it.",
+        "question": "This looks like a real message. Is it a scam?",
+        "options": [
+          {
+            "id": "a",
+            "text": "This is real. It is from the official sender and does not ask me to send anything.",
+            "correct": true,
+            "feedback": "Correct. A real OTP text tells you to keep it secret; the scam is anyone who ASKS you to send it."
+          },
+          {
+            "id": "b",
+            "text": "This is a scam because it mentions a code.",
+            "correct": false,
+            "feedback": "Flagging every real message makes you distrust everything. The test is whether anyone ASKS you to act."
+          },
+          {
+            "id": "c",
+            "text": "Block and report it.",
             "correct": false,
             "feedback": "Flagging every real message makes you distrust everything. The test is whether anyone ASKS you to act."
           }
@@ -17988,14 +21054,14 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "good-message",
     "archetype": "good-message",
     "category": "good-message",
-    "setup": "OFW in Riyadh. A message from a company you use. What do you do?",
+    "setup": "senior pensioner. This looks like a real message. Is it a scam?",
     "steps": [
       {
         "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Lazada",
-        "message": "Lazada: Your verification code is 4126. Do not share this code with anyone. Lazada will never ask for it.",
-        "question": "A message from a company you use. What do you do?",
+        "channel": "email",
+        "senderLabel": "Shopee",
+        "message": "Shopee: Your verification code is 4126. Do not share this code with anyone. Shopee will never ask for it.",
+        "question": "This looks like a real message. Is it a scam?",
         "options": [
           {
             "id": "a",
@@ -18005,13 +21071,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           },
           {
             "id": "b",
-            "text": "Block and report it.",
+            "text": "Reply to confirm my identity.",
             "correct": false,
             "feedback": "Flagging every real message makes you distrust everything. The test is whether anyone ASKS you to act."
           },
           {
             "id": "c",
-            "text": "Reply to confirm my identity.",
+            "text": "Block and report it.",
             "correct": false,
             "feedback": "Flagging every real message makes you distrust everything. The test is whether anyone ASKS you to act."
           }
@@ -18030,13 +21096,13 @@ export const GENERATED_SCENARIOS: Scenario[] = [
     "family": "good-message",
     "archetype": "good-message",
     "category": "good-message",
-    "setup": "small online seller. A message from a company you use. What do you do?",
+    "setup": "senior pensioner. A message from a company you use. What do you do?",
     "steps": [
       {
         "id": "s1",
         "channel": "email",
-        "senderLabel": "Maya",
-        "message": "Maya: Thank you for your cash-in of P12,000. Your new balance is available in the app.",
+        "senderLabel": "GCash",
+        "message": "GCash: Thank you for your cash-in of P100,000. Your new balance is available in the app.",
         "question": "A message from a company you use. What do you do?",
         "options": [
           {
@@ -18054,90 +21120,6 @@ export const GENERATED_SCENARIOS: Scenario[] = [
           {
             "id": "c",
             "text": "This is a scam because it mentions a code.",
-            "correct": false,
-            "feedback": "Flagging every real message makes you distrust everything. The test is whether anyone ASKS you to act."
-          }
-        ],
-        "tip": "Real OTP texts exist. The scam is anyone who ASKS you to send the code."
-      }
-    ],
-    "debrief": "You practiced the rule: Real OTP texts exist. The scam is anyone who ASKS you to send the code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "good-message-hard-010",
-    "title": "good-message drill 10",
-    "icon": "ShieldCheck",
-    "difficulty": "hard",
-    "family": "good-message",
-    "archetype": "good-message",
-    "category": "good-message",
-    "setup": "senior pensioner. This looks like a real message. Is it a scam?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "GCash",
-        "message": "GCash: Thank you for your cash-in of P45,000. Your new balance is available in the app.",
-        "question": "This looks like a real message. Is it a scam?",
-        "options": [
-          {
-            "id": "a",
-            "text": "This is real. It is from the official sender and does not ask me to send anything.",
-            "correct": true,
-            "feedback": "Correct. A real OTP text tells you to keep it secret; the scam is anyone who ASKS you to send it."
-          },
-          {
-            "id": "b",
-            "text": "Reply to confirm my identity.",
-            "correct": false,
-            "feedback": "Flagging every real message makes you distrust everything. The test is whether anyone ASKS you to act."
-          },
-          {
-            "id": "c",
-            "text": "Block and report it.",
-            "correct": false,
-            "feedback": "Flagging every real message makes you distrust everything. The test is whether anyone ASKS you to act."
-          }
-        ],
-        "tip": "Real OTP texts exist. The scam is anyone who ASKS you to send the code."
-      }
-    ],
-    "debrief": "You practiced the rule: Real OTP texts exist. The scam is anyone who ASKS you to send the code.. Tell your family this rule today.",
-    "source": "generated"
-  },
-  {
-    "id": "good-message-medium-015",
-    "title": "good-message drill 15",
-    "icon": "ShieldCheck",
-    "difficulty": "medium",
-    "family": "good-message",
-    "archetype": "good-message",
-    "category": "good-message",
-    "setup": "call-center agent. This looks like a real message. Is it a scam?",
-    "steps": [
-      {
-        "id": "s1",
-        "channel": "sms",
-        "senderLabel": "Shopee",
-        "message": "Shopee: Your order has been shipped. Track it in the app.",
-        "question": "This looks like a real message. Is it a scam?",
-        "options": [
-          {
-            "id": "a",
-            "text": "This is real. It is from the official sender and does not ask me to send anything.",
-            "correct": true,
-            "feedback": "Correct. A real OTP text tells you to keep it secret; the scam is anyone who ASKS you to send it."
-          },
-          {
-            "id": "b",
-            "text": "This is a scam because it mentions a code.",
-            "correct": false,
-            "feedback": "Flagging every real message makes you distrust everything. The test is whether anyone ASKS you to act."
-          },
-          {
-            "id": "c",
-            "text": "Reply to confirm my identity.",
             "correct": false,
             "feedback": "Flagging every real message makes you distrust everything. The test is whether anyone ASKS you to act."
           }

@@ -71,14 +71,27 @@ const FAMILY_META: Record<ScenarioFamily, FamilyMeta> = {
   'good-message': { icon: CheckCheck, labelKey: 'f_goodMessage', blurbKey: 'f_goodMessage_blurb' },
 };
 
-const scenariosForFamily = (family: ScenarioFamily): Scenario[] => ALL_SCENARIOS.filter((s) => s.family === family);
+// Language-aware scenario library, LAZY-LOADED so only the selected language's
+// scenario set ships to the device (English + curated is eager; localized sets
+// are ~880KB each and are code-split by Vite). Falls back to English ids so
+// saved session plans stay valid across language switches.
+const loadScenarios = (lang: string): Promise<Scenario[]> => {
+  if (lang === "ENGLISH") return Promise.resolve(ALL_SCENARIOS);
+  const mod = lang === "TAGALOG"
+    ? import('../src/dojo/scenarios.generated.tl').then((m) => m.ALL_SCENARIOS_TAGALOG)
+    : lang === "BISAYA"
+      ? import('../src/dojo/scenarios.generated.ceb').then((m) => m.ALL_SCENARIOS_BISAYA)
+      : lang === "ILOCANO"
+        ? import('../src/dojo/scenarios.generated.ilo').then((m) => m.ALL_SCENARIOS_ILOCANO)
+        : Promise.resolve(ALL_SCENARIOS);
+  return mod;
+};
 
-const countByFamily = (family: ScenarioFamily, difficulty?: ScenarioDifficulty): number =>
-  ALL_SCENARIOS.filter((s) => s.family === family && (!difficulty || s.difficulty === difficulty)).length;
-
-// One pool per family, fed to the progression engine's sessionPlan.
+// One pool per family, fed to the progression engine's sessionPlan. IDs are
+// language-identical (the generator dedups by id), so the English pool is the
+// canonical set of scenario ids.
 const POOL_BY_FAMILY: Record<ScenarioFamily, string[]> = FAMILY_ORDER.reduce((acc, family) => {
-  acc[family] = scenariosForFamily(family).map((s) => s.id);
+  acc[family] = ALL_SCENARIOS.filter((s) => s.family === family).map((s) => s.id);
   return acc;
 }, {} as Record<ScenarioFamily, string[]>);
 
@@ -97,6 +110,7 @@ const DAILY_GOAL = 3;
 const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
   const lang = normalizeLang(selectedLanguage);
   const D = (key: DojoKey): string => td(lang, key);
+  const [library, setLibrary] = useState<Scenario[]>(ALL_SCENARIOS);
   const [view, setView] = useState<View>('select');
   const [familyView, setFamilyView] = useState<ScenarioFamily | null>(null);
   const [lockedFamily, setLockedFamily] = useState<ScenarioFamily | null>(null);
@@ -127,6 +141,17 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
     setDocumentLang(selectedLanguage);
   }, [selectedLanguage]);
 
+  // Load the scenario library for the selected language (lazy: localized sets
+  // are code-split). Defaults to English while loading.
+  useEffect(() => {
+    let cancelled = false;
+    setLibrary(ALL_SCENARIOS);
+    loadScenarios(lang).then((lib) => {
+      if (!cancelled) setLibrary(lib);
+    });
+    return () => { cancelled = true; };
+  }, [lang]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, aiBusy]);
@@ -154,7 +179,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
   // ---- Scenario mode ----
   const openScenario = (id: string) => {
     playSound('click');
-    const s = ALL_SCENARIOS.find((x) => x.id === id);
+    const s = library.find((x) => x.id === id) ?? ALL_SCENARIOS.find((x) => x.id === id);
     if (!s) return;
     const started = startScenario(s);
     setScenario(s);
@@ -374,7 +399,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
         {FAMILY_ORDER.map((family) => {
           const meta = FAMILY_META[family];
           const Icon = meta.icon;
-          const total = countByFamily(family);
+          const total = library.filter((s) => s.family === family).length;
           return (
             <button
               key={family}
@@ -412,7 +437,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
     if (!familyView) return null;
     const meta = FAMILY_META[familyView];
     const Icon = meta.icon;
-    const familyScenarios = scenariosForFamily(familyView);
+    const familyScenarios = library.filter((s) => s.family === familyView);
     const total = familyScenarios.length;
 
     return (

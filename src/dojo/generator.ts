@@ -14,6 +14,9 @@ import {
   ScenarioOption,
 } from "./scenarios";
 import { TEMPLATE_FAMILIES, POOLS, TemplateFamily } from "./dojo-templates";
+import { TEMPLATE_FAMILIES_TAGALOG, POOLS_TAGALOG } from "./dojo-templates-tagalog";
+import { TEMPLATE_FAMILIES_BISAYA, POOLS_BISAYA } from "./dojo-templates-bisaya";
+import { TEMPLATE_FAMILIES_ILOCANO, POOLS_ILOCANO } from "./dojo-templates-ilocano";
 
 // ===== Seeded PRNG (mulberry32) =====
 export const mulberry32 = (seed: number): (() => number) => {
@@ -70,6 +73,20 @@ const DEFAULTS: Record<string, string> = {
   official: "the official hotline",
 };
 
+// Debrief + title text per language (user-facing generated strings).
+const DEBRIEF_BY_LANG: Record<string, string> = {
+  ENGLISH: "You practiced the rule: {rule}. Tell your family this rule today.",
+  TAGALOG: "Na-practice mo ang patakaran: {rule}. Sabihin ang patakarang ito sa pamilya mo ngayong araw.",
+  BISAYA: "Na-practice nimo ang lagda: {rule}. Isulti kini nga lagda sa imong pamilya karon.",
+  ILOCANO: "Na-practice mo ti pagannurotan: {rule}. Ibaga daytoy a pagannurotan iti pamilyam ita nga aldaw.",
+};
+const DRILL_BY_LANG: Record<string, string> = {
+  ENGLISH: "drill",
+  TAGALOG: "drill",
+  BISAYA: "drill",
+  ILOCANO: "drill",
+};
+
 // ===== Difficulty rubric =====
 // easy: loud red flags, low plausibility. medium: mixed signals. hard: high
 // plausibility, tell only via context mismatch.
@@ -83,14 +100,16 @@ const buildScenario = (
   family: TemplateFamily,
   difficulty: ScenarioDifficulty,
   index: number,
-  rng: () => number
+  rng: () => number,
+  lang: "ENGLISH" | "TAGALOG" | "BISAYA" | "ILOCANO" = "ENGLISH"
 ): Scenario => {
+  const pools = POOLS_BY_LANG[lang];
   const brand = pick(rng, family.brands);
-  const amount = pick(rng, POOLS.amounts);
-  const domain = pick(rng, POOLS.fakeDomains);
-  const urgency = pick(rng, POOLS.urgencyTriggers);
-  const profile = pick(rng, POOLS.victimProfiles);
-  const sender = POOLS.senderLabels[brand] ?? brand;
+  const amount = pick(rng, pools.amounts);
+  const domain = pick(rng, pools.fakeDomains);
+  const urgency = pick(rng, pools.urgencyTriggers);
+  const profile = pick(rng, pools.victimProfiles);
+  const sender = pools.senderLabels[brand] ?? brand;
   const channel = pick(rng, family.channels);
   const official = OFFICIAL_HINT[brand] ?? DEFAULTS.official;
 
@@ -135,7 +154,7 @@ const buildScenario = (
 
   return {
     id,
-    title: `${family.family} drill ${index}`,
+    title: `${family.family} ${DRILL_BY_LANG[lang]} ${index}`,
     icon: "ShieldCheck",
     difficulty,
     family: family.family,
@@ -143,35 +162,32 @@ const buildScenario = (
     category: family.family,
     setup: `${profile}. ${question}`,
     steps,
-    debrief: `You practiced the rule: ${family.rule}. Tell your family this rule today.`,
+    debrief: DEBRIEF_BY_LANG[lang].replace("{rule}", family.rule),
     source: "generated",
   };
-};
-
-// ===== Variety guard: slot-distance + shingled overlap =====
-const textOf = (s: Scenario): string => s.setup + s.steps.map((x) => x.message + x.tip).join(" ");
-
-const shingles = (text: string): Set<string> => {
-  const words = text.toLowerCase().split(/\W+/).filter(Boolean);
-  const out = new Set<string>();
-  for (let i = 0; i + 2 < words.length; i++) out.add(`${words[i]} ${words[i + 1]} ${words[i + 2]}`);
-  return out;
-};
-
-const overlap = (a: string, b: string): number => {
-  const sa = shingles(a);
-  const sb = shingles(b);
-  if (sa.size === 0 || sb.size === 0) return 0;
-  let common = 0;
-  for (const s of sa) if (sb.has(s)) common++;
-  return common / Math.max(1, Math.min(sa.size, sb.size));
 };
 
 // ===== Public API =====
 export interface GenerateOptions {
   perFamily?: number; // total budget distributed across families
   seed?: number;
+  lang?: "ENGLISH" | "TAGALOG" | "BISAYA" | "ILOCANO"; // template language for generated scenario content
 }
+
+// Template set per language. ENGLISH is the canonical authoring source;
+// localized sets mirror it exactly (same count, same slot order).
+const TEMPLATES_BY_LANG = {
+  ENGLISH: TEMPLATE_FAMILIES,
+  TAGALOG: TEMPLATE_FAMILIES_TAGALOG,
+  BISAYA: TEMPLATE_FAMILIES_BISAYA,
+  ILOCANO: TEMPLATE_FAMILIES_ILOCANO,
+};
+const POOLS_BY_LANG = {
+  ENGLISH: POOLS,
+  TAGALOG: POOLS_TAGALOG,
+  BISAYA: POOLS_BISAYA,
+  ILOCANO: POOLS_ILOCANO,
+};
 
 // Target distribution across families (research-derived victim weighting).
 const FAMILY_BUDGET: Partial<Record<ScenarioFamily, number>> = {
@@ -200,6 +216,7 @@ export const generateScenarios = (opts: GenerateOptions = {}): Scenario[] => {
   const rng = mulberry32(seed);
   const out: Scenario[] = [];
   const perFamily = opts.perFamily ?? 500;
+  const templates = TEMPLATES_BY_LANG[opts.lang ?? "ENGLISH"];
 
   const budgetEntries = Object.entries(FAMILY_BUDGET) as [ScenarioFamily, number][];
   // Scale budgets so the total ~= perFamily. Duplicate rejection shrinks the
@@ -209,20 +226,20 @@ export const generateScenarios = (opts: GenerateOptions = {}): Scenario[] => {
   const scale = perFamily / rawTotal;
 
   for (const [familyId, base] of budgetEntries) {
-    const template = TEMPLATE_FAMILIES.find((t) => t.family === familyId);
+    const template = templates.find((t) => t.family === familyId);
     if (!template) continue;
     const count = Math.max(2, Math.round(base * scale));
     const familyScenarios: Scenario[] = [];
-    // Over-produce 3x then dedup; fall back to exact fill if variety is thin.
+    // Dedup is ID-based (family + difficulty + index) so every language
+    // produces the SAME ids and counts. Text-similarity dedup is language-
+    // sensitive (localized text overlaps differently), which made per-language
+    // drill counts diverge and broke the family grid parity requirement.
     for (let i = 0; i < count * 3 + 10; i++) {
       if (familyScenarios.length >= count) break;
       const difficulty = difficultyFor(template, i % 3);
-      const s = buildScenario(template, difficulty, i, rng);
-      const tooClose = familyScenarios.some((existing) => {
-        if (existing.steps[0]?.channel !== s.steps[0]?.channel) return false;
-        return overlap(textOf(existing), textOf(s)) > 0.75;
-      });
-      if (!tooClose) familyScenarios.push(s);
+      const s = buildScenario(template, difficulty, i, rng, opts.lang ?? "ENGLISH");
+      const idExists = familyScenarios.some((existing) => existing.id === s.id);
+      if (!idExists) familyScenarios.push(s);
     }
     out.push(...familyScenarios);
   }
