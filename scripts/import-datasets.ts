@@ -180,7 +180,7 @@ are admitted on an explicit project-owner decision recorded in manifest.json
 
 ${TRAINING_SOURCES.map(
   (s) => `- ${s.attribution}
-  License: ${s.license}${s.nonCommercial ? " (NON-COMMERCIAL / SHARE-ALIKE)" : ""}
+  License: ${s.license}${s.nonCommercial ? (s.license === "no-license" ? " (NO LICENSE DECLARED / OWNER-DIRECTED EXCEPTION)" : " (NON-COMMERCIAL / SHARE-ALIKE)") : ""}
   Source:  ${s.licenseUrl}
   Files:   ${s.files.map((f) => f.url).join(", ")}
 `
