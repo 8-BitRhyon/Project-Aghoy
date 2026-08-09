@@ -86,7 +86,7 @@ const run = async (): Promise<void> => {
     // contributor adds to sources.ts is rejected before a single byte is
     // downloaded unless it carries a permissive license (or an approved
     // non-commercial exception, flagged per-source by the owner).
-    assertLicenseAllowed(source.license, source.id, { nonCommercial: source.nonCommercial });
+    assertLicenseAllowed(source.license, source.id, { nonCommercial: source.nonCommercial, licenseNote: source.licenseNote });
     console.log(`\n[${source.id}] ${source.name} (${source.license})`);
     const rows: ReturnType<typeof mapRow>[] = [];
     for (const file of source.files) {

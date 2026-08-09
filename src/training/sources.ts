@@ -22,6 +22,8 @@ export interface DatasetSource {
   constantLabel?: "SCAM" | "LEGIT";
   // Non-commercial/ShareAlike exception approved by the project owner.
   nonCommercial?: boolean;
+  // REQUIRED when nonCommercial is true: the owner-decision audit trail
+  // (who decided, when, why). The license gate rejects a bare flag.
   licenseNote?: string; // why this exception was approved (audit trail)
 }
 
@@ -116,6 +118,6 @@ export const TRAINING_SOURCES: DatasetSource[] = [
 export const getSource = (id: string): DatasetSource => {
   const src = TRAINING_SOURCES.find((s) => s.id === id);
   if (!src) throw new Error(`unknown training source "${id}"`);
-  assertLicenseAllowed(src.license, src.id, { nonCommercial: src.nonCommercial });
+  assertLicenseAllowed(src.license, src.id, { nonCommercial: src.nonCommercial, licenseNote: src.licenseNote });
   return src;
 };

@@ -67,14 +67,21 @@ describe("license gate", () => {
     expect(() => assertLicenseAllowed("apache-2.0", "test")).not.toThrow();
   });
 
-  it("blocks non-commercial licenses unless explicitly opted-in", () => {
+  it("blocks non-commercial licenses unless explicitly opted-in with an audit note", () => {
     expect(() => assertLicenseAllowed("cc-by-nc-sa-4.0", "test")).toThrow(/LICENSE GATE/);
-    expect(() => assertLicenseAllowed("cc-by-nc-sa-4.0", "test", { nonCommercial: true })).not.toThrow();
+    // A bare boolean flag without an approval note is rejected.
+    expect(() => assertLicenseAllowed("cc-by-nc-sa-4.0", "test", { nonCommercial: true })).toThrow(/approval note/);
+    // A documented owner decision passes.
+    expect(() =>
+      assertLicenseAllowed("cc-by-nc-sa-4.0", "test", { nonCommercial: true, licenseNote: "owner decision 2026-08-08" })
+    ).not.toThrow();
   });
 
   it("every registered source passes the gate (incl. owner-approved non-commercial)", () => {
     for (const s of TRAINING_SOURCES) {
-      expect(() => assertLicenseAllowed(s.license, s.id, { nonCommercial: s.nonCommercial })).not.toThrow();
+      expect(() =>
+        assertLicenseAllowed(s.license, s.id, { nonCommercial: s.nonCommercial, licenseNote: s.licenseNote })
+      ).not.toThrow();
     }
   });
 });

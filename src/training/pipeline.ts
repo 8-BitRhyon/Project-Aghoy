@@ -41,9 +41,20 @@ export const ALLOWED_LICENSES = new Set(["apache-2.0", "mit", "cc-by-4.0", "cc0-
 // so the default gate stays strict; a source opts in via `nonCommercial: true`.
 export const ALLOWED_NONCOMMERCIAL_LICENSES = new Set(["cc-by-nc-sa-4.0"]);
 
-export const assertLicenseAllowed = (license: string, sourceId: string, opts: { nonCommercial?: boolean } = {}): void => {
+export const assertLicenseAllowed = (license: string, sourceId: string, opts: { nonCommercial?: boolean; licenseNote?: string } = {}): void => {
   if (ALLOWED_LICENSES.has(license)) return;
-  if (opts.nonCommercial && ALLOWED_NONCOMMERCIAL_LICENSES.has(license)) return;
+  if (opts.nonCommercial && ALLOWED_NONCOMMERCIAL_LICENSES.has(license)) {
+    // The exception requires an auditable approval record: who decided, when,
+    // and why. A bare boolean flag is not enough to justify deviating from the
+    // permissive-only gate.
+    if (!opts.licenseNote || opts.licenseNote.trim().length === 0) {
+      throw new Error(
+        `LICENSE GATE: "${sourceId}" declares non-commercial license "${license}" without an ` +
+          `approval note. Add a "licenseNote" recording the owner decision before importing.`
+      );
+    }
+    return;
+  }
   throw new Error(
     `LICENSE GATE BLOCKED: "${sourceId}" declares "${license}", which is not in ` +
       `[${[...ALLOWED_LICENSES].join(", ")}] and not an approved non-commercial exception ` +

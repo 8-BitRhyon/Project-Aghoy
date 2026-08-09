@@ -8,7 +8,7 @@ No accounts. No login. No data sold. A server-authoritative PII filter (the **Re
 
 [![Live app](https://img.shields.io/badge/live-project--aghoy.pages.dev-cyan)](https://project-aghoy.pages.dev)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-287-green.svg)]()
+[![Tests](https://img.shields.io/badge/tests-287-green.svg)](#testing)
 [![Privacy by design](https://img.shields.io/badge/privacy-Rejects%20layer-blue.svg)](SECURITY.md)
 
 ---
@@ -44,7 +44,7 @@ Tesseract.js runs entirely from `public/ocr/` (worker, wasm cores, pinned Englis
 A role-play chat where an AI simulates a scammer. Spot the red flags and end the game by reporting it. Authorized cybersecurity training, not a real scam assistant.
 
 ### Community blacklist
-Every scam someone reports is sanitized and feeds a shared database, so the next person who receives that exact fake GCash alert sees "this domain has been reported N times." Phone numbers are only ever stored as SHA-256 hashes.
+Every scam someone reports is sanitized and feeds a shared database, so the next person who receives that exact fake GCash alert can be shown "this domain has been reported N times." Phone numbers are only ever stored as SHA-256 hashes. Reports are stored today; surfacing the lookup in the scanner result view is in progress (see [roadmap](#status-and-roadmap)).
 
 ### Everything else
 - **SmartSupport:** verified official channels for 36 banks, wallets, telcos, couriers, and government agencies, including PNP-ACG reporting guidance.
@@ -182,8 +182,12 @@ npx tsx scripts/import-datasets.ts
 .venv-train/bin/python scripts/export_onnx.py \
   --checkpoint models/v1/checkpoint-XXXX --out models/v1/onnx --target arm64
 
-# Copy the artifact to the PWA
+# Copy the artifact to the PWA (ONNX + tokenizer + config)
+mkdir -p public/models/tinybert-v1/onnx
 cp models/v1/onnx/model_quantized.onnx public/models/tinybert-v1/onnx/
+for f in config.json tokenizer.json tokenizer_config.json vocab.txt special_tokens_map.json; do
+  cp "models/v1/onnx/$f" "public/models/tinybert-v1/$f"
+done
 ```
 
 See `CONTRIBUTING.md` for the data-contribution and licensing rules.
@@ -259,7 +263,7 @@ Pending:
 - R2 evidence store: blocked on account-level R2 enablement (Cloudflare error code 10042), then uncomment the binding and redeploy.
 - Cloudflare WAF rate limiting for `/api/analyze`: the current Pages limiter is per-isolate in-memory and not globally accurate (see SECURITY.md).
 - UI surfacing of indicator/blacklist lookups: `storageClient.lookupIndicator` is client-ready; wiring it into the scanner result view is in progress.
-- Taglish-specific training data: expanding the PH corpus (community reports + licensed datasets) to close the model's gap on romance, marketplace, and family-emergency archetypes.
+- Taglish-specific training data: the first PH dataset is in (22/22 on the reality check); the roadmap is to expand the PH corpus further (community reports + licensed datasets) to harden coverage as scam tactics evolve.
 
 ## Contributing
 
@@ -270,7 +274,7 @@ Project Aghoy is a community project. We welcome contributors of every skill lev
 - **Report a security issue:** see [SECURITY.md](SECURITY.md) - never open a public issue for vulnerabilities.
 - **Share scam data:** see [CONTRIBUTING.md](CONTRIBUTING.md#adding-a-brand-or-flag) for how to add brands, flags, and dataset sources under the license gate.
 
-By contributing you agree your contributions are licensed under the MIT License.
+By contributing code and documentation you agree your contributions are licensed under the MIT License. Datasets retain their approved source license (permissive, or the documented owner-approved non-commercial exception) - see [CONTRIBUTING.md](CONTRIBUTING.md#adding-a-brand-or-flag).
 
 ## Security
 
