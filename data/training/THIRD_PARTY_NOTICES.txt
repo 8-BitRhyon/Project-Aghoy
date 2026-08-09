@@ -28,6 +28,11 @@ are admitted on an explicit project-owner decision recorded in manifest.json
   Source:  https://www.kaggle.com/datasets/bwandowando/philippine-spam-sms-messages
   Files:   https://www.kaggle.com/api/v1/datasets/download/bwandowando/philippine-spam-sms-messages
 
+- Anton Reyes / Sino 'To?! ScamMessagesPhilippines (no license declared; owner-approved exception)
+  License: no-license (NON-COMMERCIAL / SHARE-ALIKE)
+  Source:  https://github.com/AGR-Yes/ScamMessagesPhilippines
+  Files:   https://raw.githubusercontent.com/AGR-Yes/ScamMessagesPhilippines/main/Processed%20Datasets/spam.csv
+
 
 The remainder of the corpus is Project Aghoy's own Taglish seed corpus and
 sanitized community reports (Project Aghoy, see LICENSE in the repo root).
