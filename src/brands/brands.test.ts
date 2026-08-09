@@ -195,3 +195,18 @@ describe('under-detection override (ISO 42001 A.13 human oversight)', () => {
     expect(v!.verdict).toBe('SUSPICIOUS');
   });
 });
+
+describe("FAKE_REWARD_CLAIM coverage (regression 2026-08-09)", () => {
+  it("catches a SIM-lottery scam the old regex missed", () => {
+    // Old pattern required "you won"; "your SIM has won P480,000" slipped by.
+    const v = fallbackVerdict("Hi i am Atty Gerardo. Your SIM has won P480,000. Call now.");
+    expect(v).not.toBeNull();
+    expect(v?.riskScore).toBeGreaterThanOrEqual(3);
+  });
+
+  it("does not false-trigger on legit congratulations", () => {
+    expect(fallbackVerdict("Congratulations on your new employment at the company")).toBeNull();
+    expect(fallbackVerdict("You won the game today, great job team")).toBeNull();
+    expect(fallbackVerdict("Your order won a 10% discount voucher, use code")).toBeNull();
+  });
+});

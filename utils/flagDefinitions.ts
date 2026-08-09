@@ -31,6 +31,9 @@ export const FLAG_DEFINITIONS: Record<string, string> = {
     "ASKING FOR PAYMENT TO WORK": "Legitimate jobs pay YOU. You should never have to pay for 'training', 'equipment', or 'fees' to start.",
     "THREATS": "Threatening legal action, police involvement, or public shaming to force compliance.",
     "UNUSUAL SENDER": "Official alerts usually come from a named Sender ID (e.g., 'GCash', 'BDO'), not a random mobile number (0912...).",
+    "VERIFIED_SENDER": "The sender is a verified official Philippine channel (e.g., GCash shortcode 2882, BDO sender ID). Identity-verified - the text model cannot escalate this message.",
+    "REPORTED_PHONE": "This phone number has been reported to the community blacklist 2+ times as a scam sender. Escalates the verdict.",
+    "REPORTED_DOMAIN": "This domain has been reported to the community blacklist as a scam link. Escalates the verdict.",
     "UNKNOWN": "An anomaly was detected that doesn't fit standard categories but indicates suspicious patterns."
 };
 

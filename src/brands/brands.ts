@@ -229,7 +229,11 @@ const INTENT_PATTERNS: Array<[Intent, RegExp]> = [
   ["OTP_VERIFICATION", /(otp|mpin|one[\s-]?time\s*(pin|password)|verification\s*code|security\s*code|passcode|pin\s*code)|(share|send|confirm|verify).*(code|otp|pin)/],
   ["PARCEL_FEE_LINK", /(parcel|package|delivery|shipment|rider).*(fee|payment|hold|customs|clearance|redeliver|reschedule)|(j&t|jnt|flash|ninjavan|lbc|jrs|philpost|lalamove).*(fee|pay|hold|customs)/],
   ["INVESTMENT_PAYOUT", /(invest|investor|trader|trading|signal|capital).*(guaranteed|profit|return|roi|double|daily|withdraw)|sure\s*kita|pasok/],
-  ["FAKE_REWARD_CLAIM", /(you\s*won|winner|congratulations|claim|prize|raffle|cashback|rebate|free\s*load|reward)/],
+  // Prize/lottery scams: catch "your SIM has won P480,000" style texts the old
+  // (you\s*won) pattern missed. Focused on won+identity/money/selected contexts
+  // so legit "Congratulations on your employment" or "You won the game" don't
+  // false-trigger. Verified against both scam and legit examples (2026-08-09).
+  ["FAKE_REWARD_CLAIM", /((sim|number|account|mobile|contact)\s*(has\s*)?won|won\s*(php|p\d|\d)|selected.*(cash|prize)|lucky.*(draw|winner)|claim.*(prize|reward|winnings)|(you\s*won|winner|congratulations).*(prize|reward|claim|cashback|rebate|free\s*load))/i],
   ["MONEY_MULE", /(receive|keep|forward|send).*(for\s*me|another\s*account)|(pasabuy|padala|paikot)|keep\s*\d+\s*(%|percent)/],
   ["VISHING_CALL", /(call\s*(this|our|us)|dial|hotline|toll[\s-]?free|tumawag|tawagan|agent\s*will\s*call)/],
   ["QUISHING", /(scan\s*(the\s*)?(qr|code)|qr\s*code|parking\s*(fee|payment)|epayment|cashless)/],
