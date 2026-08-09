@@ -81,7 +81,13 @@ export const fuseLayers = (signals: LayerSignals): LayeredVerdict => {
     signalsHit.push("verified-sender");
   }
 
-  // Community blacklist: strong positive evidence.
+  // Community blacklist: strong positive evidence. Capped at SUSPICIOUS per the
+  // documented policy - a reported indicator is strong but not conclusive
+  // (operators can retract via /indicators/clear), so it must never force
+  // HIGH_RISK by itself. The cap only binds when no HIGH_RISK layer (engine
+  // >=7 or a confidently-flagged model) is already present - those layers can
+  // legitimately produce HIGH_RISK on their own evidence.
+  const blacklistHit = signals.reportedPhone || signals.reportedDomain;
   if (signals.reportedPhone) {
     score += LAYER_WEIGHTS.blacklist * 2.5;
     signalsHit.push("reported-phone");
@@ -90,6 +96,9 @@ export const fuseLayers = (signals: LayerSignals): LayeredVerdict => {
     score += LAYER_WEIGHTS.blacklist * 2.0;
     signalsHit.push("reported-domain");
   }
+  const engineHigh = (signals.engineScore ?? 0) >= 7;
+  const modelHigh = (signals.modelScamProb ?? 0) >= 0.9;
+  if (blacklistHit && !engineHigh && !modelHigh) score = Math.min(score, 6.9);
 
   const riskScore = clamp(Math.round(score * 10) / 10, 0, 10);
   return { verdict: scoreToVerdict(riskScore), riskScore, signals: signalsHit };

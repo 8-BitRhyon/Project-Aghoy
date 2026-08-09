@@ -7,7 +7,7 @@ import { extractIndicators } from "../src/worker/indicators";
 import { CommunityReputation, REPORTED_DOMAIN_FLAG, REPORTED_PHONE_FLAG } from "./blacklistSignals";
 import { fuseLayers, LayerSignals } from "./layeredVerdict";
 import { WORKER_ORIGIN } from "../src/config";
-import { classifyText, fuseWithLinkGrade } from "./classifier";
+import { classifyText } from "./classifier";
 import { gradeMessageLinks } from "../src/training/urlGrade";
 
 // vite/client types are not in tsconfig.json, so import.meta.env is declared
@@ -219,9 +219,18 @@ const withStorageSignals = async (
   phoneHashes: string[],
   layerSignals: LayerSignals
 ): Promise<AnalysisResult> => {
+  // Extract BARE domains for reputation lookup - the Worker's /feed/reputation
+  // expects a domain, not a full URL (a full URL always returns neutral).
   const domains = extractIndicators(payload.content)
-    .filter((i) => i.type === "domain" || i.type === "url")
+    .filter((i) => i.type === "domain")
     .map((i) => i.value)
+    .concat(
+      extractIndicators(payload.content)
+        .filter((i) => i.type === "url")
+        .map((i) => { try { return new URL(i.value).hostname; } catch { return ""; } })
+        .filter(Boolean)
+    )
+    .filter((d, idx, arr) => arr.indexOf(d) === idx)
     .slice(0, 3);
   const [similarScams, phoneCount, domainStatuses] = await Promise.all([
     withTimeout(fetchSimilarScams(payload), 8000) ?? [],
@@ -268,11 +277,20 @@ const withStorageSignals = async (
     ? Math.max(phoneCount || 0, reputations.filter((r) => r.indicator.type === "phone").reduce((m, r) => Math.max(m, r.timesReported), 0))
     : 0;
 
+  const redFlags = flags.length ? [...(base.redFlags || []), ...flags] : base.redFlags;
+  // POST the report with the FINAL verdict (post-blacklist) so the stored
+  // report matches what the user sees. The offline queue dedups on content.
+  postReport({
+    ...payload,
+    verdict: finalLayered.verdict,
+    riskScore: finalLayered.riskScore,
+    redFlags,
+  });
   return {
     ...base,
     verdict: finalLayered.verdict,
     riskScore: finalLayered.riskScore,
-    redFlags: flags.length ? [...(base.redFlags || []), ...flags] : base.redFlags,
+    redFlags,
     similarScams: (similarScams || []).length ? similarScams : undefined,
     reportedPhone: phoneCountAll >= 2 ? { count: phoneCountAll } : undefined,
   };
@@ -695,9 +713,9 @@ export const analyzeContent = async (text: string, language: string, imageBase64
       source: "web",
       phoneHashes,
     };
-    postReport(reportPayload);
     // Community blacklist is applied in withStorageSignals (it needs async
-    // lookups); it merges its signals back and re-runs the layered fusion.
+    // lookups); it re-runs the layered fusion with the blacklist evidence and
+    // POSTS the report with the final verdict (so stored == shown).
     return withStorageSignals(enriched, reportPayload, phoneHashes, layerSignals);
 
   } catch (error: any) {

@@ -2,7 +2,6 @@
 
 import { pipeline, env } from "@huggingface/transformers";
 import { Verdict } from "../types";
-import { LinkGradeResult } from "../src/training/urlGrade";
 
 // Self-hosted model + ORT wasm (no third-party CDN at runtime; CSP script-src 'self').
 env.allowLocalModels = true;
@@ -80,32 +79,6 @@ export const fuseModelWithVerdict = (
   if (scamProb >= threshold) return Verdict.SUSPICIOUS;
   // Uncertain mid-band: abstain.
   return currentVerdict;
-};
-
-// URL-aware fusion: SUSPICIOUS link lowers the escalation bar, verified-official PH link raises it, shortener changes nothing.
-export const fuseWithLinkGrade = (
-  currentVerdict: Verdict,
-  scamProb: number,
-  linkGrade: LinkGradeResult | null,
-  opts: { threshold?: number; floor?: number; suspiciousBoost?: number } = {}
-): Verdict => {
-  if (currentVerdict === Verdict.HIGH_RISK) return Verdict.HIGH_RISK;
-  if (!linkGrade) return fuseModelWithVerdict(currentVerdict, scamProb, opts);
-  const threshold = opts.threshold ?? MODEL_THRESHOLD;
-  const floor = opts.floor ?? MODEL_CONFIDENT_LEGIT_FLOOR;
-  if (scamProb <= floor) return currentVerdict; // confident legit: never escalate
-  const suspiciousBoost = opts.suspiciousBoost ?? 0.15;
-  // URL-aware bar: a suspicious link lowers the escalation threshold; a
-  // verified-official PH link raises it (the model must be more confident to
-  // escalate a message linking a real official domain).
-  const effectiveThreshold =
-    linkGrade.grade === "SUSPICIOUS_LINK"
-      ? Math.max(0.05, threshold - suspiciousBoost)
-      : linkGrade.verifiedOfficialDomain
-        ? Math.min(0.99, threshold + suspiciousBoost)
-        : threshold;
-  if (scamProb >= effectiveThreshold) return Verdict.SUSPICIOUS;
-  return currentVerdict; // below the bar: stay at the pre-model verdict
 };
 
 export const classifyText = async (text: string): Promise<ClassifierVerdict | null> => {

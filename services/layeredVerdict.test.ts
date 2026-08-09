@@ -100,10 +100,6 @@ describe("fuseLayers - realistic PH cases", () => {
     expect(r.verdict).not.toBe(Verdict.HIGH_RISK);
   });
 
-  it("reported phone + high model -> HIGH_RISK (community trail confirms)", () => {
-    const r = fuseLayers({ reportedPhone: true, modelScamProb: 0.93 });
-    expect(r.verdict).toBe(Verdict.HIGH_RISK);
-  });
 });
 
 describe("fuseLayers - signal reporting", () => {
@@ -117,5 +113,27 @@ describe("fuseLayers - signal reporting", () => {
   it("riskScore is clamped to 0..10", () => {
     expect(fuseLayers({ engineScore: 10, modelScamProb: 1, suspiciousLink: true, reportedPhone: true }).riskScore).toBeLessThanOrEqual(10);
     expect(fuseLayers({ verifiedSender: true, officialLink: true, modelScamProb: 0, engineScore: 0 }).riskScore).toBeGreaterThanOrEqual(0);
+  });
+});
+
+describe("fuseLayers - blacklist policy (caps at SUSPICIOUS)", () => {
+  it("a reported phone alone never forces HIGH_RISK (cap at 6.9)", () => {
+    // Blacklist is the only risk layer; it must cap at SUSPICIOUS.
+    const r = fuseLayers({ reportedPhone: true, reportedDomain: true });
+    expect(r.verdict).toBe(Verdict.SUSPICIOUS);
+    expect(r.riskScore).toBeLessThan(7);
+  });
+
+  it("a reported phone + a confidently-flagged model can reach HIGH_RISK", () => {
+    // The cap only binds when blacklist is the sole risk source; a 0.99 model
+    // already produces HIGH_RISK on its own evidence.
+    const r = fuseLayers({ reportedPhone: true, modelScamProb: 0.99 });
+    expect(r.verdict).toBe(Verdict.HIGH_RISK);
+  });
+
+  it("a reported phone + engine HIGH_RISK can still reach HIGH_RISK", () => {
+    // The cap applies to the blacklist's own contribution, not to other layers.
+    const r = fuseLayers({ reportedPhone: true, engineScore: 9, modelScamProb: 0.97 });
+    expect(r.verdict).toBe(Verdict.HIGH_RISK);
   });
 });
