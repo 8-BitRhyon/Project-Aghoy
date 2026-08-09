@@ -92,9 +92,19 @@ const run = async (): Promise<void> => {
     for (const file of source.files) {
       const local = join(TMP_DIR, file.path);
       await download(file.url, local);
-      // Some sources (e.g. Kaggle) ship a zip with one CSV inside.
+      // Some sources (e.g. Kaggle) ship a zip with one CSV inside; others
+      // ship an xlsx workbook. Both are handled dependency-free.
       let csvText: string;
-      if (file.archiveEntry) {
+      if (file.xlsx) {
+        const { extractArchiveEntryRaw } = await import("./import-archive.ts");
+        const { xlsxToCsv } = await import("./import-xlsx.ts");
+        const localXlsx = join(TMP_DIR, `${file.path}.unzipped.xlsx`);
+        if (!existsSync(localXlsx)) {
+          const bytes = extractArchiveEntryRaw(local, file.archiveEntry ?? "");
+          writeFileSync(localXlsx, bytes);
+        }
+        csvText = xlsxToCsv(localXlsx);
+      } else if (file.archiveEntry) {
         const { extractArchiveEntry } = await import("./import-archive.ts");
         csvText = extractArchiveEntry(local, file.archiveEntry);
       } else {

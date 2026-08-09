@@ -5,6 +5,18 @@
 // every source before anything is downloaded, and getSource() re-checks it.
 // Add a dataset here, then rerun:
 //   npx tsx scripts/import-datasets.ts
+//
+// NOTE on rejected sources (kept out for quality, not license):
+//   - "PH Spam + Marketing SMS" (scottleechua, CC-BY-4.0): its 'spam' class is
+//     crowd-labeled and noisy - 32% of rows carry no scam signal (property
+//     marketing, plain "Hello" labeled as spam). A retrain including it
+//     REGRESSED the model (Taglish 22/22 -> 14/22, FPR 1.4% -> 2.95%), so it
+//     is excluded. Do not re-add without label audit.
+//   - "Tagalog-SMS" (onzero0, CC0): its `category` field is a message-TYPE
+//     taxonomy (otp/notifs/ads/gov), not a scam verdict. Mapping all non-spam
+//     categories to LEGIT leaks real OTP-phishing texts into the LEGIT class;
+//     a retrain also regressed the model (Taglish 22/22 -> 16/22, FPR 1.4% ->
+//     2.0%). Re-add only after a per-message scam audit of the otp/notifs rows.
 
 import { assertLicenseAllowed, TrainingChannel } from "./pipeline";
 
@@ -17,7 +29,7 @@ export interface DatasetSource {
   channel: TrainingChannel | ((rawChannel: string) => TrainingChannel);
   labelMap: Record<string, "SCAM" | "LEGIT">;
   columns: { text: string; label: string; channel?: string };
-  files: { path: string; url: string; archiveEntry?: string }[];
+  files: { path: string; url: string; archiveEntry?: string; xlsx?: boolean }[];
   // All rows share one label (datasets that ship a single class only).
   constantLabel?: "SCAM" | "LEGIT";
   // Non-commercial/ShareAlike exception approved by the project owner.
