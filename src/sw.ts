@@ -1,15 +1,4 @@
-// src/sw.ts - custom service worker (vite-plugin-pwa injectManifest strategy).
-//
-// Two responsibilities:
-//   1. Precache + runtime caching of OCR/model/ort-wasm assets (CacheFirst),
-//      exactly as the previous generateSW workbox config did.
-//   2. Web Share Target handling: when a user highlights text/image and
-//      "Share > Aghoy" posts to /share, read the form data, stash any image
-//      in the aghoy-share cache, and redirect to the app with the payload in
-//      the URL. The app consumes it on mount (utils/shareTarget.ts).
-//
-// A static page cannot read its own POST body, so this service worker is the
-// documented mechanism for POST share targets.
+// Custom service worker: CacheFirst for OCR/model/ort-wasm + Web Share Target (/share POST -> ?share_text / ?share_file).
 
 /// <reference lib="webworker" />
 declare const self: ServiceWorkerGlobalScope & { __WB_MANIFEST: unknown };
@@ -22,11 +11,7 @@ const CACHE_MODELS = "aghoy-models";
 const CACHE_ORT = "aghoy-ort-wasm";
 const MAX_AGE = 60 * 60 * 24 * 30;
 
-// Precache the small app shell (index.html + JS/CSS chunks + icons). The large
-// on-demand assets (OCR/model/ort-wasm) are excluded via injectManifest
-// globIgnores and runtime-cached CacheFirst below. Referencing self.__WB_MANIFEST
-// here keeps the token alive through the Vite build so workbox can inject the
-// manifest list at this call site.
+// Precache the app shell; large on-demand assets (OCR/model/ort-wasm) stay out via globIgnores + CacheFirst below.
 precacheAndRoute(self.__WB_MANIFEST);
 cleanupOutdatedCaches();
 

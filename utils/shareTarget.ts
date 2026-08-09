@@ -1,14 +1,4 @@
-// utils/shareTarget.ts - parse content received via the Web Share Target API.
-//
-// When a user highlights text (or an image) in any app and chooses
-// "Share > Aghoy" from the system share sheet, the PWA is launched with the
-// shared content. With a `method: POST` share_target, the content arrives as
-// multipart/form-data (name="text" and/or name="file"). With `method: GET`,
-// it arrives as URL query params. This module normalizes both into the same
-// shape the scanner already consumes ({ input, selectedImage, imageMimeType }).
-//
-// Pure and testable - no browser APIs here. The caller reads the actual
-// request/event and passes plain values in.
+// Parses Web Share Target content (POST form data or GET query) into scanner input. Pure + testable.
 
 export interface SharedPayload {
   text?: string;
@@ -31,9 +21,7 @@ export const parseShareQuery = (params: URLSearchParams): NormalizedShare => {
   return combineSharePayload(payload);
 };
 
-// Combine the three standard share fields into the scanner's single text box.
-// URL is appended because a shared URL alone (e.g. "check this link") is the
-// most common PH scam share; title adds context when present.
+// Combine share fields into the scanner's text box (URL is the most common PH scam share).
 export const combineSharePayload = (payload: SharedPayload): NormalizedShare => {
   const parts: string[] = [];
   if (payload.text?.trim()) parts.push(payload.text.trim());
@@ -58,8 +46,7 @@ export const isSelfShare = (url: string | null | undefined, selfOrigin: string):
   }
 };
 
-// Extract a shared image file's metadata from a File-like object (name, type,
-// size). The actual FileReader/objectURL work stays in the caller.
+// Extract image metadata from a File-like object (actual read stays in the caller).
 export const fileMeta = (file: { name?: string; type?: string; size?: number } | null | undefined): { name: string; type: string; size: number } | null => {
   if (!file) return null;
   return {
