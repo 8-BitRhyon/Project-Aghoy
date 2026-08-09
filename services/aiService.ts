@@ -1,9 +1,14 @@
 import { AnalysisResult, Verdict } from "../types";
 import { redactPII } from "../src/rejects/rejects";
 import { detectBrands, detectIntents, fallbackVerdict, BrandMatch } from "../src/brands/brands";
-import { postReport, lookupIndicator, ReportPayload, getConsentToken } from "../src/api/storageClient";
+import { checkSender } from "../src/brands/senderAllowlist";
+import { postReport, lookupIndicator, ReportPayload, getConsentToken, domainReputation } from "../src/api/storageClient";
+import { extractIndicators } from "../src/worker/indicators";
+import { CommunityReputation, REPORTED_DOMAIN_FLAG, REPORTED_PHONE_FLAG } from "./blacklistSignals";
+import { fuseLayers, LayerSignals } from "./layeredVerdict";
 import { WORKER_ORIGIN } from "../src/config";
-import { classifyText, fuseModelWithVerdict } from "./classifier";
+import { classifyText, fuseWithLinkGrade } from "./classifier";
+import { gradeMessageLinks } from "../src/training/urlGrade";
 
 // vite/client types are not in tsconfig.json, so import.meta.env is declared
 // locally.
@@ -54,7 +59,10 @@ const VALID_FLAGS = [
   "UNOFFICIAL DOMAIN",
   "ASKING FOR PAYMENT TO WORK",
   "THREATS",
-  "UNUSUAL SENDER"
+  "UNUSUAL SENDER",
+  "VERIFIED_SENDER",
+  "REPORTED_PHONE",
+  "REPORTED_DOMAIN"
 ].join(", ");
 
 const JSON_STRUCTURE_PROMPT = `
@@ -208,16 +216,65 @@ const withTimeout = async <T>(promise: Promise<T>, ms: number): Promise<T | null
 const withStorageSignals = async (
   base: AnalysisResult,
   payload: ReportPayload,
-  phoneHashes: string[]
+  phoneHashes: string[],
+  layerSignals: LayerSignals
 ): Promise<AnalysisResult> => {
-  const [similarScams, phoneCount] = await Promise.all([
+  const domains = extractIndicators(payload.content)
+    .filter((i) => i.type === "domain" || i.type === "url")
+    .map((i) => i.value)
+    .slice(0, 3);
+  const [similarScams, phoneCount, domainStatuses] = await Promise.all([
     withTimeout(fetchSimilarScams(payload), 8000) ?? [],
     reportedPhoneCount(phoneHashes),
+    Promise.all(domains.map((d) => withTimeout(domainReputation(d), 5000))),
   ]);
+
+  const reputations: CommunityReputation[] = [];
+  for (const h of phoneHashes.slice(0, 3)) {
+    const st = await withTimeout(lookupIndicator("phone", h), 5000);
+    if (st?.found && (st.times_reported || 0) >= 2) {
+      reputations.push({
+        indicator: { type: "phone", value: h },
+        found: true,
+        timesReported: st.times_reported || 0,
+      });
+    }
+  }
+  for (let i = 0; i < domains.length; i++) {
+    const st = domainStatuses[i];
+    if (st && (st.distinctReporters || 0) >= 1) {
+      reputations.push({
+        indicator: { type: "domain", value: domains[i] },
+        found: true,
+        timesReported: st.distinctReporters || 0,
+      });
+    }
+  }
+
+  // Merge the community blacklist into the layered fusion as additional
+  // evidence, then recompute the verdict from the sum of ALL layers. The
+  // pre-blacklist signals are passed through so the model/engine/URL/sender
+  // evidence is preserved, not reconstructed from display strings.
+  const finalLayered = fuseLayers({
+    ...layerSignals,
+    reportedPhone: reputations.some((r) => r.indicator.type === "phone"),
+    reportedDomain: reputations.some((r) => r.indicator.type === "domain"),
+  });
+
+  const flags = reputations
+    .filter((r) => (r.indicator.type === "phone" ? r.timesReported >= 2 : r.timesReported >= 1))
+    .map((r) => (r.indicator.type === "phone" ? REPORTED_PHONE_FLAG : REPORTED_DOMAIN_FLAG));
+  const phoneCountAll = phoneHashes.length
+    ? Math.max(phoneCount || 0, reputations.filter((r) => r.indicator.type === "phone").reduce((m, r) => Math.max(m, r.timesReported), 0))
+    : 0;
+
   return {
     ...base,
+    verdict: finalLayered.verdict,
+    riskScore: finalLayered.riskScore,
+    redFlags: flags.length ? [...(base.redFlags || []), ...flags] : base.redFlags,
     similarScams: (similarScams || []).length ? similarScams : undefined,
-    reportedPhone: (phoneCount || 0) >= 2 ? { count: phoneCount || 0 } : undefined,
+    reportedPhone: phoneCountAll >= 2 ? { count: phoneCountAll } : undefined,
   };
 };
 
@@ -477,7 +534,7 @@ export const enrichResult = (result: AnalysisResult, contentToAnalyze: string): 
   return { ...result, matchedBrands, intents };
 };
 
-export const analyzeContent = async (text: string, language: string, imageBase64?: string, imageMimeType?: string): Promise<AnalysisResult> => {
+export const analyzeContent = async (text: string, language: string, imageBase64?: string, imageMimeType?: string, sender?: string): Promise<AnalysisResult> => {
   if (import.meta.env.DEV) {
     if (text.includes("DEV_SAFE")) return getDevResponse("SAFE");
     if (text.includes("DEV_SCAM")) return getDevResponse("SCAM");
@@ -597,22 +654,40 @@ export const analyzeContent = async (text: string, language: string, imageBase64
       classifyText(contentToAnalyze),
       new Promise<null>((resolve) => setTimeout(() => resolve(null), MODEL_INFERENCE_TIMEOUT_MS)),
     ]);
-    if (modelVerdict && modelVerdict.flag && enriched.verdict !== Verdict.HIGH_RISK) {
-      const escalated = fuseModelWithVerdict(enriched.verdict, modelVerdict.scamProb);
-      // Only surface model evidence when the verdict actually escalated; a
-      // confident-legit or abstained call must not carry a bumped risk score
-      // or a contradictory ON_DEVICE_MODEL flag.
-      if (escalated !== enriched.verdict) {
-        enriched.verdict = escalated;
-        enriched.riskScore = Math.max(enriched.riskScore, 6);
-        enriched.redFlags = [...(enriched.redFlags || []), "ON_DEVICE_MODEL"];
-      }
-    }
+    // Gather every layer's evidence. Layers are evidence, not vetoes: the
+    // verdict emerges from a weighted sum (services/layeredVerdict.ts).
     const ocrText = imageBase64 ? contentToAnalyze.match(/\[IMAGE CONTENT \(OCR\)\]:\s*([\s\S]*?)\s*$/) : null;
     const phoneHashes = await phoneHashesFromText(`${text} ${ocrText ? ocrText[1] : ""}`);
+    const linkGrade = gradeMessageLinks(contentToAnalyze).worst;
+    const senderCheck = checkSender(sender);
+    const engineSignal = fallbackVerdict(contentToAnalyze); // null when it abstains
+
+    const layered = fuseLayers({
+      modelScamProb: modelVerdict?.scamProb ?? undefined,
+      engineScore: engineSignal?.riskScore ?? undefined,
+      suspiciousLink: linkGrade.grade === "SUSPICIOUS_LINK",
+      officialLink: linkGrade.verifiedOfficialDomain,
+      verifiedSender: senderCheck?.trusted === true,
+    });
+    const layerSignals: LayerSignals = {
+      modelScamProb: modelVerdict?.scamProb ?? undefined,
+      engineScore: engineSignal?.riskScore ?? undefined,
+      suspiciousLink: linkGrade.grade === "SUSPICIOUS_LINK",
+      officialLink: linkGrade.verifiedOfficialDomain,
+      verifiedSender: senderCheck?.trusted === true,
+    };
+
+    // Surface the on-device signals for transparency (only when they moved
+    // the verdict vs the server's enriched result).
+    const addedFlags: string[] = [];
+    if (senderCheck?.trusted) addedFlags.push("VERIFIED_SENDER");
+    if (modelVerdict?.flag) addedFlags.push("ON_DEVICE_MODEL");
+    if (linkGrade.grade === "SUSPICIOUS_LINK") addedFlags.push("SUSPICIOUS_LINK");
+    if (addedFlags.length) enriched.redFlags = [...(enriched.redFlags || []), ...addedFlags];
+
     const reportPayload: ReportPayload = {
-      verdict: enriched.verdict,
-      riskScore: enriched.riskScore,
+      verdict: layered.verdict,
+      riskScore: layered.riskScore,
       scamType: enriched.scamType || "None",
       redFlags: enriched.redFlags || [],
       content: contentToAnalyze,
@@ -621,8 +696,9 @@ export const analyzeContent = async (text: string, language: string, imageBase64
       phoneHashes,
     };
     postReport(reportPayload);
-    // Best-effort: storage failures degrade to the plain result, never to an error.
-    return withStorageSignals(enriched, reportPayload, phoneHashes);
+    // Community blacklist is applied in withStorageSignals (it needs async
+    // lookups); it merges its signals back and re-runs the layered fusion.
+    return withStorageSignals(enriched, reportPayload, phoneHashes, layerSignals);
 
   } catch (error: any) {
     // Deterministic fallback when the AI provider is unavailable: never leave the user without a verdict.
