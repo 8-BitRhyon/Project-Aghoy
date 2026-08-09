@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { playSound } from '../utils/sound';
 import { setDocumentLang } from '../src/utils/lang';
+import { td, normalizeLang, type DojoKey } from '../src/i18n';
 import { type Scenario, type ScenarioStep, type ScenarioDifficulty, type ScenarioFamily } from '../src/dojo/scenarios';
 import { ALL_SCENARIOS } from '../src/dojo/scenarios.generated';
 import { type LearnerProgress, emptyProgress, applyAnswer, sessionPlan, recordDailyGoal, streakStatus, familyMasteryState, isFamilyUnlocked, isTierUnlocked } from '../src/dojo/progress';
@@ -44,30 +45,30 @@ const FAMILY_ORDER: ScenarioFamily[] = [
 ];
 
 interface FamilyMeta {
-  label: string;
   icon: LucideIcon;
-  blurb: string;
+  labelKey: DojoKey;
+  blurbKey: DojoKey;
 }
 
 const FAMILY_META: Record<ScenarioFamily, FamilyMeta> = {
-  ewallet: { label: 'E-wallet Scams', icon: Smartphone, blurb: 'GCash, Maya, GoTyme and wallet app tricks.' },
-  bank: { label: 'Bank Scams', icon: Landmark, blurb: 'Banking calls, emails, and OTP traps.' },
-  telco: { label: 'Telco Scams', icon: Phone, blurb: 'SIM and telco account takeover tricks.' },
-  delivery: { label: 'Delivery Scams', icon: Truck, blurb: 'Fake parcel fees and delivery links.' },
-  customs: { label: 'Customs & Parcel', icon: FileSearch, blurb: 'Parcel clearance fee demands.' },
-  job: { label: 'Job Scams', icon: Briefcase, blurb: 'Fake jobs that ask you to pay to work.' },
-  romance: { label: 'Romance Scams', icon: Heart, blurb: 'Catfishers who ask you for money.' },
-  investment: { label: 'Investment Scams', icon: TrendingUp, blurb: 'Too-good crypto and stock offers.' },
-  government: { label: 'Government Impersonation', icon: Scale, blurb: 'Fake officials, fines, and threats.' },
-  quishing: { label: 'QR Code Scams', icon: ScanLine, blurb: 'Fake QR codes stuck over real ones.' },
-  vishing: { label: 'Phone Call Scams', icon: PhoneCall, blurb: 'Scam calls that fake your bank.' },
-  'sim-pretext': { label: 'SIM Swap Scams', icon: Fingerprint, blurb: 'Thieves who take over your SIM.' },
-  'family-emergency': { label: 'Family Emergency', icon: Users, blurb: 'Fake relatives claiming to be in trouble.' },
-  remittance: { label: 'Remittance Scams', icon: Banknote, blurb: 'Money transfer and payout tricks.' },
-  'loan-app': { label: 'Loan App Scams', icon: HandCoins, blurb: 'Predatory loan apps and fake lenders.' },
-  charity: { label: 'Charity Scams', icon: HeartHandshake, blurb: 'Fake donation pleas after disasters.' },
-  'fake-reward': { label: 'Fake Rewards', icon: Gift, blurb: 'Prizes you never entered.' },
-  'good-message': { label: 'Real or Fake?', icon: CheckCheck, blurb: 'Learn what real alerts look like.' },
+  ewallet: { icon: Smartphone, labelKey: 'f_ewallet', blurbKey: 'f_ewallet_blurb' },
+  bank: { icon: Landmark, labelKey: 'f_bank', blurbKey: 'f_bank_blurb' },
+  telco: { icon: Phone, labelKey: 'f_telco', blurbKey: 'f_telco_blurb' },
+  delivery: { icon: Truck, labelKey: 'f_delivery', blurbKey: 'f_delivery_blurb' },
+  customs: { icon: FileSearch, labelKey: 'f_customs', blurbKey: 'f_customs_blurb' },
+  job: { icon: Briefcase, labelKey: 'f_job', blurbKey: 'f_job_blurb' },
+  romance: { icon: Heart, labelKey: 'f_romance', blurbKey: 'f_romance_blurb' },
+  investment: { icon: TrendingUp, labelKey: 'f_investment', blurbKey: 'f_investment_blurb' },
+  government: { icon: Scale, labelKey: 'f_government', blurbKey: 'f_government_blurb' },
+  quishing: { icon: ScanLine, labelKey: 'f_quishing', blurbKey: 'f_quishing_blurb' },
+  vishing: { icon: PhoneCall, labelKey: 'f_vishing', blurbKey: 'f_vishing_blurb' },
+  'sim-pretext': { icon: Fingerprint, labelKey: 'f_sim', blurbKey: 'f_sim_blurb' },
+  'family-emergency': { icon: Users, labelKey: 'f_familyEmergency', blurbKey: 'f_familyEmergency_blurb' },
+  remittance: { icon: Banknote, labelKey: 'f_remittance', blurbKey: 'f_remittance_blurb' },
+  'loan-app': { icon: HandCoins, labelKey: 'f_loanApp', blurbKey: 'f_loanApp_blurb' },
+  charity: { icon: HeartHandshake, labelKey: 'f_charity', blurbKey: 'f_charity_blurb' },
+  'fake-reward': { icon: Gift, labelKey: 'f_fakeReward', blurbKey: 'f_fakeReward_blurb' },
+  'good-message': { icon: CheckCheck, labelKey: 'f_goodMessage', blurbKey: 'f_goodMessage_blurb' },
 };
 
 const scenariosForFamily = (family: ScenarioFamily): Scenario[] => ALL_SCENARIOS.filter((s) => s.family === family);
@@ -94,6 +95,8 @@ const DIFFICULTIES: ScenarioDifficulty[] = ['easy', 'medium', 'hard'];
 const DAILY_GOAL = 3;
 
 const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
+  const lang = normalizeLang(selectedLanguage);
+  const D = (key: DojoKey): string => td(lang, key);
   const [view, setView] = useState<View>('select');
   const [familyView, setFamilyView] = useState<ScenarioFamily | null>(null);
   const [lockedFamily, setLockedFamily] = useState<ScenarioFamily | null>(null);
@@ -309,10 +312,10 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
     const s = String(error?.message || error || '');
     setAiStatus('error');
     setAiError(
-      /429/.test(s) ? 'Too many requests. Wait a moment.'
-      : /quota|exhausted/i.test(s) ? 'AI quota reached for today.'
-      : /network|fetch/i.test(s) ? 'Connection error. Check your internet.'
-      : 'The AI simulator could not start right now.'
+      /429/.test(s) ? D('aiTooMany')
+      : /quota|exhausted/i.test(s) ? D('aiQuota')
+      : /network|fetch/i.test(s) ? D('aiNetwork')
+      : D('aiGeneric')
     );
     playSound('alert');
   };
@@ -325,13 +328,13 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
       <div className="mb-4 border-2 border-slate-700 bg-slate-900/80 p-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <div className="flex items-center gap-2">
           <Flame className="w-5 h-5 text-orange-400" />
-          <span className="font-['Press_Start_2P'] text-[10px] text-orange-300">STREAK {streak.current} {streak.current === 1 ? 'DAY' : 'DAYS'}</span>
+          <span className="font-['Press_Start_2P'] text-[10px] text-orange-300">{D('streak')} {streak.current} {streak.current === 1 ? D('day') : D('days')}</span>
         </div>
         <div className="flex items-center gap-2">
           <ShieldCheck className="w-5 h-5 text-cyan-400" />
-          <span className="font-['Press_Start_2P'] text-[10px] text-cyan-300">TODAY {todayCorrect}/{DAILY_GOAL}</span>
+          <span className="font-['Press_Start_2P'] text-[10px] text-cyan-300">{D('todayProgress')} {todayCorrect}/{DAILY_GOAL}</span>
         </div>
-        <p className="w-full md:w-auto text-cyan-200/80 font-['VT323'] text-lg leading-none">3 drills a day keeps the scammer away.</p>
+        <p className="w-full md:w-auto text-cyan-200/80 font-['VT323'] text-lg leading-none">{D('drillsAday')}</p>
       </div>
     );
   };
@@ -346,17 +349,13 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
             <HelpCircle className="w-8 h-8" />
           </div>
           <div>
-            <h3 className="text-cyan-400 font-bold text-lg md:text-xl font-['Press_Start_2P'] mb-2 uppercase">Protect Your Family from Scams</h3>
+            <h3 className="text-cyan-400 font-bold text-lg md:text-xl font-['Press_Start_2P'] mb-2 uppercase">{D('dojoTitle')}</h3>
             <p className="text-cyan-100/90 text-lg md:text-xl">
-              Scammers target the people who trust you most: lolas and lolos,
-              parents, OFW families. One 3-minute drill today can stop them
-              losing a lifetime of savings tomorrow. No tech experience needed -
-              built for grandparents.
+              {D('dojoSubtitle')}
             </p>
             <p className="mt-3 text-cyan-300 text-lg md:text-xl">
-              <span className="text-white font-bold">The one rule that stops most scams:</span>{" "}
-              no bank, no wallet, no government office ever asks for your OTP.
-              Practice the rest below.
+              <span className="text-white font-bold">{D('oneRuleLabel')}</span>{" "}
+              {D('oneRuleBody')}
             </p>
           </div>
         </div>
@@ -366,10 +365,10 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
         onClick={startSession}
         className="w-full mb-6 px-5 py-4 bg-cyan-700 hover:bg-cyan-600 text-white font-['Press_Start_2P'] text-xs md:text-sm border-b-4 border-cyan-900 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center gap-2 min-h-[44px]"
       >
-        <Zap className="w-4 h-4" /> START TODAY'S DRILLS
+        <Zap className="w-4 h-4" /> {D('startDrills')}
       </button>
 
-      <h4 className="text-slate-300 font-['Press_Start_2P'] text-xs mb-3 uppercase">Pick a scam family</h4>
+      <h4 className="text-slate-300 font-['Press_Start_2P'] text-xs mb-3 uppercase">{D('pickFamily')}</h4>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {FAMILY_ORDER.map((family) => {
@@ -386,12 +385,12 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
                 <span className="p-2 bg-slate-800 border-2 border-slate-600 text-cyan-400 group-hover:border-cyan-500 transition-colors">
                   <Icon className="w-6 h-6" />
                 </span>
-                <span className="text-[10px] font-['Press_Start_2P'] px-2 py-1 border border-cyan-700 text-cyan-300 whitespace-nowrap">{total} DRILLS</span>
+                <span className="text-[10px] font-['Press_Start_2P'] px-2 py-1 border border-cyan-700 text-cyan-300 whitespace-nowrap">{total} {D('drills')}</span>
               </div>
-              <h4 className="text-white font-['Press_Start_2P'] text-xs mb-1">{meta.label}</h4>
-              <p className="text-slate-400 font-['VT323'] text-lg leading-tight">{meta.blurb}</p>
+              <h4 className="text-white font-['Press_Start_2P'] text-xs mb-1">{td(lang, meta.labelKey)}</h4>
+              <p className="text-slate-400 font-['VT323'] text-lg leading-tight">{td(lang, meta.blurbKey)}</p>
               <p className="mt-2 text-[10px] font-['Press_Start_2P'] text-slate-400">
-                STATUS: <span className="text-cyan-300">{masteryLabel(family)}</span>
+                {D('status')} <span className="text-cyan-300">{masteryLabel(family)}</span>
               </p>
             </button>
           );
@@ -403,7 +402,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
           onClick={startAi}
           className="px-5 py-3 bg-indigo-700 hover:bg-indigo-600 text-white font-['Press_Start_2P'] text-xs border-b-4 border-indigo-900 active:border-b-0 active:translate-y-1 transition-all inline-flex items-center gap-2 min-h-[44px]"
         >
-          <Bot className="w-4 h-4" /> ADVANCED: PRACTICE VS LIVE AI SCAMMER
+          <Bot className="w-4 h-4" /> {D('advancedLive')}
         </button>
       </div>
     </div>
@@ -422,16 +421,14 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
 
         <div className="mb-4 flex items-center justify-between">
           <button onClick={backToSelect} className="flex items-center gap-1 text-slate-400 hover:text-white font-['VT323'] text-lg min-h-[44px]">
-            <ArrowLeft className="w-4 h-4" /> FAMILIES
+            <ArrowLeft className="w-4 h-4" /> {D('families')}
           </button>
-          <span className="text-[10px] text-slate-400 font-['Press_Start_2P']">{total} DRILLS</span>
+          <span className="text-[10px] text-slate-400 font-['Press_Start_2P']">{total} {D('drills')}</span>
         </div>
 
         {lockedFamily === familyView && !isFamilyUnlocked(progress, familyView) && (
           <div className="mb-4 border-2 border-amber-700 bg-amber-950/40 px-3 py-2 font-['VT323'] text-lg text-amber-200">
-            This family is locked. Master the earlier families first (vishing
-            unlocks after you master bank; hard drills unlock after 4 mastered
-            families). Your progress is what opens the door.
+            {D('lockedFamily')}
           </div>
         )}
 
@@ -441,8 +438,8 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
               <Icon className="w-8 h-8" />
             </div>
             <div>
-              <h3 className="text-cyan-400 font-bold text-lg md:text-xl font-['Press_Start_2P'] mb-2 uppercase">{meta.label}</h3>
-              <p className="text-cyan-100/90 text-lg md:text-xl">{meta.blurb}</p>
+              <h3 className="text-cyan-400 font-bold text-lg md:text-xl font-['Press_Start_2P'] mb-2 uppercase">{td(lang, meta.labelKey)}</h3>
+              <p className="text-cyan-100/90 text-lg md:text-xl">{td(lang, meta.blurbKey)}</p>
             </div>
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
@@ -456,7 +453,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
               );
             })}
             <span className="text-[10px] font-['Press_Start_2P'] px-2 py-1 border border-cyan-700 text-cyan-300">
-              STATUS: {masteryLabel(familyView)}
+              {D('status')} {masteryLabel(familyView)}
             </span>
           </div>
         </div>
@@ -469,7 +466,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
             <div key={d} className="mb-6">
               <div className="flex items-center justify-between mb-2">
                 <span className={`text-[10px] font-['Press_Start_2P'] px-2 py-1 border ${DIFF_COLOR[d]}`}>{d.toUpperCase()}</span>
-                <span className="text-slate-400 font-['VT323'] text-lg">{items.length} drills</span>
+                <span className="text-slate-400 font-['VT323'] text-lg">{items.length} {D('drills')}</span>
               </div>
               <div className="grid grid-cols-1 gap-3">
                 {visible.map((s) => (
@@ -495,9 +492,9 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
                   className="mt-2 w-full py-3 bg-slate-800 hover:bg-slate-700 text-cyan-300 font-['Press_Start_2P'] text-[10px] border-2 border-slate-600 min-h-[44px] flex items-center justify-center gap-2"
                 >
                   {expanded[d] ? (
-                    <><ChevronDown className="w-4 h-4 rotate-180" /> SHOW LESS</>
+                    <><ChevronDown className="w-4 h-4 rotate-180" /> {D('showLess')}</>
                   ) : (
-                    <><ChevronDown className="w-4 h-4" /> SHOW {items.length - 6} MORE</>
+                    <><ChevronDown className="w-4 h-4" /> {D('showMore')}{items.length - 6} MORE</>
                   )}
                 </button>
               )}
@@ -518,13 +515,13 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
       <div className="w-full max-w-3xl mx-auto">
         <div className="mb-4 flex items-center justify-between">
           <button onClick={backToSelect} className="flex items-center gap-1 text-slate-400 hover:text-white font-['VT323'] text-lg min-h-[44px]">
-            <ArrowLeft className="w-4 h-4" /> FAMILIES
+            <ArrowLeft className="w-4 h-4" /> {D('families')}
           </button>
           <div className="flex items-center gap-3">
             {sessionIds.length > 0 && (
-              <span className="text-[10px] text-slate-400 font-['Press_Start_2P']">SESSION {sessionIds.length + 1}</span>
+              <span className="text-[10px] text-slate-400 font-['Press_Start_2P']">{D('session')} {sessionIds.length + 1}</span>
             )}
-            <span className="text-[10px] text-slate-400 font-['Press_Start_2P']">HP</span>
+            <span className="text-[10px] text-slate-400 font-['Press_Start_2P']">{D('hp')}</span>
             <div className="w-24 h-3 bg-slate-950 border border-slate-600">
               <div className={`h-full transition-all duration-500 ${game.hp > 60 ? 'bg-green-500' : game.hp > 30 ? 'bg-yellow-500' : 'bg-red-500'}`}
                    style={{ width: `${game.hp}%` }} />
@@ -538,7 +535,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
             <h2 className="text-white font-['Press_Start_2P'] text-sm md:text-base mb-1">{scenario.title}</h2>
             <p className="text-slate-300 font-['VT323'] text-lg">{scenario.setup}</p>
             <div className="mt-1 text-[10px] text-slate-400 font-['Press_Start_2P']">
-              SCORE {game.score} &middot; {game.correctCount}/{game.totalSteps} CORRECT
+              {D('score')} {game.score} &middot; {game.correctCount}/{game.totalSteps} {D('correct')}
             </div>
           </div>
 
@@ -547,28 +544,28 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
               <div className={`text-center py-6 animate-fade-in ${game.phase === 'won' ? 'text-green-300' : 'text-red-300'}`}>
                 {game.phase === 'won' ? <Trophy className="w-14 h-14 mx-auto mb-3 text-yellow-400" /> : <ShieldAlert className="w-14 h-14 mx-auto mb-3 text-red-400 animate-pulse" />}
                 <h3 className="text-xl md:text-2xl font-['Press_Start_2P'] mb-3 text-white">
-                  {game.phase === 'won' ? `SHIELD UP! (${rank})` : 'TRY AGAIN'}
+                  {game.phase === 'won' ? `${D('shieldUp')} (${rank})` : D('tryAgain')}
                 </h3>
                 <p className="font-['VT323'] text-lg md:text-xl max-w-lg mx-auto leading-tight">
                   {scenario.debrief}
                 </p>
                 <p className="mt-3 font-['VT323'] text-lg text-slate-300">
-                  You answered {game.correctCount} of {game.totalSteps} correctly. Rank: <span className="text-white">{rank}</span>
+                  {D('youAnswered')} {game.correctCount} {D('of')} {game.totalSteps} {D('correctly')} <span className="text-white">{rank}</span>
                 </p>
                 <p className="mt-2 font-['VT323'] text-lg text-slate-300">
-                  Family practiced: <span className="text-white">{FAMILY_META[scenario.family].label}</span> - Status: <span className="text-cyan-300">{masteryLabel(scenario.family)}</span>
+                  {D('familyPracticed')} <span className="text-white">{td(lang, FAMILY_META[scenario.family].labelKey)}</span> - {D('status')} <span className="text-cyan-300">{masteryLabel(scenario.family)}</span>
                 </p>
                 <div className="mt-5 flex flex-wrap justify-center gap-3">
                   {sessionIds.length > 0 && (
                     <button onClick={nextDrill} className="px-4 py-2 bg-yellow-700 hover:bg-yellow-600 text-white font-['Press_Start_2P'] text-[10px] border-b-4 border-yellow-900 active:border-b-0 active:translate-y-1 min-h-[44px]">
-                      NEXT DRILL ({sessionIds.length} LEFT)
+                      {D('nextDrill')} ({sessionIds.length} LEFT)
                     </button>
                   )}
                   <button onClick={backToSelect} className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white font-['Press_Start_2P'] text-[10px] border-b-4 border-slate-900 active:border-b-0 active:translate-y-1 min-h-[44px]">
-                    MORE SCENARIOS
+                    {D('moreScenarios')}
                   </button>
                   <button onClick={() => openScenario(scenario.id)} className="px-4 py-2 bg-cyan-700 hover:bg-cyan-600 text-white font-['Press_Start_2P'] text-[10px] border-b-4 border-cyan-900 active:border-b-0 active:translate-y-1 min-h-[44px]">
-                    RETRY
+                    {D('retry')}
                   </button>
                 </div>
               </div>
@@ -578,16 +575,16 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
                   <div className="flex items-center gap-2 mb-2">
                     {game.lastCorrect ? <ShieldCheck className="w-6 h-6 text-green-400" /> : <ShieldAlert className="w-6 h-6 text-red-400" />}
                     <span className={`font-['Press_Start_2P'] text-xs ${game.lastCorrect ? 'text-green-400' : 'text-red-400'}`}>
-                      {game.lastCorrect ? 'CORRECT' : 'NOT QUITE'}
+                      {game.lastCorrect ? D('correctShort') : D('notQuite')}
                     </span>
                   </div>
                   <p className="font-['VT323'] text-xl text-slate-100 leading-tight">{game.lastFeedback}</p>
                   <p className="mt-3 font-['VT323'] text-lg text-cyan-300 leading-tight border-t-2 border-slate-700 pt-2">
-                    <span className="text-white font-bold">REMEMBER: </span>{feedbackTip ?? ''}
+                    <span className="text-white font-bold">{D('remember')} </span>{feedbackTip ?? ''}
                   </p>
                 </div>
                 <button onClick={nextStep} className="mt-4 w-full py-3 bg-cyan-700 hover:bg-cyan-600 text-white font-['Press_Start_2P'] text-xs border-b-4 border-cyan-900 active:border-b-0 active:translate-y-1 flex items-center justify-center gap-2 min-h-[44px]">
-                  NEXT SITUATION <ChevronRight className="w-4 h-4" />
+                  {D('nextSituation')} <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             ) : step ? (
@@ -600,7 +597,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
                     </span>
                     <div>
                       <div className="font-semibold text-sm text-slate-800">{step.senderLabel}</div>
-                      <div className="text-[10px] text-slate-500 uppercase tracking-wide">{step.channel} message</div>
+                      <div className="text-[10px] text-slate-500 uppercase tracking-wide">{step.channel} {D('messageChannel')}</div>
                     </div>
                   </div>
                   <p className="text-slate-800 text-sm leading-relaxed">{step.message}</p>
@@ -630,17 +627,17 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
     <div className="w-full max-w-3xl mx-auto">
       <div className="mb-4">
         <button onClick={backToSelect} className="flex items-center gap-1 text-slate-400 hover:text-white font-['VT323'] text-lg min-h-[44px]">
-          <ArrowLeft className="w-4 h-4" /> FAMILIES
+          <ArrowLeft className="w-4 h-4" /> {D('families')}
         </button>
       </div>
       <div className={`bg-slate-900 border-4 ${aiStatus === 'won' ? 'border-green-600' : aiStatus === 'lost' ? 'border-red-600' : aiStatus === 'error' ? 'border-orange-500' : 'border-indigo-600'}`}>
         <div className="p-4 border-b-4 border-slate-700 bg-indigo-900/50 flex justify-between items-center">
           <div>
-            <h2 className="text-white font-['Press_Start_2P'] text-sm">LIVE AI SCAMMER</h2>
-            <p className="text-slate-300 font-['VT323'] text-lg">The AI pretends to be a scammer. Reply and spot their lies. Type BLOCK or SCAM when you catch them.</p>
+            <h2 className="text-white font-['Press_Start_2P'] text-sm">{D('liveScammer')}</h2>
+            <p className="text-slate-300 font-['VT323'] text-lg">{D('liveSubtitle')}</p>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] text-slate-400 font-['Press_Start_2P']">HP</span>
+            <span className="text-[10px] text-slate-400 font-['Press_Start_2P']">{D('hp')}</span>
             <div className="w-20 h-3 bg-slate-950 border border-slate-600">
               <div className={`h-full ${aiHealth > 60 ? 'bg-green-500' : aiHealth > 30 ? 'bg-yellow-500' : 'bg-red-500'}`} style={{ width: `${aiHealth}%` }} />
             </div>
@@ -666,12 +663,12 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
           {aiStatus === 'won' && (
             <div className="text-center text-green-300 font-['VT323'] text-xl border-2 border-green-600 bg-green-950/40 p-4">
               <Trophy className="w-10 h-10 mx-auto mb-2 text-yellow-400" />
-              YOU CAUGHT THE SCAMMER! Good instinct.
+              {D('youCaught')}
             </div>
           )}
           {aiStatus === 'lost' && (
             <div className="text-center text-red-300 font-['VT323'] text-xl border-2 border-red-600 bg-red-950/40 p-4">
-              The scammer got info from you. Learn the red flags and try again.
+              {D('scammerGotInfo')}
             </div>
           )}
           {aiStatus === 'error' && (
@@ -687,7 +684,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && sendAi()}
             disabled={aiStatus !== 'active'}
-            placeholder="Reply to the scammer..."
+            placeholder={D('replyPlaceholder')}
             className="flex-1 bg-slate-800 text-white border border-slate-600 rounded-full px-4 py-2 font-sans text-sm focus:outline-none focus:border-indigo-500 disabled:opacity-40"
           />
           <button onClick={sendAi} disabled={aiStatus !== 'active' || !input.trim()} aria-label="Send"
