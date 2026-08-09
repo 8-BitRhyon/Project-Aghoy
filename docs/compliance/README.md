@@ -1,9 +1,9 @@
 # Project Aghoy: ISO 27001:2022 Compliance Program
 
 **Status:** Phase 1 (gap analysis, policy set, SoA, asset inventory, risk register, and operational evidence in place)
-**Owner:** Single operator (InfoSec owner, AI governance owner, internal auditor)
+**Owner:** Rhyon Caleb Foz-Santos (single operator: InfoSec owner, AI governance owner, internal auditor; Internal Tools Engineer specializing in Cybersecurity/GRC, Backend Systems, and AI Governance)
 **Target:** ISO/IEC 27001:2022 certification
-**Last updated:** 2026-08-06
+**Last updated:** 2026-08-09
 
 This directory is the compliance program for Project Aghoy. It is honest about what certification is and what it is not: ISO 27001 certification is a *certification process* for a managed information security program, not a code deliverable. The technical security work in this repository is strong and well documented; the management system around it is the actual gap.
 
@@ -95,11 +95,11 @@ Estimated effort: 2-6 months from Phase 2 exit, dominated by registrar schedulin
 
 ## 4. Roles and the segregation-of-duties reality
 
-For ISO 27001 the ISMS roles in this project are, necessarily, all held by one person:
+For ISO 27001 the ISMS roles in this project are, necessarily, all held by one person. The operator's professional background (Internal Tools Engineer: cybersecurity/GRC, backend systems, AI governance; see the Monozen portfolio) is directly on-topic for the roles below - the competence evidence that an auditor will ask for under Clause 7.2.
 
 | Role | Holder | What it means here |
 | --- | --- | --- |
-| ISMS management representative / InfoSec owner | Single operator | Owns the policy set, risk register, and control operation |
+| ISMS management representative / InfoSec owner | Single operator (Rhyon Caleb Foz-Santos) | Owns the policy set, risk register, and control operation |
 | AI governance owner | Single operator | Owns the model/provider decisions (Cerebras/Groq via AI Gateway), prompt-injection surface, and the Dojo simulation boundary |
 | Internal auditor (Clause 9.2) | Single operator | Runs the internal audit program and produces the audit report |
 | Management (Clause 5.1) | Single operator | Approves policy, accepts risk, signs off management review |
