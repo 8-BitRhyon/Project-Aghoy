@@ -32,7 +32,7 @@ Project Aghoy is an AI-powered scam detector for the Philippine context. It anal
 1. **Pre-commit gate.** `scripts/pre-commit.sh` runs typecheck + test + build. CI (`.github/workflows/ci.yml`) runs the same checks plus a SHA-pinned-actions audit and a gitleaks full-history secret scan.
 2. **No lint script exists.** Add one only if a real lint config (e.g. ESLint) is introduced; do not invent a lint command.
 3. **Typecheck covers two projects**: the app via `tsconfig.json` and the Worker via `Tsconfig.Worker.Json`. Keep both green.
-4. **Deploy** is Cloudflare Pages (`project-aghoy.pages.dev`) with Functions for the API and a Wrangler Durable Objects worker for the Dojo. `vercel.json` is a Vite fallback, not the primary host.
+4. **Deploy** is Cloudflare Pages (`project-aghoy.pages.dev`) with Functions for the API and a Wrangler Durable Objects worker for the Dojo. Cloudflare is the ONLY host; the old Vercel preview host was retired (see `public/_redirects`).
 
 ## Architecture
 

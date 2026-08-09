@@ -1,0 +1,4 @@
+# Cloudflare Pages redirects
+# The project is hosted on Cloudflare only. Redirect the historical Vercel
+# preview host (used before Cloudflare became primary) to the live site.
+https://project-aghoy.vercel.app/* https://project-aghoy.pages.dev/:splat 301
