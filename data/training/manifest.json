@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-08T13:30:53.631Z",
+  "generated_at": "2026-08-09T06:20:34.905Z",
   "seed": 20260807,
   "balanced": {
     "max_majority_ratio": 2
@@ -47,18 +47,29 @@
       "files": [
         "https://www.kaggle.com/api/v1/datasets/download/bwandowando/philippine-spam-sms-messages"
       ]
+    },
+    {
+      "id": "antony-reyes-ph",
+      "name": "Sino 'To?! - ScamMessagesPhilippines (Anton Reyes)",
+      "license": "no-license",
+      "license_url": "https://github.com/AGR-Yes/ScamMessagesPhilippines",
+      "attribution": "Anton Reyes / Sino 'To?! ScamMessagesPhilippines (no license declared; owner-approved exception)",
+      "license_note": "Owner-directed exception (2026-08-09): public PH scam-text research repo, no LICENSE file, non-profit use with credit. Follow-up: email author for a permissive license.",
+      "files": [
+        "https://raw.githubusercontent.com/AGR-Yes/ScamMessagesPhilippines/main/Processed%20Datasets/spam.csv"
+      ]
     }
   ],
   "totals": {
-    "rows": 15303,
-    "scam": 5101,
-    "legit": 10202,
-    "redacted": 4243,
-    "redacted_pct": 28,
+    "rows": 15516,
+    "scam": 5172,
+    "legit": 10344,
+    "redacted": 4263,
+    "redacted_pct": 27,
     "by_channel": {
-      "job": 7957,
-      "sms": 4238,
-      "email": 3108
+      "job": 8060,
+      "sms": 4339,
+      "email": 3117
     },
     "per_source": {
       "llmgen-email": {
@@ -84,8 +95,14 @@
         "scam": 945,
         "legit": 0,
         "redacted_pct": 3
+      },
+      "antony-reyes-ph": {
+        "rows": 159,
+        "scam": 159,
+        "legit": 0,
+        "redacted_pct": 2
       }
     }
   },
-  "corpus_sha256": "08c8d2ef343e4924a9513512b3a302b6fbe5b46aa065544a8594cae74ed826e3"
+  "corpus_sha256": "500f98e30072781c4fd82bf8742a3b176e25dea3747ff399a9438b47d7da9a35"
 }

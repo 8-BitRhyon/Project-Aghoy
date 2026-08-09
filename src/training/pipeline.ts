@@ -39,7 +39,13 @@ export const ALLOWED_LICENSES = new Set(["apache-2.0", "mit", "cc-by-4.0", "cc0-
 // restrict redistribution, admitted ONLY on an explicit owner decision
 // (recorded in the source's `licenseNote`). These do NOT go in ALLOWED_LICENSES
 // so the default gate stays strict; a source opts in via `nonCommercial: true`.
-export const ALLOWED_NONCOMMERCIAL_LICENSES = new Set(["cc-by-nc-sa-4.0"]);
+// "no-license" is an INTERNAL exception identifier (not an SPDX license id) for
+// public research repos with NO LICENSE file (all rights reserved by default)
+// that the owner directed for non-profit use with credit. Corpus rows carry it
+// verbatim as provenance metadata (each row's `license` field mirrors the source
+// license); THIRD_PARTY_NOTICES and manifest.json explain it as "NO LICENSE
+// DECLARED / OWNER-DIRECTED EXCEPTION" so external audits see the true status.
+export const ALLOWED_NONCOMMERCIAL_LICENSES = new Set(["cc-by-nc-sa-4.0", "no-license"]);
 
 export const assertLicenseAllowed = (license: string, sourceId: string, opts: { nonCommercial?: boolean; licenseNote?: string } = {}): void => {
   if (ALLOWED_LICENSES.has(license)) return;

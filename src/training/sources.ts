@@ -116,6 +116,33 @@ export const TRAINING_SOURCES: DatasetSource[] = [
       },
     ],
   },
+  {
+    id: "antony-reyes-ph",
+    name: "Sino 'To?! - ScamMessagesPhilippines (Anton Reyes)",
+    // The GitHub repo ships NO license file (all-rights-reserved by default).
+    // Admitted ONLY on the project owner's explicit direction (2026-08-09) as
+    // a no-license exception, mirroring the non-commercial exception process:
+    // the data is a public research aggregation of PH scam texts + the Kaggle
+    // source already admitted. Credit is recorded in THIRD_PARTY_NOTICES.
+    // The owner should still reach out to the author to convert this to a
+    // real permissive license.
+    license: "no-license",
+    licenseUrl: "https://github.com/AGR-Yes/ScamMessagesPhilippines",
+    attribution: "Anton Reyes / Sino 'To?! ScamMessagesPhilippines (no license declared; owner-approved exception)",
+    nonCommercial: true,
+    licenseNote: "Owner-directed exception (2026-08-09): public PH scam-text research repo, no LICENSE file, non-profit use with credit. Follow-up: email author for a permissive license.",
+    channel: SMS_CHANNEL,
+    // The spam.csv ships only scam texts - every row is SCAM.
+    constantLabel: "SCAM",
+    labelMap: { spam: "SCAM", ham: "LEGIT" },
+    columns: { text: "proof", label: "" },
+    files: [
+      {
+        path: "antony-reyes-spam.csv",
+        url: "https://raw.githubusercontent.com/AGR-Yes/ScamMessagesPhilippines/main/Processed%20Datasets/spam.csv",
+      },
+    ],
+  },
 ];
 
 export const getSource = (id: string): DatasetSource => {
