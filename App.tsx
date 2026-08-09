@@ -10,7 +10,7 @@ import StatsPanel from './components/StatsPanel';
 import PrivacyConsent from './components/PrivacyConsent';
 import { playSound, toggleMute, getMuteStatus } from './utils/sound';
 import { sanitizeText } from './utils/privacy';
-import { clearConsentToken, flushQueuedReports } from './src/api/storageClient';
+import { clearConsentToken } from './src/api/storageClient';
 
 const Dojo = lazy(() => import('./components/Dojo'));
 const AboutModal = lazy(() => import('./components/AboutModal'));
@@ -78,7 +78,6 @@ const ScanningOverlay = () => (
 
 const App: React.FC = () => {
   const [input, setInput] = useState('');
-  const [senderInput, setSenderInput] = useState('');
   const [honeypot, setHoneypot] = useState('');
   
   const [language, setLanguage] = useState('TAGALOG');
@@ -123,24 +122,6 @@ const App: React.FC = () => {
     };
     window.addEventListener('storage', checkConsent);
     return () => window.removeEventListener('storage', checkConsent);
-  }, []);
-
-
-  useEffect(() => {
-    // Offline report queue: flush queued reports when connectivity returns or
-    // the app comes to the foreground. The queue is durable (IndexedDB), so
-    // reports enqueued while offline are delivered on the next opportunity.
-    const flush = () => { flushQueuedReports(); };
-    window.addEventListener('online', flush);
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') flush();
-    });
-    // Flush once on boot (catches reports queued during a previous session).
-    flush();
-    return () => {
-      window.removeEventListener('online', flush);
-      document.removeEventListener('visibilitychange', flush);
-    };
   }, []);
 
   useEffect(() => {
@@ -365,7 +346,7 @@ const App: React.FC = () => {
 
       try {
         playSound('scan');
-        const analysis = await analyzeContent(input, language, selectedImage || undefined, imageMimeType || undefined, senderInput);
+        const analysis = await analyzeContent(input, language, selectedImage || undefined, imageMimeType || undefined);
         setAnalysisId(prev => prev + 1);
         setResult(analysis);
         updateStatsAndHistory(analysis);
@@ -695,17 +676,6 @@ const App: React.FC = () => {
                                 autoComplete="off"
                             />
                             
-                            <div className="flex items-center gap-2 px-3 py-2 bg-slate-900 border-b border-slate-800">
-                                <span className="text-slate-500 font-mono text-xs uppercase tracking-wider shrink-0">From</span>
-                                <input
-                                    type="text"
-                                    value={senderInput}
-                                    onChange={(e) => setSenderInput(e.target.value)}
-                                    placeholder="Sender ID or number (e.g. GCash, 2882, 0917...) - optional, improves accuracy"
-                                    className="flex-1 bg-transparent text-green-400 text-sm font-mono focus:outline-none placeholder:text-slate-600"
-                                    maxLength={40}
-                                />
-                            </div>
                             <textarea
                                 ref={textareaRef}
                                 value={input}
