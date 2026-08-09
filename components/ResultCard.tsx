@@ -272,7 +272,26 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId, la
   const handleCopyReport = () => {
     playSound('click');
     const brands = (result.matchedBrands || []).map((b) => b.key).join(', ');
-    const reportText = `REPORT TO PNP-ACG\n\nType: ${result.scamType}\nSender: ${result.senderEntity || 'Unknown'}${brands ? `\nImpersonated brand(s): ${brands}` : ''}\n\nDetails:\nI received a suspicious message identified as a potential ${result.scamType}. \n\nRed Flags Detected: ${result.redFlags.join(', ')}.`;
+    // One-tap evidence package for every official PH channel: PNP-ACG (the
+    // existing default) plus CICC 1326, the eGov app, and telco Stop Spam
+    // numbers. Rejects-sanitized only; the user copies once and pastes where
+    // the channel needs it.
+    const reportText = [
+      `REPORT TO PNP-ACG / CICC 1326 / eGov / TELCO`,
+      ``,
+      `Type: ${result.scamType}`,
+      `Sender: ${result.senderEntity || 'Unknown'}${brands ? `\nImpersonated brand(s): ${brands}` : ''}`,
+      `Red Flags: ${result.redFlags.join(', ')}.`,
+      ``,
+      `Details: I received a suspicious message identified as a potential ${result.scamType}.`,
+      ``,
+      `Official channels:`,
+      `- PNP-ACG hotline: (02) 8414-1560`,
+      `- CICC hotline: 1326 (toll-free)`,
+      `- eGov PH app: More > Report > Scam > Text Scam`,
+      `- Globe/TM: forward SMS to 7726`,
+      `- Smart/Sun/TNT: forward SMS to 2920`,
+    ].join('\n');
     navigator.clipboard.writeText(reportText);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);

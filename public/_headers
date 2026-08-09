@@ -7,5 +7,12 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
   Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
   Cross-Origin-Resource-Policy: same-origin
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://gateway.ai.cloudflare.com https://project-aghoy-dojo.rhyonfs.workers.dev; worker-src 'self' blob:; frame-ancestors 'none'
+
+# COEP note: require-corp unlocks SharedArrayBuffer so onnxruntime-web uses
+# its threaded wasm build (fast) instead of single-threaded Asyncify (slow) on
+# 2GB phones. Google Fonts resources are CORS-enabled (crossorigin on the link
+# in index.html) so they satisfy CORP. If any subresource starts failing under
+# COEP, remove this line - it is a perf win, not a correctness requirement.

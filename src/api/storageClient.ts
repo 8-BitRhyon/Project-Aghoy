@@ -1,4 +1,5 @@
 import { WORKER_ORIGIN } from "../config";
+import { enqueueAndFlush, flushQueue, idbReportStore, ReportStore } from "../../utils/reportQueue";
 
 const FETCH_TIMEOUT_MS = 5000;
 const CONSENT_STORAGE_KEY = "aghoy_consent_token";
@@ -52,18 +53,49 @@ export interface ReportResult {
   id?: number | null;
 }
 
-export const postReport = async (payload: ReportPayload): Promise<ReportResult> => {
+// Durable offline-first send. Every report is persisted to IndexedDB BEFORE
+// the network attempt, then flushed. Offline reports queue and auto-flush on
+// the next opportunity (see utils/reportQueue.ts). Returns ok:true when the
+// report is durably accepted (either sent now or queued for retry).
+const sendReportOnce = async (payload: ReportPayload): Promise<boolean> => {
   try {
     const res = await fetchWithTimeout(`${WORKER_ORIGIN}/reports`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "X-Consent-Token": getConsentToken() || "" },
       body: JSON.stringify({ ...payload, source: payload.source || "web" }),
     });
-    if (!res.ok) return { ok: false };
-    const data = (await res.json().catch(() => ({}))) as { rejected?: boolean; id?: number };
-    return { ok: true, rejected: !!data.rejected, id: data.id ?? null };
+    if (!res.ok) return false;
+    return true;
   } catch {
-    return { ok: false };
+    return false;
+  }
+};
+
+let queueStore: ReportStore | null = null;
+const getQueueStore = (): ReportStore => {
+  if (!queueStore) queueStore = idbReportStore();
+  return queueStore;
+};
+
+export const postReport = async (payload: ReportPayload): Promise<ReportResult> => {
+  try {
+    // Persist first, then flush. Offline => queued, not lost.
+    await enqueueAndFlush(getQueueStore(), payload, sendReportOnce);
+    return { ok: true };
+  } catch {
+    // IndexedDB unavailable (private mode / very old browser): fall back to a
+    // best-effort direct send so reports are still attempted.
+    const ok = await sendReportOnce(payload);
+    return ok ? { ok: true } : { ok: false };
+  }
+};
+
+// Flush any queued reports now (called on online event / app foreground).
+export const flushQueuedReports = async (): Promise<void> => {
+  try {
+    await flushQueue(getQueueStore(), sendReportOnce);
+  } catch {
+    // best-effort
   }
 };
 

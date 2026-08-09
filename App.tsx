@@ -10,7 +10,8 @@ import StatsPanel from './components/StatsPanel';
 import PrivacyConsent from './components/PrivacyConsent';
 import { playSound, toggleMute, getMuteStatus } from './utils/sound';
 import { sanitizeText } from './utils/privacy';
-import { clearConsentToken } from './src/api/storageClient';
+import { clearConsentToken, flushQueuedReports } from './src/api/storageClient';
+import { isSelfShare } from './utils/shareTarget';
 
 const Dojo = lazy(() => import('./components/Dojo'));
 const AboutModal = lazy(() => import('./components/AboutModal'));
@@ -78,6 +79,7 @@ const ScanningOverlay = () => (
 
 const App: React.FC = () => {
   const [input, setInput] = useState('');
+  const [senderInput, setSenderInput] = useState('');
   const [honeypot, setHoneypot] = useState('');
   
   const [language, setLanguage] = useState('TAGALOG');
@@ -122,6 +124,72 @@ const App: React.FC = () => {
     };
     window.addEventListener('storage', checkConsent);
     return () => window.removeEventListener('storage', checkConsent);
+  }, []);
+
+  useEffect(() => {
+    // Consume a Web Share Target payload. When a user highlights text/image in
+    // any app and taps "Share > Aghoy", the service worker redirects here with
+    // ?share_text=... (text) or ?share_file=1 (image stashed in aghoy-share).
+    // This effect fills the scanner so the user never has to copy-paste.
+    const consumeSharedContent = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const sharedText = params.get('share_text');
+      if (sharedText) {
+        if (isSelfShare(sharedText, window.location.origin)) {
+          window.history.replaceState({}, '', '/');
+          return;
+        }
+        setActiveTab('SCANNER');
+        setInput(sharedText);
+        window.history.replaceState({}, '', '/');
+      }
+      if (params.get('share_file')) {
+        try {
+          const res = await fetch('/share-file');
+          if (res.ok) {
+            const blob = await res.blob();
+            if (!isAllowedRasterImage(blob.type)) {
+              setError("IMAGE REJECTED: Only raster image files (PNG/JPG) are supported.");
+              return;
+            }
+            if (blob.size > MAX_IMAGE_SIZE_BYTES) {
+              setError("IMAGE REJECTED: File exceeds 8MB limit.");
+              return;
+            }
+            setActiveTab('SCANNER');
+            setSelectedImage(URL.createObjectURL(blob));
+            setImageMimeType(blob.type);
+            // Clean the stashed share so it is not re-consumed next launch.
+            try {
+              const cache = await caches.open('aghoy-share');
+              await cache.delete('/share-file');
+            } catch {}
+          }
+        } catch {
+          // Ignore: the share-image path is best-effort; the user can still
+          // paste/upload manually.
+        }
+        window.history.replaceState({}, '', '/');
+      }
+    };
+    consumeSharedContent();
+  }, [isAllowedRasterImage, MAX_IMAGE_SIZE_BYTES]);
+
+  useEffect(() => {
+    // Offline report queue: flush queued reports when connectivity returns or
+    // the app comes to the foreground. The queue is durable (IndexedDB), so
+    // reports enqueued while offline are delivered on the next opportunity.
+    const flush = () => { flushQueuedReports(); };
+    window.addEventListener('online', flush);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') flush();
+    });
+    // Flush once on boot (catches reports queued during a previous session).
+    flush();
+    return () => {
+      window.removeEventListener('online', flush);
+      document.removeEventListener('visibilitychange', flush);
+    };
   }, []);
 
   useEffect(() => {
@@ -346,7 +414,7 @@ const App: React.FC = () => {
 
       try {
         playSound('scan');
-        const analysis = await analyzeContent(input, language, selectedImage || undefined, imageMimeType || undefined);
+        const analysis = await analyzeContent(input, language, selectedImage || undefined, imageMimeType || undefined, senderInput);
         setAnalysisId(prev => prev + 1);
         setResult(analysis);
         updateStatsAndHistory(analysis);
@@ -676,6 +744,17 @@ const App: React.FC = () => {
                                 autoComplete="off"
                             />
                             
+                            <div className="flex items-center gap-2 px-3 py-2 bg-slate-900 border-b border-slate-800">
+                                <span className="text-slate-500 font-mono text-xs uppercase tracking-wider shrink-0">From</span>
+                                <input
+                                    type="text"
+                                    value={senderInput}
+                                    onChange={(e) => setSenderInput(e.target.value)}
+                                    placeholder="Sender ID or number (e.g. GCash, 2882, 0917...) - optional, improves accuracy"
+                                    className="flex-1 bg-transparent text-green-400 text-sm font-mono focus:outline-none placeholder:text-slate-600"
+                                    maxLength={40}
+                                />
+                            </div>
                             <textarea
                                 ref={textareaRef}
                                 value={input}
