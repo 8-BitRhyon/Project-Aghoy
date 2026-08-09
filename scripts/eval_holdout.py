@@ -75,7 +75,8 @@ def main():
     print(f"  false-negative rate: {fnr:.4f} ({fn}/{scam_n} scams missed)")
     print(f"  AUC: {auc:.4f}")
     print(f"  conf matrix: {tp}TP/{fp}FP/{fn}FN/{tn}TN")
-    print(f"  recalled scams: {tp}/{scam_n} ({tp/scam_n*100:.1f}%)")
+    recall_pct = tp / scam_n * 100 if scam_n > 0 else 0.0
+    print(f"  recalled scams: {tp}/{scam_n} ({recall_pct:.1f}%)")
 
     # Per-label scan for diagnostics
     print("\n--- missed scams (FNs) sample ---")

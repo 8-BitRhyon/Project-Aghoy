@@ -1,13 +1,4 @@
-// scripts/import-xlsx.ts - converts a minimal .xlsx workbook to CSV text
-// without external dependencies. An .xlsx is a ZIP of XML: we reuse the ZIP
-// entry extractor for the sharedStrings.xml and the first worksheet, then walk
-// the inline cells. Supports the common Kaggle/research export shapes:
-//   - sharedStrings.xml for cell text (the dominant layout)
-//   - cell values as <v> for numbers, inline <is><t> for inline strings
-// It does NOT support: formulas results caching, merged cells (ignored), or
-// multiple worksheets (first sheet only). Throws loudly on unknown shapes.
-//
-// Used by scripts/import-datasets.ts for sources that ship xlsx.
+// Minimal dependency-free .xlsx -> CSV (sharedStrings + first worksheet). Used by import-datasets.ts.
 
 import { extractArchiveEntry } from "./import-archive.ts";
 
@@ -28,17 +19,23 @@ const toCsvCell = (s: string): string => {
 };
 
 export const xlsxToCsv = (xlsxPath: string): string => {
-  const shared = extractArchiveEntry(xlsxPath, "xl/sharedStrings.xml");
-  // shared strings: <si><t>text</t></si> ... may include <r><t> rich runs.
+  // sharedStrings.xml is optional; a missing part means an empty list (errors for malformed archives are preserved).
   const sharedStrings: string[] = [];
-  const siRe = /<si>([\s\S]*?)<\/si>/g;
   let m: RegExpExecArray | null;
-  while ((m = siRe.exec(shared)) !== null) {
-    const texts = [...m[1].matchAll(/<t[^>]*>([\s\S]*?)<\/t>/g)].map((x) => decodeXml(x[1]));
-    sharedStrings.push(texts.join(""));
+  try {
+    const shared = extractArchiveEntry(xlsxPath, "xl/sharedStrings.xml");
+    // shared strings: <si><t>text</t></si> ... may include <r><t> rich runs.
+    const siRe = /<si>([\s\S]*?)<\/si>/g;
+    while ((m = siRe.exec(shared)) !== null) {
+      const texts = [...m[1].matchAll(/<t[^>]*>([\s\S]*?)<\/t>/g)].map((x) => decodeXml(x[1]));
+      sharedStrings.push(texts.join(""));
+    }
+  } catch (err) {
+    // Only swallow the not-found case; rethrow anything else (malformed zip).
+    if (!(err instanceof Error) || !err.message.includes("not found")) throw err;
   }
 
-  // first sheet: xl/worksheets/sheet1.xml (fall back to the first in the zip).
+  // first worksheet: xl/worksheets/sheet1.xml (fall back to the first in the zip).
   let sheetXml = "";
   try {
     sheetXml = extractArchiveEntry(xlsxPath, "xl/worksheets/sheet1.xml");

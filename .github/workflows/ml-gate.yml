@@ -21,6 +21,7 @@ on:
       - 'scripts/import-xlsx.ts'
       - 'scripts/build-ph-holdout.ts'
       - 'scripts/eval_holdout.py'
+      - 'scripts/requirements-train.txt'
       - 'services/classifier.ts'
       - 'data/training/**'
       - 'src/brands/senderAllowlist.ts'

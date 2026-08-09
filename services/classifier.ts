@@ -1,36 +1,13 @@
-// services/classifier.ts - on-device scam classifier (TinyBERT, ONNX int8)
-// served from /models/ via transformers.js, mirroring the self-hosted OCR
-// pattern. Runs fully offline on the user's device: nothing leaves the phone.
-//
-// Integration policy (matches the training protocol in scripts/train_classifier.py):
-//   - The model is a SECOND OPINION, never the primary verdict. The browser
-//     already has the deterministic engine (src/brands/brands.ts) and the
-//     server verdict; the classifier only fills the recall gap and can ESCALATE
-//     a non-HIGH_RISK result at high confidence. It never downgrades.
-//   - Threshold 0.22 (tuned on the validation fold; see models/tinybert-v1/
-//     metrics.json). Escalation floor 0.30: the engine can rescue a model
-//     near-miss, but a model confident a text is LEGIT (< 0.30) is never
-//     overridden by the engine's PH-biased HIGH_RISK.
-//   - Lazy-loaded on first scan; CacheFirst runtime caching keeps it cached.
-//   - Any failure degrades to "model unavailable" - the deterministic path
-//     must always work without it.
+// On-device scam classifier (TinyBERT ONNX int8, transformers.js, fully offline): second opinion, escalates only, lazy-loaded.
 
 import { pipeline, env } from "@huggingface/transformers";
 import { Verdict } from "../types";
-import { gradeMessageLinks, LinkGradeResult } from "../src/training/urlGrade";
+import { LinkGradeResult } from "../src/training/urlGrade";
 
-// Model assets are self-hosted under /models/ (like /ocr/) so no third-party
-// CDN is contacted at runtime (CSP: script-src 'self'). The ONNX Runtime wasm
-// is also self-hosted under /ort-wasm/ - without this, onnxruntime-web would
-// fetch it from cdn.jsdelivr.net, which the CSP connect-src blocks.
+// Self-hosted model + ORT wasm (no third-party CDN at runtime; CSP script-src 'self').
 env.allowLocalModels = true;
 env.useBrowserCache = true;
-// The ONNX wasm backend object always exists in transformers.js v4 (verified:
-// env.backends.onnx.wasm). wasmPaths must be an OBJECT with both URLs:
-// transformers.js's wasm pre-loader checks `typeof wasmPaths === "object" &&
-// wasmPaths?.wasm && wasmPaths?.mjs`; a bare directory string is treated as
-// falsy-for-cache, the pre-load is skipped, and onnxruntime-web falls back to
-// its CDN default (which CSP then blocks). Self-host both files under /ort-wasm/.
+// wasmPaths must be an OBJECT {wasm, mjs}: a directory string skips the pre-load and falls back to the CSP-blocked CDN.
 const onnxWasm = env.backends?.onnx?.wasm as { wasmPaths?: unknown; proxy?: boolean } | undefined;
 if (onnxWasm) {
   onnxWasm.wasmPaths = {
@@ -44,15 +21,9 @@ export const ORT_WASM_DIR = "/ort-wasm";
 
 export const MODEL_DIR = "/models/tinybert-v1";
 export const MODEL_ID = `${MODEL_DIR}`;
-// transformers.js appends the dtype suffix to the model file name: q8 => "_quantized",
-// so base "model" resolves to onnx/model_quantized.onnx (our committed int8 file).
+// dtype suffix q8 => "_quantized": base "model" resolves to onnx/model_quantized.onnx.
 export const MODEL_FILE_NAME = "model";
-// Three-zone decision policy (non-overlapping, from the training protocol):
-//   p >= THRESHOLD (0.28, tuned on validation of the tagalog-augmented corpus)
-//   p <= FLOOR    (0.15)                      => model is confident LEGIT
-//   FLOOR < p < THRESHOLD                     => uncertain, model abstains
-// FLOOR is BELOW THRESHOLD so "flag" and "escalate" are the same zone - a
-// flagged score always escalates, and a confident-legit score never does.
+// Three-zone policy: p >= 0.28 flags+escalates, p <= 0.15 confident legit (never escalated), in between abstains.
 export const MODEL_THRESHOLD = 0.28; // tuned on validation fold (tinybert-v1)
 export const MODEL_CONFIDENT_LEGIT_FLOOR = 0.15;
 
@@ -65,10 +36,7 @@ export interface ClassifierVerdict {
 
 let classifierPromise: Promise<any> | null = null;
 
-// Lazy singleton: load once, reuse for the session. On FAILURE the singleton
-// is reset so a later scan retries (a transient load error must not poison
-// the rest of the session). Never throws to callers - returns null so callers
-// fall through to the deterministic path.
+// Lazy singleton; resets on failure so a transient load error retries next scan. Never throws - returns null to fall through to the deterministic path.
 export const getClassifier = (): Promise<any | null> => {
   if (!classifierPromise) {
     classifierPromise = (async () => {
@@ -95,12 +63,7 @@ export const clearClassifier = (): void => {
   classifierPromise = null;
 };
 
-// Pure fusion logic (testable without a model): given a classifier probability
-// and the current verdict, decide the final verdict. Rules-first; the model can
-// only escalate, never downgrade. Three zones (floor <= threshold, disjoint):
-//   p >= threshold  => model flags -> escalate SAFE/SUSPICIOUS to SUSPICIOUS
-//   p <= floor      => confident LEGIT -> never escalate
-//   floor < p < threshold => uncertain -> abstain, return current verdict
+// Pure fusion: p >= threshold escalates to SUSPICIOUS, p <= floor never escalates, between = abstain.
 export const fuseModelWithVerdict = (
   currentVerdict: Verdict,
   scamProb: number,
@@ -119,12 +82,7 @@ export const fuseModelWithVerdict = (
   return currentVerdict;
 };
 
-// URL-aware fusion: the link grader (src/training/urlGrade.ts) is a THIRD
-// opinion that can raise suspicion but never overrides a message verdict.
-//   - A SUSPICIOUS link lowers the bar for a model flag to escalate.
-//   - A verified-official PH link raises the bar (the model must be more
-//     confident to escalate a message that links a real official domain).
-//   - A shortener stays AMBIGUOUS - it changes nothing by itself.
+// URL-aware fusion: SUSPICIOUS link lowers the escalation bar, verified-official PH link raises it, shortener changes nothing.
 export const fuseWithLinkGrade = (
   currentVerdict: Verdict,
   scamProb: number,

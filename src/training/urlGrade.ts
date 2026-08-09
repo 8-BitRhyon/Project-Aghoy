@@ -1,19 +1,4 @@
-// src/training/urlGrade.ts - deterministic on-device URL grader for the
-// Aghoy classifier. Pure, offline, testable. Grades a link found in a message
-// as LEGIT_LINK / AMBIGUOUS_LINK / SUSPICIOUS_LINK using lexical features only
-// (no network, no WHOIS, no DNS - a 2GB phone must not depend on those).
-//
-// Feature basis: the phishing-URL literature (URLNet arXiv:1802.03162,
-// Hannousse & Yahiouche EAAI 2021 arXiv:2010.12847, PhishStorm IEEE TNSM 2014)
-// plus PH-specific brand-imposter detection. The strongest two predictors in
-// the literature (domain age, web traffic) are NETWORK features and are
-// deliberately absent - the grader returns "cannot verify" rather than a false
-// "safe".
-//
-// The grader's output is a THIRD OPINION, consistent with the model: it can
-// raise suspicion but must never override a message-level verdict, and an
-// allowlist hit only LOWERS risk. It never classifies URL shorteners (both
-// legit and scam use them).
+// On-device URL grader: lexical link signals, no network/WHOIS/DNS (2GB phones); a third opinion that never overrides a message verdict.
 
 export type LinkGrade = "LEGIT_LINK" | "AMBIGUOUS_LINK" | "SUSPICIOUS_LINK";
 
@@ -25,10 +10,7 @@ export interface LinkGradeResult {
   isShortener: boolean;
 }
 
-// Curated PH official domains (registrable-level). Source: the verified
-// supportDatabase source domains + PH institutional brands. These are just
-// domain names - no copyright issue. Matching is on the registrable domain so
-// help.shopee.ph and secure.gcash.com both hit, but shopee.ph.evil.com does not.
+// Curated PH official domains; matches registrable-level so help.shopee.ph hits but shopee.ph.evil.com does not.
 const PH_OFFICIAL_DOMAINS = new Set([
   "gcash.com", "maya.ph", "bdo.com.ph", "bpi.com.ph", "metrobank.com.ph",
   "unionbankph.com", "rcbc.com", "chinabank.ph", "securitybank.com",
@@ -40,16 +22,14 @@ const PH_OFFICIAL_DOMAINS = new Set([
   "gsis.gov.ph", "pagibigfund.gov.ph",
 ]);
 
-// Cheap TLDs that dominate scam registrations (registry-abuse-heavy). Weak
-// evidence only: allowlist overrides.
+// Cheap TLDs that dominate scam registrations (weak evidence; allowlist overrides).
 const SUSPICIOUS_TLDS = new Set([
   "top", "xyz", "icu", "cc", "click", "link", "buzz", "tk", "ml", "ga",
   "cf", "gq", "zip", "mov", "rest", "sbs", "lol", "mom", "uno", "sale",
   "stream", "download", "racing", "loan",
 ]);
 
-// Free-hosting / dynamic-DNS / abuse-friendly domains. Escalate-to-verify,
-// never decisive alone.
+// Free-hosting / dynamic-DNS / abuse-friendly domains (escalate-to-verify, never decisive alone).
 const FREE_HOSTING = new Set([
   "blogspot.com", "wordpress.com", "weebly.com", "wix.com", "github.io",
   "web.app", "firebaseapp.com", "repl.co", "duckdns.org", "nip.io",
@@ -200,8 +180,7 @@ export const gradeUrl = (rawUrl: string): LinkGradeResult | null => {
   return { grade, score, reasons, verifiedOfficialDomain, isShortener };
 };
 
-// Grade every URL in a message and return the worst overall signal (used by
-// the classifier fusion). Never returns null.
+// Grade every URL in a message, return the worst signal (used by the classifier fusion); never returns null.
 export const gradeMessageLinks = (text: string): { worst: LinkGradeResult; urlCount: number } => {
   const urls = extractUrls(text);
   if (urls.length === 0) {

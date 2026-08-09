@@ -1,34 +1,6 @@
-// scripts/build-ph-holdout.ts - builds the frozen Philippine hold-out test set
-// used to measure REAL generalization, separate from the 22-row Taglish reality
-// check (which can be gamed by overfitting to narrow archetypes).
-//
-// The hold-out is built from the onzero0 "Tagalog-SMS" Kaggle dataset (CC0),
-// which is deliberately NEVER added to the training corpus. This guarantees the
-// hold-out rows are unseen by any model variant, so a model that scores well
-// here has genuinely generalized to real PH text, not memorized archetypes.
-//
-// Label mapping (documented, auditable):
-//   spam   -> SCAM  (verified: casino/loan/NCAP scams, incl. Taglish phrasing)
-//   gov    -> LEGIT (NDRRMC/DOT scam warnings - verified legitimate)
-//   notifs -> LEGIT (bank/wallet/telco transactional notifications)
-//   ads    -> LEGIT (legitimate marketing from real PH businesses)
-//   otp    -> EXCLUDED (ambiguous: real OTPs and OTP-phishing both land here;
-//                       including them would corrupt the labels)
-//
-// Every row passes through the Rejects PII layer (shared with training), and
-// rows that carry no text or are pre-redacted are dropped.
-//
-// LEAKAGE GUARD: holdout rows that near-duplicate a training corpus row
-// (Jaccard > 0.5 on the same word-set measure training uses) are EXCLUDED.
-// This matters doubly because several training sources share source material
-// with this dataset - e.g. a BDO "manage your accounts" message is labeled
-// SCAM in kaggle-ph-spam but LEGIT here, a contradiction that would poison
-// both the holdout score and the model if learned. The guard keeps the
-// holdout genuinely unseen and label-clean.
-//
-// Run: npx tsx scripts/build-ph-holdout.ts
-// Writes: data/training/test-ph-holdout.jsonl (committed)
+// Builds the frozen PH hold-out (onzero0 Tagalog-SMS, CC0, never in training). spam->SCAM, gov/notifs/ads->LEGIT, otp excluded; Jaccard-leakage guard. Run: npx tsx scripts/build-ph-holdout.ts
 
+import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync, existsSync, statSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -44,6 +16,8 @@ const OUT = join(REPO_DIR, "data/training/test-ph-holdout.jsonl");
 const CACHE = join(REPO_DIR, "data/training/.cache");
 
 const URL = "https://www.kaggle.com/api/v1/datasets/download/onzero0/tagalog-sms";
+// Pinned SHA-256: upstream changes must bump this deliberately (keeps the frozen holdout stable).
+const EXPECTED_ARCHIVE_SHA = "e0f4201360b79260aa249c98b3f4399668af62c549ac34ed1de73befb1fef60c";
 const LABEL_MAP: Record<string, "SCAM" | "LEGIT"> = {
   spam: "SCAM",
   gov: "LEGIT",
@@ -59,7 +33,12 @@ const main = async (): Promise<void> => {
     console.log("downloading tagalog-sms...");
     const res = await fetch(URL, { redirect: "follow", signal: AbortSignal.timeout(120_000) });
     if (!res.ok) throw new Error(`download failed: ${res.status}`);
-    writeFileSync(zipPath, Buffer.from(await res.arrayBuffer()));
+    const buf = Buffer.from(await res.arrayBuffer());
+    const sha = createHash("sha256").update(buf).digest("hex");
+    if (sha !== EXPECTED_ARCHIVE_SHA) {
+      throw new Error(`archive SHA mismatch: got ${sha}, expected ${EXPECTED_ARCHIVE_SHA}. Update the pin deliberately if the source changed.`);
+    }
+    writeFileSync(zipPath, buf);
   }
   const xlsxPath = join(CACHE, "tagalog-sms-holdout.xlsx");
   if (!existsSync(xlsxPath)) {
