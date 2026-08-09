@@ -68,8 +68,14 @@ jobs:
           pip install -r scripts/requirements-train.txt
       - name: Build corpus (license-gated imports)
         run: npx tsx scripts/import-datasets.ts
-      - name: Build PH holdout (frozen, leakage-guarded)
-        run: npx tsx scripts/build-ph-holdout.ts
+      - name: Verify committed PH holdout
+        # The holdout is a COMMITTED fixture. Never rebuild from the flaky
+        # external Kaggle URL in CI: a fresh download can be rate-limited or
+        # auth-walled, silently producing a garbage holdout (observed: 582 rows
+        # / 1 scam) that fails the gate on bad data, not bad models.
+        run: |
+          test -s data/training/test-ph-holdout.jsonl || (echo "holdout missing" && exit 1)
+          python -c "import json; rows=[json.loads(l) for l in open('data/training/test-ph-holdout.jsonl')]; scams=sum(1 for r in rows if r['label']=='SCAM'); print(f'holdout: {len(rows)} rows, {scams} SCAM'); assert len(rows) >= 2000 and scams >= 100"
       - name: Fine-tune TinyBERT
         run: python scripts/train_classifier.py --epochs 3 --batch-size 16 --max-len 128 --tag gate
       - name: Evaluate on PH holdout
