@@ -11,7 +11,6 @@ import PrivacyConsent from './components/PrivacyConsent';
 import { playSound, toggleMute, getMuteStatus } from './utils/sound';
 import { sanitizeText } from './utils/privacy';
 import { clearConsentToken, flushQueuedReports } from './src/api/storageClient';
-import { isSelfShare } from './utils/shareTarget';
 
 const Dojo = lazy(() => import('./components/Dojo'));
 const AboutModal = lazy(() => import('./components/AboutModal'));
@@ -126,54 +125,6 @@ const App: React.FC = () => {
     return () => window.removeEventListener('storage', checkConsent);
   }, []);
 
-  useEffect(() => {
-    // Consume a Web Share Target payload. When a user highlights text/image in
-    // any app and taps "Share > Aghoy", the service worker redirects here with
-    // ?share_text=... (text) or ?share_file=1 (image stashed in aghoy-share).
-    // This effect fills the scanner so the user never has to copy-paste.
-    const consumeSharedContent = async () => {
-      const params = new URLSearchParams(window.location.search);
-      const sharedText = params.get('share_text');
-      if (sharedText) {
-        if (isSelfShare(sharedText, window.location.origin)) {
-          window.history.replaceState({}, '', '/');
-          return;
-        }
-        setActiveTab('SCANNER');
-        setInput(sharedText);
-        window.history.replaceState({}, '', '/');
-      }
-      if (params.get('share_file')) {
-        try {
-          const res = await fetch('/share-file');
-          if (res.ok) {
-            const blob = await res.blob();
-            if (!isAllowedRasterImage(blob.type)) {
-              setError("IMAGE REJECTED: Only raster image files (PNG/JPG) are supported.");
-              return;
-            }
-            if (blob.size > MAX_IMAGE_SIZE_BYTES) {
-              setError("IMAGE REJECTED: File exceeds 8MB limit.");
-              return;
-            }
-            setActiveTab('SCANNER');
-            setSelectedImage(URL.createObjectURL(blob));
-            setImageMimeType(blob.type);
-            // Clean the stashed share so it is not re-consumed next launch.
-            try {
-              const cache = await caches.open('aghoy-share');
-              await cache.delete('/share-file');
-            } catch {}
-          }
-        } catch {
-          // Ignore: the share-image path is best-effort; the user can still
-          // paste/upload manually.
-        }
-        window.history.replaceState({}, '', '/');
-      }
-    };
-    consumeSharedContent();
-  }, [isAllowedRasterImage, MAX_IMAGE_SIZE_BYTES]);
 
   useEffect(() => {
     // Offline report queue: flush queued reports when connectivity returns or
