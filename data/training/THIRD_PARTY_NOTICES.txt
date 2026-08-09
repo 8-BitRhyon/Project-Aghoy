@@ -33,6 +33,11 @@ are admitted on an explicit project-owner decision recorded in manifest.json
   Source:  https://github.com/AGR-Yes/ScamMessagesPhilippines
   Files:   https://raw.githubusercontent.com/AGR-Yes/ScamMessagesPhilippines/main/Processed%20Datasets/spam.csv
 
+- onzero0 / Tagalog-SMS (CC0 / Public Domain)
+  License: cc0-1.0
+  Source:  https://www.kaggle.com/datasets/onzero0/tagalog-sms
+  Files:   https://www.kaggle.com/api/v1/datasets/download/onzero0/tagalog-sms
+
 
 The remainder of the corpus is Project Aghoy's own Taglish seed corpus and
 sanitized community reports (Project Aghoy, see LICENSE in the repo root).

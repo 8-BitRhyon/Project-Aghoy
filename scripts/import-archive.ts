@@ -12,6 +12,12 @@ import { inflateRawSync } from "node:zlib";
 const isZip = (b: Buffer): boolean => b.length >= 4 && b[0] === 0x50 && b[1] === 0x4b && b[2] === 0x03 && b[3] === 0x04;
 
 export const extractArchiveEntry = (zipPath: string, entryName: string): string => {
+  const raw = extractArchiveEntryRaw(zipPath, entryName);
+  return raw.toString("utf8");
+};
+
+// Raw-bytes variant for binary entries (e.g. an .xlsx workbook inside a zip).
+export const extractArchiveEntryRaw = (zipPath: string, entryName: string): Buffer => {
   const buf = readFileSync(zipPath);
   if (!isZip(buf)) {
     throw new Error(`not a zip archive: ${zipPath}`);
@@ -38,7 +44,7 @@ export const extractArchiveEntry = (zipPath: string, entryName: string): string 
       if (raw === null) {
         throw new Error(`unsupported zip compression method ${method} for ${entryName}`);
       }
-      return raw.toString("utf8");
+      return raw;
     }
     offset = dataStart + compSize;
   }

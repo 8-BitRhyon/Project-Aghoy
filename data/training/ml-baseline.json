@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-08-09",
+  "model": "huawei-noah/TinyBERT_General_4L_312D",
+  "corpus_rows": 17046,
+  "threshold": 0.28,
+  "ph_holdout": {
+    "rows": 2618,
+    "scam_recall": 0.9791,
+    "auc": 0.9845,
+    "fpr": 0.0863,
+    "false_negatives": 7
+  },
+  "held_out_test": {
+    "f1_scam": 0.9265,
+    "precision_scam": 0.9476,
+    "recall_scam": 0.9064,
+    "false_positive_rate": 0.0228
+  },
+  "note": "Regression-gate baseline. Gate env tolerances in .github/workflows/ml-gate.yml must stay below these: MIN_PH_RECALL 0.95, MIN_PH_AUC 0.96, MIN_TEST_F1 0.90."
+}
