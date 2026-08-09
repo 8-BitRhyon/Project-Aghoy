@@ -1,18 +1,4 @@
-// utils/reportQueue.ts - durable offline-first report queue.
-//
-// A scan result is a community asset: if the user is offline when a scam is
-// detected, the report must not be lost. This module enqueues every report to
-// IndexedDB BEFORE any network attempt, flushes on connectivity, and retries
-// with backoff. The Worker dedups on content_hash, so retries are idempotent.
-//
-// Design (write-once-then-delete):
-//   1. persist the sanitized payload to IndexedDB first
-//   2. try to flush immediately; on success delete the record
-//   3. on failure keep it, back off (30s -> 15m, cap 25 attempts)
-//   4. on app kill the record is still in IndexedDB -> next launch retries
-//
-// Pure-ish: the only browser APIs are IndexedDB + navigator.onLine. The state
-// machine is testable via the injected store interface.
+// Durable offline-first report queue: IndexedDB persist before network, backoff retries, survives app kill.
 
 export interface QueuedReport {
   id: string;
@@ -130,9 +116,3 @@ export const enqueueAndFlush = async (
   await store.put(report);
   return flushQueue(store, send);
 };
-
-// Wire the module to the actual network sender. The consent token is refreshed
-// lazily if a flush gets a 401/403 (the Worker enforces X-Consent-Token).
-export const createReportSender = (
-  sendOne: (payload: unknown) => Promise<boolean>
-): ((payload: unknown) => Promise<boolean>) => sendOne;

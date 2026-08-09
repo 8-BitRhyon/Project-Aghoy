@@ -1,11 +1,4 @@
-// utils/reportRouting.ts - one-tap evidence packages for official PH channels.
-//
-// When a scam is flagged, the user should not have to re-type the details into
-// 1326, the eGov app, and a telco Stop Spam form. This builds a formatted,
-// copy-ready evidence package (Rejects-sanitized only - never raw PII) for
-// each channel, plus a share-card text that works everywhere.
-//
-// Pure + testable: no browser APIs, just string formatting.
+// One-tap evidence packages (Rejects-sanitized) for PNP-ACG, CICC 1326, eGov, telco Stop Spam.
 
 export interface EvidenceInput {
   sender: string; // sender ID/number or "Unknown"
@@ -33,8 +26,7 @@ export const cicc1326Text = (e: EvidenceInput): string =>
     "Keep the original message and any screenshots for PNP-ACG.",
   ].join("\n");
 
-// Telco Stop Spam: Globe users forward the original SMS to 7726; Smart users
-// forward to 2920. This text works as the message body for the app/web forms.
+// Telco Stop Spam: Globe forwards to 7726, Smart to 2920.
 export const telcoStopSpamText = (e: EvidenceInput): string =>
   [
     `SPAM REPORT (${e.scamType})`,
@@ -45,8 +37,7 @@ export const telcoStopSpamText = (e: EvidenceInput): string =>
     "Smart/Sun/TNT: forward the original SMS to 2920.",
   ].join("\n");
 
-// eGov app eReport accepts up to 5 screenshots; this is the description text
-// that accompanies them.
+// eGov eReport description text (accompanies up to 5 screenshots).
 export const eGovAppText = (e: EvidenceInput): string =>
   [
     `Scam report - ${e.scamType} (risk ${e.riskScore}/10)`,
