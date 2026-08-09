@@ -120,6 +120,14 @@ describe("resolveColumns + mapRow", () => {
     expect(row.channel).toBe("sms");
   });
 
+  it("declares the ambiguous otp category as skipLabels for tagalog-sms", () => {
+    const src = getSource("tagalog-sms");
+    expect(src.skipLabels).toContain("otp");
+    // The labelMap has no otp entry: if the skip were missing, mapRow would
+    // throw on a real OTP row rather than silently mislabel it.
+    expect(src.labelMap["otp"]).toBeUndefined();
+  });
+
   it("maps the scamshield source column to a channel", () => {
     const src = getSource("scamshield");
     const cols = resolveColumns(["text", "label", "source"], src.columns);

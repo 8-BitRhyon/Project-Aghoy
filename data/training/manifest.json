@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-09T07:35:42.821Z",
+  "generated_at": "2026-08-09T09:29:42.868Z",
   "seed": 20260807,
   "balanced": {
     "max_majority_ratio": 2
@@ -58,17 +58,27 @@
       "files": [
         "https://raw.githubusercontent.com/AGR-Yes/ScamMessagesPhilippines/main/Processed%20Datasets/spam.csv"
       ]
+    },
+    {
+      "id": "tagalog-sms",
+      "name": "Tagalog-SMS (onzero0, Kaggle)",
+      "license": "cc0-1.0",
+      "license_url": "https://www.kaggle.com/datasets/onzero0/tagalog-sms",
+      "attribution": "onzero0 / Tagalog-SMS (CC0 / Public Domain)",
+      "files": [
+        "https://www.kaggle.com/api/v1/datasets/download/onzero0/tagalog-sms"
+      ]
     }
   ],
   "totals": {
-    "rows": 15516,
-    "scam": 5172,
-    "legit": 10344,
-    "redacted": 4263,
+    "rows": 17046,
+    "scam": 5682,
+    "legit": 11364,
+    "redacted": 4539,
     "redacted_pct": 27,
     "by_channel": {
-      "job": 8060,
-      "sms": 4339,
+      "job": 8244,
+      "sms": 5685,
       "email": 3117
     },
     "per_source": {
@@ -101,8 +111,14 @@
         "scam": 159,
         "legit": 0,
         "redacted_pct": 2
+      },
+      "tagalog-sms": {
+        "rows": 2189,
+        "scam": 584,
+        "legit": 1605,
+        "redacted_pct": 23
       }
     }
   },
-  "corpus_sha256": "500f98e30072781c4fd82bf8742a3b176e25dea3747ff399a9438b47d7da9a35"
+  "corpus_sha256": "e6a6137ef01460c07d1e3d51ddfbb041b60a237d117d836bff1c0b1a3a43d71f"
 }

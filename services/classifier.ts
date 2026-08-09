@@ -17,6 +17,7 @@
 
 import { pipeline, env } from "@huggingface/transformers";
 import { Verdict } from "../types";
+import { gradeMessageLinks, LinkGradeResult } from "../src/training/urlGrade";
 
 // Model assets are self-hosted under /models/ (like /ocr/) so no third-party
 // CDN is contacted at runtime (CSP: script-src 'self'). The ONNX Runtime wasm
@@ -47,13 +48,13 @@ export const MODEL_ID = `${MODEL_DIR}`;
 // so base "model" resolves to onnx/model_quantized.onnx (our committed int8 file).
 export const MODEL_FILE_NAME = "model";
 // Three-zone decision policy (non-overlapping, from the training protocol):
-//   p >= THRESHOLD (0.72, tuned on validation of the PH-augmented corpus) => flag
-//   p <= FLOOR    (0.30)                      => model is confident LEGIT
+//   p >= THRESHOLD (0.28, tuned on validation of the tagalog-augmented corpus)
+//   p <= FLOOR    (0.15)                      => model is confident LEGIT
 //   FLOOR < p < THRESHOLD                     => uncertain, model abstains
 // FLOOR is BELOW THRESHOLD so "flag" and "escalate" are the same zone - a
 // flagged score always escalates, and a confident-legit score never does.
-export const MODEL_THRESHOLD = 0.72; // tuned on validation fold (tinybert-v1)
-export const MODEL_CONFIDENT_LEGIT_FLOOR = 0.3;
+export const MODEL_THRESHOLD = 0.28; // tuned on validation fold (tinybert-v1)
+export const MODEL_CONFIDENT_LEGIT_FLOOR = 0.15;
 
 export interface ClassifierVerdict {
   scamProb: number;
@@ -116,6 +117,37 @@ export const fuseModelWithVerdict = (
   if (scamProb >= threshold) return Verdict.SUSPICIOUS;
   // Uncertain mid-band: abstain.
   return currentVerdict;
+};
+
+// URL-aware fusion: the link grader (src/training/urlGrade.ts) is a THIRD
+// opinion that can raise suspicion but never overrides a message verdict.
+//   - A SUSPICIOUS link lowers the bar for a model flag to escalate.
+//   - A verified-official PH link raises the bar (the model must be more
+//     confident to escalate a message that links a real official domain).
+//   - A shortener stays AMBIGUOUS - it changes nothing by itself.
+export const fuseWithLinkGrade = (
+  currentVerdict: Verdict,
+  scamProb: number,
+  linkGrade: LinkGradeResult | null,
+  opts: { threshold?: number; floor?: number; suspiciousBoost?: number } = {}
+): Verdict => {
+  if (currentVerdict === Verdict.HIGH_RISK) return Verdict.HIGH_RISK;
+  if (!linkGrade) return fuseModelWithVerdict(currentVerdict, scamProb, opts);
+  const threshold = opts.threshold ?? MODEL_THRESHOLD;
+  const floor = opts.floor ?? MODEL_CONFIDENT_LEGIT_FLOOR;
+  if (scamProb <= floor) return currentVerdict; // confident legit: never escalate
+  const suspiciousBoost = opts.suspiciousBoost ?? 0.15;
+  // URL-aware bar: a suspicious link lowers the escalation threshold; a
+  // verified-official PH link raises it (the model must be more confident to
+  // escalate a message linking a real official domain).
+  const effectiveThreshold =
+    linkGrade.grade === "SUSPICIOUS_LINK"
+      ? Math.max(0.05, threshold - suspiciousBoost)
+      : linkGrade.verifiedOfficialDomain
+        ? Math.min(0.99, threshold + suspiciousBoost)
+        : threshold;
+  if (scamProb >= effectiveThreshold) return Verdict.SUSPICIOUS;
+  return currentVerdict; // below the bar: stay at the pre-model verdict
 };
 
 export const classifyText = async (text: string): Promise<ClassifierVerdict | null> => {

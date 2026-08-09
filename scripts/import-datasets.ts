@@ -115,6 +115,12 @@ const run = async (): Promise<void> => {
       const columns = resolveColumns(header, source.columns);
       console.log(`  ${file.path}: ${data.length.toLocaleString()} rows`);
       for (let i = 0; i < data.length; i++) {
+        // Skip rows in an ambiguous category (e.g. tagalog-sms `otp`) so they
+        // cannot inject contradictory labels into the corpus.
+        if (source.skipLabels?.length) {
+          const cat = (data[i][columns.label] ?? "").trim().toLowerCase();
+          if (source.skipLabels.includes(cat)) continue;
+        }
         rows.push(mapRow(data[i], i, {
           source: source.id,
           license: source.license,

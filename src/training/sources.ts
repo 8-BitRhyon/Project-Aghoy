@@ -32,6 +32,10 @@ export interface DatasetSource {
   files: { path: string; url: string; archiveEntry?: string; xlsx?: boolean }[];
   // All rows share one label (datasets that ship a single class only).
   constantLabel?: "SCAM" | "LEGIT";
+  // Categories to skip entirely (rows whose label cell equals one of these).
+  // Used when a category is ambiguous (e.g. tagalog-sms `otp` mixes real and
+  // phishing OTPs) and would corrupt the labels if included.
+  skipLabels?: string[];
   // Non-commercial/ShareAlike exception approved by the project owner.
   nonCommercial?: boolean;
   // REQUIRED when nonCommercial is true: the owner-decision audit trail
@@ -152,6 +156,33 @@ export const TRAINING_SOURCES: DatasetSource[] = [
       {
         path: "antony-reyes-spam.csv",
         url: "https://raw.githubusercontent.com/AGR-Yes/ScamMessagesPhilippines/main/Processed%20Datasets/spam.csv",
+      },
+    ],
+  },
+  {
+    id: "tagalog-sms",
+    name: "Tagalog-SMS (onzero0, Kaggle)",
+    // Re-added 2026-08-09 after the PH-holdout experiment proved its value:
+    // a model trained with this CC0 data generalized far better to unseen PH
+    // text (holdout AUC 0.79 -> 0.99, FPR 92% -> 7.4%) despite scoring lower
+    // on the 22-row reality check, which is all-positive and rewards
+    // over-flagging. The `category` field is a message-type taxonomy, not a
+    // verdict; the labelMap below maps only unambiguous categories (spam=SCAM,
+    // gov/notifs/ads=LEGIT). OTP rows are EXCLUDED because real OTPs and
+    // OTP-phishing both land under `otp` - see the holdout builder.
+    license: "cc0-1.0",
+    licenseUrl: "https://www.kaggle.com/datasets/onzero0/tagalog-sms",
+    attribution: "onzero0 / Tagalog-SMS (CC0 / Public Domain)",
+    channel: SMS_CHANNEL,
+    labelMap: { spam: "SCAM", gov: "LEGIT", notifs: "LEGIT", ads: "LEGIT" },
+    skipLabels: ["otp"],
+    columns: { text: "text", label: "category" },
+    files: [
+      {
+        path: "tagalog-sms.zip",
+        url: "https://www.kaggle.com/api/v1/datasets/download/onzero0/tagalog-sms",
+        archiveEntry: "tagalog-sms.xlsx",
+        xlsx: true,
       },
     ],
   },

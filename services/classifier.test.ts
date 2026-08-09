@@ -4,7 +4,8 @@
 
 import { describe, expect, it } from "vitest";
 import { Verdict } from "../types";
-import { fuseModelWithVerdict, MODEL_CONFIDENT_LEGIT_FLOOR, MODEL_THRESHOLD } from "./classifier";
+import { fuseModelWithVerdict, fuseWithLinkGrade, MODEL_CONFIDENT_LEGIT_FLOOR, MODEL_THRESHOLD } from "./classifier";
+import { gradeUrl } from "../src/training/urlGrade";
 
 describe("fuseModelWithVerdict", () => {
   it("never downgrades a HIGH_RISK verdict", () => {
@@ -40,8 +41,42 @@ describe("fuseModelWithVerdict", () => {
   });
 
   it("uses the documented tinybert-v1 constants with floor BELOW threshold", () => {
-    expect(MODEL_THRESHOLD).toBe(0.72);
-    expect(MODEL_CONFIDENT_LEGIT_FLOOR).toBe(0.3);
+    expect(MODEL_THRESHOLD).toBe(0.28);
+    expect(MODEL_CONFIDENT_LEGIT_FLOOR).toBe(0.15);
     expect(MODEL_CONFIDENT_LEGIT_FLOOR).toBeLessThan(MODEL_THRESHOLD);
+  });
+});
+
+describe("fuseWithLinkGrade", () => {
+  const suspicious = gradeUrl("https://gcash-verify.top/login");
+  const official = gradeUrl("https://help.shopee.ph/article/1");
+  const short = gradeUrl("https://bit.ly/abc");
+
+  it("a suspicious link lowers the model's escalation bar", () => {
+    // Model is below the normal threshold but above the boosted one -> escalates.
+    const mid = MODEL_THRESHOLD - 0.1;
+    expect(fuseModelWithVerdict(Verdict.SAFE, mid)).toBe(Verdict.SAFE);
+    expect(fuseWithLinkGrade(Verdict.SAFE, mid, suspicious)).toBe(Verdict.SUSPICIOUS);
+  });
+
+  it("a verified official link raises the bar (no premature escalation)", () => {
+    // Above the normal threshold (would escalate without the link) but below
+    // the raised threshold (official-link boost keeps it SAFE).
+    const boosted = MODEL_THRESHOLD + 0.1;
+    expect(fuseModelWithVerdict(Verdict.SAFE, boosted)).toBe(Verdict.SUSPICIOUS);
+    expect(fuseWithLinkGrade(Verdict.SAFE, boosted, official)).toBe(Verdict.SAFE);
+  });
+
+  it("a shortener changes nothing on its own", () => {
+    expect(fuseWithLinkGrade(Verdict.SAFE, MODEL_THRESHOLD, short)).toBe(Verdict.SUSPICIOUS);
+  });
+
+  it("never downgrades HIGH_RISK regardless of the link grade", () => {
+    expect(fuseWithLinkGrade(Verdict.HIGH_RISK, 0.01, official)).toBe(Verdict.HIGH_RISK);
+  });
+
+  it("returns the base verdict when no link grade is present", () => {
+    // Below the (new) threshold: no escalation.
+    expect(fuseWithLinkGrade(Verdict.SAFE, 0.2, null)).toBe(Verdict.SAFE);
   });
 });
