@@ -77,3 +77,45 @@ describe("buildOutcomeReport", () => {
     expect(report.perFamily).toEqual([]);
   });
 });
+
+describe("outcome report robustness (review regressions)", () => {
+  it("a 6-day answer does NOT count in the 7-day decay bucket (strict boundary)", () => {
+    const rows = [
+      row("a", [
+        { correct: true, firstTime: true, atDay: "2026-01-01" },
+        { correct: false, firstTime: true, atDay: "2026-01-07" }, // exactly 6 days
+      ]),
+    ];
+    const report = buildOutcomeReport(rows, "2026-01-15");
+    const d7 = report.decay.find((d) => d.sinceFirstSeenDays === 7)!;
+    // Only answers at >= 7 days count; the 6-day answer is excluded.
+    expect(d7.total).toBe(0);
+    expect(d7.accuracy).toBeNull();
+  });
+
+  it("a 7-day answer counts in the 7-day bucket", () => {
+    const rows = [
+      row("a", [
+        { correct: true, firstTime: true, atDay: "2026-01-01" },
+        { correct: false, firstTime: true, atDay: "2026-01-08" }, // exactly 7 days
+      ]),
+    ];
+    const report = buildOutcomeReport(rows, "2026-01-15");
+    const d7 = report.decay.find((d) => d.sinceFirstSeenDays === 7)!;
+    expect(d7.total).toBe(1);
+    expect(d7.accuracy).toBe(0);
+  });
+
+  it("an invalid atDay entry is skipped, not crash the report", () => {
+    const rows = [
+      { learnerKey: "a", transferLog: [
+        { scenarioId: "ewallet-x", correct: true, firstTime: true, atDay: "2026-01-01" },
+        { scenarioId: "ewallet-x", correct: true, firstTime: true, atDay: "not-a-date" },
+        { scenarioId: "ewallet-x", correct: true, firstTime: true, atDay: "2026-02-99" },
+      ] },
+    ];
+    const report = buildOutcomeReport(rows as any, "2026-01-15");
+    expect(report.overall.firstTime.total).toBe(1); // only the valid date
+    expect(report.weekly.length).toBe(1);
+  });
+});
