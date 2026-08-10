@@ -2,13 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   Send, RefreshCw, Trophy, HelpCircle, ShieldCheck, ShieldAlert, Shield, Smartphone,
   Target,
-  Mail, Briefcase, Phone, QrCode, Package, Zap, Users, ChevronRight, Bot, ArrowLeft,
+  Briefcase, Phone, Package, Zap, Users, ChevronRight, Bot, ArrowLeft,
   Landmark, Truck, FileSearch, Heart, TrendingUp, Scale, ScanLine, PhoneCall,
   Fingerprint, Banknote, HandCoins, HeartHandshake, Gift, CheckCheck, ChevronDown, Flame,
   RotateCcw,
   type LucideIcon,
 } from 'lucide-react';
 import { playSound } from '../utils/sound';
+import DrillRenderer from './DrillRenderer';
 import { setDocumentLang } from '../src/utils/lang';
 import { td, normalizeLang, type DojoKey } from '../src/i18n';
 import { type Scenario, type ScenarioStep, type ScenarioDifficulty, type ScenarioFamily } from '../src/dojo/scenarios';
@@ -23,15 +24,6 @@ interface DojoProps {
 }
 
 type View = 'select' | 'family' | 'scenario' | 'ai';
-
-const CHANNEL_ICONS: Record<string, React.ReactNode> = {
-  sms: <Smartphone className="w-5 h-5" />,
-  email: <Mail className="w-5 h-5" />,
-  chat: <Send className="w-5 h-5" />,
-  linkedin: <Briefcase className="w-5 h-5" />,
-  vishing: <Phone className="w-5 h-5" />,
-  qr: <QrCode className="w-5 h-5" />,
-};
 
 const DIFF_COLOR: Record<Scenario['difficulty'], string> = {
   easy: 'text-green-400 border-green-700',
@@ -803,19 +795,9 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
               </div>
             ) : step ? (
               <div className="animate-fade-in">
-                {/* The incoming message */}
-                <div className="max-w-md mx-auto bg-white text-black rounded-xl p-3 font-sans shadow-lg">
-                  <div className="flex items-center gap-2 mb-2 pb-2 border-b border-slate-300">
-                    <span className="p-1.5 bg-slate-200 rounded-full text-slate-700">
-                      {CHANNEL_ICONS[step.channel]}
-                    </span>
-                    <div>
-                      <div className="font-semibold text-sm text-slate-800">{step.senderLabel}</div>
-                      <div className="text-[10px] text-slate-500 uppercase tracking-wide">{step.channel} {D('messageChannel')}</div>
-                    </div>
-                  </div>
-                  <p className="text-slate-800 text-sm leading-relaxed">{step.message}</p>
-                </div>
+                {/* The incoming message - rendered as its real device UI so
+                    the learner recognizes the PATTERN, not just the words. */}
+                <DrillRenderer step={step} />
 
                 <p className="mt-4 font-['Press_Start_2P'] text-xs text-cyan-300 mb-3">{step.question}</p>
                 <div className="space-y-3">
