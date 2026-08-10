@@ -33,6 +33,10 @@ import {
   challengeProgress,
   claimChallenge,
   detectSurpriseReward,
+  challengeReward,
+  buyStreakFreeze,
+  setDailyGoal,
+  STREAK_FREEZE_COST,
   addDays,
   XP_CORRECT,
   XP_WRONG,
@@ -687,15 +691,18 @@ describe("gamification (retention strategies)", () => {
     expect(prog.claimed).toBe(false);
   });
 
-  it("a completed challenge awards coins once on claim", () => {
+  it("a completed challenge awards a deterministic variable reward once on claim", () => {
     const s = getScenario("gcash-otp")!;
     let p = emptyProgress();
     for (let i = 0; i < 3; i++) {
       p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-01" });
     }
     const before = p.shieldCoins;
+    const reward = challengeReward("daily-goal");
+    expect(reward).toBeGreaterThanOrEqual(15);
+    expect(reward).toBeLessThanOrEqual(25);
     const claimed = claimChallenge(p, "daily-goal");
-    expect(claimed.shieldCoins).toBe(before + 20);
+    expect(claimed.shieldCoins).toBe(before + reward);
     expect(claimed.challenges["daily-goal"].claimedAt).not.toBeNull();
     // Claiming again awards nothing.
     const again = claimChallenge(claimed, "daily-goal");
@@ -727,5 +734,54 @@ describe("gamification (retention strategies)", () => {
     expect(reward).not.toBeNull();
     // Mastery (>=4/5 correct) is the bigger milestone and fires first.
     expect(reward!.kind).toBe("first-mastery");
+  });
+});
+
+describe("streak agency (the streak-trap fix)", () => {
+  it("a missed day consumes a streak freeze instead of resetting the streak", () => {
+    const s = getScenario("gcash-otp")!;
+    let p = emptyProgress();
+    // Day 1: meet goal, streak = 1.
+    p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-01" });
+    p = recordDailyGoal(p, 3, 3, "2026-08-01");
+    expect(p.streakCurrent).toBe(1);
+    // Day 2: meet goal, streak = 2. Earn enough correct answers for a freeze.
+    p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-02" });
+    p = recordDailyGoal(p, 3, 3, "2026-08-02");
+    expect(p.streakCurrent).toBe(2);
+    // Earn 4 more correct answers (total 6 = 30 coins) so the freeze is affordable.
+    for (let i = 0; i < 4; i++) {
+      p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-02" });
+    }
+    // Buy a freeze, then miss day 3: the freeze is consumed, streak survives.
+    p = buyStreakFreeze(p);
+    expect(p.streakAgency.freezesLeft).toBe(1);
+    p = recordDailyGoal(p, 0, 3, "2026-08-04"); // gap of 2 days
+    expect(p.streakCurrent).toBe(2); // not reset to 0
+    expect(p.streakAgency.freezesLeft).toBe(0); // freeze consumed
+    expect(p.streakAgency.lastFrozenDay).toBe("2026-08-04");
+  });
+
+  it("buying a freeze costs coins and is refused when unaffordable", () => {
+    const s = getScenario("gcash-otp")!;
+    let p = emptyProgress();
+    // Earn 10 coins (2 correct answers) - below the 30 cost.
+    p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-01" });
+    p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-01" });
+    const refused = buyStreakFreeze(p);
+    expect(refused.shieldCoins).toBe(10);
+    expect(refused.streakAgency.freezesLeft).toBe(0);
+    // Earn enough (6 correct) then buy.
+    let rich = emptyProgress();
+    for (let i = 0; i < 6; i++) rich = applyAnswer(rich, { scenario: s, correct: true, atDay: "2026-08-01" });
+    const bought = buyStreakFreeze(rich);
+    expect(bought.shieldCoins).toBe(30 - STREAK_FREEZE_COST);
+    expect(bought.streakAgency.freezesLeft).toBe(1);
+  });
+
+  it("the user can choose their daily goal (3/5/7) and it persists", () => {
+    const p = setDailyGoal(emptyProgress(), 5);
+    expect(p.streakAgency.dailyGoal).toBe(5);
+    expect(setDailyGoal(p, 7).streakAgency.dailyGoal).toBe(7);
   });
 });

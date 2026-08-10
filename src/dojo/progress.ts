@@ -58,8 +58,29 @@ export interface SurpriseReward {
 }
 
 export const COINS_PER_CORRECT = 5;
-export const COINS_PER_CHALLENGE = 20;
+export const COINS_PER_CHALLENGE_MIN = 15;
+export const COINS_PER_CHALLENGE_MAX = 25;
 export const SHIELD_COIN_PRICE = 100; // e.g. a badge/theme redeemable at 100 coins
+export const STREAK_FREEZE_COST = 30; // spend shield coins to protect a streak (agency)
+export const DAILY_GOAL_OPTIONS = [3, 5, 7] as const; // user picks their own daily goal
+export type DailyGoalOption = (typeof DAILY_GOAL_OPTIONS)[number];
+
+// Variable reward magnitude (Tim Gabe pattern 5): the reward is a RANGE, not
+// a flat number, so claiming a challenge has an anticipation-reveal moment
+// instead of a fixed payout. Deterministic per challenge (hash of the id) so
+// the same challenge always pays the same amount - fairness + surprise.
+export const challengeReward = (challengeId: string): number => {
+  let h = 0;
+  for (let i = 0; i < challengeId.length; i++) h = (h * 31 + challengeId.charCodeAt(i)) | 0;
+  const range = COINS_PER_CHALLENGE_MAX - COINS_PER_CHALLENGE_MIN + 1;
+  return COINS_PER_CHALLENGE_MIN + (Math.abs(h) % range);
+};
+
+export interface StreakAgency {
+  dailyGoal: DailyGoalOption;
+  freezesLeft: number; // streak freezes owned (purchased with shield coins)
+  lastFrozenDay: string | null; // the day a freeze was consumed
+}
 
 export const CHALLENGE_DEFS = [
   { id: "master-ewallet", target: 3, family: "ewallet", label: "Master 3 e-wallet drills" },
@@ -82,6 +103,7 @@ export interface LearnerProgress {
   transferLog: TransferAnswer[];
   challenges: Record<string, ChallengeState>;
   surpriseRewards: SurpriseReward[];
+  streakAgency: StreakAgency;
   familyMastery: Record<FamilyId, FamilyMastery>;
   examPassed: boolean;
   examBestScore: number | null;
@@ -190,6 +212,7 @@ export const emptyProgress = (): LearnerProgress => ({
   transferLog: [],
   challenges: {},
   surpriseRewards: [],
+  streakAgency: { dailyGoal: 3, freezesLeft: 0, lastFrozenDay: null },
   familyMastery: Object.fromEntries(FAMILY_IDS.map((f) => [f, emptyFamily()])) as Record<FamilyId, FamilyMastery>,
   examPassed: false,
   examBestScore: null,
@@ -422,6 +445,7 @@ export const recordDailyGoal = (p: LearnerProgress, completedToday: number, goal
   const met = completedToday >= goal;
   let streakCurrent = p.streakCurrent;
   let lastActiveDay = p.lastActiveDay;
+  let streakAgency = p.streakAgency;
   if (met) {
     if (lastActiveDay == null) {
       streakCurrent = 1;
@@ -437,12 +461,21 @@ export const recordDailyGoal = (p: LearnerProgress, completedToday: number, goal
       lastActiveDay = today;
     }
   } else if (lastActiveDay != null && daysBetween(lastActiveDay, today) > 1) {
-    // A missed day resets the streak to 0 (not 1): the learner did not earn a
-    // credit for a day the goal was not met.
-    streakCurrent = 0;
-    lastActiveDay = today;
+    // A missed day would reset the streak - BUT if the learner owns a streak
+    // freeze, consume it instead (agency, not obligation: the streak protects
+    // the learner, it does not punish them - Tim Gabe's streak-trap finding).
+    if (p.streakAgency.freezesLeft > 0 && p.streakAgency.lastFrozenDay !== today) {
+      streakAgency = {
+        ...p.streakAgency,
+        freezesLeft: p.streakAgency.freezesLeft - 1,
+        lastFrozenDay: today,
+      };
+    } else {
+      streakCurrent = 0;
+      lastActiveDay = today;
+    }
   }
-  return { ...p, streakCurrent, streakBest: Math.max(p.streakBest, streakCurrent), lastActiveDay };
+  return { ...p, streakCurrent, streakBest: Math.max(p.streakBest, streakCurrent), lastActiveDay, streakAgency };
 };
 
 export const streakStatus = (p: LearnerProgress): { current: number; best: number; active: boolean } => ({
@@ -632,13 +665,13 @@ export const detectSurpriseReward = (p: LearnerProgress, atDay: string): Surpris
   return null;
 };
 
-// Claim a completed challenge: awards shield coins once. Returns the updated
-// progress with the challenge marked claimed and coins awarded.
+// Claim a completed challenge: awards variable shield coins once (anticipation
+// reveal). Returns the updated progress with the challenge marked claimed.
 export const claimChallenge = (p: LearnerProgress, challengeId: string): LearnerProgress => {
   const state = p.challenges[challengeId];
   if (!state || state.progress < state.target || state.claimedAt !== null) return p;
   const challenges = { ...p.challenges, [challengeId]: { ...state, claimedAt: new Date().toISOString().slice(0, 10) } };
-  return recomputeUnlocked({ ...p, challenges, shieldCoins: p.shieldCoins + COINS_PER_CHALLENGE });
+  return recomputeUnlocked({ ...p, challenges, shieldCoins: p.shieldCoins + challengeReward(challengeId) });
 };
 
 // Readable challenge progress for the UI (0..1 complete).
@@ -647,3 +680,22 @@ export const challengeProgress = (p: LearnerProgress, challengeId: string): { pr
   if (!state) return { progress: 0, target: CHALLENGE_DEFS.find((d) => d.id === challengeId)?.target ?? 3, claimed: false };
   return { progress: state.progress, target: state.target, claimed: state.claimedAt !== null };
 };
+
+// Buy a streak freeze with shield coins. Agency: the learner CHOOSES to
+// protect their streak, so it never becomes an obligation they can't escape
+// (the streak-trap finding). Returns unchanged progress if unaffordable.
+export const buyStreakFreeze = (p: LearnerProgress): LearnerProgress => {
+  if (p.shieldCoins < STREAK_FREEZE_COST) return p;
+  return {
+    ...p,
+    shieldCoins: p.shieldCoins - STREAK_FREEZE_COST,
+    streakAgency: { ...p.streakAgency, freezesLeft: p.streakAgency.freezesLeft + 1 },
+  };
+};
+
+// Let the learner choose their daily goal (3/5/7). The choice is what gives
+// the habit agency instead of pressure.
+export const setDailyGoal = (p: LearnerProgress, goal: DailyGoalOption): LearnerProgress => ({
+  ...p,
+  streakAgency: { ...p.streakAgency, dailyGoal: goal },
+});
