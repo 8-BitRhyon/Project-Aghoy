@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  Send, RefreshCw, Trophy, HelpCircle, ShieldCheck, ShieldAlert, Smartphone,
+  Send, RefreshCw, Trophy, HelpCircle, ShieldCheck, ShieldAlert, Shield, Smartphone,
+  Target,
   Mail, Briefcase, Phone, QrCode, Package, Zap, Users, ChevronRight, Bot, ArrowLeft,
   Landmark, Truck, FileSearch, Heart, TrendingUp, Scale, ScanLine, PhoneCall,
   Fingerprint, Banknote, HandCoins, HeartHandshake, Gift, CheckCheck, ChevronDown, Flame,
@@ -12,7 +13,7 @@ import { setDocumentLang } from '../src/utils/lang';
 import { td, normalizeLang, type DojoKey } from '../src/i18n';
 import { type Scenario, type ScenarioStep, type ScenarioDifficulty, type ScenarioFamily } from '../src/dojo/scenarios';
 import { ALL_SCENARIOS } from '../src/dojo/scenarios.generated';
-import { type LearnerProgress, emptyProgress, applyAnswer, sessionPlan, recordDailyGoal, streakStatus, familyMasteryState, isFamilyUnlocked, isTierUnlocked, transferFromLog } from '../src/dojo/progress';
+import { type LearnerProgress, emptyProgress, applyAnswer, sessionPlan, recordDailyGoal, streakStatus, familyMasteryState, isFamilyUnlocked, isTierUnlocked, transferFromLog, challengeProgress, CHALLENGE_DEFS, detectSurpriseReward, claimChallenge, COINS_PER_CHALLENGE } from '../src/dojo/progress';
 import { saveTrainingProgress, loadTrainingProgress } from '../src/api/storageClient';
 import { type GameState, startScenario, answerStep, advanceFromFeedback, rankFor } from '../src/dojo/engine';
 import { createDojoChat } from '../services/aiService';
@@ -253,7 +254,14 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
       const next = prev + (result.correct ? 1 : 0);
       setProgress((p) => {
         const withAnswer = applyAnswer(p, { scenario, correct: result.correct, atDay: today });
-        const saved = recordDailyGoal(withAnswer, next, DAILY_GOAL, today);
+        const withGoal = recordDailyGoal(withAnswer, next, DAILY_GOAL, today);
+        // Award a surprise reward when a milestone is hit (first mastery,
+        // streak 3/7/14). The reward is persisted so it shows once and
+        // survives reload. Positive-only, never shaming.
+        const reward = detectSurpriseReward(withGoal, today);
+        const saved = reward
+          ? { ...withGoal, surpriseRewards: [...withGoal.surpriseRewards, reward] }
+          : withGoal;
         saveTrainingProgress(saved);
         return saved;
       });
@@ -356,8 +364,11 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
           <Flame className="w-5 h-5 text-orange-400" />
           <span className="font-['Press_Start_2P'] text-[10px] text-orange-300">{D('streak')} {streak.current} {streak.current === 1 ? D('day') : D('days')}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <ShieldCheck className="w-5 h-5 text-cyan-400" />
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1">
+            <Shield className="w-4 h-4 text-yellow-400" />
+            <span className="font-['Press_Start_2P'] text-[10px] text-yellow-300">{progress.shieldCoins}</span>
+          </div>
           <span className="font-['Press_Start_2P'] text-[10px] text-cyan-300">{D('todayProgress')} {todayCorrect}/{DAILY_GOAL}</span>
         </div>
         <p className="w-full md:w-auto text-cyan-200/80 font-['VT323'] text-lg leading-none">{D('drillsAday')}</p>
@@ -365,9 +376,72 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
     );
   };
 
+  // Surprise-reward banner: a one-time delight moment on a milestone (first
+  // mastery, a 3/7/14-day streak). Positive-only for this age group.
+  const renderSurprise = () => {
+    if (progress.surpriseRewards.length === 0) return null;
+    const last = progress.surpriseRewards[progress.surpriseRewards.length - 1];
+    const kind = last.kind;
+    const label = kind === "first-mastery" ? D('surpriseMastery') : kind === "first-perfect" ? D('surprisePerfect') : D('surpriseStreak');
+    return (
+      <div className="mb-4 border-2 border-yellow-500 bg-yellow-950/30 p-3 flex items-center gap-3 animate-fade-in">
+        <Trophy className="w-6 h-6 text-yellow-400 shrink-0" />
+        <div>
+          <p className="font-['Press_Start_2P'] text-[10px] text-yellow-300">{D('surpriseTitle')}</p>
+          <p className="font-['VT323'] text-lg text-slate-100 leading-tight">{label}</p>
+        </div>
+      </div>
+    );
+  };
+
+  // Active challenge chip: a non-timed mission ("master 3 ewallet drills")
+  // with a progress bar. No pressure timers - self-paced for older learners.
+  const renderChallengeChip = () => {
+    const active = CHALLENGE_DEFS.find((d) => {
+      const st = progress.challenges[d.id];
+      return !st || (st.progress < st.target && st.claimedAt === null);
+    });
+    if (!active) return null;
+    const prog = challengeProgress(progress, active.id);
+    const pct = Math.round((prog.progress / prog.target) * 100);
+    const complete = prog.progress >= prog.target && !prog.claimed;
+    const claim = () => {
+      playSound('success');
+      setProgress((p) => {
+        const saved = claimChallenge(p, active.id);
+        saveTrainingProgress(saved);
+        return saved;
+      });
+    };
+    return (
+      <div className="mb-4 border-2 border-indigo-700 bg-indigo-950/30 p-3">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Target className="w-5 h-5 text-indigo-400" />
+            <span className="font-['Press_Start_2P'] text-[10px] text-indigo-300">{D('challengeLabel')}</span>
+          </div>
+          <span className="font-['VT323'] text-lg text-slate-300">{prog.progress}/{prog.target}</span>
+        </div>
+        <div className="mt-2 h-2 bg-slate-800 rounded overflow-hidden">
+          <div className="h-full bg-indigo-500 transition-all" style={{ width: `${pct}%` }} />
+        </div>
+        <div className="mt-2 flex items-center justify-between gap-2">
+          <p className="font-['VT323'] text-sm text-slate-400">{D('challengeHint')}</p>
+          {complete && (
+            <button onClick={claim} className="px-3 py-1 bg-indigo-700 hover:bg-indigo-600 text-white font-['Press_Start_2P'] text-[10px] border-b-2 border-indigo-900 active:border-b-0 active:translate-y-px min-h-[36px]">
+              {D('claimReward')} +{COINS_PER_CHALLENGE}
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   const renderSelect = () => (
     <div className="w-full max-w-3xl mx-auto">
       {renderStreakBar()}
+      {renderSurprise()}
+      {renderChallengeChip()}
 
       <div className="mb-6 border-4 border-cyan-600 bg-cyan-900/20 p-4 animate-fade-in font-['VT323']">
         <div className="flex items-start gap-4">

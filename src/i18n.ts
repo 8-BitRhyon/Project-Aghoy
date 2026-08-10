@@ -182,6 +182,13 @@ export type DojoKey =
   | 'transferNewDrills'
   | 'transferCorrect'
   | 'transferHint'
+  | 'surpriseTitle'
+  | 'surpriseMastery'
+  | 'surprisePerfect'
+  | 'surpriseStreak'
+  | 'challengeLabel'
+  | 'challengeHint'
+  | 'claimReward'
   | 'remember'
   | 'message'
   | 'liveScammer'
@@ -274,6 +281,13 @@ export const DOJO_COPY: Record<AghoyLang, Partial<Record<DojoKey, string>>> = {
     transferNewDrills: 'mga bagong drill',
     transferCorrect: 'tama',
     transferHint: 'Ang tunay na pagsusulit ay ang mga bagong scam na hindi mo pa nakita. Tumaas ang iyong score? Lumalaki ang proteksyon mo.',
+    surpriseTitle: 'BONUS! 🎉',
+    surpriseMastery: 'Nakabisado mo ang isang scam family. Magaling!',
+    surprisePerfect: 'Perpektong drill! Walang kamali-mali.',
+    surpriseStreak: 'Umabot ka sa streak milestone!',
+    challengeLabel: 'ACTIVE CHALLENGE',
+    challengeHint: 'Tapusin ang 3 drill para sa shield coins.',
+    claimReward: 'I-CLAIM',
     remember: 'TANDAAN:',
     message: 'message',
     liveScammer: 'LIVE AI SCAMMER',
@@ -364,6 +378,13 @@ export const DOJO_COPY: Record<AghoyLang, Partial<Record<DojoKey, string>>> = {
     transferNewDrills: 'new drills',
     transferCorrect: 'correct',
     transferHint: 'The real test is scams you have never seen. Is your score climbing? Your protection is growing.',
+    surpriseTitle: 'BONUS! 🎉',
+    surpriseMastery: 'You mastered a scam family. Well done!',
+    surprisePerfect: 'Perfect drill! No mistakes.',
+    surpriseStreak: 'You hit a streak milestone!',
+    challengeLabel: 'ACTIVE CHALLENGE',
+    challengeHint: 'Finish 3 drills for shield coins.',
+    claimReward: 'CLAIM',
     remember: 'REMEMBER:',
     message: 'message',
     liveScammer: 'LIVE AI SCAMMER',
@@ -454,6 +475,13 @@ export const DOJO_COPY: Record<AghoyLang, Partial<Record<DojoKey, string>>> = {
     transferNewDrills: 'bag-ong drills',
     transferCorrect: 'sakto',
     transferHint: 'Ang tinuod nga pagsulay mao ang bag-ong scam nga wala pa nimo makita. Nisaka ba ang score? Nagtubo ang proteksyon nimo.',
+    surpriseTitle: 'BONUS! 🎉',
+    surpriseMastery: 'Na-master nimo ang scam family. Maayo!',
+    surprisePerfect: 'Perpekto nga drill! Wala sayop.',
+    surpriseStreak: 'Naabot nimo ang streak milestone!',
+    challengeLabel: 'ACTIVE CHALLENGE',
+    challengeHint: 'Tapusa ang 3 drills para sa shield coins.',
+    claimReward: 'I-CLAIM',
     remember: 'HINUMDOMI:',
     message: 'mensahi',
     liveScammer: 'LIVE AI SCAMMER',
@@ -544,6 +572,13 @@ export const DOJO_COPY: Record<AghoyLang, Partial<Record<DojoKey, string>>> = {
     transferNewDrills: 'baro a drills',
     transferCorrect: 'usto',
     transferHint: 'Ti pudno a subok ket dagiti baro a scam a saan mo pay nakita. Ngumatngato ti score? Dumakdakkel ti proteksyonam.',
+    surpriseTitle: 'BONUS! 🎉',
+    surpriseMastery: 'Na-master mo ti scam family. Nasayaat!',
+    surprisePerfect: 'Perpekto a drill! Awan biddut.',
+    surpriseStreak: 'Naabot mo ti streak milestone!',
+    challengeLabel: 'ACTIVE CHALLENGE',
+    challengeHint: 'Lektoen dagiti 3 drills para iti shield coins.',
+    claimReward: 'I-CLAIM',
     remember: 'MALAGIPMO:',
     message: 'mensahe',
     liveScammer: 'LIVE AI SCAMMER',

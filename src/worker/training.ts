@@ -27,9 +27,9 @@ export const learnerKey = async (learnerId: string, consentKey: string): Promise
 
 export const loadProgress = async (env: TrainingEnv, key: string): Promise<LearnerProgress> => {
   const row = await env.DB.prepare(
-    `SELECT shield_level, xp, placement_score, placement_tier, streak_current, streak_best,
+    `SELECT shield_level, xp, shield_coins, placement_score, placement_tier, streak_current, streak_best,
             last_active_day, srs_queue, completed, family_mastery, unlocked,
-            exam_passed, exam_best_score, transfer_log
+            exam_passed, exam_best_score, transfer_log, challenges, surprise_rewards
      FROM training_progress WHERE learner_key = ?1`
   )
     .bind(key)
@@ -60,6 +60,9 @@ export const loadProgress = async (env: TrainingEnv, key: string): Promise<Learn
     examBestScore: (r.exam_best_score as number) ?? 0,
     wrongAnswers: [],
     transferLog: safeJson(r.transfer_log, []),
+    shieldCoins: (r.shield_coins as number) ?? 0,
+    challenges: safeJson(r.challenges, {}),
+    surpriseRewards: safeJson(r.surprise_rewards, []),
     // studyPlan is derived (weakest families) and not persisted.
     studyPlan: [],
   };
@@ -88,24 +91,26 @@ const sanitizeTransferLog = (log: unknown): string => {
 export const saveProgress = async (env: TrainingEnv, key: string, p: LearnerProgress): Promise<void> => {
   const n = (v: unknown) => (v === undefined || v === null ? null : v);
   await env.DB.prepare(
-    `INSERT INTO training_progress (learner_key, shield_level, xp, placement_score, placement_tier,
+    `INSERT INTO training_progress (learner_key, shield_level, xp, shield_coins, placement_score, placement_tier,
        streak_current, streak_best, last_active_day, srs_queue, completed, family_mastery, unlocked,
-       exam_passed, exam_best_score, transfer_log, updated_at)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, datetime('now'))
+       exam_passed, exam_best_score, transfer_log, challenges, surprise_rewards, updated_at)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, datetime('now'))
      ON CONFLICT(learner_key) DO UPDATE SET
-       shield_level = excluded.shield_level, xp = excluded.xp,
+       shield_level = excluded.shield_level, xp = excluded.xp, shield_coins = excluded.shield_coins,
        placement_score = excluded.placement_score, placement_tier = excluded.placement_tier,
        streak_current = excluded.streak_current, streak_best = excluded.streak_best,
        last_active_day = excluded.last_active_day, srs_queue = excluded.srs_queue,
        completed = excluded.completed, family_mastery = excluded.family_mastery,
        unlocked = excluded.unlocked, exam_passed = excluded.exam_passed,
        exam_best_score = excluded.exam_best_score, transfer_log = excluded.transfer_log,
+       challenges = excluded.challenges, surprise_rewards = excluded.surprise_rewards,
        updated_at = datetime('now')`
   )
     .bind(
       key,
       n(p.shieldLevel),
       n(p.xp),
+      n(p.shieldCoins),
       n(p.placementScore),
       n(p.placementTier),
       n(p.streakCurrent),
@@ -117,7 +122,9 @@ export const saveProgress = async (env: TrainingEnv, key: string, p: LearnerProg
       JSON.stringify(p.unlocked),
       p.examPassed ? 1 : 0,
       n(p.examBestScore),
-      sanitizeTransferLog(p.transferLog)
+      sanitizeTransferLog(p.transferLog),
+      JSON.stringify(p.challenges),
+      JSON.stringify(p.surpriseRewards)
     )
     .run();
 };
