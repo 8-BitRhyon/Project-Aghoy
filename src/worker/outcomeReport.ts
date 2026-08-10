@@ -49,6 +49,11 @@ const isoWeekStart = (day: string): string => {
   return date.toISOString().slice(0, 10);
 };
 
+// Public week-start helper for callers that persist weekly snapshots (the
+// Worker cron). Same Monday-based rule as the weekly buckets, so snapshot keys
+// align with the report's weeks.
+export const isoWeekStartOf = (day: string): string => isoWeekStart(day);
+
 const acc = (correct: number, total: number): number => (total > 0 ? correct / total : 0);
 
 const bucketFor = (day: string): string => isoWeekStart(day);

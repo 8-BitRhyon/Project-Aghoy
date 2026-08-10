@@ -31,7 +31,7 @@ import {
   loadOutcomeSnapshots,
 } from "./training";
 import { applyPlacementResult } from "../dojo/progress";
-import { buildOutcomeReport } from "./outcomeReport";
+import { buildOutcomeReport, isoWeekStartOf } from "./outcomeReport";
 
 interface Env {
   AI: any;
@@ -1133,9 +1133,12 @@ export default {
   // The evidence the research said PH scam-education never publishes.
   async scheduled(_controller: ScheduledController, env: Env): Promise<void> {
     const rows = await loadAllTransferLogs(env);
-    const report = buildOutcomeReport(rows as any, new Date().toISOString().slice(0, 10));
-    const week = new Date(Date.now() - 3 * 86400000).toISOString().slice(0, 10); // mid-week anchor
-    await saveOutcomeSnapshot(env, week, report);
+    const today = new Date().toISOString().slice(0, 10);
+    const report = buildOutcomeReport(rows as any, today);
+    // Week key must match buildOutcomeReport's Monday-based weeks so snapshot
+    // keys align with the weekly buckets (a Monday cron anchoring to today is
+    // already the week start - no offset needed).
+    await saveOutcomeSnapshot(env, isoWeekStartOf(today), report);
   },
 };
 

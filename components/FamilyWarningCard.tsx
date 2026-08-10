@@ -18,10 +18,16 @@ interface FamilyWarningCardProps {
 // adults prefer social support over self-serve trust cues), so confirming it
 // is recorded and persists.
 const CONFIRM_KEY = (hash: string): string => `aghoy_family_confirmed_${hash}`;
+// FNV-1a 32-bit is fine for a localStorage key but 32-bit can collide across
+// many distinct texts. Use the full 64-bit FNV-1a variant for a stronger key
+// while staying synchronous (crypto.subtle is async and not needed here).
 const contentHash = (s: string): string => {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
-  return Math.abs(h).toString(36);
+  let h = 0xcbf29ce484222325n;
+  for (let i = 0; i < s.length; i++) {
+    h ^= BigInt(s.charCodeAt(i));
+    h = (h * 0x100000001b3n) & 0xffffffffffffffffn;
+  }
+  return h.toString(36);
 };
 
 const FamilyWarningCard: React.FC<FamilyWarningCardProps> = ({ result, isOpen, onClose, language = 'TAGALOG' }) => {
