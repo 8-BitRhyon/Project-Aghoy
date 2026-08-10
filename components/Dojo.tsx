@@ -13,7 +13,7 @@ import { setDocumentLang } from '../src/utils/lang';
 import { td, normalizeLang, type DojoKey } from '../src/i18n';
 import { type Scenario, type ScenarioStep, type ScenarioDifficulty, type ScenarioFamily } from '../src/dojo/scenarios';
 import { ALL_SCENARIOS } from '../src/dojo/scenarios.generated';
-import { type LearnerProgress, emptyProgress, applyAnswer, sessionPlan, recordDailyGoal, streakStatus, familyMasteryState, isFamilyUnlocked, isTierUnlocked, transferFromLog, challengeProgress, CHALLENGE_DEFS, detectSurpriseReward, claimChallenge, COINS_PER_CHALLENGE } from '../src/dojo/progress';
+import { type LearnerProgress, emptyProgress, applyAnswer, sessionPlan, recordDailyGoal, streakStatus, familyMasteryState, isFamilyUnlocked, isTierUnlocked, transferFromLog, challengeProgress, CHALLENGE_DEFS, detectSurpriseReward, claimChallenge, challengeReward, buyStreakFreeze, STREAK_FREEZE_COST, setDailyGoal, DAILY_GOAL_OPTIONS } from '../src/dojo/progress';
 import { saveTrainingProgress, loadTrainingProgress } from '../src/api/storageClient';
 import { type GameState, startScenario, answerStep, advanceFromFeedback, rankFor } from '../src/dojo/engine';
 import { createDojoChat } from '../services/aiService';
@@ -107,7 +107,8 @@ const dayKey = (): string => {
 };
 
 const DIFFICULTIES: ScenarioDifficulty[] = ['easy', 'medium', 'hard'];
-const DAILY_GOAL = 3;
+// Daily goal is user-chosen (3/5/7) - agency, not obligation (streak-trap fix).
+const DAILY_GOAL_DEFAULT = 3;
 
 const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
   const lang = normalizeLang(selectedLanguage);
@@ -254,7 +255,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
       const next = prev + (result.correct ? 1 : 0);
       setProgress((p) => {
         const withAnswer = applyAnswer(p, { scenario, correct: result.correct, atDay: today });
-        const withGoal = recordDailyGoal(withAnswer, next, DAILY_GOAL, today);
+        const withGoal = recordDailyGoal(withAnswer, next, progress.streakAgency.dailyGoal, today);
         // Award a surprise reward when a milestone is hit (first mastery,
         // streak 3/7/14). The reward is persisted so it shows once and
         // survives reload. Positive-only, never shaming.
@@ -358,18 +359,42 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
 
   const renderStreakBar = () => {
     const streak = streakStatus(progress);
+    const goal = progress.streakAgency.dailyGoal;
+    const buyFreeze = () => {
+      playSound('click');
+      setProgress((p) => {
+        const saved = buyStreakFreeze(p);
+        saveTrainingProgress(saved);
+        return saved;
+      });
+    };
     return (
       <div className="mb-4 border-2 border-slate-700 bg-slate-900/80 p-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <div className="flex items-center gap-2">
           <Flame className="w-5 h-5 text-orange-400" />
-          <span className="font-['Press_Start_2P'] text-[10px] text-orange-300">{D('streak')} {streak.current} {streak.current === 1 ? D('day') : D('days')}</span>
+          <span className="font-['Press_Start_2P'] text-[10px] text-orange-300">
+            {D('streak')} {streak.current} {streak.current === 1 ? D('day') : D('days')}
+          </span>
+          {progress.streakAgency.freezesLeft > 0 && (
+            <span className="text-[9px] font-['Press_Start_2P'] text-sky-300 border border-sky-700 px-1.5 py-0.5">
+              {progress.streakAgency.freezesLeft} {D('freeze')}
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1">
             <Shield className="w-4 h-4 text-yellow-400" />
             <span className="font-['Press_Start_2P'] text-[10px] text-yellow-300">{progress.shieldCoins}</span>
           </div>
-          <span className="font-['Press_Start_2P'] text-[10px] text-cyan-300">{D('todayProgress')} {todayCorrect}/{DAILY_GOAL}</span>
+          <span className="font-['Press_Start_2P'] text-[10px] text-cyan-300">{D('todayProgress')} {todayCorrect}/{goal}</span>
+          <button
+            onClick={buyFreeze}
+            disabled={progress.shieldCoins < STREAK_FREEZE_COST}
+            className="text-[9px] font-['Press_Start_2P'] text-sky-300 border border-sky-700 px-1.5 py-1 hover:bg-sky-900/40 disabled:opacity-40 disabled:cursor-not-allowed"
+            title={D('freezeBuy')}
+          >
+            {D('freezeBuy')} {STREAK_FREEZE_COST}
+          </button>
         </div>
         <p className="w-full md:w-auto text-cyan-200/80 font-['VT323'] text-lg leading-none">{D('drillsAday')}</p>
       </div>
@@ -429,9 +454,69 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
           <p className="font-['VT323'] text-sm text-slate-400">{D('challengeHint')}</p>
           {complete && (
             <button onClick={claim} className="px-3 py-1 bg-indigo-700 hover:bg-indigo-600 text-white font-['Press_Start_2P'] text-[10px] border-b-2 border-indigo-900 active:border-b-0 active:translate-y-px min-h-[36px]">
-              {D('claimReward')} +{COINS_PER_CHALLENGE}
+              {D('claimReward')} +{challengeReward(active.id)}
             </button>
           )}
+        </div>
+      </div>
+    );
+  };
+
+  // User-chosen daily goal (agency, not obligation): a small 3/5/7 chooser.
+  // Per the streak-trap finding, the learner controls the commitment.
+  const renderGoalChooser = () => (
+    <div className="mb-3 flex items-center justify-center gap-2">
+      <span className="font-['VT323'] text-lg text-slate-400">{D('goalLabel')}</span>
+      {DAILY_GOAL_OPTIONS.map((g) => (
+        <button
+          key={g}
+          onClick={() => {
+            playSound('click');
+            setProgress((p) => {
+              const saved = setDailyGoal(p, g);
+              saveTrainingProgress(saved);
+              return saved;
+            });
+          }}
+          className={`px-3 py-1 font-['Press_Start_2P'] text-[10px] border ${
+            progress.streakAgency.dailyGoal === g ? 'bg-cyan-700 text-white border-cyan-400' : 'bg-slate-800 text-slate-400 border-slate-600 hover:text-white'
+          }`}
+        >
+          {g}
+        </button>
+      ))}
+    </div>
+  );
+
+  // The COMPETENCE ring (the mission signal): accuracy on novel scams the
+  // learner has NEVER seen. This is the Dojo's real measure - a learner who
+  // spots unfamiliar lures is genuinely protected. Built like Apple Watch's
+  // completion rings (Gestalt closure): a filled ring the brain wants to close.
+  const renderCompetenceRing = () => {
+    const t = transferFromLog(progress.transferLog);
+    const pct = t.firstTimeCount > 0 ? Math.round(t.firstTime.accuracy * 100) : 0;
+    const c = 2 * Math.PI * 40; // circumference of an r=40 ring
+    return (
+      <div className="mb-4 border-2 border-cyan-700 bg-cyan-950/20 p-3 flex items-center gap-4">
+        <div className="relative w-24 h-24 shrink-0">
+          <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#155e75" strokeWidth="10" />
+            <circle
+              cx="50" cy="50" r="40" fill="none" stroke="#22d3ee" strokeWidth="10"
+              strokeLinecap="round" strokeDasharray={`${c * (pct / 100)} ${c}`}
+              className="transition-all duration-700"
+            />
+          </svg>
+          <span className="absolute inset-0 flex items-center justify-center font-['Press_Start_2P'] text-sm text-cyan-300">{pct}%</span>
+        </div>
+        <div>
+          <p className="font-['Press_Start_2P'] text-[10px] text-cyan-300 mb-1">{D('ringLabel')}</p>
+          <p className="font-['VT323'] text-lg text-slate-100 leading-tight">
+            {t.firstTimeCount > 0
+              ? D('ringNew') + ' ' + t.firstTime.correct + '/' + t.firstTime.total + ' ' + D('ringSpot')
+              : D('ringEmpty')}
+          </p>
+          <p className="font-['VT323'] text-sm text-slate-400 leading-tight">{D('ringHint')}</p>
         </div>
       </div>
     );
@@ -440,6 +525,8 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
   const renderSelect = () => (
     <div className="w-full max-w-3xl mx-auto">
       {renderStreakBar()}
+      {renderGoalChooser()}
+      {renderCompetenceRing()}
       {renderSurprise()}
       {renderChallengeChip()}
 

@@ -12,3 +12,4 @@ ALTER TABLE training_progress ADD COLUMN transfer_log TEXT NOT NULL DEFAULT '[]'
 ALTER TABLE training_progress ADD COLUMN shield_coins INTEGER NOT NULL DEFAULT 0;
 ALTER TABLE training_progress ADD COLUMN challenges TEXT NOT NULL DEFAULT '{}';
 ALTER TABLE training_progress ADD COLUMN surprise_rewards TEXT NOT NULL DEFAULT '[]';
+ALTER TABLE training_progress ADD COLUMN streak_agency TEXT NOT NULL DEFAULT '{"dailyGoal":3,"freezesLeft":0,"lastFrozenDay":null}';

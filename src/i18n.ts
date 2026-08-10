@@ -189,6 +189,14 @@ export type DojoKey =
   | 'challengeLabel'
   | 'challengeHint'
   | 'claimReward'
+  | 'freeze'
+  | 'freezeBuy'
+  | 'goalLabel'
+  | 'ringLabel'
+  | 'ringNew'
+  | 'ringSpot'
+  | 'ringEmpty'
+  | 'ringHint'
   | 'remember'
   | 'message'
   | 'liveScammer'
@@ -288,6 +296,14 @@ export const DOJO_COPY: Record<AghoyLang, Partial<Record<DojoKey, string>>> = {
     challengeLabel: 'ACTIVE CHALLENGE',
     challengeHint: 'Tapusin ang 3 drill para sa shield coins.',
     claimReward: 'I-CLAIM',
+    freeze: 'FREEZE',
+    freezeBuy: 'BIHAS NG FREEZE',
+    goalLabel: 'Daily goal mo:',
+    ringLabel: 'ANG IYONG PAGPROTEKTA RING',
+    ringNew: 'nakita mong bagong scam:',
+    ringSpot: 'nang tama',
+    ringHint: 'Kumpletuhin ang ring sa pamamagitan ng pag-spot ng mga bagong scam. Ganito lumalaki ang proteksyon mo.',
+    ringEmpty: 'Walang sapat na bagong drill pa. Gumawa ng ilan para makita ang iyong ring.',
     remember: 'TANDAAN:',
     message: 'message',
     liveScammer: 'LIVE AI SCAMMER',
@@ -385,6 +401,14 @@ export const DOJO_COPY: Record<AghoyLang, Partial<Record<DojoKey, string>>> = {
     challengeLabel: 'ACTIVE CHALLENGE',
     challengeHint: 'Finish 3 drills for shield coins.',
     claimReward: 'CLAIM',
+    freeze: 'FREEZE',
+    freezeBuy: 'BUY FREEZE',
+    goalLabel: 'Your daily goal:',
+    ringLabel: 'YOUR PROTECTION RING',
+    ringNew: 'new scams you caught:',
+    ringSpot: 'correct',
+    ringHint: 'Close the ring by spotting NEW scams you have never seen. This is how your protection grows.',
+    ringEmpty: 'Not enough new drills yet. Do a few to reveal your ring.',
     remember: 'REMEMBER:',
     message: 'message',
     liveScammer: 'LIVE AI SCAMMER',
@@ -482,6 +506,14 @@ export const DOJO_COPY: Record<AghoyLang, Partial<Record<DojoKey, string>>> = {
     challengeLabel: 'ACTIVE CHALLENGE',
     challengeHint: 'Tapusa ang 3 drills para sa shield coins.',
     claimReward: 'I-CLAIM',
+    freeze: 'FREEZE',
+    freezeBuy: 'PALITI NG FREEZE',
+    goalLabel: 'Imong daily goal:',
+    ringLabel: 'IMONG PROTECTION RING',
+    ringNew: 'bag-ong scam nga nadakpan nimo:',
+    ringSpot: 'sakto',
+    ringHint: 'Isira ang ring pinaagi sa pag-ila sa BAG-ONG scam nga wala nimo makita. Ingon ani nagtubo ang proteksyon nimo.',
+    ringEmpty: 'Wala pay bag-ong drills. Buhata ang pipila para makita ang imong ring.',
     remember: 'HINUMDOMI:',
     message: 'mensahi',
     liveScammer: 'LIVE AI SCAMMER',
@@ -579,6 +611,14 @@ export const DOJO_COPY: Record<AghoyLang, Partial<Record<DojoKey, string>>> = {
     challengeLabel: 'ACTIVE CHALLENGE',
     challengeHint: 'Lektoen dagiti 3 drills para iti shield coins.',
     claimReward: 'I-CLAIM',
+    freeze: 'FREEZE',
+    freezeBuy: 'GATANG TI FREEZE',
+    goalLabel: 'Ti daily goal mo:',
+    ringLabel: 'TI PROTECTION RING MO',
+    ringNew: 'baro a scam a naawanam:',
+    ringSpot: 'usto',
+    ringHint: 'Iserra ti ring babaen ti panang-ila iti BARO a scam a saan mo pay nakita. Kastoy ti dumakdakkel a proteksyonam.',
+    ringEmpty: 'Awan pay baro a drills. Aramidem dagiti sumagmamano tapos makita ti ring mo.',
     remember: 'MALAGIPMO:',
     message: 'mensahe',
     liveScammer: 'LIVE AI SCAMMER',
