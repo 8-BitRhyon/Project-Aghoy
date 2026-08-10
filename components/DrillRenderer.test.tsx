@@ -30,9 +30,19 @@ describe('DrillRenderer - channel-faithful immersion', () => {
     expect(screen.getByText(/Messenger/)).toBeTruthy();
   });
 
-  it('renders an email with the spoofed sender address', () => {
+  it('renders an email with the sender label only (no fabricated address)', () => {
     render(<DrillRenderer step={step('email')} />);
-    expect(screen.getByText(/support@/)).toBeTruthy();
+    expect(screen.getByText('GCash')).toBeTruthy();
+    expect(screen.queryByText(/support@/)).toBeNull();
+  });
+
+  it('renders red-flag segments in the vishing and qr branches too', () => {
+    const seg = { text: 'gcash-verify.example.ph', flag: 'FAKE_DOMAIN' };
+    const { unmount } = render(<DrillRenderer step={step('vishing', { segments: [seg] })} />);
+    expect(document.querySelector('[title*="FAKE_DOMAIN"]')).not.toBeNull();
+    unmount();
+    render(<DrillRenderer step={step('qr', { segments: [seg] })} />);
+    expect(document.querySelector('[title*="FAKE_DOMAIN"]')).not.toBeNull();
   });
 
   it('renders a vishing call screen with answer/decline', () => {

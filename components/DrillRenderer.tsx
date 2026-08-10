@@ -56,7 +56,7 @@ const DrillRenderer: React.FC<DrillRendererProps> = ({ step }) => {
           </div>
           <p className="text-white font-semibold text-lg">{sender}</p>
           <p className="text-slate-400 text-sm mt-1">Incoming call...</p>
-          <p className="text-slate-500 text-xs mt-2 italic leading-snug max-w-xs mx-auto">{msg}</p>
+          <div className="text-slate-500 text-xs mt-2 italic leading-snug max-w-xs mx-auto">{renderSegments()}</div>
           <div className="flex justify-center gap-6 mt-6">
             <div className="flex flex-col items-center gap-1">
               <div className="w-14 h-14 rounded-full bg-green-600 flex items-center justify-center">
@@ -92,7 +92,7 @@ const DrillRenderer: React.FC<DrillRendererProps> = ({ step }) => {
           <div className="absolute bottom-2 left-2 w-6 h-6 border-b-4 border-l-4 border-white/70" />
           <div className="absolute bottom-2 right-2 w-6 h-6 border-b-4 border-r-4 border-white/70" />
         </div>
-        <p className="text-white text-center text-sm mt-3">{msg}</p>
+        <p className="text-white text-center text-sm mt-3">{renderSegments()}</p>
       </div>
     );
   }
@@ -102,10 +102,7 @@ const DrillRenderer: React.FC<DrillRendererProps> = ({ step }) => {
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg border border-slate-200 font-sans overflow-hidden">
         <div className="bg-slate-100 px-3 py-2 flex items-center gap-2 border-b border-slate-200">
           <Mail className="w-4 h-4 text-slate-500" />
-          <span className="text-[10px] text-slate-400 truncate">{sender} &lt;support@{sender.toLowerCase().replace(/\s+/g, '')}.com&gt;</span>
-        </div>
-        <div className="p-3 border-b border-slate-100">
-          <p className="font-semibold text-slate-800 text-sm">{step.question}</p>
+          <span className="text-[10px] text-slate-400 truncate">{sender}</span>
         </div>
         <div className="px-3 py-2 text-slate-700 text-sm leading-relaxed whitespace-pre-line">
           {renderSegments()}
