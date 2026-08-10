@@ -177,6 +177,11 @@ export type DojoKey =
   | 'nextSituation'
   | 'correctShort'
   | 'notQuite'
+  | 'almostTryAgain'
+  | 'transferLabel'
+  | 'transferNewDrills'
+  | 'transferCorrect'
+  | 'transferHint'
   | 'remember'
   | 'message'
   | 'liveScammer'
@@ -264,6 +269,11 @@ export const DOJO_COPY: Record<AghoyLang, Partial<Record<DojoKey, string>>> = {
     nextSituation: 'SUNOD NA SITWASYON',
     correctShort: 'TAMA',
     notQuite: 'HINDI GANUN',
+    almostTryAgain: 'HALOS NA! SUBUKAN MULI',
+    transferLabel: 'NAGBABAGONG-BAGO',
+    transferNewDrills: 'mga bagong drill',
+    transferCorrect: 'tama',
+    transferHint: 'Ang tunay na pagsusulit ay ang mga bagong scam na hindi mo pa nakita. Tumaas ang iyong score? Lumalaki ang proteksyon mo.',
     remember: 'TANDAAN:',
     message: 'message',
     liveScammer: 'LIVE AI SCAMMER',
@@ -349,6 +359,11 @@ export const DOJO_COPY: Record<AghoyLang, Partial<Record<DojoKey, string>>> = {
     nextSituation: 'NEXT SITUATION',
     correctShort: 'CORRECT',
     notQuite: 'NOT QUITE',
+    almostTryAgain: 'ALMOST! TRY AGAIN',
+    transferLabel: 'NEW LURE TRANSFER',
+    transferNewDrills: 'new drills',
+    transferCorrect: 'correct',
+    transferHint: 'The real test is scams you have never seen. Is your score climbing? Your protection is growing.',
     remember: 'REMEMBER:',
     message: 'message',
     liveScammer: 'LIVE AI SCAMMER',
@@ -434,6 +449,11 @@ export const DOJO_COPY: Record<AghoyLang, Partial<Record<DojoKey, string>>> = {
     nextSituation: 'SUNOD NGA SITWASYON',
     correctShort: 'SAKTO',
     notQuite: 'DILI GYUD',
+    almostTryAgain: 'HALOS NA! SULAYI USAB',
+    transferLabel: 'BAG-ONG LURES',
+    transferNewDrills: 'bag-ong drills',
+    transferCorrect: 'sakto',
+    transferHint: 'Ang tinuod nga pagsulay mao ang bag-ong scam nga wala pa nimo makita. Nisaka ba ang score? Nagtubo ang proteksyon nimo.',
     remember: 'HINUMDOMI:',
     message: 'mensahi',
     liveScammer: 'LIVE AI SCAMMER',
@@ -519,6 +539,11 @@ export const DOJO_COPY: Record<AghoyLang, Partial<Record<DojoKey, string>>> = {
     nextSituation: 'SUMUNOD A SITWASYON',
     correctShort: 'USTO',
     notQuite: 'SAAN NGA USTO',
+    almostTryAgain: 'NGARUD! PADASEN MANEN',
+    transferLabel: 'BARO A LURES',
+    transferNewDrills: 'baro a drills',
+    transferCorrect: 'usto',
+    transferHint: 'Ti pudno a subok ket dagiti baro a scam a saan mo pay nakita. Ngumatngato ti score? Dumakdakkel ti proteksyonam.',
     remember: 'MALAGIPMO:',
     message: 'mensahe',
     liveScammer: 'LIVE AI SCAMMER',

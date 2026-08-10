@@ -4,6 +4,7 @@ import {
   Mail, Briefcase, Phone, QrCode, Package, Zap, Users, ChevronRight, Bot, ArrowLeft,
   Landmark, Truck, FileSearch, Heart, TrendingUp, Scale, ScanLine, PhoneCall,
   Fingerprint, Banknote, HandCoins, HeartHandshake, Gift, CheckCheck, ChevronDown, Flame,
+  RotateCcw,
   type LucideIcon,
 } from 'lucide-react';
 import { playSound } from '../utils/sound';
@@ -11,7 +12,7 @@ import { setDocumentLang } from '../src/utils/lang';
 import { td, normalizeLang, type DojoKey } from '../src/i18n';
 import { type Scenario, type ScenarioStep, type ScenarioDifficulty, type ScenarioFamily } from '../src/dojo/scenarios';
 import { ALL_SCENARIOS } from '../src/dojo/scenarios.generated';
-import { type LearnerProgress, emptyProgress, applyAnswer, sessionPlan, recordDailyGoal, streakStatus, familyMasteryState, isFamilyUnlocked, isTierUnlocked } from '../src/dojo/progress';
+import { type LearnerProgress, emptyProgress, applyAnswer, sessionPlan, recordDailyGoal, streakStatus, familyMasteryState, isFamilyUnlocked, isTierUnlocked, transferFromLog } from '../src/dojo/progress';
 import { saveTrainingProgress, loadTrainingProgress } from '../src/api/storageClient';
 import { type GameState, startScenario, answerStep, advanceFromFeedback, rankFor } from '../src/dojo/engine';
 import { createDojoChat } from '../services/aiService';
@@ -535,6 +536,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
     const inFeedback = game.phase === 'feedback';
     const finished = game.phase === 'won' || game.phase === 'lost';
     const rank = rankFor(game.correctCount, game.totalSteps);
+    const transfer = transferFromLog(progress.transferLog);
 
     return (
       <div className="w-full max-w-3xl mx-auto">
@@ -580,6 +582,15 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
                 <p className="mt-2 font-['VT323'] text-lg text-slate-300">
                   {D('familyPracticed')} <span className="text-white">{td(lang, FAMILY_META[scenario.family].labelKey)}</span> - {D('status')} <span className="text-cyan-300">{masteryLabel(scenario.family)}</span>
                 </p>
+                {transfer.firstTimeCount > 0 && (
+                  <div className="mt-4 max-w-md mx-auto border-2 border-cyan-700 bg-cyan-950/20 p-3">
+                    <p className="font-['Press_Start_2P'] text-[10px] text-cyan-300 mb-1">{D('transferLabel')}</p>
+                    <p className="font-['VT323'] text-lg text-slate-200 leading-tight">
+                      {D('transferNewDrills')} {transfer.firstTime.total} - {D('transferCorrect')} {transfer.firstTime.correct} ({Math.round(transfer.firstTime.accuracy * 100)}%)
+                    </p>
+                    <p className="font-['VT323'] text-sm text-slate-400 leading-tight">{D('transferHint')}</p>
+                  </div>
+                )}
                 <div className="mt-5 flex flex-wrap justify-center gap-3">
                   {sessionIds.length > 0 && (
                     <button onClick={nextDrill} className="px-4 py-2 bg-yellow-700 hover:bg-yellow-600 text-white font-['Press_Start_2P'] text-[10px] border-b-4 border-yellow-900 active:border-b-0 active:translate-y-1 min-h-[44px]">
@@ -596,20 +607,37 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
               </div>
             ) : inFeedback ? (
               <div className="animate-fade-in">
-                <div className={`border-4 p-4 ${game.lastCorrect ? 'border-green-600 bg-green-950/30' : 'border-red-600 bg-red-950/30'}`}>
-                  <div className="flex items-center gap-2 mb-2">
-                    {game.lastCorrect ? <ShieldCheck className="w-6 h-6 text-green-400" /> : <ShieldAlert className="w-6 h-6 text-red-400" />}
-                    <span className={`font-['Press_Start_2P'] text-xs ${game.lastCorrect ? 'text-green-400' : 'text-red-400'}`}>
-                      {game.lastCorrect ? D('correctShort') : D('notQuite')}
-                    </span>
+                {game.retriedWrong ? (
+                  // Errorless-loop retry: calm, normalizing, never shaming.
+                  // Older adults learn less from punishment (Frank & Kong 2008)
+                  // and shame triggers stereotype threat (Hess 2003), so this
+                  // panel re-frames the mistake and invites an immediate retry.
+                  <div className="border-4 border-amber-600 bg-amber-950/30 p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <ShieldAlert className="w-6 h-6 text-amber-400" />
+                      <span className="font-['Press_Start_2P'] text-xs text-amber-300">{D('almostTryAgain')}</span>
+                    </div>
+                    <p className="font-['VT323'] text-xl text-slate-100 leading-tight">{game.lastFeedback}</p>
+                    <p className="mt-3 font-['VT323'] text-lg text-cyan-300 leading-tight border-t-2 border-slate-700 pt-2">
+                      <span className="text-white font-bold">{D('remember')} </span>{feedbackTip ?? ''}
+                    </p>
                   </div>
-                  <p className="font-['VT323'] text-xl text-slate-100 leading-tight">{game.lastFeedback}</p>
-                  <p className="mt-3 font-['VT323'] text-lg text-cyan-300 leading-tight border-t-2 border-slate-700 pt-2">
-                    <span className="text-white font-bold">{D('remember')} </span>{feedbackTip ?? ''}
-                  </p>
-                </div>
+                ) : (
+                  <div className={`border-4 p-4 ${game.lastCorrect ? 'border-green-600 bg-green-950/30' : 'border-slate-600 bg-slate-900/60'}`}>
+                    <div className="flex items-center gap-2 mb-2">
+                      {game.lastCorrect ? <ShieldCheck className="w-6 h-6 text-green-400" /> : <ShieldAlert className="w-6 h-6 text-slate-400" />}
+                      <span className={`font-['Press_Start_2P'] text-xs ${game.lastCorrect ? 'text-green-400' : 'text-slate-300'}`}>
+                        {game.lastCorrect ? D('correctShort') : D('notQuite')}
+                      </span>
+                    </div>
+                    <p className="font-['VT323'] text-xl text-slate-100 leading-tight">{game.lastFeedback}</p>
+                    <p className="mt-3 font-['VT323'] text-lg text-cyan-300 leading-tight border-t-2 border-slate-700 pt-2">
+                      <span className="text-white font-bold">{D('remember')} </span>{feedbackTip ?? ''}
+                    </p>
+                  </div>
+                )}
                 <button onClick={nextStep} className="mt-4 w-full py-3 bg-cyan-700 hover:bg-cyan-600 text-white font-['Press_Start_2P'] text-xs border-b-4 border-cyan-900 active:border-b-0 active:translate-y-1 flex items-center justify-center gap-2 min-h-[44px]">
-                  {D('nextSituation')} <ChevronRight className="w-4 h-4" />
+                  {game.retriedWrong ? D('tryAgain') : D('nextSituation')} {game.retriedWrong ? <RotateCcw className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                 </button>
               </div>
             ) : step ? (

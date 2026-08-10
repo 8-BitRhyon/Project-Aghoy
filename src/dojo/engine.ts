@@ -18,6 +18,7 @@ export interface GameState {
   lastChoiceId: string | null;
   lastCorrect: boolean | null;
   lastFeedback: string | null;
+  retriedWrong: boolean; // true after an errorless-loop retry of the same step
 }
 
 export const MAX_HP = 100;
@@ -49,11 +50,18 @@ export const startScenario = (scenario: Scenario): StartResult => {
     lastChoiceId: null,
     lastCorrect: null,
     lastFeedback: null,
+    retriedWrong: false,
   };
   return { state, step: scenario.steps[0] ?? null };
 };
 
 // Answer the current step. Returns the updated state and the next step.
+// Errorless-loop: a first wrong answer re-presents the SAME step (no advance,
+// no double HP/score penalty) so the learner immediately practices the correct
+// action. Evidence: wrong responses get encoded and compete with the right one
+// (Baddeley & Wilson 1994); older adults learn less from negative outcomes and
+// benefit from error prevention (Frank & Kong 2008). Retrying the same step
+// turns a mistake into an immediate successful retrieval.
 export const answerStep = (scenario: Scenario, state: GameState, choiceId: string): AnswerResult => {
   const step = scenario.steps[state.stepIndex];
   if (!step) {
@@ -67,6 +75,22 @@ export const answerStep = (scenario: Scenario, state: GameState, choiceId: strin
   const score = state.score + (correct ? POINTS_PER_CORRECT : 0);
   const correctCount = state.correctCount + (correct ? 1 : 0);
   const feedback = choice?.feedback ?? "No feedback for this choice.";
+
+  // Errorless-loop: wrong + not yet retried + HP still positive -> stay on the
+  // same step. If HP reaches 0, the learner loses immediately (no retry on a
+  // depleted life bar - the loss rule at line ~105 must still fire).
+  if (!correct && !state.retriedWrong && hp > 0) {
+    const next: GameState = {
+      ...state,
+      phase: "feedback",
+      hp,
+      lastChoiceId: choiceId,
+      lastCorrect: correct,
+      lastFeedback: feedback,
+      retriedWrong: true,
+    };
+    return { state: next, step, correct, won: false, lost: false };
+  }
 
   const stepIndex = state.stepIndex + 1;
   const isLastStep = stepIndex >= scenario.steps.length;
@@ -86,6 +110,7 @@ export const answerStep = (scenario: Scenario, state: GameState, choiceId: strin
     lastChoiceId: choiceId,
     lastCorrect: correct,
     lastFeedback: feedback,
+    retriedWrong: false,
   };
 
   const nextStep = !won && !lost && !isLastStep ? scenario.steps[stepIndex] : null;

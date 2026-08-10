@@ -29,6 +29,7 @@ import {
   isTierUnlocked,
   countMastered,
   familyRate,
+  transferFromLog,
   addDays,
   XP_CORRECT,
   XP_WRONG,
@@ -603,5 +604,62 @@ describe("date helpers", () => {
     expect(addDays("2026-08-31", 1)).toBe("2026-09-01");
     expect(addDays("2026-12-31", 1)).toBe("2027-01-01");
     expect(addDays("2028-02-28", 1)).toBe("2028-02-29");
+  });
+});
+
+describe("transfer metric (novel-lure generalization)", () => {
+  it("transferFromLog weights first-time accuracy over repeated", () => {
+    const log = [
+      // 5 first-time scenarios, all correct (strong generalization)
+      { scenarioId: "a", correct: true, firstTime: true, atDay: "2026-08-01" },
+      { scenarioId: "b", correct: true, firstTime: true, atDay: "2026-08-01" },
+      { scenarioId: "c", correct: true, firstTime: true, atDay: "2026-08-02" },
+      { scenarioId: "d", correct: true, firstTime: true, atDay: "2026-08-02" },
+      { scenarioId: "e", correct: true, firstTime: true, atDay: "2026-08-03" },
+      // repeats, all wrong (memorized lures, no transfer)
+      { scenarioId: "a", correct: false, firstTime: false, atDay: "2026-08-04" },
+      { scenarioId: "b", correct: false, firstTime: false, atDay: "2026-08-04" },
+    ];
+    const s = transferFromLog(log as any);
+    expect(s.firstTime.accuracy).toBe(1);
+    expect(s.repeated.accuracy).toBe(0);
+    expect(s.transferScore).toBeGreaterThan(0.6);
+    expect(s.firstTimeCount).toBe(5);
+  });
+
+  it("returns transferScore 0 when there is no first-time data", () => {
+    const s = transferFromLog([{ scenarioId: "a", correct: true, firstTime: false, atDay: "2026-08-01" }] as any);
+    expect(s.transferScore).toBe(0);
+    expect(s.firstTimeCount).toBe(0);
+  });
+
+  it("applyAnswer records firstTime correctly for a never-seen scenario", () => {
+    const p = emptyProgress();
+    const s = getScenario("gcash-otp")!;
+    const after = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-01" });
+    expect(after.transferLog.length).toBe(1);
+    expect(after.transferLog[0].firstTime).toBe(true);
+    expect(after.transferLog[0].scenarioId).toBe("gcash-otp");
+  });
+
+  it("a repeated scenario is NOT marked firstTime", () => {
+    const s = getScenario("gcash-otp")!;
+    const first = applyAnswer(emptyProgress(), { scenario: s, correct: true, atDay: "2026-08-01" });
+    const second = applyAnswer(first, { scenario: s, correct: false, atDay: "2026-08-02" });
+    expect(second.transferLog.length).toBe(2);
+    expect(second.transferLog[0].firstTime).toBe(true);
+    expect(second.transferLog[1].firstTime).toBe(false);
+  });
+});
+
+describe("transfer metric edge cases", () => {
+  it("a perfect first-time score with no repeats returns accuracy 1, not 0.5", () => {
+    const s = transferFromLog([
+      { scenarioId: "a", correct: true, firstTime: true, atDay: "2026-08-01" },
+      { scenarioId: "b", correct: true, firstTime: true, atDay: "2026-08-01" },
+      { scenarioId: "c", correct: true, firstTime: true, atDay: "2026-08-02" },
+    ] as any);
+    expect(s.firstTime.accuracy).toBe(1);
+    expect(s.transferScore).toBe(1);
   });
 });
