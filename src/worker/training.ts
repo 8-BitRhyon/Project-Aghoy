@@ -195,3 +195,42 @@ const safeJsonArray = (v: string): unknown[] => {
     return [];
   }
 };
+
+// Persist a weekly outcome snapshot. The operator can then read the trend over
+// weeks - the retention/decay evidence the research said PH scam-education
+// programs never publish. Idempotent per (week_start): re-running the cron
+// upserts, never duplicates.
+export const saveOutcomeSnapshot = async (
+  env: TrainingEnv,
+  weekStart: string,
+  report: unknown
+): Promise<void> => {
+  await env.DB.prepare(
+    `INSERT INTO outcome_snapshots (week_start, report, created_at)
+     VALUES (?1, ?2, datetime('now'))
+     ON CONFLICT(week_start) DO UPDATE SET
+       report = excluded.report, created_at = datetime('now')`
+  )
+    .bind(weekStart, JSON.stringify(report))
+    .run();
+};
+
+export const loadOutcomeSnapshots = async (env: TrainingEnv, limit = 12): Promise<{ weekStart: string; report: unknown }[]> => {
+  const { results } = await env.DB.prepare(
+    `SELECT week_start, report FROM outcome_snapshots ORDER BY week_start DESC LIMIT ?1`
+  )
+    .bind(limit)
+    .all();
+  return (results as Array<{ week_start: string; report: string }>).map((r) => ({
+    weekStart: r.week_start,
+    report: safeJsonObject(r.report),
+  }));
+};
+
+const safeJsonObject = (v: string): unknown => {
+  try {
+    return JSON.parse(v);
+  } catch {
+    return null;
+  }
+};

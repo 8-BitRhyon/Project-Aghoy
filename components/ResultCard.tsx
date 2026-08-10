@@ -300,7 +300,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onReset, analysisId, la
   return (
     <div key={scanId} className="w-full mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 font-['VT323'] px-0 md:px-0 pb-10">
       
-      <FamilyWarningCard result={result} isOpen={showWarningCard} onClose={() => setShowWarningCard(false)} />
+      <FamilyWarningCard result={result} isOpen={showWarningCard} onClose={() => setShowWarningCard(false)} language={language} />
       <FlagKnowledgeModal isOpen={showKnowledgeModal} onClose={() => setShowKnowledgeModal(false)} highlightedFlag={highlightedFlag} />
 
       <div className={`border-[4px] md:border-[6px] ${style.borderColor} bg-slate-900 p-1 shadow-[6px_6px_0_0_rgba(0,0,0,0.8)] md:shadow-[14px_14px_0_0_rgba(0,0,0,0.8)] relative m-1 md:m-2 transition-colors duration-500`}>

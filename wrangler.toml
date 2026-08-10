@@ -44,3 +44,9 @@ new_sqlite_classes = ["DojoSession"]
 [[migrations]]
 tag = "v2"
 new_sqlite_classes = ["RateLimiter"]
+
+# Weekly cron: aggregate the transfer-outcome snapshot every Monday 03:00 UTC.
+# The report is persisted to D1 (outcome_snapshots) for the operator to read
+# via GET /outcome (admin-gated) - the retention/decay evidence over time.
+[triggers]
+crons = ["0 3 * * 1"]

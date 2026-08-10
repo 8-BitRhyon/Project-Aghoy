@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import { AnalysisResult, Verdict } from '../types';
-import { Download, Share2 } from 'lucide-react';
+import { Download, Share2, CheckCircle2 } from 'lucide-react';
 import { playSound } from '../utils/sound';
 import PixelLogo from './PixelLogo';
 import { useModal } from '../src/hooks/useModal';
@@ -10,14 +10,75 @@ interface FamilyWarningCardProps {
   result: AnalysisResult;
   isOpen: boolean;
   onClose: () => void;
+  language?: string;
 }
 
-const FamilyWarningCard: React.FC<FamilyWarningCardProps> = ({ result, isOpen, onClose }) => {
+// localStorage key for the family-check confirmation receipt. The check is the
+// single most protective action for a vulnerable elder (EuroUSEC 2023: older
+// adults prefer social support over self-serve trust cues), so confirming it
+// is recorded and persists.
+const CONFIRM_KEY = (hash: string): string => `aghoy_family_confirmed_${hash}`;
+const contentHash = (s: string): string => {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return Math.abs(h).toString(36);
+};
+
+const FamilyWarningCard: React.FC<FamilyWarningCardProps> = ({ result, isOpen, onClose, language = 'TAGALOG' }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const dialogRef = useModal(isOpen, onClose, 'family-warning-title');
 
+  const confirmKey = contentHash(result.educationalTip || result.scamType || '');
+  const [confirmed, setConfirmed] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(CONFIRM_KEY(confirmKey)) === '1';
+    } catch {
+      return false;
+    }
+  });
+
+  // Localized family-check copy. The protective action is universal: send it
+  // to a trusted family member and wait before acting (older adults prefer
+  // social support - EuroUSEC 2023). Text follows the app's selected language.
+  const familyCopy = (() => {
+    if (language === 'BISAYA') {
+      return {
+        prompt: 'Pinakamaayo nga lakang: ipadala ang card sa pamilya o higala nga imong gisaligan, ug paghulat sa dili pa molihok.',
+        confirmed: 'Salamat! Nakumpirma sa imong pamilya nga ayaw paglihok. Luwas ka.',
+        buttonConfirm: 'CONFIRM: NANGUTANA NA KO SA AKONG PAMILYA',
+        buttonConfirmed: 'CONFIRMED - AYAW PAGLIHAW',
+      };
+    }
+    if (language === 'ILOCANO') {
+      return {
+        prompt: 'Kasayaatan nga addang: itulod ti card iti pamilya wenno gayyem a pagtalekam, ket aguray sakbay nga agtignay.',
+        confirmed: 'Agyamanak! Inkompirma ti pamilyam a saan ka nga agtignay. Natalged ka.',
+        buttonConfirm: 'CONFIRM: NAGDAMDAMAG AK ITI PAMILIAK',
+        buttonConfirmed: 'CONFIRMED - SAAN AKA AGTIGNAY',
+      };
+    }
+    return {
+      prompt: 'Best step: send this card to a family member or friend you trust, and wait before doing anything.',
+      confirmed: 'Thank you! Your family confirmed not to act. Stay safe.',
+      buttonConfirm: 'CONFIRM: I ASKED MY FAMILY',
+      buttonConfirmed: 'CONFIRMED - DO NOT ACT',
+    };
+  })();
+
   if (!isOpen) return null;
+
+  const handleConfirm = () => {
+    playSound('success');
+    const next = !confirmed;
+    setConfirmed(next);
+    try {
+      if (next) localStorage.setItem(CONFIRM_KEY(confirmKey), '1');
+      else localStorage.removeItem(CONFIRM_KEY(confirmKey));
+    } catch {
+      // private mode - confirmation just won't persist across reloads
+    }
+  };
 
   const handleShareOrDownload = async () => {
     if (!cardRef.current) return;
@@ -152,6 +213,27 @@ const FamilyWarningCard: React.FC<FamilyWarningCardProps> = ({ result, isOpen, o
                     </>
                 )}
             </button>
+        </div>
+
+        {/* Family-check protective flow: the most protective action for a
+            vulnerable elder is "send it to someone you trust and wait"
+            (EuroUSEC 2023). Share the card, then confirm with the family
+            member - this is a recorded protective step, not a download. */}
+        <div className={`w-full border-2 p-3 mt-3 ${confirmed ? 'border-green-600 bg-green-950/30' : 'border-cyan-700 bg-cyan-950/20'}`}>
+          <p className="font-['VT323'] text-lg text-slate-100 leading-tight">
+            {confirmed ? familyCopy.confirmed : familyCopy.prompt}
+          </p>
+          <button
+            onClick={handleConfirm}
+            className={`mt-2 w-full py-2 font-['Press_Start_2P'] text-[10px] border-b-4 flex items-center justify-center gap-2 min-h-[40px] ${
+              confirmed
+                ? 'bg-green-700 text-white border-green-900 hover:bg-green-600'
+                : 'bg-cyan-700 text-white border-cyan-900 hover:bg-cyan-600'
+            }`}
+          >
+            <CheckCircle2 className="w-4 h-4" />
+            {confirmed ? familyCopy.buttonConfirmed : familyCopy.buttonConfirm}
+          </button>
         </div>
       </div>
     </div>

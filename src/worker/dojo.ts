@@ -27,6 +27,8 @@ import {
   recordPlacement,
   recordSelfReport,
   loadAllTransferLogs,
+  saveOutcomeSnapshot,
+  loadOutcomeSnapshots,
 } from "./training";
 import { applyPlacementResult } from "../dojo/progress";
 import { buildOutcomeReport } from "./outcomeReport";
@@ -849,7 +851,8 @@ export default {
       if (auth !== 200) return authResponse(auth, origin);
       const rows = await loadAllTransferLogs(env);
       const report = buildOutcomeReport(rows as any, new Date().toISOString().slice(0, 10));
-      return jsonResponse({ ok: true, report }, 200, origin);
+      const history = await loadOutcomeSnapshots(env, 12);
+      return jsonResponse({ ok: true, report, history }, 200, origin);
     }
 
     // ==== TRAINING / PROGRESS (consent-gated, pseudonymous learner_key) ====
@@ -1123,6 +1126,16 @@ export default {
     }
 
     return new Response("Not Found", { status: 404, headers: corsHeaders(origin) });
+  },
+
+  // Weekly outcome snapshot: aggregates every learner's transfer log and
+  // persists it so the operator can see the retention/decay trend over time.
+  // The evidence the research said PH scam-education never publishes.
+  async scheduled(_controller: ScheduledController, env: Env): Promise<void> {
+    const rows = await loadAllTransferLogs(env);
+    const report = buildOutcomeReport(rows as any, new Date().toISOString().slice(0, 10));
+    const week = new Date(Date.now() - 3 * 86400000).toISOString().slice(0, 10); // mid-week anchor
+    await saveOutcomeSnapshot(env, week, report);
   },
 };
 
