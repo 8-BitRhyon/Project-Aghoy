@@ -76,8 +76,10 @@ export const answerStep = (scenario: Scenario, state: GameState, choiceId: strin
   const correctCount = state.correctCount + (correct ? 1 : 0);
   const feedback = choice?.feedback ?? "No feedback for this choice.";
 
-  // Errorless-loop: wrong + not yet retried -> stay on the same step.
-  if (!correct && !state.retriedWrong) {
+  // Errorless-loop: wrong + not yet retried + HP still positive -> stay on the
+  // same step. If HP reaches 0, the learner loses immediately (no retry on a
+  // depleted life bar - the loss rule at line ~105 must still fire).
+  if (!correct && !state.retriedWrong && hp > 0) {
     const next: GameState = {
       ...state,
       phase: "feedback",

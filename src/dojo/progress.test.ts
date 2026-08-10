@@ -651,3 +651,15 @@ describe("transfer metric (novel-lure generalization)", () => {
     expect(second.transferLog[1].firstTime).toBe(false);
   });
 });
+
+describe("transfer metric edge cases", () => {
+  it("a perfect first-time score with no repeats returns accuracy 1, not 0.5", () => {
+    const s = transferFromLog([
+      { scenarioId: "a", correct: true, firstTime: true, atDay: "2026-08-01" },
+      { scenarioId: "b", correct: true, firstTime: true, atDay: "2026-08-01" },
+      { scenarioId: "c", correct: true, firstTime: true, atDay: "2026-08-02" },
+    ] as any);
+    expect(s.firstTime.accuracy).toBe(1);
+    expect(s.transferScore).toBe(1);
+  });
+});

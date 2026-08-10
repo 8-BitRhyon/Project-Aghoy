@@ -29,7 +29,7 @@ export const loadProgress = async (env: TrainingEnv, key: string): Promise<Learn
   const row = await env.DB.prepare(
     `SELECT shield_level, xp, placement_score, placement_tier, streak_current, streak_best,
             last_active_day, srs_queue, completed, family_mastery, unlocked,
-            exam_passed, exam_best_score
+            exam_passed, exam_best_score, transfer_log
      FROM training_progress WHERE learner_key = ?1`
   )
     .bind(key)
@@ -65,6 +65,26 @@ export const loadProgress = async (env: TrainingEnv, key: string): Promise<Learn
   };
 };
 
+// Validate each TransferAnswer before persisting: only known, typed fields are
+// written to D1 (the D1 invariant is sanitized/validated data only). The
+// transfer log never contains user content today, but this guards the column
+// against a future change that adds arbitrary fields to LearnerProgress.
+const sanitizeTransferLog = (log: unknown): string => {
+  if (!Array.isArray(log)) return "[]";
+  const clean = log
+    .map((entry) => {
+      const e = entry as Record<string, unknown> | null;
+      if (!e || typeof e !== "object") return null;
+      if (typeof e.scenarioId !== "string") return null;
+      if (typeof e.correct !== "boolean") return null;
+      if (typeof e.firstTime !== "boolean") return null;
+      if (typeof e.atDay !== "string") return null;
+      return { scenarioId: e.scenarioId, correct: e.correct, firstTime: e.firstTime, atDay: e.atDay };
+    })
+    .filter((e): e is NonNullable<typeof e> => e !== null);
+  return JSON.stringify(clean);
+};
+
 export const saveProgress = async (env: TrainingEnv, key: string, p: LearnerProgress): Promise<void> => {
   const n = (v: unknown) => (v === undefined || v === null ? null : v);
   await env.DB.prepare(
@@ -97,7 +117,7 @@ export const saveProgress = async (env: TrainingEnv, key: string, p: LearnerProg
       JSON.stringify(p.unlocked),
       p.examPassed ? 1 : 0,
       n(p.examBestScore),
-      JSON.stringify(p.transferLog)
+      sanitizeTransferLog(p.transferLog)
     )
     .run();
 };

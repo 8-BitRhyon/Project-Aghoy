@@ -9,6 +9,7 @@ import {
   HP_PER_WRONG,
   POINTS_PER_CORRECT,
   loadScenario,
+  type GameState,
 } from './engine';
 
 describe('scenario library integrity', () => {
@@ -186,5 +187,22 @@ describe('game engine', () => {
     const r2 = answerStep(s, rLoop.state, correct2.id);
     expect(r2.won).toBe(true);
     expect(r2.state.phase).toBe('won');
+  });
+});
+
+describe('errorless-loop edge cases', () => {
+  it('a first wrong answer at HP == HP_PER_WRONG loses immediately (no retry)', () => {
+    const scenario = getScenario('gcash-otp')!;
+    // Construct a state with HP exactly one wrong away from 0 on step 0, and
+    // not yet retried. The wrong answer must deplete HP to 0 and LOSE - the
+    // errorless retry must not trigger on a depleted life bar.
+    const started = startScenario(scenario);
+    const lowHpState: GameState = { ...started.state, hp: HP_PER_WRONG };
+    const wrong = started.step!.options.find((o) => !o.correct)!;
+    const r = answerStep(scenario, lowHpState, wrong.id);
+    expect(r.state.hp).toBe(0);
+    expect(r.lost).toBe(true);
+    expect(r.state.retriedWrong).toBe(false);
+    expect(r.state.phase).toBe('lost');
   });
 });

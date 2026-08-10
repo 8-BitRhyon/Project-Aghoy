@@ -432,9 +432,14 @@ export const transferFromLog = (log: TransferAnswer[]): TransferSnapshot => {
   const ft = firstTime.total > 0 ? firstTime.correct / firstTime.total : 0;
   const rep = repeated.total > 0 ? repeated.correct / repeated.total : 0;
   // Transfer score: first-time accuracy weighted 2x over repeated (the exact
-  // signal of generalization), 0 if no first-time data yet.
+  // signal of generalization). If there are no repeated answers yet, the score
+  // is just first-time accuracy (averaging against an empty bucket would drag a
+  // perfect novel score down to 0.5/0.67).
   const weight = firstTime.total >= 5 ? 2 : firstTime.total > 0 ? 1 : 0;
-  const transferScore = weight > 0 ? (weight * ft + rep) / (weight + 1) : 0;
+  const transferScore =
+    firstTime.total === 0 ? 0 :
+    repeated.total === 0 ? ft :
+    weight > 0 ? (weight * ft + rep) / (weight + 1) : 0;
   return {
     firstTime: { correct: firstTime.correct, total: firstTime.total, accuracy: ft },
     repeated: { correct: repeated.correct, total: repeated.total, accuracy: rep },
@@ -443,7 +448,8 @@ export const transferFromLog = (log: TransferAnswer[]): TransferSnapshot => {
   };
 };
 
-export const buildFinalExam = (pool: string[], count = 15): string[] => {  const traps = pool.filter((id) => getScenario(id)?.archetype === "trap");
+export const buildFinalExam = (pool: string[], count = 15): string[] => {
+  const traps = pool.filter((id) => getScenario(id)?.archetype === "trap");
   const goods = pool.filter((id) => getScenario(id)?.archetype === "good-message");
   const others = pool.filter((id) => {
     const a = getScenario(id)?.archetype;
