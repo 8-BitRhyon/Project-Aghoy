@@ -30,6 +30,9 @@ import {
   countMastered,
   familyRate,
   transferFromLog,
+  challengeProgress,
+  claimChallenge,
+  detectSurpriseReward,
   addDays,
   XP_CORRECT,
   XP_WRONG,
@@ -661,5 +664,68 @@ describe("transfer metric edge cases", () => {
     ] as any);
     expect(s.firstTime.accuracy).toBe(1);
     expect(s.transferScore).toBe(1);
+  });
+});
+
+describe("gamification (retention strategies)", () => {
+  it("awards shield coins only for correct answers", () => {
+    const s = getScenario("gcash-otp")!;
+    const right = applyAnswer(emptyProgress(), { scenario: s, correct: true, atDay: "2026-08-01" });
+    expect(right.shieldCoins).toBe(5);
+    const wrong = applyAnswer(emptyProgress(), { scenario: s, correct: false, atDay: "2026-08-01" });
+    expect(wrong.shieldCoins).toBe(0);
+  });
+
+  it("advances the daily-goal challenge on any correct answer", () => {
+    const s = getScenario("gcash-otp")!;
+    let p = emptyProgress();
+    for (let i = 0; i < 3; i++) {
+      p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-01" });
+    }
+    const prog = challengeProgress(p, "daily-goal");
+    expect(prog.progress).toBe(3);
+    expect(prog.claimed).toBe(false);
+  });
+
+  it("a completed challenge awards coins once on claim", () => {
+    const s = getScenario("gcash-otp")!;
+    let p = emptyProgress();
+    for (let i = 0; i < 3; i++) {
+      p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-01" });
+    }
+    const before = p.shieldCoins;
+    const claimed = claimChallenge(p, "daily-goal");
+    expect(claimed.shieldCoins).toBe(before + 20);
+    expect(claimed.challenges["daily-goal"].claimedAt).not.toBeNull();
+    // Claiming again awards nothing.
+    const again = claimChallenge(claimed, "daily-goal");
+    expect(again.shieldCoins).toBe(claimed.shieldCoins);
+  });
+
+  it("detects a surprise reward on a 3-day streak", () => {
+    let p = emptyProgress();
+    // Simulate a 3-day streak via applyAnswer + recordDailyGoal.
+    const s = getScenario("gcash-otp")!;
+    p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-01" });
+    p = recordDailyGoal(p, 3, 3, "2026-08-01");
+    p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-02" });
+    p = recordDailyGoal(p, 3, 3, "2026-08-02");
+    p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-03" });
+    p = recordDailyGoal(p, 3, 3, "2026-08-03");
+    const reward = detectSurpriseReward(p, "2026-08-03");
+    expect(reward).not.toBeNull();
+    expect(reward!.kind).toBe("streak-3");
+  });
+
+  it("a perfect family rate triggers the mastery surprise first (priority order)", () => {
+    const s = getScenario("gcash-otp")!;
+    let p = emptyProgress();
+    for (let i = 0; i < 5; i++) {
+      p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-01" });
+    }
+    const reward = detectSurpriseReward(p, "2026-08-01");
+    expect(reward).not.toBeNull();
+    // Mastery (>=4/5 correct) is the bigger milestone and fires first.
+    expect(reward!.kind).toBe("first-mastery");
   });
 });

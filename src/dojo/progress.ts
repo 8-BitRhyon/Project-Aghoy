@@ -33,9 +33,44 @@ export interface UnlockedFeatures {
   goodMessage: boolean;
 }
 
+// Gamification (applies the retention-strategy framework to the Dojo):
+//   - CHALLENGES: non-timed missions ("master 3 ewallet drills today") that
+//     give a clear goal without pressure - fits older-adult learning (no
+//     timers, self-paced) and rewards success (Frank & Kong 2008).
+//   - SHIELD COINS: in-app currency earned from correct answers, redeemable
+//     for non-financial goodies (badges, themes) - a distal goal that sustains
+//     the ~66-day habit-formation arc (Lally 2010).
+//   - SURPRISE REWARDS: delight moments on milestones (first mastery, streak
+//     of 3/7/14). The "unexpected reward" retention strategy - but always
+//     positive/gain-framed for this age group (Rothman & Salovey 1997).
+export interface ChallengeState {
+  id: string;
+  progress: number;
+  target: number;
+  claimedAt: string | null;
+  startedAt: string;
+}
+
+export interface SurpriseReward {
+  id: string;
+  kind: "first-mastery" | "streak-3" | "streak-7" | "streak-14" | "first-perfect";
+  awardedAt: string;
+}
+
+export const COINS_PER_CORRECT = 5;
+export const COINS_PER_CHALLENGE = 20;
+export const SHIELD_COIN_PRICE = 100; // e.g. a badge/theme redeemable at 100 coins
+
+export const CHALLENGE_DEFS = [
+  { id: "master-ewallet", target: 3, family: "ewallet", label: "Master 3 e-wallet drills" },
+  { id: "master-delivery", target: 3, family: "delivery", label: "Master 3 delivery drills" },
+  { id: "daily-goal", target: 3, family: null, label: "Complete today's 3 drills" },
+] as const;
+
 export interface LearnerProgress {
   shieldLevel: number;
   xp: number;
+  shieldCoins: number; // in-app currency earned from correct answers + challenges
   placementScore: number | null;
   placementTier: PlacementTier;
   streakCurrent: number;
@@ -45,6 +80,8 @@ export interface LearnerProgress {
   srsQueue: SrsItem[];
   wrongAnswers: WrongAnswer[];
   transferLog: TransferAnswer[];
+  challenges: Record<string, ChallengeState>;
+  surpriseRewards: SurpriseReward[];
   familyMastery: Record<FamilyId, FamilyMastery>;
   examPassed: boolean;
   examBestScore: number | null;
@@ -141,6 +178,7 @@ export const emptyFamily = (): FamilyMastery => ({
 export const emptyProgress = (): LearnerProgress => ({
   shieldLevel: 1,
   xp: 0,
+  shieldCoins: 0,
   placementScore: null,
   placementTier: "easy",
   streakCurrent: 0,
@@ -150,6 +188,8 @@ export const emptyProgress = (): LearnerProgress => ({
   srsQueue: [],
   wrongAnswers: [],
   transferLog: [],
+  challenges: {},
+  surpriseRewards: [],
   familyMastery: Object.fromEntries(FAMILY_IDS.map((f) => [f, emptyFamily()])) as Record<FamilyId, FamilyMastery>,
   examPassed: false,
   examBestScore: null,
@@ -290,9 +330,30 @@ export const applyAnswer = (p: LearnerProgress, input: AnswerInput): LearnerProg
     { scenarioId: scenario.id, correct, firstTime: !wasSeen, atDay },
   ];
 
+  // Gamification: award shield coins for correct answers (reward-learning is
+  // the strongest lever for older adults, Frank & Kong 2008) and advance
+  // family + daily challenges. Never negative - a wrong answer earns 0 coins
+  // but costs nothing, so the learner is never punished into disengagement.
+  const shieldCoins = p.shieldCoins + (correct ? COINS_PER_CORRECT : 0);
+  const challenges: Record<string, ChallengeState> = { ...p.challenges };
+  for (const def of CHALLENGE_DEFS) {
+    const state = challenges[def.id] ?? { id: def.id, progress: 0, target: def.target, claimedAt: null, startedAt: atDay };
+    let advanced = false;
+    if (def.family === null && correct) {
+      advanced = true; // daily-goal: any correct answer advances
+    } else if (def.family === scenario.family && correct) {
+      advanced = true; // family challenge: correct answer in that family
+    }
+    if (advanced && state.progress < def.target) {
+      challenges[def.id] = { ...state, progress: state.progress + 1 };
+    }
+  }
+
   return recomputeUnlocked({
     ...p,
     xp,
+    shieldCoins,
+    challenges,
     streakCurrent,
     streakBest,
     lastActiveDay,
@@ -538,3 +599,51 @@ export const sessionPlan = (
   return picked;
 };
 
+
+// Detect a NEW surprise reward milestone (delight moment). Returns the reward
+// to show or null. Call after applyAnswer/recordDailyGoal. These are
+// positive-only milestones for this age group (Rothman & Salovey 1997): a
+// first family mastery, a perfect drill, or a streak of 3/7/14.
+export const detectSurpriseReward = (p: LearnerProgress, atDay: string): SurpriseReward | null => {
+  const have = new Set(p.surpriseRewards.map((r) => r.id));
+  const kindOf = (id: string) => id.split(":")[0];
+
+  // Streak milestones.
+  for (const n of [3, 7, 14]) {
+    const id = `streak-${n}:${atDay}`;
+    if (p.streakCurrent >= n && !have.has(id)) {
+      return { id, kind: `streak-${n}` as SurpriseReward["kind"], awardedAt: atDay };
+    }
+  }
+  // First family mastery.
+  const mastered = Object.entries(p.familyMastery).filter(([, m]) => m.mastered);
+  if (mastered.length >= 1 && !have.has("first-mastery:global")) {
+    return { id: "first-mastery:global", kind: "first-mastery", awardedAt: atDay };
+  }
+  // Perfect drill (all correct, no repeats needed) - approximated by transfer
+  // log last answer being correct with 100% family rate is complex; use a
+  // simpler signal: at least one family at 100% last5 with >= 1 attempt.
+  for (const [, m] of Object.entries(p.familyMastery)) {
+    if (m.last5Correct.length > 0 && m.last5Correct.every(Boolean) && !have.has("first-perfect:global")) {
+      return { id: "first-perfect:global", kind: "first-perfect", awardedAt: atDay };
+    }
+  }
+  void kindOf;
+  return null;
+};
+
+// Claim a completed challenge: awards shield coins once. Returns the updated
+// progress with the challenge marked claimed and coins awarded.
+export const claimChallenge = (p: LearnerProgress, challengeId: string): LearnerProgress => {
+  const state = p.challenges[challengeId];
+  if (!state || state.progress < state.target || state.claimedAt !== null) return p;
+  const challenges = { ...p.challenges, [challengeId]: { ...state, claimedAt: new Date().toISOString().slice(0, 10) } };
+  return recomputeUnlocked({ ...p, challenges, shieldCoins: p.shieldCoins + COINS_PER_CHALLENGE });
+};
+
+// Readable challenge progress for the UI (0..1 complete).
+export const challengeProgress = (p: LearnerProgress, challengeId: string): { progress: number; target: number; claimed: boolean } => {
+  const state = p.challenges[challengeId];
+  if (!state) return { progress: 0, target: CHALLENGE_DEFS.find((d) => d.id === challengeId)?.target ?? 3, claimed: false };
+  return { progress: state.progress, target: state.target, claimed: state.claimedAt !== null };
+};
