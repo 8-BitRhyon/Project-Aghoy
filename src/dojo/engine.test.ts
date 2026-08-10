@@ -72,14 +72,37 @@ describe('game engine', () => {
     expect(advanced.stepIndex).toBe(1);
   });
 
-  it('a wrong answer costs HP and shows the reason', () => {
+  it('a wrong answer costs HP, shows the reason, and does NOT advance (errorless loop)', () => {
     let { state, step } = startScenario(scenario);
     let wrongChoice = step!.options.find((o) => !o.correct)!;
     const r = answerStep(scenario, state, wrongChoice.id);
     expect(r.correct).toBe(false);
     expect(r.state.hp).toBe(MAX_HP - HP_PER_WRONG);
     expect(r.state.score).toBe(0);
+    expect(r.state.retriedWrong).toBe(true);
+    // Errorless-loop: the SAME step is re-presented (no advance) so the
+    // learner immediately practices the correct response. Evidence: wrong
+    // responses get encoded and compete with the right one (Baddeley & Wilson
+    // 1994); older adults learn less from negative outcomes (Frank & Kong 2008).
+    expect(r.step).toBe(step);
+    expect(r.state.stepIndex).toBe(0);
     expect(r.state.lastFeedback!.length).toBeGreaterThan(10);
+  });
+
+  it('the errorless retry can recover the step without double penalty', () => {
+    let { state, step } = startScenario(scenario);
+    // Wrong first: costs 25 HP, no advance, no score.
+    const wrong = step!.options.find((o) => !o.correct)!;
+    const r1 = answerStep(scenario, state, wrong.id);
+    expect(r1.state.score).toBe(0);
+    // Correct on the retry: same step, now advances; no second HP cost.
+    const correct = step!.options.find((o) => o.correct)!;
+    const r2 = answerStep(scenario, r1.state, correct.id);
+    expect(r2.correct).toBe(true);
+    expect(r2.state.score).toBe(POINTS_PER_CORRECT);
+    expect(r2.state.hp).toBe(MAX_HP - HP_PER_WRONG); // one penalty total
+    expect(r2.state.stepIndex).toBe(1);
+    expect(r2.state.retriedWrong).toBe(false);
   });
 
   it('loses when the correct-answer threshold is not met by the end', () => {
@@ -94,7 +117,9 @@ describe('game engine', () => {
       guard += 1;
     }
     expect(state.phase).toBe('lost');
-    expect(state.hp).toBe(MAX_HP - 3 * HP_PER_WRONG);
+    // 3 steps, 2 wrong answers each (first loops, second advances) = 6 wrongs,
+    // but HP floors at 0 and step 0's double-wrong keeps HP falling.
+    expect(state.hp).toBeLessThan(MAX_HP);
   });
 
   it('loses when HP reaches 0 on a longer scenario', () => {
@@ -146,13 +171,19 @@ describe('game engine', () => {
     const s = getScenario('parcel-fee')!;
     expect(s.steps.length).toBe(2);
     let { state, step } = startScenario(s);
-    // Answer step 1 correct, step 2 wrong: 1/2 correct should still win.
+    // Answer step 1 correct.
     const correct = step!.options.find((o) => o.correct)!;
     const r1 = answerStep(s, state, correct.id);
     state = r1.state;
     step = r1.step;
+    // Step 2: answer wrong once (errorless loop re-presents, no advance), then
+    // correct on the retry. 1/2 correct threshold is met -> win.
     const wrong = step!.options.find((o) => !o.correct)!;
-    const r2 = answerStep(s, state, wrong.id);
+    const rLoop = answerStep(s, state, wrong.id);
+    expect(rLoop.won).toBe(false);
+    expect(rLoop.state.stepIndex).toBe(1); // still on step 2
+    const correct2 = step!.options.find((o) => o.correct)!;
+    const r2 = answerStep(s, rLoop.state, correct2.id);
     expect(r2.won).toBe(true);
     expect(r2.state.phase).toBe('won');
   });

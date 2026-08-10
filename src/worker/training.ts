@@ -59,6 +59,7 @@ export const loadProgress = async (env: TrainingEnv, key: string): Promise<Learn
     examPassed: !!r.exam_passed,
     examBestScore: (r.exam_best_score as number) ?? 0,
     wrongAnswers: [],
+    transferLog: safeJson(r.transfer_log, []),
     // studyPlan is derived (weakest families) and not persisted.
     studyPlan: [],
   };
@@ -69,8 +70,8 @@ export const saveProgress = async (env: TrainingEnv, key: string, p: LearnerProg
   await env.DB.prepare(
     `INSERT INTO training_progress (learner_key, shield_level, xp, placement_score, placement_tier,
        streak_current, streak_best, last_active_day, srs_queue, completed, family_mastery, unlocked,
-       exam_passed, exam_best_score, updated_at)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, datetime('now'))
+       exam_passed, exam_best_score, transfer_log, updated_at)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, datetime('now'))
      ON CONFLICT(learner_key) DO UPDATE SET
        shield_level = excluded.shield_level, xp = excluded.xp,
        placement_score = excluded.placement_score, placement_tier = excluded.placement_tier,
@@ -78,7 +79,8 @@ export const saveProgress = async (env: TrainingEnv, key: string, p: LearnerProg
        last_active_day = excluded.last_active_day, srs_queue = excluded.srs_queue,
        completed = excluded.completed, family_mastery = excluded.family_mastery,
        unlocked = excluded.unlocked, exam_passed = excluded.exam_passed,
-       exam_best_score = excluded.exam_best_score, updated_at = datetime('now')`
+       exam_best_score = excluded.exam_best_score, transfer_log = excluded.transfer_log,
+       updated_at = datetime('now')`
   )
     .bind(
       key,
@@ -94,7 +96,8 @@ export const saveProgress = async (env: TrainingEnv, key: string, p: LearnerProg
       JSON.stringify(p.familyMastery),
       JSON.stringify(p.unlocked),
       p.examPassed ? 1 : 0,
-      n(p.examBestScore)
+      n(p.examBestScore),
+      JSON.stringify(p.transferLog)
     )
     .run();
 };

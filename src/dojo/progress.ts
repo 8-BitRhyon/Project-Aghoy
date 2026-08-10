@@ -44,6 +44,7 @@ export interface LearnerProgress {
   completedScenarioIds: string[];
   srsQueue: SrsItem[];
   wrongAnswers: WrongAnswer[];
+  transferLog: TransferAnswer[];
   familyMastery: Record<FamilyId, FamilyMastery>;
   examPassed: boolean;
   examBestScore: number | null;
@@ -148,6 +149,7 @@ export const emptyProgress = (): LearnerProgress => ({
   completedScenarioIds: [],
   srsQueue: [],
   wrongAnswers: [],
+  transferLog: [],
   familyMastery: Object.fromEntries(FAMILY_IDS.map((f) => [f, emptyFamily()])) as Record<FamilyId, FamilyMastery>,
   examPassed: false,
   examBestScore: null,
@@ -278,6 +280,16 @@ export const applyAnswer = (p: LearnerProgress, input: AnswerInput): LearnerProg
     ? p.wrongAnswers
     : [...p.wrongAnswers, { scenarioId: scenario.id, stepIndex: input.stepIndex ?? -1, optionId: input.optionId ?? "", answeredAt: atDay }];
 
+  // Transfer log: record whether this answer was on a scenario the learner had
+  // never seen (firstTime). This is the exact signal for the transfer metric -
+  // accuracy on novel lures is what predicts real-world scam detection, since
+  // training effects do not transfer to new lure types.
+  const wasSeen = p.completedScenarioIds.includes(scenario.id) || p.srsQueue.some((i) => i.scenarioId === scenario.id);
+  const transferLog = [
+    ...p.transferLog,
+    { scenarioId: scenario.id, correct, firstTime: !wasSeen, atDay },
+  ];
+
   return recomputeUnlocked({
     ...p,
     xp,
@@ -287,6 +299,7 @@ export const applyAnswer = (p: LearnerProgress, input: AnswerInput): LearnerProg
     completedScenarioIds,
     srsQueue,
     wrongAnswers,
+    transferLog,
     familyMastery: { ...p.familyMastery, [family]: fam },
   });
 };
@@ -387,8 +400,50 @@ export const weakestFamilies = (p: LearnerProgress, n = 3): FamilyId[] =>
     })
     .slice(0, n);
 
-export const buildFinalExam = (pool: string[], count = 15): string[] => {
-  const traps = pool.filter((id) => getScenario(id)?.archetype === "trap");
+// Transfer metric (the research-backed outcome that matters). Anti-phishing
+// training effects transfer poorly to NEW lure types (Rozema & Davis 2025;
+// NIST Phish Scale), so the Dojo's key measurement is accuracy on scenarios
+// the learner has NEVER seen - not accuracy on drills they have practiced.
+// A learner who scores well on first-time scenarios has genuinely learned to
+// spot scams; a learner who only does well on repeats has memorized lures.
+
+export interface TransferSnapshot {
+  firstTime: { correct: number; total: number; accuracy: number }; // novel lures
+  repeated: { correct: number; total: number; accuracy: number }; // practiced lures
+  transferScore: number; // 0..1 weighted to first-time performance
+  firstTimeCount: number; // how many novel scenarios attempted (>= 5 for meaning)
+}
+
+export interface TransferAnswer {
+  scenarioId: string;
+  correct: boolean;
+  firstTime: boolean;
+  atDay: string;
+}
+
+export const transferFromLog = (log: TransferAnswer[]): TransferSnapshot => {
+  const firstTime = { correct: 0, total: 0 };
+  const repeated = { correct: 0, total: 0 };
+  for (const a of log) {
+    const bucket = a.firstTime ? firstTime : repeated;
+    bucket.total += 1;
+    if (a.correct) bucket.correct += 1;
+  }
+  const ft = firstTime.total > 0 ? firstTime.correct / firstTime.total : 0;
+  const rep = repeated.total > 0 ? repeated.correct / repeated.total : 0;
+  // Transfer score: first-time accuracy weighted 2x over repeated (the exact
+  // signal of generalization), 0 if no first-time data yet.
+  const weight = firstTime.total >= 5 ? 2 : firstTime.total > 0 ? 1 : 0;
+  const transferScore = weight > 0 ? (weight * ft + rep) / (weight + 1) : 0;
+  return {
+    firstTime: { correct: firstTime.correct, total: firstTime.total, accuracy: ft },
+    repeated: { correct: repeated.correct, total: repeated.total, accuracy: rep },
+    transferScore,
+    firstTimeCount: firstTime.total,
+  };
+};
+
+export const buildFinalExam = (pool: string[], count = 15): string[] => {  const traps = pool.filter((id) => getScenario(id)?.archetype === "trap");
   const goods = pool.filter((id) => getScenario(id)?.archetype === "good-message");
   const others = pool.filter((id) => {
     const a = getScenario(id)?.archetype;
