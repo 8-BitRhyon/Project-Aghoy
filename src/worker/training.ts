@@ -171,3 +171,27 @@ export const recordSelfReport = async (
     .bind(key, report.vector || "", report.amountPesos ?? null, safe)
     .run();
 };
+
+// Aggregate the transfer-outcome report across ALL learners. Admin-gated route.
+// The D1 invariant: only validated transfer logs are read (they were written
+// via sanitizeTransferLog), so this is safe to surface as outcome data.
+export const loadAllTransferLogs = async (env: TrainingEnv): Promise<{ learnerKey: string; transferLog: unknown[] }[]> => {
+  const { results } = await env.DB.prepare(
+    `SELECT learner_key, transfer_log FROM training_progress WHERE transfer_log IS NOT NULL AND transfer_log != '[]'`
+  ).all();
+  return (results as Array<{ learner_key: string; transfer_log: string }>).map((r) => ({
+    learnerKey: r.learner_key,
+    transferLog: safeJsonArray(r.transfer_log),
+  }));
+};
+
+// Safe JSON array parse with shape validation (defense-in-depth on the read
+// path too - never trust D1 blindly).
+const safeJsonArray = (v: string): unknown[] => {
+  try {
+    const parsed = JSON.parse(v);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+};

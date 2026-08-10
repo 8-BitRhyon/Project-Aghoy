@@ -26,8 +26,10 @@ import {
   recordAnswer,
   recordPlacement,
   recordSelfReport,
+  loadAllTransferLogs,
 } from "./training";
 import { applyPlacementResult } from "../dojo/progress";
+import { buildOutcomeReport } from "./outcomeReport";
 
 interface Env {
   AI: any;
@@ -523,6 +525,7 @@ export default {
       (url.pathname === "/indicators" ||
         url.pathname === "/evidence" ||
         url.pathname === "/metrics" ||
+        url.pathname === "/outcome" ||
         url.pathname.startsWith("/feed/"));
     const isReportIngest = request.method === "POST" && url.pathname === "/reports";
     const isInspect = request.method === "POST" && url.pathname === "/inspect";
@@ -834,6 +837,19 @@ export default {
     if (url.pathname === "/metrics") {
       const metrics = await getMetrics(env);
       return jsonResponse(metrics, 200, origin);
+    }
+
+    // GET /outcome - the transfer-outcome report: does Dojo training generalize
+    // to NOVEL scams? Aggregates every learner's transferLog into weekly
+    // accuracy, decay (7/30/90 days), and per-family performance. This is the
+    // outcome evidence no Philippine scam-education program has published.
+    // Admin-gated (aggregated learner patterns are sensitive) and read-only.
+    if (url.pathname === "/outcome" && request.method === "GET") {
+      const auth = await authorized(request, env);
+      if (auth !== 200) return authResponse(auth, origin);
+      const rows = await loadAllTransferLogs(env);
+      const report = buildOutcomeReport(rows as any, new Date().toISOString().slice(0, 10));
+      return jsonResponse({ ok: true, report }, 200, origin);
     }
 
     // ==== TRAINING / PROGRESS (consent-gated, pseudonymous learner_key) ====
