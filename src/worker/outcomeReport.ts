@@ -55,13 +55,28 @@ const bucketFor = (day: string): string => isoWeekStart(day);
 
 // Aggregate a list of per-learner rows into the outcome report.
 export const buildOutcomeReport = (rows: LearnerRow[], now: string): OutcomeReport => {
-  const allLogs = rows.flatMap((r) => r.transferLog);
+  // Defense-in-depth: a corrupted persisted row (e.g. an invalid atDay) must
+  // not crash the whole route - filter to well-formed entries first. D1 data
+  // is written via sanitizeTransferLog, but the read path never trusts it.
+  const valid = (a: TransferAnswer): boolean =>
+    typeof a.correct === "boolean" &&
+    typeof a.firstTime === "boolean" &&
+    typeof a.atDay === "string" &&
+    /^\d{4}-\d{2}-\d{2}$/.test(a.atDay) &&
+    !isNaN(Date.parse(a.atDay));
+
+  // Filter once, use everywhere (weekly, decay, per-family).
+  const filteredRows: LearnerRow[] = rows
+    .map((r) => ({ learnerKey: r.learnerKey, transferLog: r.transferLog.filter(valid) }))
+    .filter((r) => r.transferLog.length > 0);
+
+  const allLogs = filteredRows.flatMap((r) => r.transferLog);
   const overall = transferFromLog(allLogs);
 
   // Weekly buckets: group by the week the answer happened.
   const byWeek = new Map<string, { correct: number; total: number; repC: number; repT: number; learners: Set<string> }>();
   const learnersByWeek = new Map<string, Set<string>>();
-  for (const row of rows) {
+  for (const row of filteredRows) {
     for (const a of row.transferLog) {
       const wk = bucketFor(a.atDay);
       if (!byWeek.has(wk)) byWeek.set(wk, { correct: 0, total: 0, repC: 0, repT: 0, learners: new Set() });
@@ -102,14 +117,14 @@ export const buildOutcomeReport = (rows: LearnerRow[], now: string): OutcomeRepo
   const decayBuckets: { h: number; c: number; t: number; learners: Set<string> }[] = decayHorizons.map((h) => ({
     h, c: 0, t: 0, learners: new Set<string>(),
   }));
-  for (const row of rows) {
+  for (const row of filteredRows) {
     let firstDay: string | null = null;
     for (const a of row.transferLog) {
       if (a.firstTime && (firstDay === null || a.atDay < firstDay)) firstDay = a.atDay;
     }
     if (firstDay !== null) learnerStart.set(row.learnerKey, firstDay);
   }
-  for (const row of rows) {
+  for (const row of filteredRows) {
     const start = learnerStart.get(row.learnerKey);
     if (!start) continue;
     const startMs = Date.parse(start);
@@ -117,7 +132,10 @@ export const buildOutcomeReport = (rows: LearnerRow[], now: string): OutcomeRepo
       if (!a.firstTime) continue;
       const days = Math.round((Date.parse(a.atDay) - startMs) / 86400000);
       for (let i = 0; i < decayHorizons.length; i++) {
-        if (days >= decayHorizons[i] - 1) {
+        // Strict boundary: an answer at exactly `horizon` days counts; one at
+        // `horizon - 1` does not. Using `>= horizon` (not `>= horizon - 1`)
+        // avoids over-counting near-misses into every bucket.
+        if (days >= decayHorizons[i]) {
           decayBuckets[i].c += a.correct ? 1 : 0;
           decayBuckets[i].t += 1;
           decayBuckets[i].learners.add(row.learnerKey);
@@ -149,7 +167,7 @@ export const buildOutcomeReport = (rows: LearnerRow[], now: string): OutcomeRepo
   // Active learners: answered within the last 30 days.
   const cutoff = new Date(Date.parse(now) - 30 * 86400000).toISOString().slice(0, 10);
   const active = new Set<string>();
-  for (const row of rows) {
+  for (const row of filteredRows) {
     for (const a of row.transferLog) {
       if (a.atDay >= cutoff) {
         active.add(row.learnerKey);
