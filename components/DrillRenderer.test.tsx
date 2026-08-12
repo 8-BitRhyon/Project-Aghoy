@@ -51,6 +51,28 @@ describe('DrillRenderer - channel-faithful immersion', () => {
     expect(screen.getByText('Decline')).toBeTruthy();
   });
 
+  it('offers tap-to-play audio for a vishing call with a matched archetype', () => {
+    const { unmount } = render(
+      <DrillRenderer step={step('vishing', {
+        message: 'This is BDO fraud department. Your card was used for P25,000. Say your card number and the code on the back.',
+        senderLabel: 'BDO',
+      })} />
+    );
+    expect(screen.getByText('Listen to the caller')).toBeTruthy();
+    unmount();
+  });
+
+  it('does NOT offer tap-to-play when no archetype matches (visual fallback)', () => {
+    const { unmount } = render(
+      <DrillRenderer step={step('vishing', {
+        message: 'ShopeePay: We detected a suspicious login. Verify now at gov-ph-tax.site.',
+        senderLabel: 'ShopeePay',
+      })} />
+    );
+    expect(screen.queryByText('Listen to the caller')).toBeNull();
+    unmount();
+  });
+
   it('renders a QR scanner viewfinder', () => {
     render(<DrillRenderer step={step('qr')} />);
     // The QR branch renders the message below the viewfinder.

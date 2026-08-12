@@ -41,6 +41,10 @@ export default defineConfig(({ mode }) => {
               '**/ort-wasm/*.wasm',
               '**/ort-wasm*.wasm',
             ],
+            // The vishing drill audio (~900KB total) is small enough to live
+            // in the precache: bundled offline, zero network at play time, so
+            // the voice works on first launch with no WiFi, ever.
+            globPatterns: ['**/*.{js,css,html,json,png,svg,ico,webp,webmanifest,mp3}'],
           },
           manifest: {
             name: 'Project Aghoy',
