@@ -1,7 +1,8 @@
 // utils/shareTarget.test.ts - pure tests for Web Share Target parsing.
 
-import { describe, expect, it } from "vitest";
-import { combineSharePayload, fileMeta, isSelfShare, parseShareQuery } from "./shareTarget";
+// @vitest-environment jsdom
+import { describe, expect, it, vi, afterEach } from "vitest";
+import { combineSharePayload, fetchSharedFile, fileMeta, isSelfShare, parseShareQuery } from "./shareTarget";
 
 describe("combineSharePayload", () => {
   it("returns just the text when only text is shared", () => {
@@ -33,6 +34,18 @@ describe("parseShareQuery", () => {
     expect(r.text).toContain("check this");
     expect(r.text).toContain("https://a.top");
   });
+
+  it("reads the service worker's share_text param", () => {
+    const r = parseShareQuery(new URLSearchParams("share_text=GCash%3A+account+locked"));
+    expect(r.text).toContain("GCash");
+    expect(r.text).toContain("account locked");
+  });
+
+  it("flags share_file=1 as a file share", () => {
+    const r = parseShareQuery(new URLSearchParams("share_text=hello&share_file=1"));
+    expect(r.text).toContain("hello");
+    expect(r.file).not.toBeNull();
+  });
 });
 
 describe("isSelfShare", () => {
@@ -45,6 +58,31 @@ describe("isSelfShare", () => {
   it("handles missing/empty urls", () => {
     expect(isSelfShare(null, "https://x.dev")).toBe(false);
     expect(isSelfShare("", "https://x.dev")).toBe(false);
+  });
+});
+
+describe("fetchSharedFile", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("reads the stashed shared image as a data URL", async () => {
+    const blob = new Blob(["fake-image-bytes"], { type: "image/png" });
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(blob, { headers: { "Content-Type": "image/png" } })));
+    const file = await fetchSharedFile();
+    expect(file).not.toBeNull();
+    expect(file!.mimeType).toBe("image/png");
+    expect(file!.dataUrl).toContain("data:image/png;base64,");
+  });
+
+  it("returns null when the service worker has no shared file", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response("not found", { status: 404 })));
+    expect(await fetchSharedFile()).toBeNull();
+  });
+
+  it("returns null on fetch failure", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => { throw new TypeError("Failed to fetch"); }));
+    expect(await fetchSharedFile()).toBeNull();
   });
 });
 

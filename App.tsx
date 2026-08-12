@@ -12,6 +12,7 @@ import { playSound, toggleMute, getMuteStatus } from './utils/sound';
 import { sanitizeText } from './utils/privacy';
 import { clearConsentToken } from './src/api/storageClient';
 import useOfflineReportFlush from './hooks/useOfflineReportFlush';
+import { parseShareQuery, fetchSharedFile } from './utils/shareTarget';
 
 const Dojo = lazy(() => import('./components/Dojo'));
 const AboutModal = lazy(() => import('./components/AboutModal'));
@@ -126,6 +127,30 @@ const App: React.FC = () => {
     };
     window.addEventListener('storage', checkConsent);
     return () => window.removeEventListener('storage', checkConsent);
+  }, []);
+
+  // Consume a Web Share Target launch: the service worker redirects here with
+  // ?share_text=<combined>&share_file=1 and stashes any image at /share-file.
+  // Pre-fill the scanner input (and image) then clean the URL so a reload does
+  // not re-ingest the same share.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (!params.get('share_text') && !params.get('share_file')) return;
+    const share = parseShareQuery(params);
+    if (share.text) {
+      setInput(share.text);
+    }
+    if (share.file) {
+      fetchSharedFile().then((file) => {
+        if (file) {
+          setSelectedImage(file.dataUrl);
+          setImageMimeType(file.mimeType);
+        }
+      });
+    }
+    // history.replaceState keeps the URL shareable but strips the query so a
+    // refresh does not re-trigger the share.
+    window.history.replaceState({}, '', window.location.pathname);
   }, []);
 
   useEffect(() => {
