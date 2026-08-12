@@ -232,8 +232,7 @@ const withStorageSignals = async (
     )
     .filter((d, idx, arr) => arr.indexOf(d) === idx)
     .slice(0, 3);
-  const [similarScams, phoneCount, domainStatuses] = await Promise.all([
-    withTimeout(fetchSimilarScams(payload), 8000) ?? [],
+  const [phoneCount, domainStatuses] = await Promise.all([
     reportedPhoneCount(phoneHashes),
     Promise.all(domains.map((d) => withTimeout(domainReputation(d), 5000))),
   ]);
@@ -278,14 +277,22 @@ const withStorageSignals = async (
     : 0;
 
   const redFlags = flags.length ? [...(base.redFlags || []), ...flags] : base.redFlags;
+
   // POST the report with the FINAL verdict (post-blacklist) so the stored
-  // report matches what the user sees. The offline queue dedups on content.
-  postReport({
+  // report matches what the user sees. Similarity search only needs the
+  // content (Vectorize embedding), so it runs on the SAME final payload via
+  // the /reports response - a single write path, no pre/post-blacklist race
+  // (the Worker dedups identical content_hash as a no-op).
+  const finalPayload: ReportPayload = {
     ...payload,
     verdict: finalLayered.verdict,
     riskScore: finalLayered.riskScore,
     redFlags,
-  });
+  };
+  const [similarScams] = await Promise.all([
+    withTimeout(fetchSimilarScams(finalPayload), 8000),
+  ]);
+  postReport(finalPayload);
   return {
     ...base,
     verdict: finalLayered.verdict,
@@ -719,6 +726,13 @@ export const analyzeContent = async (text: string, language: string, imageBase64
     return withStorageSignals(enriched, reportPayload, phoneHashes, layerSignals);
 
   } catch (error: any) {
+    // Consent attestation failures must NOT fall through to the deterministic
+    // fallback: a user whose token expired/revoked must be re-prompted to
+    // accept the protocols, not handed a verdict (App.tsx resets consent on
+    // "Consent required"). Same treatment as rate-limit errors.
+    if (error?.message && /consent required|403/i.test(String(error.message))) {
+      throw error;
+    }
     // Deterministic fallback when the AI provider is unavailable: never leave the user without a verdict.
     if (!error?.message || !/429|quota|exhausted/i.test(String(error.message))) {
       const fallback = fallbackVerdict(contentToAnalyze || text);
