@@ -67,8 +67,21 @@ describe("fetchSharedFile", () => {
   });
 
   it("reads the stashed shared image as a data URL", async () => {
-    const blob = new Blob(["fake-image-bytes"], { type: "image/png" });
-    vi.stubGlobal("fetch", vi.fn(async () => new Response(blob, { headers: { "Content-Type": "image/png" } })));
+    // Mock FileReader so the assertion is deterministic across node versions
+    // (undici Response(blob) -> FileReader readAsDataURL is env-fragile in CI).
+    class FakeFileReader {
+      result: string | null = null;
+      onload: (() => void) | null = null;
+      onerror: (() => void) | null = null;
+      readAsDataURL() {
+        this.result = "data:image/png;base64," + btoa("fake-image-bytes");
+        this.onload?.();
+      }
+    }
+    vi.stubGlobal("FileReader", FakeFileReader);
+    vi.stubGlobal("fetch", vi.fn(async () =>
+      new Response("fake-image-bytes", { status: 200, headers: { "Content-Type": "image/png" } })
+    ));
     const file = await fetchSharedFile();
     expect(file).not.toBeNull();
     expect(file!.mimeType).toBe("image/png");
