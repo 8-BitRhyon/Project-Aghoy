@@ -109,4 +109,20 @@ describe("flushQueue - kill/restart survival", () => {
     expect(r.flushed).toBe(0);
     expect(store.rows.length).toBe(1);
   });
+
+  it("deletes a report the server permanently rejects (4xx) instead of retrying forever", async () => {
+    const store = memStore();
+    const sent = await enqueueAndFlush(store, { verdict: "HIGH_RISK", content: "x".repeat(5000) }, async () => "permanent" as const);
+    expect(sent.failed).toBe(1);
+    // No 25x backoff, no Infinity parking - the rejected record is dropped.
+    expect(store.rows.length).toBe(0);
+  });
+
+  it("keeps transient failures (network/5xx) queued with backoff", async () => {
+    const store = memStore();
+    const r = await enqueueAndFlush(store, { verdict: "HIGH_RISK" }, async () => false);
+    expect(r.flushed).toBe(0);
+    expect(store.rows.length).toBe(1);
+    expect(store.rows[0].attempts).toBe(1);
+  });
 });
