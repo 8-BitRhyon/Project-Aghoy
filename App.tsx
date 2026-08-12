@@ -11,6 +11,7 @@ import PrivacyConsent from './components/PrivacyConsent';
 import { playSound, toggleMute, getMuteStatus } from './utils/sound';
 import { sanitizeText } from './utils/privacy';
 import { clearConsentToken } from './src/api/storageClient';
+import useOfflineReportFlush from './hooks/useOfflineReportFlush';
 
 const Dojo = lazy(() => import('./components/Dojo'));
 const AboutModal = lazy(() => import('./components/AboutModal'));
@@ -105,6 +106,9 @@ const App: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const isAnalyzingRef = useRef(false);
+
+  // Flush the offline report queue on reconnect / foreground / 5-min timer.
+  useOfflineReportFlush();
 
   const handleToggleMute = () => {
    const newStatus = toggleMute();
