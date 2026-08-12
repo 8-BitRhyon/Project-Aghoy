@@ -770,6 +770,12 @@ export const analyzeContent = async (text: string, language: string, imageBase64
     if (error?.message && /429|quota|exhausted/i.test(String(error.message))) {
       throw error;
     }
+    // A fetch/network failure (TypeError "Failed to fetch") must keep its
+    // signal: App.tsx routes messages containing 'network'/'fetch' to the
+    // 📶 CONNECTION ERROR state instead of the generic failure message.
+    if (error instanceof TypeError && /failed to fetch|network/i.test(String(error.message))) {
+      throw new Error("Network error: please check your internet connection.");
+    }
     throw new Error("Failed to analyze content. Please try again.");
   } finally {
     clearTimeout(timeoutId);

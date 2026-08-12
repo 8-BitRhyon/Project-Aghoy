@@ -46,8 +46,27 @@ describe('analyzeContent - consent 403 propagation', () => {
     vi.stubGlobal('fetch', vi.fn(async () => {
       throw new TypeError('Failed to fetch');
     }));
-    // fallbackVerdict abstains (mock returns null) so analyzeContent throws the
-    // generic error - proving the 403 path is what changed, not the fallback.
-    await expect(analyzeContent('Some text', 'ENGLISH')).rejects.toThrow(/Failed to analyze/i);
+    // fallbackVerdict abstains (mock returns null) so analyzeContent throws
+    // instead of returning a fallback - but the thrown error must be the
+    // network-specific one App.tsx routes to CONNECTION ERROR.
+    await expect(analyzeContent('Some text', 'ENGLISH')).rejects.toThrow(/Network error/i);
+  });
+
+  it('a network failure surfaces a message App.tsx routes to CONNECTION ERROR', async () => {
+    // App.tsx renders "📶 CONNECTION ERROR" when the error message contains
+    // 'network' or 'fetch' (App.tsx:404). A real offline failure is a
+    // TypeError("Failed to fetch") from the fetch call - the message must
+    // preserve that signal, not hide it behind the generic wrapper.
+    vi.stubGlobal('fetch', vi.fn(async () => {
+      throw new TypeError('Failed to fetch');
+    }));
+    // fallbackVerdict abstains so the raw error propagates.
+    try {
+      await analyzeContent('Some text', 'ENGLISH');
+      expect.unreachable('should have thrown');
+    } catch (error: any) {
+      const message = String(error?.message || '');
+      expect(message.toLowerCase().includes('network') || message.toLowerCase().includes('fetch')).toBe(true);
+    }
   });
 });
