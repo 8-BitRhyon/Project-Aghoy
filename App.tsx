@@ -80,6 +80,10 @@ const ScanningOverlay = () => (
 
 const App: React.FC = () => {
   const [input, setInput] = useState('');
+  // Optional sender field (SMS FROM / caller ID). When set, a trusted official
+  // sender (e.g. "GCASH" shortcode 2882) discounts the verdict; a mismatch
+  // (message says GCash but sender is a random number) escalates it.
+  const [sender, setSender] = useState('');
   const [honeypot, setHoneypot] = useState('');
   
   const [language, setLanguage] = useState('TAGALOG');
@@ -375,7 +379,7 @@ const App: React.FC = () => {
 
       try {
         playSound('scan');
-        const analysis = await analyzeContent(input, language, selectedImage || undefined, imageMimeType || undefined);
+        const analysis = await analyzeContent(input, language, selectedImage || undefined, imageMimeType || undefined, sender || undefined);
         setAnalysisId(prev => prev + 1);
         setResult(analysis);
         updateStatsAndHistory(analysis);
@@ -694,6 +698,29 @@ const App: React.FC = () => {
                         </div>
 
                         <div className="bg-black p-1 border-2 border-slate-600 relative group flex flex-col">
+                            {/* OPTIONAL SENDER: the SMS FROM field or caller ID.
+                                A trusted official sender discounts the verdict;
+                                a mismatched number escalates it. */}
+                            <div className="flex items-center gap-2 border-b border-slate-800 px-2 py-1">
+                                <span className="text-[9px] font-['Press_Start_2P'] text-slate-500 uppercase">From:</span>
+                                <input
+                                    type="text"
+                                    value={sender}
+                                    onChange={(e) => setSender(e.target.value)}
+                                    placeholder="Sender ID or number (optional) - e.g. GCASH, BDO, 0917..."
+                                    className="flex-1 bg-transparent text-slate-300 font-mono text-sm py-1 focus:outline-none placeholder:text-slate-700"
+                                    aria-label="Sender (optional)"
+                                />
+                                {sender && (
+                                    <button
+                                        onClick={() => { setSender(''); playSound('click'); }}
+                                        className="text-slate-600 hover:text-red-500 transition-colors"
+                                        title="Clear Sender"
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                )}
+                            </div>
                             {/* HONEYPOT */}
                             <input 
                                 type="text" 
