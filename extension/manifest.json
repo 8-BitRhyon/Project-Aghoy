@@ -6,7 +6,8 @@
   "permissions": ["contextMenus", "activeTab", "storage", "notifications"],
   "host_permissions": ["https://project-aghoy-dojo.rhyonfs.workers.dev/*"],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "action": {
     "default_popup": "popup.html",

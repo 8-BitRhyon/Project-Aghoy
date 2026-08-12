@@ -186,6 +186,15 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
 
   // Manual pick from a family list: ignore any queued session plan.
   const openFromFamily = (id: string) => {
+    playSound('click');
+    const s = library.find((x) => x.id === id) ?? ALL_SCENARIOS.find((x) => x.id === id);
+    if (!s) return;
+    // Respect the unlock gate even when a locked family's list is somehow
+    // reachable (defense in depth; the buttons are also disabled).
+    if (!isFamilyUnlocked(progress, s.family)) {
+      setLockedFamily(s.family);
+      return;
+    }
     setSessionIds([]);
     openScenario(id);
   };
@@ -216,14 +225,10 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
     // of opening drills the learner is not ready for (consistent with
     // sessionPlan, which only picks unlocked families).
     const unlocked = isFamilyUnlocked(progress, family);
-    const tierUnlocked = isTierUnlocked(progress, 'hard') || family === 'ewallet' || family === 'fake-reward';
-    if (!unlocked) {
-      setLockedFamily(family);
-      setView('family');
-      return;
-    }
     setFamilyView(family);
     setExpanded({ easy: false, medium: false, hard: false });
+    if (unlocked) setLockedFamily(null);
+    else setLockedFamily(family);
     setView('family');
   };
 
@@ -413,11 +418,23 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
 
   // Active challenge chip: a non-timed mission ("master 3 ewallet drills")
   // with a progress bar. No pressure timers - self-paced for older learners.
+  // Selection order: a complete-but-unclaimed challenge (so the claim button
+  // renders), then one in progress, then the first not yet started. The chip
+  // disappears only once every challenge is claimed.
   const renderChallengeChip = () => {
-    const active = CHALLENGE_DEFS.find((d) => {
-      const st = progress.challenges[d.id];
-      return !st || (st.progress < st.target && st.claimedAt === null);
-    });
+    const isClaimed = (id: string): boolean => progress.challenges[id]?.claimedAt !== null;
+    const isComplete = (id: string): boolean => {
+      const st = progress.challenges[id];
+      return !!st && st.progress >= st.target;
+    };
+    const isInProgress = (id: string): boolean => {
+      const st = progress.challenges[id];
+      return !!st && st.progress > 0;
+    };
+    const active =
+      CHALLENGE_DEFS.find((d) => !isClaimed(d.id) && isComplete(d.id)) ??
+      CHALLENGE_DEFS.find((d) => !isClaimed(d.id) && isInProgress(d.id)) ??
+      CHALLENGE_DEFS.find((d) => !isClaimed(d.id));
     if (!active) return null;
     const prog = challengeProgress(progress, active.id);
     const pct = Math.round((prog.progress / prog.target) * 100);
@@ -593,6 +610,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
     const Icon = meta.icon;
     const familyScenarios = library.filter((s) => s.family === familyView);
     const total = familyScenarios.length;
+    const familyLocked = lockedFamily === familyView && !isFamilyUnlocked(progress, familyView);
 
     return (
       <div className="w-full max-w-3xl mx-auto">
@@ -610,7 +628,6 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
             {D('lockedFamily')}
           </div>
         )}
-
         <div className="mb-6 border-4 border-cyan-600 bg-cyan-900/20 p-4 animate-fade-in">
           <div className="flex items-center gap-4">
             <div className="p-2 bg-cyan-600 text-black shrink-0 border-2 border-cyan-400">
@@ -652,7 +669,8 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
                   <button
                     key={s.id}
                     onClick={() => openFromFamily(s.id)}
-                    className="text-left bg-slate-900 border-4 border-slate-700 hover:border-cyan-500 p-4 min-h-[44px] transition-all shadow-[4px_4px_0_0_rgba(0,0,0,0.5)] hover:translate-x-0.5 hover:translate-y-0.5"
+                    disabled={familyLocked}
+                    className="text-left bg-slate-900 border-4 border-slate-700 hover:border-cyan-500 p-4 min-h-[44px] transition-all shadow-[4px_4px_0_0_rgba(0,0,0,0.5)] hover:translate-x-0.5 hover:translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-slate-700"
                   >
                     <div className="flex items-start justify-between gap-3 mb-1">
                       <h4 className="text-white font-['Press_Start_2P'] text-xs">{s.title}</h4>

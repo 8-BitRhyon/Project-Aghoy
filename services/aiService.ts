@@ -380,7 +380,7 @@ class WorkerDojoHandler {
     try {
       const res = await fetch(`${WORKER_ORIGIN}/dojo/session`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Consent-Token": getConsentToken() || "" },
       });
       if (!res.ok) return false;
       const data = (await res.json()) as { sessionToken?: string };
