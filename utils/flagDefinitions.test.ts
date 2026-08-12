@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { getFlagDefinition, FLAG_DEFINITIONS } from './flagDefinitions';
+import { VALID_FLAGS } from '../services/aiService';
 
 describe('getFlagDefinition', () => {
   it('returns exact match definition', () => {
@@ -59,6 +60,38 @@ describe('getFlagDefinition', () => {
     for (const flag of newFlags) {
       expect(FLAG_DEFINITIONS[flag]).toBeDefined();
       expect(FLAG_DEFINITIONS[flag].trim().length).toBeGreaterThan(0);
+    }
+  });
+
+  it('AGENTS.md contract: every VALID_FLAGS flag has a definition (no generic fallback)', () => {
+    // Contract: "Keep every flag defined here AND in services/aiService.ts
+    // VALID_FLAGS." A flag missing from FLAG_DEFINITIONS renders the generic
+    // fallback string to the user - a silent taxonomy gap.
+    for (const flag of VALID_FLAGS) {
+      const def = getFlagDefinition(flag);
+      expect(def, `flag ${flag} must not render the generic fallback`).not.toContain('fraudulent activity');
+    }
+  });
+
+  it('AGENTS.md contract: every FLAG_DEFINITIONS key is in VALID_FLAGS (bidirectional)', () => {
+    const valid = new Set(VALID_FLAGS.map((f) => f.toUpperCase()));
+    for (const key of Object.keys(FLAG_DEFINITIONS)) {
+      // UNKNOWN is the catch-all fallback definition, not a selectable flag.
+      if (key === 'UNKNOWN') continue;
+      expect(valid.has(key), `FLAG_DEFINITIONS key ${key} must be in VALID_FLAGS`).toBe(true);
+    }
+  });
+
+  it('every flag the analysis pipeline actually pushes has a real definition', () => {
+    // Runtime-pushed flags (not LLM-selectable VALID_FLAGS): UNDERDETECTION_OVERRIDE
+    // (enrichResult), ON_DEVICE_MODEL + SUSPICIOUS_LINK (withStorageSignals layer
+    // flags). These must NOT render the generic fallback either - the audit found
+    // all three had no definition at all.
+    const runtimeFlags = ['UNDERDETECTION_OVERRIDE', 'ON_DEVICE_MODEL', 'SUSPICIOUS_LINK'];
+    for (const flag of runtimeFlags) {
+      const def = getFlagDefinition(flag);
+      expect(def, `flag ${flag} must not render the generic fallback`).not.toContain('fraudulent activity');
+      expect(FLAG_DEFINITIONS[flag], `flag ${flag} must have its own definition key`).toBeDefined();
     }
   });
 });

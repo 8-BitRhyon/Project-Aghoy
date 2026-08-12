@@ -34,6 +34,9 @@ export const FLAG_DEFINITIONS: Record<string, string> = {
     "VERIFIED_SENDER": "The sender is a verified official Philippine channel (e.g., GCash shortcode 2882, BDO sender ID). Identity-verified - the text model cannot escalate this message.",
     "REPORTED_PHONE": "This phone number has been reported to the community blacklist 2+ times as a scam sender. Escalates the verdict.",
     "REPORTED_DOMAIN": "This domain has been reported to the community blacklist as a scam link. Escalates the verdict.",
+    "UNDERDETECTION_OVERRIDE": "The AI model called this safe, but the on-device detector found strong scam indicators. The verdict was raised to protect you.",
+    "ON_DEVICE_MODEL": "The on-device scam model flagged this message at high confidence. It only ever escalates, never downgrades.",
+    "SUSPICIOUS_LINK": "The link inside the message scored as suspicious on the URL grader. Check the real address before tapping.",
     "UNKNOWN": "An anomaly was detected that doesn't fit standard categories but indicates suspicious patterns."
 };
 
