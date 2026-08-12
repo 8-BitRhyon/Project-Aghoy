@@ -1,6 +1,6 @@
 import { AnalysisResult, Verdict } from "../types";
 import { redactPII } from "../src/rejects/rejects";
-import { detectBrands, detectIntents, fallbackVerdict, BrandMatch } from "../src/brands/brands";
+import { detectBrands, detectIntents, fallbackVerdict } from "../src/brands/brands";
 import { checkSender } from "../src/brands/senderAllowlist";
 import { postReport, lookupIndicator, ReportPayload, getConsentToken, domainReputation } from "../src/api/storageClient";
 import { extractIndicators } from "../src/worker/indicators";

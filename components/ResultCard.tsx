@@ -1,4 +1,4 @@
-import { ShieldCheck, ShieldAlert, AlertTriangle, ChevronRight, BookOpen, Copy, Check, Phone, Globe, Share2, Building2, Mail, Lock, FileText, Smartphone, Info, Landmark, Scale } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, AlertTriangle, ChevronRight, BookOpen, Copy, Check, Phone, Globe, Share2, Mail, Lock, FileText, Smartphone, Info, Landmark, Scale } from 'lucide-react';
 import SmartSupport from './SmartSupport';
 import React, { useState, useEffect, useRef } from 'react';
 import { AnalysisResult, Verdict } from '../types';
