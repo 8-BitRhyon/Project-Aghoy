@@ -272,7 +272,19 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
       : withGoal;
     setTodayCorrect(nextTodayCorrect);
     setProgress(saved);
-    saveTrainingProgress(saved);
+    // Persist the per-answer analytics batch (training_answers rows) alongside
+    // the progress: the worker's /training/progress route records each answer
+    // for the coaching dashboard. Previously the batch was never sent, so the
+    // answers table stayed empty.
+    saveTrainingProgress(saved, [
+      {
+        scenarioId: scenario.id,
+        stepIndex,
+        optionId: choiceId,
+        correct: result.correct,
+        responseMs: 0,
+      },
+    ]);
     if (result.state.phase === 'feedback') playSound('hover');
     if (result.won) playSound('success');
     if (result.lost) playSound('alert');
