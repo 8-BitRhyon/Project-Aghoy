@@ -36,6 +36,21 @@ describe("per-language scenario generation", () => {
     }
   });
 
+  it("carries the curated scenarios in every localized library (id parity)", () => {
+    // Regression for the audit: the 3 localized libraries were generated-only,
+    // so family grids showed fewer drills (e.g. ewallet 72 vs 71) and curated
+    // ids resolved through the English fallback. Every library must contain
+    // the full curated set with identical ids.
+    for (const lang of ["TAGALOG", "BISAYA", "ILOCANO"] as const) {
+      const ids = new Set(LANGS[lang].map((s) => s.id));
+      for (const curated of LANGS.ENGLISH.filter((s) => s.source === "curated")) {
+        expect(ids.has(curated.id), `${lang} missing curated ${curated.id}`).toBe(true);
+      }
+      // Total counts (curated + generated) match English exactly.
+      expect(LANGS[lang].length, `${lang} total`).toBe(LANGS.ENGLISH.length);
+    }
+  });
+
   it("every scenario text field is localized, not English", () => {
     // Compare scenarios by the same id where present; otherwise compare by
     // family+index. Assert message/setup/debrief differ from English.

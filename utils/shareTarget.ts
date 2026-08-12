@@ -11,14 +11,19 @@ export interface NormalizedShare {
   file: { name: string; type: string; size: number } | null;
 }
 
-// Normalize GET-style query params (share_target with method: GET).
+// Normalize the service worker's Web Share Target redirect params
+// (sw.ts redirects to ?share_text=<combined>&share_file=1). Also accepts the
+// classic GET share_target keys (text/url/title) for compatibility.
 export const parseShareQuery = (params: URLSearchParams): NormalizedShare => {
   const payload: SharedPayload = {
-    text: params.get("text") ?? undefined,
+    text: params.get("share_text") ?? params.get("text") ?? undefined,
     url: params.get("url") ?? undefined,
     title: params.get("title") ?? undefined,
   };
-  return combineSharePayload(payload);
+  return {
+    ...combineSharePayload(payload),
+    file: params.get("share_file") === "1" ? { name: "shared-image", type: "image/*", size: 0 } : null,
+  };
 };
 
 // Combine share fields into the scanner's text box (URL is the most common PH scam share).
@@ -54,4 +59,26 @@ export const fileMeta = (file: { name?: string; type?: string; size?: number } |
     type: file.type ?? "",
     size: file.size ?? 0,
   };
+};
+
+// The service worker stashes a shared image under /share-file (CACHE_SHARE);
+// this reads it back as a data URL for the scanner's selectedImage state.
+// Returns null when nothing was shared or the fetch fails.
+export const fetchSharedFile = async (): Promise<{ dataUrl: string; mimeType: string } | null> => {
+  try {
+    const res = await fetch("/share-file");
+    if (!res.ok) return null;
+    const blob = await res.blob();
+    if (!blob || blob.size === 0) return null;
+    const mimeType = res.headers.get("content-type")?.split(";")[0] || blob.type || "image/png";
+    const dataUrl = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result ?? ""));
+      reader.onerror = () => reject(new Error("read failed"));
+      reader.readAsDataURL(blob);
+    });
+    return { dataUrl, mimeType };
+  } catch {
+    return null;
+  }
 };

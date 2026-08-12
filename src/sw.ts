@@ -32,15 +32,36 @@ self.addEventListener("activate", (event) => {
 });
 
 // CacheFirst for the runtime asset families (mirrors the old workbox config).
-const cacheFirst = async (request: Request): Promise<Response> => {
-  const cache = await caches.open(CACHE_MODELS);
+// Each rule uses its OWN cache (the hardcoded CACHE_MODELS here was a bug
+// that put OCR/ort-wasm entries in the models cache) and entries expire after
+// MAX_AGE days so the runtime caches do not grow without bound.
+const cacheFirst = async (request: Request, cacheName: string): Promise<Response> => {
+  const cache = await caches.open(cacheName);
   const hit = await cache.match(request);
-  if (hit) return hit;
+  if (hit && !isExpired(hit)) return hit;
+  if (hit) await cache.delete(request);
   const response = await fetch(request);
   if (response.ok && request.method === "GET") {
     cache.put(request, response.clone());
   }
   return response;
+};
+
+// A cached response is stale after MAX_AGE days. The response Date header (set
+// by the origin/Pages CDN) is authoritative; if absent, fall back to the
+// Cache-Control max-age.
+const isExpired = (response: Response): boolean => {
+  const dateHeader = response.headers.get("date");
+  if (dateHeader) {
+    const ageMs = Date.now() - Date.parse(dateHeader);
+    return ageMs > MAX_AGE * 1000;
+  }
+  const cacheControl = response.headers.get("cache-control") || "";
+  const maxAge = /max-age=(\d+)/.exec(cacheControl);
+  if (maxAge) {
+    return Number(maxAge[1]) > MAX_AGE;
+  }
+  return false;
 };
 
 // Serve a stashed shared image from the aghoy-share cache.
@@ -95,6 +116,6 @@ self.addEventListener("fetch", (event) => {
   // CacheFirst for runtime asset families.
   const rule = CACHE_FIRST_RULES.find((r) => url.pathname.startsWith(r.prefix));
   if (rule && event.request.method === "GET") {
-    event.respondWith(cacheFirst(event.request));
+    event.respondWith(cacheFirst(event.request, rule.cache));
   }
 });

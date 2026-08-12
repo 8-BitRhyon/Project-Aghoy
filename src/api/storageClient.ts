@@ -53,18 +53,40 @@ export interface ReportResult {
   id?: number | null;
 }
 
+// Content limit enforced server-side (dojo.ts MAX_CONTENT_LENGTH). The scanner
+// and analyzer truncate already; this is defense-in-depth so a long pasted
+// message can never poison the queue with a 400 that retries forever.
+const MAX_REPORT_CONTENT_LENGTH = 4000;
+
+const truncateContent = (payload: ReportPayload): ReportPayload =>
+  payload.content && payload.content.length > MAX_REPORT_CONTENT_LENGTH
+    ? { ...payload, content: payload.content.slice(0, MAX_REPORT_CONTENT_LENGTH) }
+    : payload;
+
 // Durable offline-first send. Every report is persisted to IndexedDB BEFORE
 // the network attempt, then flushed. Offline reports queue and auto-flush on
-// the next opportunity (see utils/reportQueue.ts). Returns ok:true when the
-// report is durably accepted (either sent now or queued for retry).
-const sendReportOnce = async (payload: ReportPayload): Promise<boolean> => {
+// the next opportunity (see utils/reportQueue.ts).
+//
+// Return semantics drive the queue:
+//   true                -> sent, record deleted
+//   false               -> transient (offline/5xx), retry with backoff
+//   "permanent"         -> server rejected (4xx), delete the record now -
+//                          retrying a poisoned/expired payload 25x and parking
+//                          it forever (old behavior) wastes storage for a
+//                          report that can never succeed.
+const sendReportOnce = async (payload: ReportPayload): Promise<boolean | "permanent"> => {
   try {
     const res = await fetchWithTimeout(`${WORKER_ORIGIN}/reports`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "X-Consent-Token": getConsentToken() || "" },
-      body: JSON.stringify({ ...payload, source: payload.source || "web" }),
+      body: JSON.stringify({ ...truncateContent(payload), source: payload.source || "web" }),
     });
-    if (!res.ok) return false;
+    if (!res.ok) {
+      // 4xx = the Worker rejected this payload (bad shape, oversize, expired
+      // consent). Never a transient condition - do not retry it.
+      if (res.status >= 400 && res.status < 500) return "permanent";
+      return false;
+    }
     return true;
   } catch {
     return false;
@@ -84,9 +106,12 @@ export const postReport = async (payload: ReportPayload): Promise<ReportResult> 
     return { ok: true };
   } catch {
     // IndexedDB unavailable (private mode / very old browser): fall back to a
-    // best-effort direct send so reports are still attempted.
-    const ok = await sendReportOnce(payload);
-    return ok ? { ok: true } : { ok: false };
+    // best-effort direct send so reports are still attempted. A permanent 4xx
+    // ("permanent") is a rejection, not a send.
+    const result = await sendReportOnce(payload);
+    if (result === true) return { ok: true };
+    if (result === "permanent") return { ok: false, rejected: true };
+    return { ok: false };
   }
 };
 

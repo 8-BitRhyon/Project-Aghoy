@@ -211,6 +211,27 @@ describe("shield level gating", () => {
     expect(isFamilyUnlocked(halfMore, "vishing")).toBe(false);
   });
 
+  it("climbs the shield ladder through mastery alone (no placement needed)", () => {
+    // The audit found the ladder was unreachable: shieldLevel only rose via
+    // applyPlacementResult and there is no placement UI. Mastering every
+    // family at a level must unlock the next level.
+    const ewallet = getScenario("gcash-otp")!;
+    const fakeReward = getScenario("task-scam")!; // family: investment - use only ewallet/fake-reward family scenarios
+
+    // Level 1: ewallet + fake-reward. Master both (>=4/5 correct, >=3 attempts).
+    let p = allCorrect(emptyProgress(), ewallet, 4, D);
+    expect(p.shieldLevel).toBe(1);
+    expect(isFamilyUnlocked(p, "delivery")).toBe(false);
+    const famOfEwallet = ewallet.family;
+    expect(famOfEwallet).toBe("ewallet");
+    // Mastery needs TWO families at level 1. Use any other level-1 family via a
+    // scenario of that family - construct by copying the ewallet scenario's shape.
+    const other = { ...ewallet, id: "fake-reward-2", family: "fake-reward" as const, steps: [...ewallet.steps] };
+    p = allCorrect(p, other, 4, D);
+    expect(p.shieldLevel).toBe(2);
+    expect(isFamilyUnlocked(p, "delivery")).toBe(true);
+  });
+
   it("locks hard tier until at least 4 families are mastered", () => {
     const p4 = applyPlacementResult(emptyProgress(), 12, 12);
     expect(isTierUnlocked(p4, "hard")).toBe(false);
@@ -669,6 +690,29 @@ describe("transfer metric edge cases", () => {
     expect(s.firstTime.accuracy).toBe(1);
     expect(s.transferScore).toBe(1);
   });
+
+  it("an errorless-loop retry does NOT append a second transfer-log entry", () => {
+    // A learner who answers wrong then self-corrects on the retry must not be
+    // double-counted for the same step - the transfer metric is first-attempt
+    // accuracy, and a wrong-then-correct retry used to write TWO entries
+    // (deflating the metric for self-correctors).
+    const s = getScenario("gcash-otp")!;
+    let p = applyAnswer(emptyProgress(), { scenario: s, correct: false, atDay: "2026-08-01" });
+    expect(p.transferLog).toHaveLength(1);
+    expect(p.transferLog[0].correct).toBe(false);
+    // Retry of the same step, now correct, with retriedWrong set.
+    p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-01", retriedWrong: true });
+    expect(p.transferLog).toHaveLength(1); // no second entry
+    // Mastery still learns from the retry (the learner did get it right).
+    expect(p.familyMastery[s.family].last5Correct).toEqual([false, true]);
+  });
+
+  it("a fresh correct attempt on a NEW step still appends a transfer-log entry", () => {
+    const s = getScenario("gcash-otp")!;
+    let p = applyAnswer(emptyProgress(), { scenario: s, correct: true, atDay: "2026-08-01" });
+    p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-02" }); // different day, no retry flag
+    expect(p.transferLog).toHaveLength(2);
+  });
 });
 
 describe("gamification (retention strategies)", () => {
@@ -689,6 +733,21 @@ describe("gamification (retention strategies)", () => {
     const prog = challengeProgress(p, "daily-goal");
     expect(prog.progress).toBe(3);
     expect(prog.claimed).toBe(false);
+  });
+
+  it("resets the daily-goal challenge when the day rolls over", () => {
+    const s = getScenario("gcash-otp")!;
+    let p = emptyProgress();
+    // Day 1: complete 3 of 3.
+    for (let i = 0; i < 3; i++) {
+      p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-01" });
+    }
+    expect(challengeProgress(p, "daily-goal").progress).toBe(3);
+    // Day 2: the counter restarts at 1 for the first answer of the new day.
+    p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-02" });
+    const day2 = challengeProgress(p, "daily-goal");
+    expect(day2.progress).toBe(1);
+    expect(day2.claimed).toBe(false);
   });
 
   it("a completed challenge awards a deterministic variable reward once on claim", () => {
@@ -734,6 +793,25 @@ describe("gamification (retention strategies)", () => {
     expect(reward).not.toBeNull();
     // Mastery (>=4/5 correct) is the bigger milestone and fires first.
     expect(reward!.kind).toBe("first-mastery");
+  });
+
+  it("a single correct answer does NOT count as a perfect drill", () => {
+    const s = getScenario("gcash-otp")!;
+    let p = emptyProgress();
+    p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-01" });
+    expect(p.familyMastery[s.family].last5Correct).toEqual([true]);
+    expect(detectSurpriseReward(p, "2026-08-01")).toBeNull();
+  });
+
+  it("three consecutive correct answers trigger the perfect-drill reward", () => {
+    const s = getScenario("gcash-otp")!;
+    let p = emptyProgress();
+    for (let i = 0; i < 3; i++) {
+      p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-01" });
+    }
+    const reward = detectSurpriseReward(p, "2026-08-01");
+    expect(reward).not.toBeNull();
+    expect(reward!.kind).toBe("first-perfect");
   });
 });
 

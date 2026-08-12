@@ -192,11 +192,16 @@ const fetchSimilarScams = async (payload: ReportPayload): Promise<Array<{ id: st
 };
 
 // Only pre-computed SHA-256 hashes are ever sent to the Worker, never raw numbers.
+// Aggregates the MAX report count across ALL phone hashes (the UI's "reported N
+// times" must not under-report for messages with multiple numbers).
 const reportedPhoneCount = async (phoneHashes: string[]): Promise<number> => {
   if (!phoneHashes.length) return 0;
-  const status = await withTimeout(lookupIndicator("phone", phoneHashes[0]), 5000);
-  if (!status || !status.found) return 0;
-  return status.times_reported || 0;
+  let max = 0;
+  for (const hash of phoneHashes.slice(0, 10)) {
+    const status = await withTimeout(lookupIndicator("phone", hash), 5000);
+    if (status?.found && status.times_reported) max = Math.max(max, status.times_reported);
+  }
+  return max;
 };
 
 // A hung storage lookup must never block the scan result indefinitely.
@@ -232,8 +237,7 @@ const withStorageSignals = async (
     )
     .filter((d, idx, arr) => arr.indexOf(d) === idx)
     .slice(0, 3);
-  const [similarScams, phoneCount, domainStatuses] = await Promise.all([
-    withTimeout(fetchSimilarScams(payload), 8000) ?? [],
+  const [phoneCount, domainStatuses] = await Promise.all([
     reportedPhoneCount(phoneHashes),
     Promise.all(domains.map((d) => withTimeout(domainReputation(d), 5000))),
   ]);
@@ -278,14 +282,22 @@ const withStorageSignals = async (
     : 0;
 
   const redFlags = flags.length ? [...(base.redFlags || []), ...flags] : base.redFlags;
+
   // POST the report with the FINAL verdict (post-blacklist) so the stored
-  // report matches what the user sees. The offline queue dedups on content.
-  postReport({
+  // report matches what the user sees. Similarity search only needs the
+  // content (Vectorize embedding), so it runs on the SAME final payload via
+  // the /reports response - a single write path, no pre/post-blacklist race
+  // (the Worker dedups identical content_hash as a no-op).
+  const finalPayload: ReportPayload = {
     ...payload,
     verdict: finalLayered.verdict,
     riskScore: finalLayered.riskScore,
     redFlags,
-  });
+  };
+  const [similarScams] = await Promise.all([
+    withTimeout(fetchSimilarScams(finalPayload), 8000),
+  ]);
+  postReport(finalPayload);
   return {
     ...base,
     verdict: finalLayered.verdict,
@@ -380,7 +392,7 @@ class WorkerDojoHandler {
     try {
       const res = await fetch(`${WORKER_ORIGIN}/dojo/session`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Consent-Token": getConsentToken() || "" },
       });
       if (!res.ok) return false;
       const data = (await res.json()) as { sessionToken?: string };
@@ -559,10 +571,15 @@ export const analyzeContent = async (text: string, language: string, imageBase64
   }
 
   let contentToAnalyze = text;
+  // Raw OCR text (pre-redaction) so phone numbers embedded in an image still
+  // join the blacklist hash set - hashing must run on UNREDACTED numbers (only
+  // SHA-256 hashes leave the device, never the numbers themselves).
+  let rawOcrText = "";
 
   if (imageBase64) {
     try {
       const ocrText = await extractTextFromImage(imageBase64, imageMimeType);
+      rawOcrText = ocrText;
       contentToAnalyze = `
         [USER NOTE]: ${text}
         [IMAGE CONTENT (OCR)]: ${ocrText}
@@ -674,8 +691,9 @@ export const analyzeContent = async (text: string, language: string, imageBase64
     ]);
     // Gather every layer's evidence. Layers are evidence, not vetoes: the
     // verdict emerges from a weighted sum (services/layeredVerdict.ts).
-    const ocrText = imageBase64 ? contentToAnalyze.match(/\[IMAGE CONTENT \(OCR\)\]:\s*([\s\S]*?)\s*$/) : null;
-    const phoneHashes = await phoneHashesFromText(`${text} ${ocrText ? ocrText[1] : ""}`);
+    const ocrText = rawOcrText || (imageBase64 ? contentToAnalyze.match(/\[IMAGE CONTENT \(OCR\)\]:\s*([\s\S]*?)\s*$/) : null);
+    const ocrPart = typeof ocrText === "string" ? ocrText : ocrText ? ocrText[1] : "";
+    const phoneHashes = await phoneHashesFromText(`${text} ${ocrPart}`);
     const linkGrade = gradeMessageLinks(contentToAnalyze).worst;
     const senderCheck = checkSender(sender);
     const engineSignal = fallbackVerdict(contentToAnalyze); // null when it abstains
@@ -719,6 +737,13 @@ export const analyzeContent = async (text: string, language: string, imageBase64
     return withStorageSignals(enriched, reportPayload, phoneHashes, layerSignals);
 
   } catch (error: any) {
+    // Consent attestation failures must NOT fall through to the deterministic
+    // fallback: a user whose token expired/revoked must be re-prompted to
+    // accept the protocols, not handed a verdict (App.tsx resets consent on
+    // "Consent required"). Same treatment as rate-limit errors.
+    if (error?.message && /consent required|403/i.test(String(error.message))) {
+      throw error;
+    }
     // Deterministic fallback when the AI provider is unavailable: never leave the user without a verdict.
     if (!error?.message || !/429|quota|exhausted/i.test(String(error.message))) {
       const fallback = fallbackVerdict(contentToAnalyze || text);

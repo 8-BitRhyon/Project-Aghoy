@@ -117,6 +117,12 @@ export interface AnswerInput {
   atDay: string;
   stepIndex?: number;
   optionId?: string;
+  // True when this is the errorless-loop retry of a step the learner already
+  // answered. Retries still update mastery/streaks/coins, but do NOT append a
+  // second transfer-log entry - the transfer metric measures FIRST-attempt
+  // accuracy on novel lures, and a self-correcting learner must not be
+  // double-counted (and unfairly deflated) for the same step.
+  retriedWrong?: boolean;
 }
 
 export interface MirrorInput {
@@ -256,6 +262,22 @@ const recomputeUnlocked = (p: LearnerProgress): LearnerProgress => ({
   },
 });
 
+// The shield ladder must be climbable WITHOUT the (unbuilt) placement UI.
+// Clearing a level means mastering every family assigned to it; each cleared
+// level raises the shield by one. Empty levels (7/9/10 gate on other evidence)
+// are skipped here. Never regresses - placement can still start a learner
+// higher, and mastery only ever adds to that.
+export const masteryShieldLevel = (p: LearnerProgress): number => {
+  let level = p.shieldLevel;
+  for (const cfg of SHIELD_LEVELS) {
+    const fams = cfg.families.filter((f) => FAMILY_LEVEL[f] === cfg.level);
+    if (fams.length === 0) continue;
+    const cleared = fams.every((f) => (p.familyMastery[f] ?? emptyFamily()).mastered);
+    if (cleared && cfg.level + 1 > level) level = cfg.level + 1;
+  }
+  return level;
+};
+
 export const buildPlacementQuiz = (families: string[], difficulty: "easy" | "medium", count = 12): string[] => {
   const result: string[] = [];
   for (const family of families) {
@@ -346,12 +368,15 @@ export const applyAnswer = (p: LearnerProgress, input: AnswerInput): LearnerProg
   // Transfer log: record whether this answer was on a scenario the learner had
   // never seen (firstTime). This is the exact signal for the transfer metric -
   // accuracy on novel lures is what predicts real-world scam detection, since
-  // training effects do not transfer to new lure types.
+  // training effects do not transfer to new lure types. Errorless-loop retries
+  // of the SAME step are excluded so the metric stays first-attempt accuracy.
   const wasSeen = p.completedScenarioIds.includes(scenario.id) || p.srsQueue.some((i) => i.scenarioId === scenario.id);
-  const transferLog = [
-    ...p.transferLog,
-    { scenarioId: scenario.id, correct, firstTime: !wasSeen, atDay },
-  ];
+  const transferLog = input.retriedWrong
+    ? p.transferLog
+    : [
+        ...p.transferLog,
+        { scenarioId: scenario.id, correct, firstTime: !wasSeen, atDay },
+      ];
 
   // Gamification: award shield coins for correct answers (reward-learning is
   // the strongest lever for older adults, Frank & Kong 2008) and advance
@@ -360,19 +385,27 @@ export const applyAnswer = (p: LearnerProgress, input: AnswerInput): LearnerProg
   const shieldCoins = p.shieldCoins + (correct ? COINS_PER_CORRECT : 0);
   const challenges: Record<string, ChallengeState> = { ...p.challenges };
   for (const def of CHALLENGE_DEFS) {
-    const state = challenges[def.id] ?? { id: def.id, progress: 0, target: def.target, claimedAt: null, startedAt: atDay };
+    const existing = challenges[def.id];
+    const state = existing ?? { id: def.id, progress: 0, target: def.target, claimedAt: null, startedAt: atDay };
+    // The daily-goal challenge resets each day: a new day starts progress at 0
+    // (or 1 for this answer) and re-opens the claim, so "today's 3 drills"
+    // really means today, not cumulative across days.
+    const newDay = def.family === null && state.startedAt !== atDay;
+    const base = newDay ? { ...state, progress: 0, claimedAt: null, startedAt: atDay } : state;
     let advanced = false;
     if (def.family === null && correct) {
       advanced = true; // daily-goal: any correct answer advances
     } else if (def.family === scenario.family && correct) {
       advanced = true; // family challenge: correct answer in that family
     }
-    if (advanced && state.progress < def.target) {
-      challenges[def.id] = { ...state, progress: state.progress + 1 };
+    if (advanced && base.progress < def.target) {
+      challenges[def.id] = { ...base, progress: base.progress + 1 };
+    } else if (newDay) {
+      challenges[def.id] = base;
     }
   }
 
-  return recomputeUnlocked({
+  const fresh = {
     ...p,
     xp,
     shieldCoins,
@@ -385,7 +418,9 @@ export const applyAnswer = (p: LearnerProgress, input: AnswerInput): LearnerProg
     wrongAnswers,
     transferLog,
     familyMastery: { ...p.familyMastery, [family]: fam },
-  });
+  };
+  // Advance the shield ladder from family mastery (placement-independent).
+  return recomputeUnlocked({ ...fresh, shieldLevel: masteryShieldLevel(fresh) });
 };
 
 export const dueScenarios = (p: LearnerProgress, today: string, pool: string[]): string[] => {
@@ -653,11 +688,11 @@ export const detectSurpriseReward = (p: LearnerProgress, atDay: string): Surpris
   if (mastered.length >= 1 && !have.has("first-mastery:global")) {
     return { id: "first-mastery:global", kind: "first-mastery", awardedAt: atDay };
   }
-  // Perfect drill (all correct, no repeats needed) - approximated by transfer
-  // log last answer being correct with 100% family rate is complex; use a
-  // simpler signal: at least one family at 100% last5 with >= 1 attempt.
+  // Perfect drill (all correct) - approximated by a family's rolling last-5
+  // being all-correct. Requires >= 3 in a row: a single correct answer is
+  // just a start, not a "perfect" run worth celebrating.
   for (const [, m] of Object.entries(p.familyMastery)) {
-    if (m.last5Correct.length > 0 && m.last5Correct.every(Boolean) && !have.has("first-perfect:global")) {
+    if (m.last5Correct.length >= 3 && m.last5Correct.every(Boolean) && !have.has("first-perfect:global")) {
       return { id: "first-perfect:global", kind: "first-perfect", awardedAt: atDay };
     }
   }

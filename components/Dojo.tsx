@@ -15,7 +15,7 @@ import { td, normalizeLang, type DojoKey } from '../src/i18n';
 import { type Scenario, type ScenarioStep, type ScenarioDifficulty, type ScenarioFamily } from '../src/dojo/scenarios';
 import { ALL_SCENARIOS } from '../src/dojo/scenarios.generated';
 import { type LearnerProgress, emptyProgress, applyAnswer, sessionPlan, recordDailyGoal, streakStatus, familyMasteryState, isFamilyUnlocked, isTierUnlocked, transferFromLog, challengeProgress, CHALLENGE_DEFS, detectSurpriseReward, claimChallenge, challengeReward, buyStreakFreeze, STREAK_FREEZE_COST, setDailyGoal, DAILY_GOAL_OPTIONS } from '../src/dojo/progress';
-import { saveTrainingProgress, loadTrainingProgress } from '../src/api/storageClient';
+import { saveTrainingProgress, loadTrainingProgress, saveSelfReport } from '../src/api/storageClient';
 import { type GameState, startScenario, answerStep, advanceFromFeedback, rankFor } from '../src/dojo/engine';
 import { createDojoChat } from '../services/aiService';
 
@@ -114,6 +114,8 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
   const [game, setGame] = useState<GameState | null>(null);
   const [step, setStep] = useState<ScenarioStep | null>(null);
   const [feedbackTip, setFeedbackTip] = useState<string | null>(null);
+  // "I caught a real scam like this" self-report (anonymous, best-effort).
+  const [selfReported, setSelfReported] = useState(false);
 
   // Progression engine state, persisted server-side (pseudonymous learner_key).
   const [progress, setProgress] = useState<LearnerProgress>(emptyProgress);
@@ -186,6 +188,15 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
 
   // Manual pick from a family list: ignore any queued session plan.
   const openFromFamily = (id: string) => {
+    playSound('click');
+    const s = library.find((x) => x.id === id) ?? ALL_SCENARIOS.find((x) => x.id === id);
+    if (!s) return;
+    // Respect the unlock gate even when a locked family's list is somehow
+    // reachable (defense in depth; the buttons are also disabled).
+    if (!isFamilyUnlocked(progress, s.family)) {
+      setLockedFamily(s.family);
+      return;
+    }
     setSessionIds([]);
     openScenario(id);
   };
@@ -216,14 +227,10 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
     // of opening drills the learner is not ready for (consistent with
     // sessionPlan, which only picks unlocked families).
     const unlocked = isFamilyUnlocked(progress, family);
-    const tierUnlocked = isTierUnlocked(progress, 'hard') || family === 'ewallet' || family === 'fake-reward';
-    if (!unlocked) {
-      setLockedFamily(family);
-      setView('family');
-      return;
-    }
     setFamilyView(family);
     setExpanded({ easy: false, medium: false, hard: false });
+    if (unlocked) setLockedFamily(null);
+    else setLockedFamily(family);
     setView('family');
   };
 
@@ -241,32 +248,46 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
     const result = answerStep(scenario, game, choiceId);
     setGame(result.state);
     setStep(result.step);
-    // Functional updates avoid stale closures; persist the updated progress so
-    // mastery/streaks survive reloads and devices.
-    setTodayCorrect((prev) => {
-      const next = prev + (result.correct ? 1 : 0);
-      setProgress((p) => {
-        const withAnswer = applyAnswer(p, { scenario, correct: result.correct, atDay: today });
-        const withGoal = recordDailyGoal(withAnswer, next, progress.streakAgency.dailyGoal, today);
-        // Award a surprise reward when a milestone is hit (first mastery,
-        // streak 3/7/14). The reward is persisted so it shows once and
-        // survives reload. Positive-only, never shaming.
-        const reward = detectSurpriseReward(withGoal, today);
-        const saved = reward
-          ? { ...withGoal, surpriseRewards: [...withGoal.surpriseRewards, reward] }
-          : withGoal;
-        saveTrainingProgress(saved);
-        return saved;
-      });
-      return next;
+    // Compute the next progress OUTSIDE the state updater: pure computation,
+    // then setState + a single save. (Calling saveTrainingProgress inside the
+    // updater was impure - StrictMode double-invokes updaters, causing a
+    // duplicate POST per answer in dev.)
+    const stepIndex = scenario.steps.findIndex((s) => s.id === step.id);
+    const withAnswer = applyAnswer(progress, {
+      scenario,
+      correct: result.correct,
+      atDay: today,
+      stepIndex,
+      optionId: choiceId,
+      retriedWrong: game.retriedWrong,
     });
+    const nextTodayCorrect = todayCorrect + (result.correct ? 1 : 0);
+    const withGoal = recordDailyGoal(withAnswer, nextTodayCorrect, progress.streakAgency.dailyGoal, today);
+    // Award a surprise reward when a milestone is hit (first mastery,
+    // streak 3/7/14). The reward is persisted so it shows once and
+    // survives reload. Positive-only, never shaming.
+    const reward = detectSurpriseReward(withGoal, today);
+    const saved = reward
+      ? { ...withGoal, surpriseRewards: [...withGoal.surpriseRewards, reward] }
+      : withGoal;
+    setTodayCorrect(nextTodayCorrect);
+    setProgress(saved);
+    saveTrainingProgress(saved);
     if (result.state.phase === 'feedback') playSound('hover');
     if (result.won) playSound('success');
     if (result.lost) playSound('alert');
   };
 
-  const nextStep = () => {
-    if (!scenario || !game) return;
+  // Anonymous "I caught a real scam like this" report: feeds the training
+  // loop's self-report table (Rejects-sanitized server-side). Best-effort -
+  // never blocks or errors the user.
+  const reportRealScam = () => {
+    if (!scenario || selfReported) return;
+    setSelfReported(true);
+    void saveSelfReport({ vector: scenario.family, narrative: `${scenario.family} drill matched a real encounter` }).catch(() => {});
+  };
+
+  const nextStep = () => {    if (!scenario || !game) return;
     playSound('click');
     const advanced = advanceFromFeedback(scenario, game);
     setGame(advanced);
@@ -413,11 +434,23 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
 
   // Active challenge chip: a non-timed mission ("master 3 ewallet drills")
   // with a progress bar. No pressure timers - self-paced for older learners.
+  // Selection order: a complete-but-unclaimed challenge (so the claim button
+  // renders), then one in progress, then the first not yet started. The chip
+  // disappears only once every challenge is claimed.
   const renderChallengeChip = () => {
-    const active = CHALLENGE_DEFS.find((d) => {
-      const st = progress.challenges[d.id];
-      return !st || (st.progress < st.target && st.claimedAt === null);
-    });
+    const isClaimed = (id: string): boolean => progress.challenges[id]?.claimedAt !== null;
+    const isComplete = (id: string): boolean => {
+      const st = progress.challenges[id];
+      return !!st && st.progress >= st.target;
+    };
+    const isInProgress = (id: string): boolean => {
+      const st = progress.challenges[id];
+      return !!st && st.progress > 0;
+    };
+    const active =
+      CHALLENGE_DEFS.find((d) => !isClaimed(d.id) && isComplete(d.id)) ??
+      CHALLENGE_DEFS.find((d) => !isClaimed(d.id) && isInProgress(d.id)) ??
+      CHALLENGE_DEFS.find((d) => !isClaimed(d.id));
     if (!active) return null;
     const prog = challengeProgress(progress, active.id);
     const pct = Math.round((prog.progress / prog.target) * 100);
@@ -593,6 +626,7 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
     const Icon = meta.icon;
     const familyScenarios = library.filter((s) => s.family === familyView);
     const total = familyScenarios.length;
+    const familyLocked = lockedFamily === familyView && !isFamilyUnlocked(progress, familyView);
 
     return (
       <div className="w-full max-w-3xl mx-auto">
@@ -610,7 +644,6 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
             {D('lockedFamily')}
           </div>
         )}
-
         <div className="mb-6 border-4 border-cyan-600 bg-cyan-900/20 p-4 animate-fade-in">
           <div className="flex items-center gap-4">
             <div className="p-2 bg-cyan-600 text-black shrink-0 border-2 border-cyan-400">
@@ -652,7 +685,8 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
                   <button
                     key={s.id}
                     onClick={() => openFromFamily(s.id)}
-                    className="text-left bg-slate-900 border-4 border-slate-700 hover:border-cyan-500 p-4 min-h-[44px] transition-all shadow-[4px_4px_0_0_rgba(0,0,0,0.5)] hover:translate-x-0.5 hover:translate-y-0.5"
+                    disabled={familyLocked}
+                    className="text-left bg-slate-900 border-4 border-slate-700 hover:border-cyan-500 p-4 min-h-[44px] transition-all shadow-[4px_4px_0_0_rgba(0,0,0,0.5)] hover:translate-x-0.5 hover:translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-slate-700"
                   >
                     <div className="flex items-start justify-between gap-3 mb-1">
                       <h4 className="text-white font-['Press_Start_2P'] text-xs">{s.title}</h4>
@@ -748,6 +782,15 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
                   {sessionIds.length > 0 && (
                     <button onClick={nextDrill} className="px-4 py-2 bg-yellow-700 hover:bg-yellow-600 text-white font-['Press_Start_2P'] text-[10px] border-b-4 border-yellow-900 active:border-b-0 active:translate-y-1 min-h-[44px]">
                       {D('nextDrill')} ({sessionIds.length} LEFT)
+                    </button>
+                  )}
+                  {game.phase === 'won' && (
+                    <button
+                      onClick={reportRealScam}
+                      disabled={selfReported}
+                      className="px-4 py-2 bg-emerald-800 hover:bg-emerald-700 text-white font-['Press_Start_2P'] text-[10px] border-b-4 border-emerald-950 active:border-b-0 active:translate-y-1 min-h-[44px] disabled:opacity-50 disabled:cursor-default"
+                    >
+                      {selfReported ? D('surprisePerfect') : D('caughtRealScam')}
                     </button>
                   )}
                   <button onClick={backToSelect} className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white font-['Press_Start_2P'] text-[10px] border-b-4 border-slate-900 active:border-b-0 active:translate-y-1 min-h-[44px]">

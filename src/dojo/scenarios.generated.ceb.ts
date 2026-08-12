@@ -1,7 +1,8 @@
 // AUTO-GENERATED - BISAYA - do not edit by hand. Regenerate: npx tsx scripts/generate-scenarios.ts
 import { Scenario } from "./scenarios";
+import { SCENARIOS } from "./scenarios";
 
-export const ALL_SCENARIOS_BISAYA: Scenario[] = [
+export const GENERATED_SCENARIOS_BISAYA: Scenario[] = [
   {
     "id": "ewallet-easy-000",
     "title": "ewallet drill 0",
@@ -21129,3 +21130,5 @@ export const ALL_SCENARIOS_BISAYA: Scenario[] = [
     "source": "generated"
   }
 ];
+
+export const ALL_SCENARIOS_BISAYA: Scenario[] = [...SCENARIOS, ...GENERATED_SCENARIOS_BISAYA];

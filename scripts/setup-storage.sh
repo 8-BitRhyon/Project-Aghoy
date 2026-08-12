@@ -10,9 +10,10 @@
 #
 # After enabling R2 in the Cloudflare dashboard, run:
 #   bash scripts/setup-storage.sh enable-r2
-# to uncomment the EVIDENCE binding in wrangler.toml, create the bucket, and
-# redeploy the worker. R2 free tier covers 10GB + 1M writes + 10M reads/mo;
-# set a budget alert under Billing to guard against overages.
+# to ensure the EVIDENCE binding is uncommented in wrangler.toml (it is active
+# by default in this repo), create the bucket, and redeploy the worker. R2
+# free tier covers 10GB + 1M writes + 10M reads/mo; set a budget alert under
+# Billing to guard against overages.
 
 set -euo pipefail
 

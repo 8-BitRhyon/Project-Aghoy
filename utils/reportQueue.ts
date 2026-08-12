@@ -70,10 +70,15 @@ export interface QueueResult {
   pending: number;
 }
 
+// A send function returns true (sent), false (transient - retry with
+// backoff), or "permanent" (server rejected 4xx - drop the record; retrying
+// it can never succeed and would hammer the Worker).
+type SendResult = boolean | "permanent";
+
 // Attempt to flush every due report. Returns per-state counts.
 export const flushQueue = async (
   store: ReportStore,
-  send: (payload: unknown) => Promise<boolean>,
+  send: (payload: unknown) => Promise<SendResult>,
   now = Date.now()
 ): Promise<QueueResult> => {
   const all = await store.getAll();
@@ -81,10 +86,16 @@ export const flushQueue = async (
   let flushed = 0;
   let failed = 0;
   for (const report of due) {
-    const ok = await send(report.payload);
-    if (ok) {
+    const result = await send(report.payload);
+    if (result === true) {
       await store.delete(report.id);
       flushed++;
+    } else if (result === "permanent") {
+      // Server rejected the payload (4xx): drop it rather than retrying 25x
+      // and parking at Infinity. A record that can never be accepted must not
+      // linger in IndexedDB forever (the old behavior).
+      await store.delete(report.id);
+      failed++;
     } else {
       const attempts = report.attempts + 1;
       if (attempts >= MAX_ATTEMPTS) {
@@ -104,7 +115,7 @@ export const flushQueue = async (
 export const enqueueAndFlush = async (
   store: ReportStore,
   payload: unknown,
-  send: (p: unknown) => Promise<boolean>
+  send: (p: unknown) => Promise<SendResult>
 ): Promise<QueueResult> => {
   const report: QueuedReport = {
     id: `r_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`,
