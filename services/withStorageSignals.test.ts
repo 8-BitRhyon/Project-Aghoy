@@ -95,9 +95,34 @@ describe('withStorageSignals - single final verdict on both write paths', () => 
       expect(p.body.verdict).toBe(shown);
     }
     // postReport (the durable queue path) receives the identical payload.
-    const queued = postReportMock.mock.calls.map((c) => (c[0] ?? {}) as Record<string, unknown>);    expect(queued.length).toBeGreaterThanOrEqual(1);
+    const queued = postReportMock.mock.calls.map((c) => (c[0] ?? {}) as Record<string, unknown>);
+    expect(queued.length).toBeGreaterThanOrEqual(1);
     for (const q of queued) {
       expect(q.verdict).toBe(shown);
     }
+  });
+
+  it('reported phone count reflects the MAX across multiple numbers in the message', async () => {
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => {
+      if (String(url).includes('/api/analyze')) {
+        return new Response(mockAnalysisResponse('SAFE'), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      }
+      return new Response(JSON.stringify({ ok: true, similar: [] }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    }));
+    // Both numbers are reported: first has 2, second has 9. The UI count must
+    // be 9 (the max), not the first hash's 2.
+    let phoneLookups = 0;
+    lookupIndicatorMock.mockImplementation(async () => {
+      phoneLookups++;
+      return phoneLookups === 1 ? { found: true, times_reported: 2 } : { found: true, times_reported: 9 };
+    });
+    domainReputationMock.mockImplementation(async () => null);
+
+    const result = await analyzeContent(
+      'Contact 09171234567 or 09179876543 for your GCash verification code.',
+      'ENGLISH'
+    );
+    expect(result.reportedPhone?.count).toBe(9);
+    expect(phoneLookups).toBeGreaterThanOrEqual(2);
   });
 });

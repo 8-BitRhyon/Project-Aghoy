@@ -15,7 +15,7 @@ import { td, normalizeLang, type DojoKey } from '../src/i18n';
 import { type Scenario, type ScenarioStep, type ScenarioDifficulty, type ScenarioFamily } from '../src/dojo/scenarios';
 import { ALL_SCENARIOS } from '../src/dojo/scenarios.generated';
 import { type LearnerProgress, emptyProgress, applyAnswer, sessionPlan, recordDailyGoal, streakStatus, familyMasteryState, isFamilyUnlocked, isTierUnlocked, transferFromLog, challengeProgress, CHALLENGE_DEFS, detectSurpriseReward, claimChallenge, challengeReward, buyStreakFreeze, STREAK_FREEZE_COST, setDailyGoal, DAILY_GOAL_OPTIONS } from '../src/dojo/progress';
-import { saveTrainingProgress, loadTrainingProgress } from '../src/api/storageClient';
+import { saveTrainingProgress, loadTrainingProgress, saveSelfReport } from '../src/api/storageClient';
 import { type GameState, startScenario, answerStep, advanceFromFeedback, rankFor } from '../src/dojo/engine';
 import { createDojoChat } from '../services/aiService';
 
@@ -114,6 +114,8 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
   const [game, setGame] = useState<GameState | null>(null);
   const [step, setStep] = useState<ScenarioStep | null>(null);
   const [feedbackTip, setFeedbackTip] = useState<string | null>(null);
+  // "I caught a real scam like this" self-report (anonymous, best-effort).
+  const [selfReported, setSelfReported] = useState(false);
 
   // Progression engine state, persisted server-side (pseudonymous learner_key).
   const [progress, setProgress] = useState<LearnerProgress>(emptyProgress);
@@ -246,32 +248,46 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
     const result = answerStep(scenario, game, choiceId);
     setGame(result.state);
     setStep(result.step);
-    // Functional updates avoid stale closures; persist the updated progress so
-    // mastery/streaks survive reloads and devices.
-    setTodayCorrect((prev) => {
-      const next = prev + (result.correct ? 1 : 0);
-      setProgress((p) => {
-        const withAnswer = applyAnswer(p, { scenario, correct: result.correct, atDay: today });
-        const withGoal = recordDailyGoal(withAnswer, next, progress.streakAgency.dailyGoal, today);
-        // Award a surprise reward when a milestone is hit (first mastery,
-        // streak 3/7/14). The reward is persisted so it shows once and
-        // survives reload. Positive-only, never shaming.
-        const reward = detectSurpriseReward(withGoal, today);
-        const saved = reward
-          ? { ...withGoal, surpriseRewards: [...withGoal.surpriseRewards, reward] }
-          : withGoal;
-        saveTrainingProgress(saved);
-        return saved;
-      });
-      return next;
+    // Compute the next progress OUTSIDE the state updater: pure computation,
+    // then setState + a single save. (Calling saveTrainingProgress inside the
+    // updater was impure - StrictMode double-invokes updaters, causing a
+    // duplicate POST per answer in dev.)
+    const stepIndex = scenario.steps.findIndex((s) => s.id === step.id);
+    const withAnswer = applyAnswer(progress, {
+      scenario,
+      correct: result.correct,
+      atDay: today,
+      stepIndex,
+      optionId: choiceId,
+      retriedWrong: game.retriedWrong,
     });
+    const nextTodayCorrect = todayCorrect + (result.correct ? 1 : 0);
+    const withGoal = recordDailyGoal(withAnswer, nextTodayCorrect, progress.streakAgency.dailyGoal, today);
+    // Award a surprise reward when a milestone is hit (first mastery,
+    // streak 3/7/14). The reward is persisted so it shows once and
+    // survives reload. Positive-only, never shaming.
+    const reward = detectSurpriseReward(withGoal, today);
+    const saved = reward
+      ? { ...withGoal, surpriseRewards: [...withGoal.surpriseRewards, reward] }
+      : withGoal;
+    setTodayCorrect(nextTodayCorrect);
+    setProgress(saved);
+    saveTrainingProgress(saved);
     if (result.state.phase === 'feedback') playSound('hover');
     if (result.won) playSound('success');
     if (result.lost) playSound('alert');
   };
 
-  const nextStep = () => {
-    if (!scenario || !game) return;
+  // Anonymous "I caught a real scam like this" report: feeds the training
+  // loop's self-report table (Rejects-sanitized server-side). Best-effort -
+  // never blocks or errors the user.
+  const reportRealScam = () => {
+    if (!scenario || selfReported) return;
+    setSelfReported(true);
+    void saveSelfReport({ vector: scenario.family, narrative: `${scenario.family} drill matched a real encounter` }).catch(() => {});
+  };
+
+  const nextStep = () => {    if (!scenario || !game) return;
     playSound('click');
     const advanced = advanceFromFeedback(scenario, game);
     setGame(advanced);
@@ -766,6 +782,15 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
                   {sessionIds.length > 0 && (
                     <button onClick={nextDrill} className="px-4 py-2 bg-yellow-700 hover:bg-yellow-600 text-white font-['Press_Start_2P'] text-[10px] border-b-4 border-yellow-900 active:border-b-0 active:translate-y-1 min-h-[44px]">
                       {D('nextDrill')} ({sessionIds.length} LEFT)
+                    </button>
+                  )}
+                  {game.phase === 'won' && (
+                    <button
+                      onClick={reportRealScam}
+                      disabled={selfReported}
+                      className="px-4 py-2 bg-emerald-800 hover:bg-emerald-700 text-white font-['Press_Start_2P'] text-[10px] border-b-4 border-emerald-950 active:border-b-0 active:translate-y-1 min-h-[44px] disabled:opacity-50 disabled:cursor-default"
+                    >
+                      {selfReported ? D('surprisePerfect') : D('caughtRealScam')}
                     </button>
                   )}
                   <button onClick={backToSelect} className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white font-['Press_Start_2P'] text-[10px] border-b-4 border-slate-900 active:border-b-0 active:translate-y-1 min-h-[44px]">

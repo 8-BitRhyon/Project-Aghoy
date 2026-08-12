@@ -185,6 +185,7 @@ export type DojoKey =
   | 'surpriseTitle'
   | 'surpriseMastery'
   | 'surprisePerfect'
+  | 'caughtRealScam'
   | 'surpriseStreak'
   | 'challengeLabel'
   | 'challengeHint'
@@ -292,6 +293,7 @@ export const DOJO_COPY: Record<AghoyLang, Partial<Record<DojoKey, string>>> = {
     surpriseTitle: 'BONUS! 🎉',
     surpriseMastery: 'Nakabisado mo ang isang scam family. Magaling!',
     surprisePerfect: 'Perpektong drill! Walang kamali-mali.',
+    caughtRealScam: 'Nakasalamuha ka na ba ng totoong scam na ganito? Sabihin sa amin.',
     surpriseStreak: 'Umabot ka sa streak milestone!',
     challengeLabel: 'ACTIVE CHALLENGE',
     challengeHint: 'Tapusin ang 3 drill para sa shield coins.',
@@ -397,6 +399,7 @@ export const DOJO_COPY: Record<AghoyLang, Partial<Record<DojoKey, string>>> = {
     surpriseTitle: 'BONUS! 🎉',
     surpriseMastery: 'You mastered a scam family. Well done!',
     surprisePerfect: 'Perfect drill! No mistakes.',
+    caughtRealScam: 'Seen a real scam like this? Tell us.',
     surpriseStreak: 'You hit a streak milestone!',
     challengeLabel: 'ACTIVE CHALLENGE',
     challengeHint: 'Finish 3 drills for shield coins.',
@@ -502,6 +505,7 @@ export const DOJO_COPY: Record<AghoyLang, Partial<Record<DojoKey, string>>> = {
     surpriseTitle: 'BONUS! 🎉',
     surpriseMastery: 'Na-master nimo ang scam family. Maayo!',
     surprisePerfect: 'Perpekto nga drill! Wala sayop.',
+    caughtRealScam: 'Nakasugat ka na ba og tinuod nga scam nga sama ani? Sultihi mi.',
     surpriseStreak: 'Naabot nimo ang streak milestone!',
     challengeLabel: 'ACTIVE CHALLENGE',
     challengeHint: 'Tapusa ang 3 drills para sa shield coins.',
@@ -607,6 +611,7 @@ export const DOJO_COPY: Record<AghoyLang, Partial<Record<DojoKey, string>>> = {
     surpriseTitle: 'BONUS! 🎉',
     surpriseMastery: 'Na-master mo ti scam family. Nasayaat!',
     surprisePerfect: 'Perpekto a drill! Awan biddut.',
+    caughtRealScam: 'Nakasabatka kadi iti pudno a scam a kasdaytoy? Ibagam kadakami.',
     surpriseStreak: 'Naabot mo ti streak milestone!',
     challengeLabel: 'ACTIVE CHALLENGE',
     challengeHint: 'Lektoen dagiti 3 drills para iti shield coins.',

@@ -117,6 +117,12 @@ export interface AnswerInput {
   atDay: string;
   stepIndex?: number;
   optionId?: string;
+  // True when this is the errorless-loop retry of a step the learner already
+  // answered. Retries still update mastery/streaks/coins, but do NOT append a
+  // second transfer-log entry - the transfer metric measures FIRST-attempt
+  // accuracy on novel lures, and a self-correcting learner must not be
+  // double-counted (and unfairly deflated) for the same step.
+  retriedWrong?: boolean;
 }
 
 export interface MirrorInput {
@@ -362,12 +368,15 @@ export const applyAnswer = (p: LearnerProgress, input: AnswerInput): LearnerProg
   // Transfer log: record whether this answer was on a scenario the learner had
   // never seen (firstTime). This is the exact signal for the transfer metric -
   // accuracy on novel lures is what predicts real-world scam detection, since
-  // training effects do not transfer to new lure types.
+  // training effects do not transfer to new lure types. Errorless-loop retries
+  // of the SAME step are excluded so the metric stays first-attempt accuracy.
   const wasSeen = p.completedScenarioIds.includes(scenario.id) || p.srsQueue.some((i) => i.scenarioId === scenario.id);
-  const transferLog = [
-    ...p.transferLog,
-    { scenarioId: scenario.id, correct, firstTime: !wasSeen, atDay },
-  ];
+  const transferLog = input.retriedWrong
+    ? p.transferLog
+    : [
+        ...p.transferLog,
+        { scenarioId: scenario.id, correct, firstTime: !wasSeen, atDay },
+      ];
 
   // Gamification: award shield coins for correct answers (reward-learning is
   // the strongest lever for older adults, Frank & Kong 2008) and advance

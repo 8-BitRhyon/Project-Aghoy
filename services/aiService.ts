@@ -192,11 +192,16 @@ const fetchSimilarScams = async (payload: ReportPayload): Promise<Array<{ id: st
 };
 
 // Only pre-computed SHA-256 hashes are ever sent to the Worker, never raw numbers.
+// Aggregates the MAX report count across ALL phone hashes (the UI's "reported N
+// times" must not under-report for messages with multiple numbers).
 const reportedPhoneCount = async (phoneHashes: string[]): Promise<number> => {
   if (!phoneHashes.length) return 0;
-  const status = await withTimeout(lookupIndicator("phone", phoneHashes[0]), 5000);
-  if (!status || !status.found) return 0;
-  return status.times_reported || 0;
+  let max = 0;
+  for (const hash of phoneHashes.slice(0, 10)) {
+    const status = await withTimeout(lookupIndicator("phone", hash), 5000);
+    if (status?.found && status.times_reported) max = Math.max(max, status.times_reported);
+  }
+  return max;
 };
 
 // A hung storage lookup must never block the scan result indefinitely.

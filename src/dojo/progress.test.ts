@@ -690,6 +690,29 @@ describe("transfer metric edge cases", () => {
     expect(s.firstTime.accuracy).toBe(1);
     expect(s.transferScore).toBe(1);
   });
+
+  it("an errorless-loop retry does NOT append a second transfer-log entry", () => {
+    // A learner who answers wrong then self-corrects on the retry must not be
+    // double-counted for the same step - the transfer metric is first-attempt
+    // accuracy, and a wrong-then-correct retry used to write TWO entries
+    // (deflating the metric for self-correctors).
+    const s = getScenario("gcash-otp")!;
+    let p = applyAnswer(emptyProgress(), { scenario: s, correct: false, atDay: "2026-08-01" });
+    expect(p.transferLog).toHaveLength(1);
+    expect(p.transferLog[0].correct).toBe(false);
+    // Retry of the same step, now correct, with retriedWrong set.
+    p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-01", retriedWrong: true });
+    expect(p.transferLog).toHaveLength(1); // no second entry
+    // Mastery still learns from the retry (the learner did get it right).
+    expect(p.familyMastery[s.family].last5Correct).toEqual([false, true]);
+  });
+
+  it("a fresh correct attempt on a NEW step still appends a transfer-log entry", () => {
+    const s = getScenario("gcash-otp")!;
+    let p = applyAnswer(emptyProgress(), { scenario: s, correct: true, atDay: "2026-08-01" });
+    p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-02" }); // different day, no retry flag
+    expect(p.transferLog).toHaveLength(2);
+  });
 });
 
 describe("gamification (retention strategies)", () => {

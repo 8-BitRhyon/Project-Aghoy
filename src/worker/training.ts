@@ -29,7 +29,7 @@ export const loadProgress = async (env: TrainingEnv, key: string): Promise<Learn
   const row = await env.DB.prepare(
     `SELECT shield_level, xp, shield_coins, placement_score, placement_tier, streak_current, streak_best,
             last_active_day, srs_queue, completed, family_mastery, unlocked,
-            exam_passed, exam_best_score, transfer_log, challenges, surprise_rewards, streak_agency
+            exam_passed, exam_best_score, transfer_log, challenges, surprise_rewards, streak_agency, wrong_answers
      FROM training_progress WHERE learner_key = ?1`
   )
     .bind(key)
@@ -58,7 +58,7 @@ export const loadProgress = async (env: TrainingEnv, key: string): Promise<Learn
     unlocked: safeJson(r.unlocked, {}),
     examPassed: !!r.exam_passed,
     examBestScore: (r.exam_best_score as number) ?? 0,
-    wrongAnswers: [],
+    wrongAnswers: safeJson(r.wrong_answers, []),
     transferLog: safeJson(r.transfer_log, []),
     shieldCoins: (r.shield_coins as number) ?? 0,
     challenges: safeJson(r.challenges, {}),
@@ -89,13 +89,29 @@ const sanitizeTransferLog = (log: unknown): string => {
   return JSON.stringify(clean);
 };
 
-export const saveProgress = async (env: TrainingEnv, key: string, p: LearnerProgress): Promise<void> => {
-  const n = (v: unknown) => (v === undefined || v === null ? null : v);
+// Validate each WrongAnswer before persisting: only typed fields reach D1.
+export const sanitizeWrongAnswers = (log: unknown): string => {
+  if (!Array.isArray(log)) return "[]";
+  const clean = log
+    .map((entry) => {
+      const e = entry as Record<string, unknown> | null;
+      if (!e || typeof e !== "object") return null;
+      if (typeof e.scenarioId !== "string") return null;
+      if (typeof e.stepIndex !== "number") return null;
+      if (typeof e.optionId !== "string") return null;
+      if (typeof e.answeredAt !== "string") return null;
+      return { scenarioId: e.scenarioId, stepIndex: e.stepIndex, optionId: e.optionId, answeredAt: e.answeredAt };
+    })
+    .filter((e): e is NonNullable<typeof e> => e !== null);
+  return JSON.stringify(clean);
+};
+
+export const saveProgress = async (env: TrainingEnv, key: string, p: LearnerProgress): Promise<void> => {  const n = (v: unknown) => (v === undefined || v === null ? null : v);
   await env.DB.prepare(
     `INSERT INTO training_progress (learner_key, shield_level, xp, shield_coins, placement_score, placement_tier,
        streak_current, streak_best, last_active_day, srs_queue, completed, family_mastery, unlocked,
-       exam_passed, exam_best_score, transfer_log, challenges, surprise_rewards, streak_agency, updated_at)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19, datetime('now'))
+       exam_passed, exam_best_score, transfer_log, challenges, surprise_rewards, streak_agency, wrong_answers, updated_at)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19, ?20, datetime('now'))
      ON CONFLICT(learner_key) DO UPDATE SET
        shield_level = excluded.shield_level, xp = excluded.xp, shield_coins = excluded.shield_coins,
        placement_score = excluded.placement_score, placement_tier = excluded.placement_tier,
@@ -105,7 +121,7 @@ export const saveProgress = async (env: TrainingEnv, key: string, p: LearnerProg
        unlocked = excluded.unlocked, exam_passed = excluded.exam_passed,
        exam_best_score = excluded.exam_best_score, transfer_log = excluded.transfer_log,
        challenges = excluded.challenges, surprise_rewards = excluded.surprise_rewards,
-       streak_agency = excluded.streak_agency,
+       streak_agency = excluded.streak_agency, wrong_answers = excluded.wrong_answers,
        updated_at = datetime('now')`
   )
     .bind(
@@ -127,7 +143,8 @@ export const saveProgress = async (env: TrainingEnv, key: string, p: LearnerProg
       sanitizeTransferLog(p.transferLog),
       JSON.stringify(p.challenges),
       JSON.stringify(p.surpriseRewards),
-      JSON.stringify(p.streakAgency)
+      JSON.stringify(p.streakAgency),
+      sanitizeWrongAnswers(p.wrongAnswers)
     )
     .run();
 };

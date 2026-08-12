@@ -14,9 +14,11 @@ import { emptyProgress } from '../src/dojo/progress';
 (globalThis as Record<string, unknown>).IS_REACT_ACT_ENVIRONMENT = true;
 
 let loadedProgress: unknown = null;
+let lastSelfReport: unknown = null;
 vi.mock('../src/api/storageClient', () => ({
   saveTrainingProgress: async () => {},
   loadTrainingProgress: async () => loadedProgress,
+  saveSelfReport: async (report: unknown) => { lastSelfReport = report; },
 }));
 vi.mock('../services/aiService', () => ({
   createDojoChat: () => ({ sendMessage: async () => ({ response: { text: () => 'ok' }, health: 100 }) }),
