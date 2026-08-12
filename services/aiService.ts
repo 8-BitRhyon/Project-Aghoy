@@ -29,8 +29,10 @@ const MAX_DOJO_HISTORY = 6;
 const MAX_ASSISTANT_TEXT = 2000;
 
 const DOJO_SCENARIO = "A GCash OTP scammer trying to get you to share a verification code";
-
-const VALID_FLAGS = [
+// Every flag the analysis pipeline may produce. AGENTS.md contract: each must
+// ALSO be defined in utils/flagDefinitions.ts (a flag with no definition
+// renders the generic fallback string). Kept in sync by utils/flagDefinitions.test.ts.
+export const VALID_FLAGS: readonly string[] = [
   "TASK_SCAM",
   "OTP_SHARING",
   "PARCEL_FEE",
@@ -62,8 +64,11 @@ const VALID_FLAGS = [
   "UNUSUAL SENDER",
   "VERIFIED_SENDER",
   "REPORTED_PHONE",
-  "REPORTED_DOMAIN"
-].join(", ");
+  "REPORTED_DOMAIN",
+  "UNDERDETECTION_OVERRIDE",
+  "ON_DEVICE_MODEL",
+  "SUSPICIOUS_LINK"
+];
 
 const JSON_STRUCTURE_PROMPT = `
   STRICT JSON OUTPUT REQUIRED.
@@ -73,7 +78,7 @@ const JSON_STRUCTURE_PROMPT = `
     "riskScore": number (0-10),
     "scamType": "string (e.g. Phishing, Investment, None)",
     "senderEntity": "string (Name/Number or 'Unknown')",
-    "redFlags": ["string (Select ONLY from: ${VALID_FLAGS})"],
+    "redFlags": ["string (Select ONLY from: ${VALID_FLAGS.join(", ")})"],
     "analysis": "string (Explanation in user language)",
     "educationalTip": "string (Advice in user language)"
   }
