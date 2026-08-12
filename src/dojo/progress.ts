@@ -386,19 +386,25 @@ export const applyAnswer = (p: LearnerProgress, input: AnswerInput): LearnerProg
   const challenges: Record<string, ChallengeState> = { ...p.challenges };
   for (const def of CHALLENGE_DEFS) {
     const existing = challenges[def.id];
-    const state = existing ?? { id: def.id, progress: 0, target: def.target, claimedAt: null, startedAt: atDay };
+    // The daily-goal challenge tracks the user's CHOSEN goal (setDailyGoal:
+    // 3/5/7), not the CHALLENGE_DEFS placeholder of 3. A user who raised their
+    // goal to 5 must see a challenge that completes at 5.
+    const target = def.family === null ? p.streakAgency.dailyGoal : def.target;
+    const state = existing
+      ? { ...existing, target: def.family === null ? p.streakAgency.dailyGoal : existing.target }
+      : { id: def.id, progress: 0, target, claimedAt: null, startedAt: atDay };
     // The daily-goal challenge resets each day: a new day starts progress at 0
     // (or 1 for this answer) and re-opens the claim, so "today's 3 drills"
     // really means today, not cumulative across days.
     const newDay = def.family === null && state.startedAt !== atDay;
-    const base = newDay ? { ...state, progress: 0, claimedAt: null, startedAt: atDay } : state;
+    const base = newDay ? { ...state, progress: 0, claimedAt: null, startedAt: atDay, target } : state;
     let advanced = false;
     if (def.family === null && correct) {
       advanced = true; // daily-goal: any correct answer advances
     } else if (def.family === scenario.family && correct) {
       advanced = true; // family challenge: correct answer in that family
     }
-    if (advanced && base.progress < def.target) {
+    if (advanced && base.progress < base.target) {
       challenges[def.id] = { ...base, progress: base.progress + 1 };
     } else if (newDay) {
       challenges[def.id] = base;
@@ -712,7 +718,13 @@ export const claimChallenge = (p: LearnerProgress, challengeId: string): Learner
 // Readable challenge progress for the UI (0..1 complete).
 export const challengeProgress = (p: LearnerProgress, challengeId: string): { progress: number; target: number; claimed: boolean } => {
   const state = p.challenges[challengeId];
-  if (!state) return { progress: 0, target: CHALLENGE_DEFS.find((d) => d.id === challengeId)?.target ?? 3, claimed: false };
+  if (!state) {
+    const def = CHALLENGE_DEFS.find((d) => d.id === challengeId);
+    // The daily-goal challenge's target is the user's chosen goal, not the
+    // CHALLENGE_DEFS placeholder.
+    const target = def?.family === null ? p.streakAgency.dailyGoal : (def?.target ?? 3);
+    return { progress: 0, target, claimed: false };
+  }
   return { progress: state.progress, target: state.target, claimed: state.claimedAt !== null };
 };
 
