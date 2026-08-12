@@ -10,6 +10,8 @@ const postReportMock = vi.fn(async (_payload: unknown) => ({ ok: true }));
 const lookupIndicatorMock = vi.fn(async (_type: unknown, _value: unknown) => null);
 const domainReputationMock = vi.fn(async (_domain: unknown) => null);
 const getConsentTokenMock = vi.fn(() => 'token');
+const checkSenderMock = vi.fn((_s: unknown) => null);
+const fallbackVerdictMock = vi.fn((_t: unknown) => null);
 
 vi.mock('../src/api/storageClient', () => ({
   getConsentToken: () => getConsentTokenMock(),
@@ -20,11 +22,11 @@ vi.mock('../src/api/storageClient', () => ({
 vi.mock('../src/config', () => ({ WORKER_ORIGIN: 'https://worker.test' }));
 vi.mock('./classifier', () => ({ classifyText: vi.fn(async () => ({ scamProb: 0.05, flag: null })) }));
 vi.mock('../src/training/urlGrade', () => ({ gradeMessageLinks: vi.fn(() => ({ worst: { grade: 'CLEAN', signals: [] }, grade: 'CLEAN' })) }));
-vi.mock('../src/brands/senderAllowlist', () => ({ checkSender: vi.fn(() => null) }));
+vi.mock('../src/brands/senderAllowlist', () => ({ checkSender: (s: unknown) => checkSenderMock(s) }));
 vi.mock('../src/brands/brands', () => ({
   detectBrands: vi.fn(() => ({ matched: [], intents: [] })),
   detectIntents: vi.fn(() => []),
-  fallbackVerdict: vi.fn(() => null),
+  fallbackVerdict: (t: unknown) => fallbackVerdictMock(t),
 }));
 
 import { analyzeContent } from './aiService';
@@ -52,6 +54,8 @@ describe('withStorageSignals - single final verdict on both write paths', () => 
     lookupIndicatorMock.mockImplementation(async () => null);
     domainReputationMock.mockImplementation(async () => null);
     getConsentTokenMock.mockReturnValue('token');
+    checkSenderMock.mockImplementation(() => null);
+    fallbackVerdictMock.mockImplementation(() => null);
   });
 
   afterEach(() => {
@@ -124,5 +128,40 @@ describe('withStorageSignals - single final verdict on both write paths', () => 
     );
     expect(result.reportedPhone?.count).toBe(9);
     expect(phoneLookups).toBeGreaterThanOrEqual(2);
+  });
+
+  it('a trusted sender is passed through and discounts the verdict', async () => {
+    // The engine (fallbackVerdict) flags the message at risk 8. With NO sender
+    // the verdict stays high-risk; with a TRUSTED official sender the fusion
+    // must discount the engine contribution AND subtract the sender weight.
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => {
+      if (String(url).includes('/api/analyze')) {
+        return new Response(mockAnalysisResponse('HIGH_RISK'), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      }
+      return new Response(JSON.stringify({ ok: true, similar: [] }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    }));
+    fallbackVerdictMock.mockImplementation(() => ({
+      verdict: 'HIGH_RISK', riskScore: 8, scamType: 'Bank Phishing', redFlags: [],
+      analysis: 'x', educationalTip: 'y',
+    }));
+    lookupIndicatorMock.mockImplementation(async () => null);
+    domainReputationMock.mockImplementation(async () => null);
+
+    // 1) No sender: the engine's risk stands.
+    const withoutSender = await analyzeContent(
+      'Your account is locked, send your OTP now.', 'ENGLISH', undefined, undefined, undefined
+    );
+
+    // 2) Trusted official sender (GCASH shortcode): verdict is discounted.
+    checkSenderMock.mockImplementation((s: unknown) =>
+      (s as string) === 'GCASH' ? { trusted: true, brandKey: 'gcash', matchedOn: 'GCASH', isShortcode: false } : null
+    );    const withSender = await analyzeContent(
+      'Your account is locked, send your OTP now.', 'ENGLISH', undefined, undefined, 'GCASH'
+    );
+
+    // The trusted sender must materially lower the risk score (discount + weight).
+    expect(withSender.riskScore).toBeLessThan(withoutSender.riskScore);
+    // The sender arg actually reached checkSender (proves the plumbing).
+    expect(checkSenderMock).toHaveBeenCalledWith('GCASH');
   });
 });
