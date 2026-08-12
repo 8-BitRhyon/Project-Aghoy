@@ -712,6 +712,21 @@ describe("gamification (retention strategies)", () => {
     expect(prog.claimed).toBe(false);
   });
 
+  it("resets the daily-goal challenge when the day rolls over", () => {
+    const s = getScenario("gcash-otp")!;
+    let p = emptyProgress();
+    // Day 1: complete 3 of 3.
+    for (let i = 0; i < 3; i++) {
+      p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-01" });
+    }
+    expect(challengeProgress(p, "daily-goal").progress).toBe(3);
+    // Day 2: the counter restarts at 1 for the first answer of the new day.
+    p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-02" });
+    const day2 = challengeProgress(p, "daily-goal");
+    expect(day2.progress).toBe(1);
+    expect(day2.claimed).toBe(false);
+  });
+
   it("a completed challenge awards a deterministic variable reward once on claim", () => {
     const s = getScenario("gcash-otp")!;
     let p = emptyProgress();
@@ -755,6 +770,25 @@ describe("gamification (retention strategies)", () => {
     expect(reward).not.toBeNull();
     // Mastery (>=4/5 correct) is the bigger milestone and fires first.
     expect(reward!.kind).toBe("first-mastery");
+  });
+
+  it("a single correct answer does NOT count as a perfect drill", () => {
+    const s = getScenario("gcash-otp")!;
+    let p = emptyProgress();
+    p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-01" });
+    expect(p.familyMastery[s.family].last5Correct).toEqual([true]);
+    expect(detectSurpriseReward(p, "2026-08-01")).toBeNull();
+  });
+
+  it("three consecutive correct answers trigger the perfect-drill reward", () => {
+    const s = getScenario("gcash-otp")!;
+    let p = emptyProgress();
+    for (let i = 0; i < 3; i++) {
+      p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-01" });
+    }
+    const reward = detectSurpriseReward(p, "2026-08-01");
+    expect(reward).not.toBeNull();
+    expect(reward!.kind).toBe("first-perfect");
   });
 });
 

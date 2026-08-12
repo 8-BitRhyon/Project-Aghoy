@@ -22,9 +22,9 @@
 #     Do NOT put those values in this file or in Actions secrets here.
 #   - The Pages project `project-aghoy` must already exist
 #     (wrangler pages project create, or via the Cloudflare dashboard).
-#   - If evidence storage is ever enabled: uncomment the EVIDENCE binding
-#     in wrangler.toml and create the bucket once:
-#       npx wrangler r2 bucket create project-aghoy-evidence
+#   - R2 evidence storage is enabled (EVIDENCE binding is active in
+#     wrangler.toml); the bucket `project-aghoy-evidence` must exist on the
+#     account before `wrangler deploy` can succeed.
 #
 # All actions are SHA-pinned (supply-chain policy; CI enforces this).
 
@@ -67,7 +67,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: 'pages deploy dist --project-name=projectaghoy --branch=main'
+          command: 'pages deploy dist --project-name=project-aghoy --branch=main'
       - name: Deploy Dojo Worker
         # Uses the repo's local wrangler directly. wrangler-action's npm exec
         # resolution can pull a different wrangler than the local install,

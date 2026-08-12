@@ -44,18 +44,30 @@ writeFileSync(join(__dirname, "../src/dojo/scenarios.generated.ts"), enBody);
 const locBodies: Record<string, string> = {
   TAGALOG: `// AUTO-GENERATED - TAGALOG - do not edit by hand. Regenerate: npx tsx scripts/generate-scenarios.ts
 import { Scenario } from "./scenarios";
+import { SCENARIOS } from "./scenarios";
 
-export const ALL_SCENARIOS_TAGALOG: Scenario[] = ${JSON.stringify(generated.TAGALOG, null, 2)};
+export const GENERATED_SCENARIOS_TAGALOG: Scenario[] = ${JSON.stringify(generated.TAGALOG, null, 2)};
+
+// Curated scenarios (English-authored) are appended so every language library
+// carries the SAME id set and family counts as English. Curated content stays
+// in English (hand-authored lessons); the generated set is localized.
+export const ALL_SCENARIOS_TAGALOG: Scenario[] = [...SCENARIOS, ...GENERATED_SCENARIOS_TAGALOG];
 `,
   BISAYA: `// AUTO-GENERATED - BISAYA - do not edit by hand. Regenerate: npx tsx scripts/generate-scenarios.ts
 import { Scenario } from "./scenarios";
+import { SCENARIOS } from "./scenarios";
 
-export const ALL_SCENARIOS_BISAYA: Scenario[] = ${JSON.stringify(generated.BISAYA, null, 2)};
+export const GENERATED_SCENARIOS_BISAYA: Scenario[] = ${JSON.stringify(generated.BISAYA, null, 2)};
+
+export const ALL_SCENARIOS_BISAYA: Scenario[] = [...SCENARIOS, ...GENERATED_SCENARIOS_BISAYA];
 `,
   ILOCANO: `// AUTO-GENERATED - ILOCANO - do not edit by hand. Regenerate: npx tsx scripts/generate-scenarios.ts
 import { Scenario } from "./scenarios";
+import { SCENARIOS } from "./scenarios";
 
-export const ALL_SCENARIOS_ILOCANO: Scenario[] = ${JSON.stringify(generated.ILOCANO, null, 2)};
+export const GENERATED_SCENARIOS_ILOCANO: Scenario[] = ${JSON.stringify(generated.ILOCANO, null, 2)};
+
+export const ALL_SCENARIOS_ILOCANO: Scenario[] = [...SCENARIOS, ...GENERATED_SCENARIOS_ILOCANO];
 `,
 };
 writeFileSync(join(__dirname, "../src/dojo/scenarios.generated.tl.ts"), locBodies.TAGALOG);

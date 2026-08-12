@@ -35,6 +35,11 @@ jobs:
         run: npm audit --audit-level=high
       - name: Typecheck
         run: npm run typecheck
+      - name: Sync self-hosted OCR assets
+        # public/ocr is gitignored (46MB binaries); a fresh checkout has none,
+        # so the build would silently ship an OCR-less app. Regenerate before
+        # building (mirrors deploy.yml) so the artifact is complete.
+        run: bash scripts/sync-ocr.sh
       - name: Test
         run: npm test
       - name: Build

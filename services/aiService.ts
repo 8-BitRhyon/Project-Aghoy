@@ -566,10 +566,15 @@ export const analyzeContent = async (text: string, language: string, imageBase64
   }
 
   let contentToAnalyze = text;
+  // Raw OCR text (pre-redaction) so phone numbers embedded in an image still
+  // join the blacklist hash set - hashing must run on UNREDACTED numbers (only
+  // SHA-256 hashes leave the device, never the numbers themselves).
+  let rawOcrText = "";
 
   if (imageBase64) {
     try {
       const ocrText = await extractTextFromImage(imageBase64, imageMimeType);
+      rawOcrText = ocrText;
       contentToAnalyze = `
         [USER NOTE]: ${text}
         [IMAGE CONTENT (OCR)]: ${ocrText}
@@ -681,8 +686,9 @@ export const analyzeContent = async (text: string, language: string, imageBase64
     ]);
     // Gather every layer's evidence. Layers are evidence, not vetoes: the
     // verdict emerges from a weighted sum (services/layeredVerdict.ts).
-    const ocrText = imageBase64 ? contentToAnalyze.match(/\[IMAGE CONTENT \(OCR\)\]:\s*([\s\S]*?)\s*$/) : null;
-    const phoneHashes = await phoneHashesFromText(`${text} ${ocrText ? ocrText[1] : ""}`);
+    const ocrText = rawOcrText || (imageBase64 ? contentToAnalyze.match(/\[IMAGE CONTENT \(OCR\)\]:\s*([\s\S]*?)\s*$/) : null);
+    const ocrPart = typeof ocrText === "string" ? ocrText : ocrText ? ocrText[1] : "";
+    const phoneHashes = await phoneHashesFromText(`${text} ${ocrPart}`);
     const linkGrade = gradeMessageLinks(contentToAnalyze).worst;
     const senderCheck = checkSender(sender);
     const engineSignal = fallbackVerdict(contentToAnalyze); // null when it abstains

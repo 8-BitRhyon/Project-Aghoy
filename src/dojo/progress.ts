@@ -376,15 +376,23 @@ export const applyAnswer = (p: LearnerProgress, input: AnswerInput): LearnerProg
   const shieldCoins = p.shieldCoins + (correct ? COINS_PER_CORRECT : 0);
   const challenges: Record<string, ChallengeState> = { ...p.challenges };
   for (const def of CHALLENGE_DEFS) {
-    const state = challenges[def.id] ?? { id: def.id, progress: 0, target: def.target, claimedAt: null, startedAt: atDay };
+    const existing = challenges[def.id];
+    const state = existing ?? { id: def.id, progress: 0, target: def.target, claimedAt: null, startedAt: atDay };
+    // The daily-goal challenge resets each day: a new day starts progress at 0
+    // (or 1 for this answer) and re-opens the claim, so "today's 3 drills"
+    // really means today, not cumulative across days.
+    const newDay = def.family === null && state.startedAt !== atDay;
+    const base = newDay ? { ...state, progress: 0, claimedAt: null, startedAt: atDay } : state;
     let advanced = false;
     if (def.family === null && correct) {
       advanced = true; // daily-goal: any correct answer advances
     } else if (def.family === scenario.family && correct) {
       advanced = true; // family challenge: correct answer in that family
     }
-    if (advanced && state.progress < def.target) {
-      challenges[def.id] = { ...state, progress: state.progress + 1 };
+    if (advanced && base.progress < def.target) {
+      challenges[def.id] = { ...base, progress: base.progress + 1 };
+    } else if (newDay) {
+      challenges[def.id] = base;
     }
   }
 
@@ -671,11 +679,11 @@ export const detectSurpriseReward = (p: LearnerProgress, atDay: string): Surpris
   if (mastered.length >= 1 && !have.has("first-mastery:global")) {
     return { id: "first-mastery:global", kind: "first-mastery", awardedAt: atDay };
   }
-  // Perfect drill (all correct, no repeats needed) - approximated by transfer
-  // log last answer being correct with 100% family rate is complex; use a
-  // simpler signal: at least one family at 100% last5 with >= 1 attempt.
+  // Perfect drill (all correct) - approximated by a family's rolling last-5
+  // being all-correct. Requires >= 3 in a row: a single correct answer is
+  // just a start, not a "perfect" run worth celebrating.
   for (const [, m] of Object.entries(p.familyMastery)) {
-    if (m.last5Correct.length > 0 && m.last5Correct.every(Boolean) && !have.has("first-perfect:global")) {
+    if (m.last5Correct.length >= 3 && m.last5Correct.every(Boolean) && !have.has("first-perfect:global")) {
       return { id: "first-perfect:global", kind: "first-perfect", awardedAt: atDay };
     }
   }

@@ -1,7 +1,8 @@
 // AUTO-GENERATED - TAGALOG - do not edit by hand. Regenerate: npx tsx scripts/generate-scenarios.ts
 import { Scenario } from "./scenarios";
+import { SCENARIOS } from "./scenarios";
 
-export const ALL_SCENARIOS_TAGALOG: Scenario[] = [
+export const GENERATED_SCENARIOS_TAGALOG: Scenario[] = [
   {
     "id": "ewallet-easy-000",
     "title": "ewallet drill 0",
@@ -21129,3 +21130,8 @@ export const ALL_SCENARIOS_TAGALOG: Scenario[] = [
     "source": "generated"
   }
 ];
+
+// Curated scenarios (English-authored) are appended so every language library
+// carries the SAME id set and family counts as English. Curated content stays
+// in English (hand-authored lessons); the generated set is localized.
+export const ALL_SCENARIOS_TAGALOG: Scenario[] = [...SCENARIOS, ...GENERATED_SCENARIOS_TAGALOG];

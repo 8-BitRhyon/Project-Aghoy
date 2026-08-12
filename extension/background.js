@@ -34,7 +34,7 @@ const extractDomain = (url) => {
 };
 
 // "Check this link" - server-side SSRF-guarded inspection + reputation.
-const handleCheckLink = async (url, tabId) => {
+const handleCheckLink = async (url) => {
   if (!(await ensureConsent())) {
     notify("Consent required", "Open the Project Aghoy extension and accept the privacy protocols first.");
     return;
@@ -53,12 +53,14 @@ const handleCheckLink = async (url, tabId) => {
   } else if (inspection) {
     verdict = `Blocked: ${inspection.error || "unreachable"}`;
   }
-  chrome.tabs.sendMessage(tabId, { type: "AGHOY_VERDICT", verdict });
+  // No content script exists (minimal permissions), so the result reaches the
+  // user via a system notification - the declared `notifications` permission.
+  notify("Project Aghoy - Link check", verdict);
 };
 
 // "Report as scam" - posts a sanitized report into the shared database so the
 // next victim sees "reported N times" and the reputation feed updates.
-const handleReportLink = async (url, tabId) => {
+const handleReportLink = async (url) => {
   if (!(await ensureConsent())) {
     notify("Consent required", "Open the Project Aghoy extension and accept the privacy protocols first.");
     return;
@@ -71,12 +73,12 @@ const handleReportLink = async (url, tabId) => {
     content: `URL reported from browser: ${url}`,
     provider: "extension",
   });
-  chrome.tabs.sendMessage(tabId, {
-    type: "AGHOY_REPORTED",
-    message: report && report.ok && !report.rejected
+  notify(
+    "Project Aghoy - Report",
+    report && report.ok && !report.rejected
       ? `Report recorded. Thank you - this protects other users.`
-      : `We could not count this report (it did not pass the quality check). Please only report links or numbers that actually look like a real scam.`,
-  });
+      : `We could not count this report (it did not pass the quality check). Please only report links or numbers that actually look like a real scam.`
+  );
 };
 
 // Right-click a link, selection, or page.
@@ -105,13 +107,13 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-chrome.contextMenus.onClicked.addListener((info, tab) => {
+chrome.contextMenus.onClicked.addListener((info) => {
   const url = info.linkUrl || info.pageUrl;
-  if (!url || !tab || tab.id === undefined) return;
+  if (!url) return;
   if (info.menuItemId === "aghoy-check-link" || info.menuItemId === "aghoy-check-page") {
-    handleCheckLink(url, tab.id);
+    handleCheckLink(url);
   } else if (info.menuItemId === "aghoy-report-link" || info.menuItemId === "aghoy-report-page") {
-    handleReportLink(url, tab.id);
+    handleReportLink(url);
   }
 });
 

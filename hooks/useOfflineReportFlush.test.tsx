@@ -20,9 +20,22 @@ const Harness = () => {
   return null;
 };
 
+// Consent gate: the hook only flushes when consent is currently granted.
+const storage = new Map<string, string>();
+Object.defineProperty(globalThis, 'localStorage', {
+  configurable: true,
+  value: {
+    getItem: (k: string) => storage.get(k) ?? null,
+    setItem: (k: string, v: string) => storage.set(k, v),
+    removeItem: (k: string) => storage.delete(k),
+  },
+});
+
 describe('useOfflineReportFlush', () => {
   beforeEach(() => {
     flushMock.mockClear();
+    storage.clear();
+    storage.set('aghoy_privacy_consent', 'granted');
     vi.useFakeTimers();
   });
 
@@ -59,5 +72,21 @@ describe('useOfflineReportFlush', () => {
     window.dispatchEvent(new Event('online'));
     vi.advanceTimersByTime(5 * 60 * 1000);
     expect(flushMock).not.toHaveBeenCalled();
+  });
+
+  it('does NOT flush when consent has been reset', () => {
+    storage.set('aghoy_privacy_consent', 'denied');
+    render(<Harness />);
+    window.dispatchEvent(new Event('online'));
+    vi.advanceTimersByTime(5 * 60 * 1000);
+    expect(flushMock).not.toHaveBeenCalled();
+  });
+
+  it('flushes again once consent is re-granted', () => {
+    storage.set('aghoy_privacy_consent', 'denied');
+    render(<Harness />);
+    storage.set('aghoy_privacy_consent', 'granted');
+    window.dispatchEvent(new Event('online'));
+    expect(flushMock).toHaveBeenCalledTimes(1);
   });
 });

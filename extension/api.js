@@ -134,5 +134,15 @@ export const analyzeContent = async (content) => {
     throw new Error(data.error || `Analyze failed (${res.status})`);
   }
   const data = await res.json();
-  return JSON.parse(data.text);
+  // The model can fence its JSON in markdown; the web client cleans it before
+  // parsing (aiService cleanJson). Mirror that here or the popup breaks on the
+  // same response that works on web.
+  const cleaned = (data.text || "")
+    .replace(/^```(?:json)?\s*/i, "")
+    .replace(/```\s*$/i, "")
+    .trim();
+  const firstOpen = cleaned.indexOf("{");
+  const lastClose = cleaned.lastIndexOf("}");
+  const target = firstOpen !== -1 && lastClose !== -1 ? cleaned.slice(firstOpen, lastClose + 1) : cleaned;
+  return JSON.parse(target);
 };
