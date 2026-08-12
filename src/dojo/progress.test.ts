@@ -211,6 +211,27 @@ describe("shield level gating", () => {
     expect(isFamilyUnlocked(halfMore, "vishing")).toBe(false);
   });
 
+  it("climbs the shield ladder through mastery alone (no placement needed)", () => {
+    // The audit found the ladder was unreachable: shieldLevel only rose via
+    // applyPlacementResult and there is no placement UI. Mastering every
+    // family at a level must unlock the next level.
+    const ewallet = getScenario("gcash-otp")!;
+    const fakeReward = getScenario("task-scam")!; // family: investment - use only ewallet/fake-reward family scenarios
+
+    // Level 1: ewallet + fake-reward. Master both (>=4/5 correct, >=3 attempts).
+    let p = allCorrect(emptyProgress(), ewallet, 4, D);
+    expect(p.shieldLevel).toBe(1);
+    expect(isFamilyUnlocked(p, "delivery")).toBe(false);
+    const famOfEwallet = ewallet.family;
+    expect(famOfEwallet).toBe("ewallet");
+    // Mastery needs TWO families at level 1. Use any other level-1 family via a
+    // scenario of that family - construct by copying the ewallet scenario's shape.
+    const other = { ...ewallet, id: "fake-reward-2", family: "fake-reward" as const, steps: [...ewallet.steps] };
+    p = allCorrect(p, other, 4, D);
+    expect(p.shieldLevel).toBe(2);
+    expect(isFamilyUnlocked(p, "delivery")).toBe(true);
+  });
+
   it("locks hard tier until at least 4 families are mastered", () => {
     const p4 = applyPlacementResult(emptyProgress(), 12, 12);
     expect(isTierUnlocked(p4, "hard")).toBe(false);

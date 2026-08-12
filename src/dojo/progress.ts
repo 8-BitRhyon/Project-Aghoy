@@ -256,6 +256,22 @@ const recomputeUnlocked = (p: LearnerProgress): LearnerProgress => ({
   },
 });
 
+// The shield ladder must be climbable WITHOUT the (unbuilt) placement UI.
+// Clearing a level means mastering every family assigned to it; each cleared
+// level raises the shield by one. Empty levels (7/9/10 gate on other evidence)
+// are skipped here. Never regresses - placement can still start a learner
+// higher, and mastery only ever adds to that.
+export const masteryShieldLevel = (p: LearnerProgress): number => {
+  let level = p.shieldLevel;
+  for (const cfg of SHIELD_LEVELS) {
+    const fams = cfg.families.filter((f) => FAMILY_LEVEL[f] === cfg.level);
+    if (fams.length === 0) continue;
+    const cleared = fams.every((f) => (p.familyMastery[f] ?? emptyFamily()).mastered);
+    if (cleared && cfg.level + 1 > level) level = cfg.level + 1;
+  }
+  return level;
+};
+
 export const buildPlacementQuiz = (families: string[], difficulty: "easy" | "medium", count = 12): string[] => {
   const result: string[] = [];
   for (const family of families) {
@@ -372,7 +388,7 @@ export const applyAnswer = (p: LearnerProgress, input: AnswerInput): LearnerProg
     }
   }
 
-  return recomputeUnlocked({
+  const fresh = {
     ...p,
     xp,
     shieldCoins,
@@ -385,7 +401,9 @@ export const applyAnswer = (p: LearnerProgress, input: AnswerInput): LearnerProg
     wrongAnswers,
     transferLog,
     familyMastery: { ...p.familyMastery, [family]: fam },
-  });
+  };
+  // Advance the shield ladder from family mastery (placement-independent).
+  return recomputeUnlocked({ ...fresh, shieldLevel: masteryShieldLevel(fresh) });
 };
 
 export const dueScenarios = (p: LearnerProgress, today: string, pool: string[]): string[] => {
