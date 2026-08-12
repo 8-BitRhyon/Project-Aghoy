@@ -797,7 +797,17 @@ const Dojo: React.FC<DojoProps> = ({ selectedLanguage }) => {
               <div className="animate-fade-in">
                 {/* The incoming message - rendered as its real device UI so
                     the learner recognizes the PATTERN, not just the words. */}
-                <DrillRenderer step={step} />
+                <DrillRenderer
+                  step={step}
+                  onDeclineCall={
+                    scenario.family === 'vishing'
+                      ? () => {
+                          const correct = step.options.find((o) => o.correct);
+                          if (correct) choose(correct.id);
+                        }
+                      : undefined
+                  }
+                />
 
                 <p className="mt-4 font-['Press_Start_2P'] text-xs text-cyan-300 mb-3">{step.question}</p>
                 <div className="space-y-3">

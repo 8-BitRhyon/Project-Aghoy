@@ -22,12 +22,20 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Phone, PhoneOff, QrCode, Smartphone, Mail, MessageSquare, Linkedin, Volume2, Square } from 'lucide-react';
 import type { ScenarioStep } from '../src/dojo/scenarios';
 import { vishingAudioKey, vishingAudioUrl } from '../src/dojo/vishingAudio';
+import { getMuteStatus, playSound } from '../utils/sound';
 
 interface DrillRendererProps {
   step: ScenarioStep;
+  // Vishing call-screen actions. Dojo wires these into the drill so the phone
+  // buttons are real choices, not decoration. Optional: absent -> the buttons
+  // still change the call state visually.
+  onAnswerCall?: () => void;
+  onDeclineCall?: () => void;
 }
 
-const DrillRenderer: React.FC<DrillRendererProps> = ({ step }) => {
+type CallState = 'ringing' | 'connected' | 'ended';
+
+const DrillRenderer: React.FC<DrillRendererProps> = ({ step, onAnswerCall, onDeclineCall }) => {
   const msg = step.message;
   const sender = step.senderLabel || 'Unknown';
   const channel = step.channel;
@@ -41,15 +49,26 @@ const DrillRenderer: React.FC<DrillRendererProps> = ({ step }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const vishingAudio = channel === 'vishing' ? vishingAudioKey(step) : null;
 
+  // The call starts RINGING: caller ID only, no pitch - just like a real
+  // phone. Answer connects (reveals the scammer's pitch), Decline ends the
+  // call. State resets per step.
+  const [callState, setCallState] = useState<CallState>('ringing');
+
   useEffect(() => {
+    setCallState('ringing');
+    setPlaying(false);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    // Stop playback if the renderer unmounts mid-call (navigating away).
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current = null;
       }
-      setPlaying(false);
     };
-  }, [vishingAudio]);
+  }, [step.id]);
 
   const togglePlay = () => {
     if (!vishingAudio) return;
@@ -58,11 +77,28 @@ const DrillRenderer: React.FC<DrillRendererProps> = ({ step }) => {
       setPlaying(false);
       return;
     }
+    if (getMuteStatus()) return;
     if (!audioRef.current) {
       audioRef.current = new Audio(vishingAudioUrl(vishingAudio));
       audioRef.current.onended = () => setPlaying(false);
     }
     audioRef.current.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+  };
+
+  const answerCall = () => {
+    playSound('click');
+    setCallState('connected');
+    onAnswerCall?.();
+  };
+
+  const declineCall = () => {
+    playSound('click');
+    setCallState('ended');
+    if (audioRef.current) {
+      audioRef.current.pause();
+      setPlaying(false);
+    }
+    onDeclineCall?.();
   };
 
   // The red-flag highlight (spotflag format): mark the suspicious segment.
@@ -89,32 +125,50 @@ const DrillRenderer: React.FC<DrillRendererProps> = ({ step }) => {
             <Phone className="w-9 h-9 text-red-400" />
           </div>
           <p className="text-white font-semibold text-lg">{sender}</p>
-          <p className="text-slate-400 text-sm mt-1">Incoming call...</p>
-          <div className="text-slate-500 text-xs mt-2 italic leading-snug max-w-xs mx-auto">{renderSegments()}</div>
+          {callState === 'ringing' ? (
+            <p className="text-slate-400 text-sm mt-1">Incoming call...</p>
+          ) : callState === 'connected' ? (
+            <>
+              <p className="text-green-400 text-xs mt-1">Connected</p>
+              <div className="text-slate-500 text-xs mt-2 italic leading-snug max-w-xs mx-auto">{renderSegments()}</div>
+              {vishingAudio ? (
+                <button
+                  onClick={togglePlay}
+                  className="mt-5 mx-auto flex items-center gap-2 bg-slate-700 hover:bg-slate-600 border border-slate-500 text-white text-xs px-4 py-2 rounded-full min-h-[44px] transition-colors"
+                  aria-label={playing ? 'Stop the scammer voice' : 'Listen to the scammer voice'}
+                >
+                  {playing ? <Square className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                  {playing ? 'Stop' : 'Listen to the caller'}
+                </button>
+              ) : null}
+            </>
+          ) : (
+            <p className="text-slate-400 text-sm mt-1">Call ended</p>
+          )}
           <div className="flex justify-center gap-6 mt-6">
-            <div className="flex flex-col items-center gap-1">
+            <button
+              onClick={answerCall}
+              disabled={callState !== 'ringing'}
+              aria-label="Answer the call"
+              className="flex flex-col items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
               <div className="w-14 h-14 rounded-full bg-green-600 flex items-center justify-center">
                 <Phone className="w-6 h-6 text-white" />
               </div>
               <span className="text-[10px] text-slate-400">Answer</span>
-            </div>
-            <div className="flex flex-col items-center gap-1">
+            </button>
+            <button
+              onClick={declineCall}
+              disabled={callState === 'ended'}
+              aria-label="Decline the call"
+              className="flex flex-col items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
               <div className="w-14 h-14 rounded-full bg-red-600 flex items-center justify-center">
                 <PhoneOff className="w-6 h-6 text-white" />
               </div>
               <span className="text-[10px] text-slate-400">Decline</span>
-            </div>
-          </div>
-          {vishingAudio ? (
-            <button
-              onClick={togglePlay}
-              className="mt-5 mx-auto flex items-center gap-2 bg-slate-700 hover:bg-slate-600 border border-slate-500 text-white text-xs px-4 py-2 rounded-full min-h-[44px] transition-colors"
-              aria-label={playing ? 'Stop the scammer voice' : 'Listen to the scammer voice'}
-            >
-              {playing ? <Square className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-              {playing ? 'Stop' : 'Listen to the caller'}
             </button>
-          ) : null}
+          </div>
         </div>
       </div>
     );
