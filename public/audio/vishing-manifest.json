@@ -1,0 +1,38 @@
+{
+  "generated_at": "2026-08-12T09:57:10.998719Z",
+  "engine": "gTTS(lang=tl)",
+  "scripts": {
+    "fraud-card": {
+      "file": "vishing-fraud-card.mp3",
+      "size_kb": 151.9
+    },
+    "otp-readback": {
+      "file": "vishing-otp-readback.mp3",
+      "size_kb": 95.4
+    },
+    "tech-support": {
+      "file": "vishing-tech-support.mp3",
+      "size_kb": 90.2
+    },
+    "account-access": {
+      "file": "vishing-account-access.mp3",
+      "size_kb": 96.0
+    },
+    "fraud-reverse": {
+      "file": "vishing-fraud-reverse.mp3",
+      "size_kb": 100.5
+    },
+    "family-emergency": {
+      "file": "vishing-family-emergency.mp3",
+      "size_kb": 137.4
+    },
+    "parcel-customs": {
+      "file": "vishing-parcel-customs.mp3",
+      "size_kb": 105.0
+    },
+    "refund-error": {
+      "file": "vishing-refund-error.mp3",
+      "size_kb": 91.5
+    }
+  }
+}

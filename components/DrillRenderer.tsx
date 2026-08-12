@@ -18,9 +18,10 @@
 // The sender label + message are the training signal; the framing is what
 // makes them memorable as PATTERNS, not isolated words.
 
-import React from 'react';
-import { Phone, PhoneOff, QrCode, Smartphone, Mail, MessageSquare, Linkedin } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Phone, PhoneOff, QrCode, Smartphone, Mail, MessageSquare, Linkedin, Volume2, Square } from 'lucide-react';
 import type { ScenarioStep } from '../src/dojo/scenarios';
+import { vishingAudioKey, vishingAudioUrl } from '../src/dojo/vishingAudio';
 
 interface DrillRendererProps {
   step: ScenarioStep;
@@ -30,6 +31,39 @@ const DrillRenderer: React.FC<DrillRendererProps> = ({ step }) => {
   const msg = step.message;
   const sender = step.senderLabel || 'Unknown';
   const channel = step.channel;
+
+  // Vishing tap-to-play: the bundled audio plays ONLY on an explicit tap
+  // (browsers block autoplay anyway, and a surprise voice is the one thing
+  // this drill must never do). The visual call screen is the always-on
+  // training signal; audio is optional reinforcement. Cleaned up on unmount
+  // or when the step changes.
+  const [playing, setPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const vishingAudio = channel === 'vishing' ? vishingAudioKey(step) : null;
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+      setPlaying(false);
+    };
+  }, [vishingAudio]);
+
+  const togglePlay = () => {
+    if (!vishingAudio) return;
+    if (playing) {
+      audioRef.current?.pause();
+      setPlaying(false);
+      return;
+    }
+    if (!audioRef.current) {
+      audioRef.current = new Audio(vishingAudioUrl(vishingAudio));
+      audioRef.current.onended = () => setPlaying(false);
+    }
+    audioRef.current.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+  };
 
   // The red-flag highlight (spotflag format): mark the suspicious segment.
   const renderSegments = () => {
@@ -71,6 +105,16 @@ const DrillRenderer: React.FC<DrillRendererProps> = ({ step }) => {
               <span className="text-[10px] text-slate-400">Decline</span>
             </div>
           </div>
+          {vishingAudio ? (
+            <button
+              onClick={togglePlay}
+              className="mt-5 mx-auto flex items-center gap-2 bg-slate-700 hover:bg-slate-600 border border-slate-500 text-white text-xs px-4 py-2 rounded-full min-h-[44px] transition-colors"
+              aria-label={playing ? 'Stop the scammer voice' : 'Listen to the scammer voice'}
+            >
+              {playing ? <Square className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+              {playing ? 'Stop' : 'Listen to the caller'}
+            </button>
+          ) : null}
         </div>
       </div>
     );
