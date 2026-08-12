@@ -735,6 +735,29 @@ describe("gamification (retention strategies)", () => {
     expect(prog.claimed).toBe(false);
   });
 
+  it("the daily-goal challenge tracks the user's CHOSEN goal, not a hardcoded 3", () => {
+    // Regression for the audit: CHALLENGE_DEFS hardcodes daily-goal target=3,
+    // but setDailyGoal lets the user pick 3/5/7. A user who sets their goal to
+    // 5 got a challenge that completed at 3 - the two disagree.
+    const s = getScenario("gcash-otp")!;
+    let p = setDailyGoal(emptyProgress(), 5);
+    // 3 correct answers: the OLD hardcoded target would complete + claimable.
+    for (let i = 0; i < 3; i++) {
+      p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-01" });
+    }
+    const atThree = challengeProgress(p, "daily-goal");
+    expect(atThree.progress).toBe(3);
+    expect(atThree.target).toBe(5); // goal is 5, not 3
+    expect(atThree.claimed).toBe(false); // not yet complete at 3
+    // Two more correct answers complete the goal of 5.
+    for (let i = 0; i < 2; i++) {
+      p = applyAnswer(p, { scenario: s, correct: true, atDay: "2026-08-01" });
+    }
+    const atFive = challengeProgress(p, "daily-goal");
+    expect(atFive.progress).toBe(5);
+    expect(atFive.claimed).toBe(false); // complete, claimable
+  });
+
   it("resets the daily-goal challenge when the day rolls over", () => {
     const s = getScenario("gcash-otp")!;
     let p = emptyProgress();
